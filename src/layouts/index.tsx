@@ -1,4 +1,5 @@
 import { logout } from '@/services/login';
+import { themes } from '@/themeConfig';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import {
   Avatar,
@@ -11,16 +12,20 @@ import {
   message,
   theme,
 } from 'antd';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { flushSync } from 'react-dom';
 import storetify from 'storetify';
 import { Outlet, SelectLang, history, useModel } from 'umi';
 import SideMenu from './components/SideMenu';
+import ThemeSetting from './components/ThemeSetting';
 import styles from './index.less';
 
 const { Header, Content } = Layout;
 
 export default function BaseLayout() {
+  const [currentTheme, setCurrentTheme] = useState<string>(() => {
+    return (storetify.get('theme') as string) || 'techBlue';
+  });
   const { initialState, setInitialState } = useModel('@@initialState');
   const [collapsed, setCollapsed] = useState(false);
   const {
@@ -54,6 +59,10 @@ export default function BaseLayout() {
     }
   };
 
+  const handleThemeChange = useCallback((themeKey: string) => {
+    setCurrentTheme(themeKey);
+  }, []);
+
   const items: MenuProps['items'] = [
     {
       label: '个人中心',
@@ -66,19 +75,7 @@ export default function BaseLayout() {
   ];
 
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: '#1890ff',
-        },
-        components: {
-          Button: {
-            colorPrimary: '#00b96b',
-          },
-        },
-        algorithm: true ? theme.defaultAlgorithm : theme.darkAlgorithm,
-      }}
-    >
+    <ConfigProvider theme={themes[currentTheme]}>
       <Layout>
         <SideMenu collapsed={collapsed} />
         <Layout>
@@ -96,6 +93,10 @@ export default function BaseLayout() {
               />
               <div className={styles.right}>
                 <Space size={16} wrap>
+                  <ThemeSetting
+                    onChange={handleThemeChange}
+                    themeKey={currentTheme}
+                  />
                   <SelectLang />
                   <Dropdown menu={{ items, onClick: handleDropdownMenuClick }}>
                     <div className={styles.action}>

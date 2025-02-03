@@ -12,7 +12,7 @@
 ## 功能清单
 
 - [x] 支持多环境配置 [#33](https://github.com/GavinBirkhoff/react-umi-admin/issues/33) [#15](https://github.com/GavinBirkhoff/react-umi-admin/issues/15)
-
+- [ ] 主题定制和管理 [#24](https://github.com/GavinBirkhoff/react-umi-admin/issues/24)
 - [ ] 自定义布局 Layout 和菜单
 - [ ] 用户登录鉴权
 - [x] 网络请求模块 基于 axios [#32](https://github.com/GavinBirkhoff/react-umi-admin/issues/32)
@@ -32,7 +32,7 @@
 - [ ] 样式管理方案 [#17](https://github.com/GavinBirkhoff/react-umi-admin/issues/17)
 - [x] Typescript 全面支持
 - [ ] OpenApi
-- [ ] 微生成器
+- [x] 微生成器 [#35](https://github.com/GavinBirkhoff/react-umi-admin/issues/35) Umi 中内置了众多微生成器，协助你在开发中快速地完成一些繁琐的工作。
 - [ ] 开发插件
 - [ ] MPA 模式
 - [ ] 打包构建优化
