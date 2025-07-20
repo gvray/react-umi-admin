@@ -15,12 +15,31 @@ import {
 import { useCallback, useState } from 'react';
 import { flushSync } from 'react-dom';
 import storetify from 'storetify';
-import { Outlet, SelectLang, history, useModel } from 'umi';
+import { Outlet, SelectLang, history, styled, useModel } from 'umi';
 import SideMenu from './components/SideMenu';
 import ThemeSetting from './components/ThemeSetting';
-import styles from './index.less';
 
 const { Header, Content } = Layout;
+
+const HeaderBox = styled.div`
+  height: 64px;
+  padding: 0 12px 0 0;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  position: relative;
+`;
+
+const HeaderRight = styled.div`
+  float: right;
+`;
+
+const HeaderAction = styled.div`
+  cursor: pointer;
+  padding: 0 12px;
+  display: inline-block;
+  transition: all 0.3s;
+  height: 100%;
+`;
 
 export default function BaseLayout() {
   const [currentTheme, setCurrentTheme] = useState<string>(() => {
@@ -80,7 +99,7 @@ export default function BaseLayout() {
         <SideMenu collapsed={collapsed} />
         <Layout>
           <Header style={{ padding: 0, background: colorBgContainer }}>
-            <div className={styles.header}>
+            <HeaderBox>
               <Button
                 type="text"
                 icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -91,15 +110,15 @@ export default function BaseLayout() {
                   height: 64,
                 }}
               />
-              <div className={styles.right}>
-                <Space size={16} wrap>
+              <HeaderRight>
+                <Space size={2} wrap>
                   <ThemeSetting
                     onChange={handleThemeChange}
                     themeKey={currentTheme}
                   />
                   <SelectLang />
                   <Dropdown menu={{ items, onClick: handleDropdownMenuClick }}>
-                    <div className={styles.action}>
+                    <HeaderAction>
                       <Avatar
                         src={
                           <img
@@ -111,11 +130,11 @@ export default function BaseLayout() {
                       <span style={{ marginLeft: 8 }}>
                         {initialState?.currentUser.user.name}
                       </span>
-                    </div>
+                    </HeaderAction>
                   </Dropdown>
                 </Space>
-              </div>
-            </div>
+              </HeaderRight>
+            </HeaderBox>
           </Header>
           <Content>
             <Outlet />

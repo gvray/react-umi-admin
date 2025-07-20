@@ -6,7 +6,9 @@ interface LogoProps {
   collapsed?: boolean;
 }
 
-const LogoWrapper = styled.div<LogoProps>`
+const LogoWrapper = styled.div.withConfig({
+  shouldForwardProp: (prop) => !['theme', 'collapsed'].includes(prop),
+})<LogoProps>`
   margin: 16px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: ${(props) => (props.collapsed ? '24px' : '8px')};
@@ -22,11 +24,10 @@ const LogoWrapper = styled.div<LogoProps>`
   gap: 8px;
   height: 48px;
   padding-left: ${(props) => (props.collapsed ? '0' : '8px')};
-`;
-
-const LogoImg = styled.img`
-  width: 1.8em;
-  height: 1.8em;
+  .logo-img {
+    width: 1.8em;
+    height: 1.8em;
+  }
 `;
 
 const Logo: React.FC<LogoProps> = ({ theme = 'light', collapsed }) => {
@@ -39,7 +40,7 @@ const Logo: React.FC<LogoProps> = ({ theme = 'light', collapsed }) => {
         navigate('/');
       }}
     >
-      <LogoImg src="/logo.svg" alt="Logo" />
+      <img className="logo-img" src="/logo.svg" alt="Logo" />
       {!collapsed && <strong>G-ADMIN</strong>}
     </LogoWrapper>
   );

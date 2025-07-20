@@ -16,8 +16,6 @@ const TagWrapper = styled.div`
   border-radius: 2px;
   float: left;
   text-align: center;
-  margin-block-start: 8px;
-  margin-inline-end: 8px;
   cursor: pointer;
 `;
 
@@ -42,6 +40,7 @@ interface ThemeColorProps {
 
 const ThemeColors = styled.div`
   display: flex;
+  gap: 8px;
 `;
 const ThemeColor: React.FC<ThemeColorProps> = ({
   colorList,
