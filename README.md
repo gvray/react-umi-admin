@@ -89,7 +89,13 @@ npm start
 
 路径：/user
 
-![login](./src/assets/snapshoot/screencapture-user.png)
+![user](./src/assets/snapshoot/screencapture-user.png)
+
+## 个人中心
+
+路径：/profile
+
+![profile](./src/assets/snapshoot/screencapture-profile.png)
 
 ## 打包分析
 
