@@ -51,7 +51,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ collapsed }) => {
 
   return (
     <Sider trigger={null} collapsible collapsed={collapsed} theme={theme}>
-      <Logo theme={theme} />
+      <Logo theme={theme} collapsed={collapsed} />
       <Skeleton loading={loading} active round style={{ padding: '15px' }}>
         <Menu
           theme="dark"
