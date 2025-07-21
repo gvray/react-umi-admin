@@ -1,4 +1,4 @@
-import { currentUser as queryCurrentUser } from '@/services/user';
+import { getCurrentUser } from '@/services/user';
 import storetify from 'storetify';
 import { history } from 'umi';
 import { errorConfig } from './requestErrorConfig';
@@ -14,7 +14,7 @@ export async function getInitialState() {
   const fetchUserInfo = async () => {
     try {
       // skipErrorHandler 跳过信息提示
-      const msg = await queryCurrentUser({ skipErrorHandler: true });
+      const msg = await getCurrentUser({ skipErrorHandler: true });
       return msg.data;
     } catch (error) {
       // 清除登录状态并跳转登录页

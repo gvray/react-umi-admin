@@ -47,6 +47,9 @@ dependencies:
   use-compare:
     specifier: ^1.0.0
     version: 1.0.0(react@18.2.0)
+  zustand:
+    specifier: ^5.0.6
+    version: 5.0.6(@types/react@18.2.56)(react@18.2.0)
 
 devDependencies:
   '@types/crypto-js':
@@ -3058,6 +3061,7 @@ packages:
 
   /acorn-import-assertions@1.9.0(acorn@8.11.3):
     resolution: {integrity: sha512-cmMwop9x+8KFhxvKrKfPYmN6/pKTYYHBqLa0DfvVZcKMJWNyWLnaqND7dx/qn66R7ewM1UX5XMaDVP5wlVTaVA==, tarball: https://registry.npmjs.org/acorn-import-assertions/-/acorn-import-assertions-1.9.0.tgz}
+    deprecated: package has been renamed to acorn-import-attributes
     peerDependencies:
       acorn: ^8
     dependencies:
@@ -10279,4 +10283,26 @@ packages:
     resolution: {integrity: sha512-O3MilSi/9mwoovx77m6ROZM7sXShR/O/JIanvzTwjN3FORfLSr81PsUGd7jlaYOeds9d8tw82oP44+3YucVo+w==, tarball: https://registry.npmjs.org/zrender/-/zrender-5.5.0.tgz}
     dependencies:
       tslib: 2.3.0
+    dev: false
+
+  /zustand@5.0.6(@types/react@18.2.56)(react@18.2.0):
+    resolution: {integrity: sha512-ihAqNeUVhe0MAD+X8M5UzqyZ9k3FFZLBTtqo6JLPwV53cbRB/mJwBI0PxcIgqhBBHlEs8G45OTDTMq3gNcLq3A==, tarball: https://registry.npmjs.org/zustand/-/zustand-5.0.6.tgz}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
+        optional: true
+    dependencies:
+      '@types/react': 18.2.56
+      react: 18.2.0
     dev: false
