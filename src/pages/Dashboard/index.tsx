@@ -160,7 +160,16 @@ const RealtimeIndicator = styled.div`
 `;
 
 export default function DashboardPage() {
-  const { stats, systemMetrics, loading, refreshData } = useDashboardModel();
+  const {
+    stats,
+    systemMetrics,
+    rankData,
+    hotSearchData,
+    salesData,
+    categoryData,
+    loading,
+    refreshData,
+  } = useDashboardModel();
 
   if (!stats || !systemMetrics) {
     return (
@@ -401,25 +410,25 @@ export default function DashboardPage() {
         {/* 图表区域 */}
         <Col span={14}>
           <Card title={'📈 销售趋势分析'}>
-            <DemoBarSale />
+            <DemoBarSale data={salesData} />
           </Card>
         </Col>
 
         <Col span={10}>
           <Card title={'🏆 门店销售排行'}>
-            <Rank />
+            <Rank data={rankData} />
           </Card>
         </Col>
 
         <Col span={14}>
           <Card title={'🔥 实时热门搜索'}>
-            <Trend />
+            <Trend data={hotSearchData} />
           </Card>
         </Col>
 
         <Col span={10}>
           <Card title={'📊 销售类别分布'}>
-            <DemoPie />
+            <DemoPie data={categoryData} />
           </Card>
         </Col>
       </Row>

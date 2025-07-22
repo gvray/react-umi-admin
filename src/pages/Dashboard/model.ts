@@ -96,27 +96,44 @@ export const useDashboardModel = () => {
     // 初始加载
     loadAllData();
 
-    // 定时更新实时数据
-    const interval = setInterval(async () => {
-      try {
-        const [statsRes, systemRes, realtimeRes] = await Promise.all([
-          getDashboardStats(),
-          getSystemMetrics(),
-          getRealtimeData(),
-        ]);
+    let isActive = true;
 
-        setState((prev) => ({
-          ...prev,
-          stats: statsRes.data,
-          systemMetrics: systemRes.data,
-          realtimeData: realtimeRes.data,
-        }));
-      } catch (error) {
-        console.error('实时数据更新失败:', error);
+    // 使用while循环 + setTimeout进行定时更新
+    const updateLoop = async () => {
+      while (isActive) {
+        await new Promise((resolve) => {
+          setTimeout(() => resolve(undefined), 30000);
+        }); // 等待30秒
+
+        if (!isActive) break; // 检查是否还需要继续
+
+        try {
+          const [statsRes, systemRes, realtimeRes] = await Promise.all([
+            getDashboardStats(),
+            getSystemMetrics(),
+            getRealtimeData(),
+          ]);
+
+          if (isActive) {
+            // 再次检查，避免组件卸载后还在更新状态
+            setState((prev) => ({
+              ...prev,
+              stats: statsRes.data,
+              systemMetrics: systemRes.data,
+              realtimeData: realtimeRes.data,
+            }));
+          }
+        } catch (error) {
+          console.error('实时数据更新失败:', error);
+        }
       }
-    }, 30000); // 每30秒更新一次
+    };
 
-    return () => clearInterval(interval);
+    updateLoop();
+
+    return () => {
+      isActive = false; // 停止循环
+    };
   }, [loadAllData]);
 
   return {

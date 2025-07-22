@@ -7,14 +7,13 @@ const RankList = styled.ul`
   height: 100%;
   margin: 0;
   padding: 0;
-  padding-top: 10px;
 `;
 
 const RankItem = styled.li`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 51px;
+  height: 44px;
   list-style: none;
   font-size: 13px;
   cursor: pointer;
@@ -41,23 +40,25 @@ const RankListItem = styled(RankItem)<{ $special: number }>`
   }
 `;
 
-const data = [
-  { shop: '北京市朝阳区三里屯路', sale: 9899 },
-  { shop: '上海市浦东新区陆家嘴', sale: 8200 },
-  { shop: '广州市天河区珠江新城', sale: 7200 },
-  { shop: '深圳市福田区会展中心', sale: 6300 },
-  { shop: '成都市武侯区锦里古街', sale: 5200 },
-];
+interface RankDataItem {
+  name: string;
+  value: number;
+  percentage: number;
+}
 
-const Rank = () => {
+interface RankProps {
+  data?: RankDataItem[];
+}
+
+const Rank: React.FC<RankProps> = ({ data = [] }) => {
   return (
     <RankWrapper>
       <RankList>
         {data &&
           data.map((item, index) => (
             <RankListItem key={index} $special={index} data-index={index + 1}>
-              <a>{item.shop}</a>
-              <span>{item.sale}</span>
+              <a>{item.name}</a>
+              <span>{item.value}</span>
             </RankListItem>
           ))}
       </RankList>

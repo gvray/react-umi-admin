@@ -11,6 +11,17 @@ interface DataType {
   monthGrowth: number;
 }
 
+interface HotSearchItem {
+  keyword: string;
+  count: number;
+  trend: 'up' | 'down';
+  change: number;
+}
+
+interface TrendProps {
+  data?: HotSearchItem[];
+}
+
 const columns: TableColumnsType<DataType> = [
   {
     title: '排名',
@@ -57,44 +68,6 @@ const columns: TableColumnsType<DataType> = [
   },
 ];
 
-const data: DataType[] = [
-  {
-    key: '1',
-    rank: 1,
-    keyword: '手机',
-    users: 320,
-    monthGrowth: 10,
-  },
-  {
-    key: '2',
-    rank: 2,
-    keyword: '笔记本电脑',
-    users: 280,
-    monthGrowth: 8,
-  },
-  {
-    key: '3',
-    rank: 3,
-    keyword: '平板电脑',
-    users: 200,
-    monthGrowth: 5,
-  },
-  {
-    key: '4',
-    rank: 4,
-    keyword: '智能手表',
-    users: 180,
-    monthGrowth: 3,
-  },
-  {
-    key: '5',
-    rank: 5,
-    keyword: '智能家居设备',
-    users: 150,
-    monthGrowth: 2,
-  },
-];
-
 const onChange: TableProps<DataType>['onChange'] = (
   pagination,
   filters,
@@ -105,19 +78,30 @@ const onChange: TableProps<DataType>['onChange'] = (
 };
 
 const TrendWrapper = styled.div`
-  height: 357px;
+  height: 300px;
 `;
 
-const Trend: React.FC = () => (
-  <TrendWrapper>
-    <Table
-      columns={columns}
-      dataSource={data}
-      onChange={onChange}
-      pagination={false}
-      scroll={{ y: 300 }}
-    />
-  </TrendWrapper>
-);
+const Trend: React.FC<TrendProps> = ({ data = [] }) => {
+  // 将传入的数据转换为表格需要的格式
+  const tableData: DataType[] = data.map((item, index) => ({
+    key: String(index + 1),
+    rank: index + 1,
+    keyword: item.keyword,
+    users: item.count,
+    monthGrowth: item.trend === 'up' ? item.change : -item.change,
+  }));
+
+  return (
+    <TrendWrapper>
+      <Table
+        columns={columns}
+        dataSource={tableData}
+        onChange={onChange}
+        pagination={false}
+        scroll={{ y: 230 }}
+      />
+    </TrendWrapper>
+  );
+};
 
 export default Trend;

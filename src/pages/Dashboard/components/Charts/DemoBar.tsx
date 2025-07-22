@@ -1,11 +1,17 @@
-import Chart, { EChartsOption } from '@/components/Charts/Chart';
+import Chart, { EChartsOption } from '@/components/Charts';
 import { styled } from 'umi';
 
 const DemoWrapper = styled.div`
   height: 50px;
 `;
 
-const DemoBar = () => {
+interface DemoBarProps {
+  data?: number[];
+}
+
+const DemoBar: React.FC<DemoBarProps> = ({
+  data = [120, 200, 150, 80, 70, 110, 130],
+}) => {
   const options: EChartsOption = {
     xAxis: {
       type: 'category',
@@ -23,7 +29,7 @@ const DemoBar = () => {
     },
     series: [
       {
-        data: [120, 200, 150, 80, 70, 110, 130],
+        data: data,
         type: 'bar',
         showBackground: true,
         backgroundStyle: {

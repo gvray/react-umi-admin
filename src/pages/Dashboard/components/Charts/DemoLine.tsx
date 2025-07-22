@@ -1,11 +1,17 @@
-import Chart, { EChartsOption } from '@/components/Charts/Chart';
+import Chart, { EChartsOption } from '@/components/Charts';
 import { styled } from 'umi';
 
 const DemoWrapper = styled.div`
   height: 50px;
 `;
 
-const DemoLine = () => {
+interface DemoLineProps {
+  data?: number[];
+}
+
+const DemoLine: React.FC<DemoLineProps> = ({
+  data = [10, 13, 16, 10, 9, 18, 20, 18, 22],
+}) => {
   const options: EChartsOption = {
     xAxis: {
       type: 'category',
@@ -24,7 +30,7 @@ const DemoLine = () => {
     },
     series: [
       {
-        data: [10, 13, 16, 10, 9, 18, 20, 18, 22],
+        data: data,
         type: 'line',
         smooth: true,
         symbol: 'none',

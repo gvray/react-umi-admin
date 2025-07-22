@@ -1,11 +1,28 @@
-import Chart, { EChartsOption } from '@/components/Charts/Chart';
+import Chart from '@/components/Charts';
+import { CategoryData } from '@/services/dashboard';
+import { EChartsOption } from 'echarts';
+import React from 'react';
 import { styled } from 'umi';
 
 const DemoWrapper = styled.div`
-  height: 357px;
+  height: 300px;
 `;
 
-const DemoPie = () => {
+interface DemoPieProps {
+  data?: CategoryData[];
+}
+
+const DemoPie: React.FC<DemoPieProps> = ({ data = [] }) => {
+  // 默认数据
+  const defaultData: CategoryData[] = [
+    { name: '手机', value: 1048 },
+    { name: '笔记本电脑', value: 735 },
+    { name: '平板电脑', value: 580 },
+    { name: '智能手表', value: 484 },
+    { name: '智能家居设备', value: 300 },
+  ];
+
+  const chartData = data.length > 0 ? data : defaultData;
   const options: EChartsOption = {
     tooltip: {
       trigger: 'item',
@@ -45,13 +62,7 @@ const DemoPie = () => {
           show: false,
         },
         center: ['50%', '40%'], // 调整饼图位置，将位置向上移动一点
-        data: [
-          { value: 1048, name: '手机' },
-          { value: 735, name: '笔记本电脑' },
-          { value: 580, name: '平板电脑' },
-          { value: 484, name: '智能手表' },
-          { value: 300, name: '智能家居设备' },
-        ],
+        data: chartData,
       },
     ],
   };
