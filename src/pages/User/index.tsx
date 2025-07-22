@@ -12,7 +12,6 @@ import { ColumnProps } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { useRef } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
-import styles from './index.less';
 
 interface DataType {
   createBy: string;
@@ -160,7 +159,7 @@ const UserPage = () => {
   ];
 
   return (
-    <PageContainer overlayClassName={styles.page}>
+    <PageContainer>
       <TablePro
         rowKey={'userId'}
         toolbarRender={() => (

@@ -1,231 +1,227 @@
 .profileContainer {
-  padding: 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-}
+  .profileTabs {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    min-height: 600px;
 
-.profileTabs {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  min-height: 600px;
+    :global(.ant-tabs-tab) {
+      padding: 16px 24px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
 
-  :global(.ant-tabs-tab) {
-    padding: 16px 24px;
-    margin-bottom: 8px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
+      &:hover {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        transform: translateX(4px);
+      }
+    }
 
-    &:hover {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      transform: translateX(4px);
+    :global(.ant-tabs-tab-active) {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+
+      .anticon {
+        color: white;
+      }
+    }
+
+    :global(.ant-tabs-content-holder) {
+      padding: 24px;
     }
   }
 
-  :global(.ant-tabs-tab-active) {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+  .profileHeader {
+    margin-bottom: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  }
 
-    .anticon {
+  .avatarContainer {
+    position: relative;
+    display: inline-block;
+  }
+
+  .userAvatar {
+    border: 4px solid #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .avatarButton {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .userName {
+    margin-bottom: 8px !important;
+
+    .userTag {
+      margin-left: 12px;
+      border-radius: 12px;
+    }
+
+    .levelTag {
+      margin-left: 8px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+      border: none;
+      color: #8b4513;
+    }
+  }
+
+  .userBio {
+    font-size: 14px;
+    margin-bottom: 16px !important;
+  }
+
+  .userDesc {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .statsRow {
+    margin-bottom: 24px;
+  }
+
+  .statCard {
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .statIcon {
+      font-size: 24px;
+    }
+  }
+
+  .activityCard,
+  .achievementCard {
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px;
+  }
+
+  .timeText {
+    color: #999;
+    font-size: 12px;
+    margin: 0;
+  }
+
+  .badge {
+    text-align: center;
+    padding: 16px 8px;
+    border-radius: 8px;
+    background: #fafafa;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: #f0f0f0;
+      transform: scale(1.05);
+    }
+
+    .badgeIcon {
+      font-size: 24px;
+      display: block;
+      margin-bottom: 8px;
+    }
+  }
+
+  .infoCard,
+  .securityCard,
+  .securityStatus,
+  .notificationCard,
+  .preferenceCard {
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .quickActions {
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+
+    .quickActionItem {
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-radius: 8px;
+      padding: 8px;
+
+      &:hover {
+        background: #f5f5f5;
+      }
+    }
+
+    .actionIcon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: white;
     }
   }
 
-  :global(.ant-tabs-content-holder) {
-    padding: 24px;
-  }
-}
+  .menuCard {
+    height: fit-content;
 
-.profileHeader {
-  margin-bottom: 24px;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-}
-
-.avatarContainer {
-  position: relative;
-  display: inline-block;
-}
-
-.userAvatar {
-  border: 4px solid #fff;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.avatarButton {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.userName {
-  margin-bottom: 8px !important;
-
-  .userTag {
-    margin-left: 12px;
-    border-radius: 12px;
+    .ant-card-body {
+      padding: 0;
+    }
   }
 
-  .levelTag {
-    margin-left: 8px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  .profileMenu {
     border: none;
-    color: #8b4513;
-  }
-}
 
-.userBio {
-  font-size: 14px;
-  margin-bottom: 16px !important;
-}
+    .ant-menu-item {
+      margin: 0;
+      border-radius: 0;
 
-.userDesc {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-}
+      &:hover {
+        background-color: #f5f5f5;
+      }
 
-.statsRow {
-  margin-bottom: 24px;
-}
-
-.statCard {
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  }
-
-  .statIcon {
-    font-size: 24px;
-  }
-}
-
-.activityCard,
-.achievementCard {
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  margin-bottom: 16px;
-}
-
-.timeText {
-  color: #999;
-  font-size: 12px;
-  margin: 0;
-}
-
-.badge {
-  text-align: center;
-  padding: 16px 8px;
-  border-radius: 8px;
-  background: #fafafa;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: #f0f0f0;
-    transform: scale(1.05);
-  }
-
-  .badgeIcon {
-    font-size: 24px;
-    display: block;
-    margin-bottom: 8px;
-  }
-}
-
-.infoCard,
-.securityCard,
-.securityStatus,
-.notificationCard,
-.preferenceCard {
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-}
-
-.quickActions {
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-
-  .quickActionItem {
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-radius: 8px;
-    padding: 8px;
-
-    &:hover {
-      background: #f5f5f5;
+      &.ant-menu-item-selected {
+        background-color: #e6f7ff;
+        border-right: 3px solid #1890ff;
+      }
     }
   }
 
-  .actionIcon {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-  }
-}
-
-.menuCard {
-  height: fit-content;
-
-  .ant-card-body {
-    padding: 0;
-  }
-}
-
-.profileMenu {
-  border: none;
-
-  .ant-menu-item {
-    margin: 0;
-    border-radius: 0;
-
-    &:hover {
-      background-color: #f5f5f5;
-    }
-
-    &.ant-menu-item-selected {
-      background-color: #e6f7ff;
-      border-right: 3px solid #1890ff;
-    }
-  }
-}
-
-.contentArea {
-  min-height: 600px;
-}
-
-// 响应式设计
-@media (max-width: 768px) {
-  .profileContainer {
-    padding: 16px;
+  .contentArea {
+    min-height: 600px;
   }
 
-  .profileTabs {
-    :global(.ant-tabs-tab) {
-      padding: 12px 16px;
-    }
-
-    :global(.ant-tabs-content-holder) {
+  // 响应式设计
+  @media (max-width: 768px) {
+    .profileContainer {
       padding: 16px;
     }
-  }
 
-  .statsRow {
-    .statCard {
-      margin-bottom: 16px;
+    .profileTabs {
+      :global(.ant-tabs-tab) {
+        padding: 12px 16px;
+      }
+
+      :global(.ant-tabs-content-holder) {
+        padding: 16px;
+      }
+    }
+
+    .statsRow {
+      .statCard {
+        margin-bottom: 16px;
+      }
     }
   }
 }

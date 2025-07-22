@@ -1,3 +1,4 @@
+import { PageContainer } from '@/components';
 import { logger } from '@/utils';
 import {
   BellOutlined,
@@ -44,10 +45,15 @@ import {
   message,
 } from 'antd';
 import { useState } from 'react';
-import { useModel } from 'umi';
+import { styled, useModel } from 'umi';
 import styles from './index.less';
 
 const { Title, Text, Paragraph } = Typography;
+
+const PageWrapper = styled(PageContainer)`
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  min-height: 100vh;
+`;
 
 export default function ProfilePage() {
   const { initialState } = useModel('@@initialState');
@@ -796,7 +802,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className={styles.profileContainer}>
+    <PageWrapper className={styles.profileContainer}>
       <Row gutter={24}>
         <Col span={6}>
           <Card className={styles.menuCard}>
@@ -813,6 +819,6 @@ export default function ProfilePage() {
           <div className={styles.contentArea}>{renderContent()}</div>
         </Col>
       </Row>
-    </div>
+    </PageWrapper>
   );
 }
