@@ -102,8 +102,8 @@ export const useDashboardModel = () => {
     const updateLoop = async () => {
       while (isActive) {
         await new Promise((resolve) => {
-          setTimeout(() => resolve(undefined), 30000);
-        }); // 等待30秒
+          setTimeout(() => resolve(undefined), 60000);
+        }); // 等待60秒
 
         if (!isActive) break; // 检查是否还需要继续
 

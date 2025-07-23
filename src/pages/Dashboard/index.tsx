@@ -83,7 +83,7 @@ const TechCard = styled.div`
   margin-bottom: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   transition: all 0.3s ease;
-  height: 160px;
+  height: 148px;
   display: flex;
   flex-direction: column;
 

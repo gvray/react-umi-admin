@@ -36,7 +36,7 @@ const CardHead = styled.div`
 `;
 
 const CardBody = styled.div`
-  padding: 0 20px;
+  padding: 0 20px 20px 20px;
   min-height: 50px;
   width: 100%;
 `;

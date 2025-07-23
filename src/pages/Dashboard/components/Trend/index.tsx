@@ -98,7 +98,7 @@ const Trend: React.FC<TrendProps> = ({ data = [] }) => {
         dataSource={tableData}
         onChange={onChange}
         pagination={false}
-        scroll={{ y: 230 }}
+        scroll={{ y: 248 }}
       />
     </TrendWrapper>
   );

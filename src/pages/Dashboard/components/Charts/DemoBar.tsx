@@ -2,6 +2,7 @@ import Chart, { EChartsOption } from '@/components/Charts';
 import { styled } from 'umi';
 
 const DemoWrapper = styled.div`
+  width: 100%;
   height: 50px;
 `;
 

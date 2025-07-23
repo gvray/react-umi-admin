@@ -710,7 +710,9 @@ export default function ProfilePage() {
                   description={item.desc}
                 />
                 <Switch
-                  checked={notifications[item.key]}
+                  checked={
+                    notifications[item.key as keyof typeof notifications]
+                  }
                   onChange={(checked) =>
                     setNotifications({ ...notifications, [item.key]: checked })
                   }
