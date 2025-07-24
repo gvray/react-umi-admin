@@ -96,7 +96,7 @@ export const errorConfig: RequestConfig = {
       const { headers = {}, url, skipAuthHandler, ...restConfig } = config;
       logger.info(`API请求路径：${url}`);
       if (!skipAuthHandler) {
-        headers.Authorization = `Bearer ${storetify(TOKEN_KEY)}`;
+        headers.Authorization = `Bearer ${storetify(__APP_API_TOKEN_KEY__)}`;
       }
       return { url, ...restConfig, headers: { ...headers } };
     },

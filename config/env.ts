@@ -1,13 +1,14 @@
 // 配置多环境下的环境变量
+// 可以根据环境变量来配置不同的环境变量
 const getEnv = () => {
-  switch (process.env.UMI_ENV) {
+  switch (process.env.APP_ENV) {
     case 'staging':
       return {
-        BASE_URL: process.env.STAGING_BASE_URL,
+        __APP_OTHER__: 'URL_ADDRESS.xxx.com',
       };
-    case 'pd':
+    case 'prod':
       return {
-        BASE_URL: process.env.PD_BASE_URL,
+        __APP_OTHER__: 'URL_ADDRESS.xxx.com',
       };
   }
 };

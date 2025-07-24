@@ -1,5 +1,8 @@
 import { defineConfig } from 'umi';
 
 export default defineConfig({
-  outputPath: 'dist/staging',
+  // https://umijs.org/docs/api/config#codesplitting
+  codeSplitting: {
+    jsStrategy: 'granularChunks',
+  },
 });

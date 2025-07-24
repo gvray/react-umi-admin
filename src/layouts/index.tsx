@@ -56,7 +56,7 @@ export default function BaseLayout() {
       const msg = await logout();
       message.success(msg.message);
       // 退出登陆 清空状态
-      storetify.remove(TOKEN_KEY);
+      storetify.remove(__APP_API_TOKEN_KEY__);
       flushSync(() => {
         setInitialState((s) => ({
           ...s,

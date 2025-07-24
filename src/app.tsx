@@ -18,7 +18,7 @@ export async function getInitialState() {
       return msg.data;
     } catch (error) {
       // 清除登录状态并跳转登录页
-      storetify.remove(TOKEN_KEY);
+      storetify.remove(__APP_API_TOKEN_KEY__);
       history.push(loginPath);
     }
   };
@@ -43,7 +43,7 @@ export async function getInitialState() {
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request = {
-  timeout: parseInt(TIMEOUT),
-  baseURL: BASE_URL,
+  timeout: __APP_API_TIMEOUT__,
+  baseURL: __APP_API_URL__,
   ...errorConfig,
 };

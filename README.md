@@ -15,7 +15,7 @@
 
 ### ✨ 特性
 
-- [x] 支持多环境配置 [#33](https://github.com/gvray/react-umi-admin/issues/33) [#15](https://github.com/gvray/react-umi-admin/issues/15)
+- [x] 约定式多环境构建和变量配置 [#33](https://github.com/gvray/react-umi-admin/issues/33) [#15](https://github.com/gvray/react-umi-admin/issues/15)
 - [ ] 主题定制和管理 [#24](https://github.com/gvray/react-umi-admin/issues/24)
 - [ ] 自定义布局 Layout 和菜单
 - [ ] 用户登录鉴权

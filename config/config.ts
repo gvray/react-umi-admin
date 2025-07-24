@@ -3,6 +3,8 @@ import define from './define';
 import plugins from './plugins';
 import routes from './routes';
 
+const outputDir = `dist/${process.env.APP_ENV || 'dev'}`;
+
 export default defineConfig({
   define,
   /**
@@ -87,6 +89,8 @@ export default defineConfig({
     dataField: 'data',
   },
   styledComponents: {},
+  publicPath: process.env.APP_CDN_URL || '/',
+  outputPath: outputDir,
   // end plugins
   npmClient: 'pnpm',
 });
