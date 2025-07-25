@@ -2,39 +2,39 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
-interface SettingsStore {
-  language: 'zh-CN' | 'en-US';
+export type Language = 'zh-CN' | 'en-US';
+
+export interface LayoutSettings {
   showBreadcrumb: boolean;
   showFooter: boolean;
   fixedHeader: boolean;
-  setLanguage: (language: 'zh-CN' | 'en-US') => void;
-  setShowBreadcrumb: (show: boolean) => void;
-  setShowFooter: (show: boolean) => void;
-  setFixedHeader: (fixed: boolean) => void;
+  sidebarCollapsed: boolean;
+}
+
+export interface SettingsStore {
+  language: Language;
+  layout: LayoutSettings;
+  setLanguage: (language: Language) => void;
+  setLayout: (layout: Partial<LayoutSettings>) => void;
 }
 
 export const useSettingsStore = create(
   persist(
     immer<SettingsStore>((set) => ({
       language: 'zh-CN',
-      showBreadcrumb: true,
-      showFooter: true,
-      fixedHeader: true,
+      layout: {
+        showBreadcrumb: true,
+        showFooter: true,
+        fixedHeader: false,
+        sidebarCollapsed: true,
+      },
       setLanguage: (language) =>
         set((state) => {
           state.language = language;
         }),
-      setShowBreadcrumb: (show) =>
+      setLayout: (layout) =>
         set((state) => {
-          state.showBreadcrumb = show;
-        }),
-      setShowFooter: (show) =>
-        set((state) => {
-          state.showFooter = show;
-        }),
-      setFixedHeader: (fixed) =>
-        set((state) => {
-          state.fixedHeader = fixed;
+          Object.assign(state.layout, layout);
         }),
     })),
     {

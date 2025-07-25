@@ -1,18 +1,12 @@
-import { themeLabels, themes } from '@/themeConfig';
+import { PRIMARY_COLOR_LABELS } from '@/constants';
+import { useThemeStore } from '@/stores';
 import { logger } from '@/utils';
 import React, { useState } from 'react';
-import store from 'storetify';
 import { styled } from 'umi';
 import ThemeColor from './ThemeColor';
 
 interface ThemeSettingProps {
-  colorList?: {
-    key: string;
-    color: string;
-    title?: string;
-  }[];
-  themeKey?: string;
-  onChange?: (themeKey: string) => void;
+  onChange?: (theme: { label: string; color: string }) => void;
 }
 
 const ThemeSettingWrapper = styled.div`
@@ -39,15 +33,13 @@ const ThemeSettingWrapper = styled.div`
     z-index: 9;
   }
 `;
-const ThemeSetting: React.FC<ThemeSettingProps> = ({
-  themeKey = 'default',
-  onChange,
-}) => {
+const ThemeSetting: React.FC<ThemeSettingProps> = ({ onChange }) => {
+  const { token, setToken } = useThemeStore();
   const [isVisible, setIsVisible] = useState(false);
-  const themeSelectHandle = (theme: { key: string; color: string }) => {
-    logger.info(`主题切换为：${themeLabels[theme.key]}`);
-    onChange?.(theme.key);
-    store('theme', theme.key);
+  const themeSelectHandle = (theme: { label: string; color: string }) => {
+    logger.info(`主题切换为：${theme.label} ${theme.color}`);
+    setToken({ colorPrimary: theme.color });
+    onChange?.(theme);
   };
 
   return (
@@ -63,14 +55,15 @@ const ThemeSetting: React.FC<ThemeSettingProps> = ({
       {isVisible && (
         <div className="box">
           <ThemeColor
-            value={themeKey}
-            colorList={Object.keys(themes).map((themeKey) => {
-              return {
-                key: themeKey,
-                color: themes[themeKey].token?.colorPrimary as string,
-                title: themeLabels[themeKey],
-              };
-            })}
+            value={token.colorPrimary}
+            colorList={Object.entries(PRIMARY_COLOR_LABELS).map(
+              ([color, label]) => {
+                return {
+                  color,
+                  label,
+                };
+              },
+            )}
             onChange={themeSelectHandle}
           />
         </div>

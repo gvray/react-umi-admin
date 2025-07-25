@@ -1,5 +1,6 @@
+import { useAppTheme } from '@/hooks';
 import { logout } from '@/services/login';
-import { themes } from '@/themeConfig';
+import { useThemeStore } from '@/stores';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import {
   Avatar,
@@ -12,7 +13,7 @@ import {
   message,
   theme,
 } from 'antd';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { flushSync } from 'react-dom';
 import storetify from 'storetify';
 import { Outlet, SelectLang, history, styled, useModel } from 'umi';
@@ -42,14 +43,13 @@ const HeaderAction = styled.div`
 `;
 
 export default function BaseLayout() {
-  const [currentTheme, setCurrentTheme] = useState<string>(() => {
-    return (storetify.get('theme') as string) || 'techBlue';
-  });
   const { initialState, setInitialState } = useModel('@@initialState');
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+
+  const { token } = useThemeStore();
 
   const handleLogout = async () => {
     try {
@@ -78,9 +78,7 @@ export default function BaseLayout() {
     }
   };
 
-  const handleThemeChange = useCallback((themeKey: string) => {
-    setCurrentTheme(themeKey);
-  }, []);
+  const { themeAlgorithm } = useAppTheme();
 
   const items: MenuProps['items'] = [
     {
@@ -94,7 +92,12 @@ export default function BaseLayout() {
   ];
 
   return (
-    <ConfigProvider theme={themes[currentTheme]}>
+    <ConfigProvider
+      theme={{
+        algorithm: themeAlgorithm,
+        token,
+      }}
+    >
       <Layout>
         <SideMenu collapsed={collapsed} />
         <Layout>
@@ -112,10 +115,7 @@ export default function BaseLayout() {
               />
               <HeaderRight>
                 <Space size={2} wrap>
-                  <ThemeSetting
-                    onChange={handleThemeChange}
-                    themeKey={currentTheme}
-                  />
+                  <ThemeSetting />
                   <SelectLang />
                   <Dropdown menu={{ items, onClick: handleDropdownMenuClick }}>
                     <HeaderAction>

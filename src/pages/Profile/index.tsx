@@ -1,4 +1,5 @@
 import { PageContainer } from '@/components';
+
 import { logger } from '@/utils';
 import {
   BellOutlined,
@@ -46,6 +47,7 @@ import {
 } from 'antd';
 import { useState } from 'react';
 import { styled, useModel } from 'umi';
+import SystemSettings from './SystemSettings';
 import styles from './index.less';
 
 const { Title, Text, Paragraph } = Typography;
@@ -60,11 +62,6 @@ export default function ProfilePage() {
   const [form] = Form.useForm();
   const [editing, setEditing] = useState(false);
   const [activeKey, setActiveKey] = useState('overview');
-  const [notifications, setNotifications] = useState({
-    email: true,
-    sms: false,
-    push: true,
-  });
 
   const userInfo = initialState?.currentUser.user;
 
@@ -667,90 +664,6 @@ export default function ProfilePage() {
                       }}
                     />
                   }
-                  title={item.title}
-                  description={item.desc}
-                />
-                {item.extra}
-              </List.Item>
-            )}
-          />
-        </Card>
-      </Col>
-    </Row>
-  );
-
-  // 系统设置组件
-  const SystemSettings = () => (
-    <Row gutter={16}>
-      <Col span={12}>
-        <Card title="通知设置" className={styles.notificationCard}>
-          <List
-            dataSource={[
-              {
-                title: '邮件通知',
-                desc: '接收系统邮件通知',
-                key: 'email',
-              },
-              {
-                title: '短信通知',
-                desc: '接收重要短信提醒',
-                key: 'sms',
-              },
-              {
-                title: '推送通知',
-                desc: '接收浏览器推送',
-                key: 'push',
-              },
-            ]}
-            renderItem={(item) => (
-              <List.Item>
-                <List.Item.Meta
-                  avatar={<BellOutlined />}
-                  title={item.title}
-                  description={item.desc}
-                />
-                <Switch
-                  checked={
-                    notifications[item.key as keyof typeof notifications]
-                  }
-                  onChange={(checked) =>
-                    setNotifications({ ...notifications, [item.key]: checked })
-                  }
-                />
-              </List.Item>
-            )}
-          />
-        </Card>
-      </Col>
-      <Col span={12}>
-        <Card title="偏好设置" className={styles.preferenceCard}>
-          <List
-            dataSource={[
-              {
-                title: '深色模式',
-                desc: '使用深色主题',
-                extra: <Switch />,
-              },
-              {
-                title: '自动保存',
-                desc: '自动保存表单数据',
-                extra: <Switch defaultChecked />,
-              },
-              {
-                title: '数据统计',
-                desc: '允许收集使用数据',
-                extra: <Switch defaultChecked />,
-              },
-              {
-                title: '快捷键',
-                desc: '启用键盘快捷键',
-                extra: <Switch defaultChecked />,
-              },
-            ]}
-            renderItem={(item) => (
-              <List.Item>
-                <List.Item.Meta
-                  avatar={<SettingOutlined />}
                   title={item.title}
                   description={item.desc}
                 />

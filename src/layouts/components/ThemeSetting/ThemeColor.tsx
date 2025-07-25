@@ -30,12 +30,11 @@ const Tag = (props: TagProps) => {
 
 interface ThemeColorProps {
   colorList: {
-    key: string;
     color: string;
-    title?: string;
+    label: string;
   }[];
   value: string;
-  onChange?: (theme: { key: string; color: string }) => void;
+  onChange?: (theme: { label: string; color: string }) => void;
 }
 
 const ThemeColors = styled.div`
@@ -49,13 +48,13 @@ const ThemeColor: React.FC<ThemeColorProps> = ({
 }) => {
   return (
     <ThemeColors>
-      {colorList.map(({ key, color, title }) => {
+      {colorList.map(({ color, label }) => {
         return (
-          <Tooltip key={key} title={title}>
+          <Tooltip key={color} title={label}>
             <Tag
-              check={value === key}
+              check={value === color}
               color={color}
-              onClick={() => onChange?.({ key, color })}
+              onClick={() => onChange?.({ color, label })}
             />
           </Tooltip>
         );

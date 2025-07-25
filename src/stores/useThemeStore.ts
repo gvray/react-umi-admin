@@ -1,34 +1,34 @@
+import { PrimaryColor, ThemeMode } from '@/constants';
+import { AliasToken } from 'antd/es/theme/internal';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 
 interface ThemeStore {
-  theme: 'light' | 'dark';
-  primaryColor: string;
-  sidebarCollapsed: boolean;
-  setTheme: (theme: 'light' | 'dark') => void;
-  setPrimaryColor: (color: string) => void;
-  setSidebarCollapsed: (collapsed: boolean) => void;
+  themeMode: ThemeMode;
+  token: {
+    colorPrimary: PrimaryColor;
+  };
+  setThemeMode: (theme: 'light' | 'dark') => void;
+  setToken: (token: Partial<AliasToken>) => void;
 }
 
 export const useThemeStore = create(
   persist(
     immer<ThemeStore>((set) => ({
-      theme: 'light',
-      primaryColor: '#1890ff',
-      sidebarCollapsed: false,
-      setTheme: (theme) =>
+      themeMode: 'light',
+      token: {
+        colorPrimary: '#1677ff',
+      },
+      setThemeMode: (mode) =>
         set((state) => {
-          state.theme = theme;
+          state.themeMode = mode;
         }),
-      setPrimaryColor: (color) =>
+      setToken(token) {
         set((state) => {
-          state.primaryColor = color;
-        }),
-      setSidebarCollapsed: (collapsed) =>
-        set((state) => {
-          state.sidebarCollapsed = collapsed;
-        }),
+          Object.assign(state.token, token);
+        });
+      },
     })),
     {
       name: 'theme-storage',
