@@ -88,7 +88,7 @@ npm start
 
 ## 登陆页面
 
-登陆路径：/login 登陆账号：admin 登陆密码：123456
+登陆路径：/login 登陆账号：admin@example/admin/13800138000 登陆密码：admin123
 
 ![login](./src/assets/snapshoot/screencapture-login.png)
 

@@ -4,8 +4,7 @@ import { useModel } from 'umi';
 const useAuth = () => {
   const { initialState } = useModel('@@initialState');
   // 判断是否是登陆状态
-  const isLogin =
-    !!storetify(__APP_API_TOKEN_KEY__) && !!initialState?.currentUser.user;
+  const isLogin = !!storetify(__APP_API_TOKEN_KEY__) && !!initialState?.profile;
 
   return { isLogin };
 };

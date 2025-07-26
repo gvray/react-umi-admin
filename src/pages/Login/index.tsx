@@ -1,4 +1,4 @@
-import { login } from '@/services/login';
+import { login } from '@/services/auth';
 import { decrypt, encrypt } from '@/utils';
 import {
   AlipayCircleFilled,
@@ -32,16 +32,15 @@ const LoginPage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const fetchUserInfo = async () => {
-    const userInfo = await initialState?.fetchUserInfo?.();
-    console.log(userInfo);
-    if (userInfo) {
+  const fetchProfile = async () => {
+    const profile = await initialState?.fetchProfile?.();
+    if (profile) {
       flushSync(() => {
         setInitialState(
           (s) =>
             ({
               ...s,
-              currentUser: userInfo,
+              profile: profile,
             } as any),
         );
       });
@@ -51,11 +50,11 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (values: any) => {
     setLogging(true);
     if (values.rememberMe) {
-      const { username, password, rememberMe } = values;
+      const { account, password, rememberMe } = values;
       storetify(
         'rememberMe',
         {
-          username,
+          account,
           password: encrypt(password),
           rememberMe,
         },
@@ -65,9 +64,9 @@ const LoginPage: React.FC = () => {
       storetify('rememberMe', undefined);
     }
     try {
-      const res = await login({ ...values });
-      storetify(__APP_API_TOKEN_KEY__, res.data.accessToken);
-      await fetchUserInfo();
+      const res = await login({ ...values, rememberMe: undefined });
+      storetify(__APP_API_TOKEN_KEY__, res.data.access_token);
+      await fetchProfile();
       message.success(res.message);
       navigate('/');
     } catch (error) {
@@ -76,11 +75,11 @@ const LoginPage: React.FC = () => {
     }
   };
   const getRemember = () => {
-    const { username, password, rememberMe } =
+    const { account, password, rememberMe } =
       (storetify('rememberMe') as any) || {};
-    const values = form.getFieldsValue(['username', 'password', 'rememberMe']);
+    const values = form.getFieldsValue(['account', 'password', 'rememberMe']);
     const loginForm = {
-      username: username === undefined ? values.username : username,
+      account: account === undefined ? values.account : account,
       password: password === undefined ? values.password : decrypt(password),
       rememberMe:
         rememberMe === undefined ? values.rememberMe : Boolean(rememberMe),
@@ -107,7 +106,7 @@ const LoginPage: React.FC = () => {
             }}
           >
             <Form.Item
-              name="username"
+              name="account"
               label={<span>用户名</span>}
               colon={false}
               rules={[

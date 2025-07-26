@@ -1,6 +1,6 @@
 import { useAppTheme } from '@/hooks';
 import useThemeColor from '@/hooks/useThemeColor';
-import { logout } from '@/services/login';
+import { logout } from '@/services/auth';
 import { useThemeStore } from '@/stores';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import {
@@ -60,7 +60,7 @@ export default function BaseLayout() {
           (s) =>
             ({
               ...s,
-              currentUser: undefined,
+              profile: undefined,
             } as any),
         );
       });
@@ -123,13 +123,16 @@ export default function BaseLayout() {
                       <Avatar
                         src={
                           <img
-                            src={initialState?.currentUser.user.avatar}
+                            src={
+                              initialState?.profile?.avatar ||
+                              'https://api.dicebear.com/9.x/bottts/svg?seed=GavinRay'
+                            }
                             alt="avatar"
                           />
                         }
                       />
                       <span style={{ marginLeft: 8 }}>
-                        {initialState?.currentUser.user.name}
+                        {initialState?.profile?.name}
                       </span>
                     </HeaderAction>
                   </Dropdown>

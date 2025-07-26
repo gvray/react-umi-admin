@@ -1,4 +1,4 @@
-import { getCurrentUser } from '@/services/user';
+import { profile } from '@/services/auth';
 import storetify from 'storetify';
 import { history } from 'umi';
 import { errorConfig } from './requestErrorConfig';
@@ -11,10 +11,10 @@ const loginPath = '/login';
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
 export async function getInitialState() {
-  const fetchUserInfo = async () => {
+  const fetchProfile = async () => {
     try {
       // skipErrorHandler 跳过信息提示
-      const msg = await getCurrentUser({ skipErrorHandler: true });
+      const msg = await profile({ skipErrorHandler: true });
       return msg.data;
     } catch (error) {
       // 清除登录状态并跳转登录页
@@ -26,14 +26,14 @@ export async function getInitialState() {
   // 如果不是登录页面，执行
   const { location } = history;
   if (location.pathname !== loginPath) {
-    const currentUser = await fetchUserInfo();
+    const profile = await fetchProfile();
     return {
-      fetchUserInfo,
-      currentUser,
+      fetchProfile,
+      profile,
     };
   }
   return {
-    fetchUserInfo,
+    fetchProfile,
   };
 }
 

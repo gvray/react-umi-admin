@@ -2,7 +2,7 @@ import { request } from 'umi';
 
 /** 登录接口 POST /login */
 export async function login(body: any, options?: { [key: string]: any }) {
-  return request('/login', {
+  return request('/auth/login', {
     method: 'POST',
     data: body,
     ...(options || { skipAuthHandler: true }),
@@ -11,8 +11,16 @@ export async function login(body: any, options?: { [key: string]: any }) {
 
 /** 退出登录接口 POST /logout */
 export async function logout(options?: { [key: string]: any }) {
-  return request('/logout', {
+  return request('/auth/logout', {
     method: 'POST',
+    ...(options || {}),
+  });
+}
+
+/** 获取当前的用户 GET /currentUser */
+export async function profile(options?: { [key: string]: any }) {
+  return request('/auth/profile', {
+    method: 'GET',
     ...(options || {}),
   });
 }

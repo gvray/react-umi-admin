@@ -93,7 +93,9 @@ export default function ProfilePage() {
   const [editing, setEditing] = useState(false);
   const [activeKey, setActiveKey] = useState('overview');
 
-  const userInfo = initialState?.currentUser.user;
+  const profile = initialState?.profile;
+
+  console.log(profile);
 
   const handleSave = async (values: any) => {
     try {
@@ -125,7 +127,10 @@ export default function ProfilePage() {
               >
                 <Avatar
                   size={120}
-                  src={userInfo?.avatar}
+                  src={
+                    profile?.avatar ||
+                    'https://api.dicebear.com/9.x/bottts/svg?seed=GavinRay'
+                  }
                   icon={<UserOutlined />}
                   className={styles.userAvatar}
                 />
@@ -148,9 +153,11 @@ export default function ProfilePage() {
             <Space direction="vertical" size={12}>
               <div>
                 <Title level={2} className={styles.userName}>
-                  {userInfo?.name || '用户名'}
+                  {profile?.nickName || profile?.username || '用户名'}
                   <Tag color="blue" className={styles.userTag}>
-                    {userInfo?.role === 'admin' ? '系统管理员' : '普通用户'}
+                    {profile?.roles
+                      ?.map((item: any) => item.description)
+                      .join(', ')}
                   </Tag>
                   <Tag color="gold" className={styles.levelTag}>
                     <StarOutlined /> VIP会员
@@ -163,12 +170,12 @@ export default function ProfilePage() {
               <Row gutter={24}>
                 <Col>
                   <Text type="secondary" className={styles.userDesc}>
-                    <MailOutlined /> {userInfo?.email || 'user@example.com'}
+                    <MailOutlined /> {profile?.email || 'user@example.com'}
                   </Text>
                 </Col>
                 <Col>
                   <Text type="secondary" className={styles.userDesc}>
-                    <PhoneOutlined /> {userInfo?.phone || '未设置'}
+                    <PhoneOutlined /> {profile?.phone || '未设置'}
                   </Text>
                 </Col>
               </Row>
@@ -176,8 +183,8 @@ export default function ProfilePage() {
                 <Col>
                   <Text type="secondary" className={styles.userDesc}>
                     <CalendarOutlined /> 最后登录：
-                    {userInfo?.lastLoginTime
-                      ? new Date(userInfo.lastLoginTime).toLocaleDateString()
+                    {profile?.lastLoginTime
+                      ? new Date(profile.lastLoginTime).toLocaleDateString()
                       : '未知'}
                   </Text>
                 </Col>
@@ -199,7 +206,7 @@ export default function ProfilePage() {
           <Card className={styles.statCard}>
             <Statistic
               title="登录次数"
-              value={userInfo?.loginCount || 0}
+              value={profile?.loginCount || 0}
               prefix={<UserOutlined className={styles.statIcon} />}
               valueStyle={{ color: '#1677ff' }}
               suffix="次"
@@ -207,13 +214,13 @@ export default function ProfilePage() {
             <Progress percent={85} size="small" showInfo={false} />
           </Card>
         </Col>
-        {userInfo?.role === 'admin' ? (
+        {profile?.roles?.[0]?.name === 'admin' ? (
           <>
             <Col span={6}>
               <Card className={styles.statCard}>
                 <Statistic
                   title="管理用户"
-                  value={userInfo?.statistics?.managedUsers || 0}
+                  value={profile?.statistics?.managedUsers || 0}
                   prefix={<TeamOutlined className={styles.statIcon} />}
                   valueStyle={{ color: '#52c41a' }}
                   suffix="人"
@@ -230,7 +237,7 @@ export default function ProfilePage() {
               <Card className={styles.statCard}>
                 <Statistic
                   title="系统运行时间"
-                  value={userInfo?.statistics?.systemUptime || '0%'}
+                  value={profile?.statistics?.systemUptime || '0%'}
                   prefix={<TrophyOutlined className={styles.statIcon} />}
                   valueStyle={{ color: '#faad14' }}
                 />
@@ -246,7 +253,7 @@ export default function ProfilePage() {
               <Card className={styles.statCard}>
                 <Statistic
                   title="今日登录"
-                  value={userInfo?.statistics?.todayLogins || 0}
+                  value={profile?.statistics?.todayLogins || 0}
                   prefix={<HeartOutlined className={styles.statIcon} />}
                   valueStyle={{ color: '#f5222d' }}
                   suffix="人"
@@ -266,7 +273,7 @@ export default function ProfilePage() {
               <Card className={styles.statCard}>
                 <Statistic
                   title="团队规模"
-                  value={userInfo?.statistics?.teamSize || 0}
+                  value={profile?.statistics?.teamSize || 0}
                   prefix={<TeamOutlined className={styles.statIcon} />}
                   valueStyle={{ color: '#52c41a' }}
                   suffix="人"
@@ -283,7 +290,7 @@ export default function ProfilePage() {
               <Card className={styles.statCard}>
                 <Statistic
                   title="参与项目"
-                  value={userInfo?.statistics?.projectsInvolved || 0}
+                  value={profile?.statistics?.projectsInvolved || 0}
                   prefix={<TrophyOutlined className={styles.statIcon} />}
                   valueStyle={{ color: '#faad14' }}
                   suffix="个"
@@ -300,7 +307,7 @@ export default function ProfilePage() {
               <Card className={styles.statCard}>
                 <Statistic
                   title="完成任务"
-                  value={userInfo?.statistics?.completedTasks || 0}
+                  value={profile?.statistics?.completedTasks || 0}
                   prefix={<HeartOutlined className={styles.statIcon} />}
                   valueStyle={{ color: '#f5222d' }}
                   suffix="个"
@@ -481,11 +488,11 @@ export default function ProfilePage() {
               layout="vertical"
               onFinish={handleSave}
               initialValues={{
-                nickName: userInfo?.name || '-',
-                email: userInfo?.email || '-',
-                phone: userInfo?.phone || '-',
-                department: userInfo?.department || '-',
-                position: userInfo?.position || '-',
+                nickName: profile?.nickName || profile?.username || '-',
+                email: profile?.email || '-',
+                phone: profile?.phone || '-',
+                department: profile?.department?.name || '-',
+                position: profile?.position?.name || '-',
                 bio: '专注于系统管理和用户体验优化',
               }}
             >
@@ -531,28 +538,28 @@ export default function ProfilePage() {
           ) : (
             <Descriptions column={2} size="middle">
               <Descriptions.Item label="昵称" span={1}>
-                {userInfo?.name || '未设置'}
+                {profile?.nickName || profile?.username || '未设置'}
               </Descriptions.Item>
               <Descriptions.Item label="邮箱" span={1}>
-                {userInfo?.email || '未设置'}
+                {profile?.email || '未设置'}
               </Descriptions.Item>
               <Descriptions.Item label="手机号" span={1}>
-                {userInfo?.phone || '未设置'}
+                {profile?.phone || '未设置'}
               </Descriptions.Item>
               <Descriptions.Item label="部门" span={1}>
-                {userInfo?.department || '未设置'}
+                {profile?.department?.name || '未设置'}
               </Descriptions.Item>
               <Descriptions.Item label="职位" span={2}>
-                {userInfo?.position || '未设置'}
+                {profile?.position?.name || '未设置'}
               </Descriptions.Item>
               <Descriptions.Item label="用户状态" span={1}>
-                <Tag color={userInfo?.status === 'active' ? 'green' : 'red'}>
-                  {userInfo?.status === 'active' ? '活跃' : '非活跃'}
+                <Tag color={profile?.isActive ? 'green' : 'red'}>
+                  {profile?.isActive ? '活跃' : '非活跃'}
                 </Tag>
               </Descriptions.Item>
               <Descriptions.Item label="创建时间" span={1}>
-                {userInfo?.createdAt
-                  ? new Date(userInfo.createdAt).toLocaleDateString()
+                {profile?.createdAt
+                  ? new Date(profile.createdAt).toLocaleDateString()
                   : '未知'}
               </Descriptions.Item>
               <Descriptions.Item label="个人简介" span={2}>
