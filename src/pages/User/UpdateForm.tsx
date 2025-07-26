@@ -45,6 +45,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
 > = ({ onOk, onCancel }, ref) => {
   const [title, setTitle] = useState('未设置弹出层标题');
   const [visible, setVisible] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
 
@@ -90,7 +91,12 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           setVisible(true);
           reset();
           if (data) {
+            if (data.userId !== undefined) {
+              setIsEdit(true);
+            }
             form.setFieldsValue(data);
+          } else {
+            setIsEdit(false);
           }
         },
         hide: () => {
@@ -161,9 +167,9 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
               <Input placeholder="请输入邮箱" maxLength={50} />
             </Form.Item>
           </Col>
-          <Col span={form.getFieldValue('userId') !== undefined ? 0 : 12}>
+          <Col span={isEdit ? 0 : 12}>
             <Form.Item
-              hidden={form.getFieldValue('userId') !== undefined}
+              hidden={isEdit}
               name="userName"
               label="用户名称"
               rules={[
@@ -178,7 +184,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
               <Input placeholder="请输用户名称" maxLength={30} />
             </Form.Item>
           </Col>
-          {form.getFieldValue('userId') === undefined && (
+          {!isEdit && (
             <Col span={12}>
               <Form.Item
                 name="password"

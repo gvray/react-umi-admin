@@ -37,10 +37,13 @@ const LoginPage: React.FC = () => {
     console.log(userInfo);
     if (userInfo) {
       flushSync(() => {
-        setInitialState((s) => ({
-          ...s,
-          currentUser: userInfo,
-        }));
+        setInitialState(
+          (s) =>
+            ({
+              ...s,
+              currentUser: userInfo,
+            } as any),
+        );
       });
     }
   };
