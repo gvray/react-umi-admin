@@ -10,7 +10,6 @@ const useAppTheme = () => {
       ? 'dark'
       : 'light';
   });
-  console.log(systemTheme);
   const themeAlgorithm = useMemo(() => {
     if (themeMode === 'dark') {
       return theme.darkAlgorithm;
@@ -30,8 +29,6 @@ const useAppTheme = () => {
       stopSystemThemeWatcher();
     };
   }, [themeMode]);
-
-  console.log(themeAlgorithm);
 
   return { themeAlgorithm };
 };

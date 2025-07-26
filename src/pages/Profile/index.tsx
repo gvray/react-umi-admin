@@ -1,5 +1,7 @@
 import { PageContainer } from '@/components';
 
+import { useThemeMode } from '@/hooks';
+import useThemeColor from '@/hooks/useThemeColor';
 import { logger } from '@/utils';
 import {
   BellOutlined,
@@ -52,13 +54,41 @@ import styles from './index.less';
 
 const { Title, Text, Paragraph } = Typography;
 
-const PageWrapper = styled(PageContainer)`
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+interface PageWrapperProps {
+  $dark?: boolean;
+}
+
+const PageWrapper = styled(PageContainer)<PageWrapperProps>`
+  background: linear-gradient(
+    135deg,
+    ${({ $dark }) => ($dark ? '#1f1f1f' : '#667eea')} 0%,
+    ${({ $dark }) => ($dark ? '#141414' : '#764ba2')} 100%
+  ) !important;
   min-height: 100vh;
+`;
+const BadgeBox = styled.div<{ $bgColor: string; $hoverColor: string }>`
+  text-align: center;
+  padding: 16px 8px;
+  border-radius: 8px;
+  background: ${({ $bgColor }) => $bgColor};
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: ${({ $hoverColor }) => $hoverColor};
+    transform: scale(1.05);
+  }
+
+  .badgeIcon {
+    font-size: 24px;
+    display: block;
+    margin-bottom: 8px;
+  }
 `;
 
 export default function ProfilePage() {
   const { initialState } = useModel('@@initialState');
+  const themeMode = useThemeMode();
+  const themeColor = useThemeColor();
   const [form] = Form.useForm();
   const [editing, setEditing] = useState(false);
   const [activeKey, setActiveKey] = useState('overview');
@@ -350,58 +380,76 @@ export default function ProfilePage() {
           >
             <Row gutter={[16, 16]}>
               <Col span={8}>
-                <div className={styles.badge}>
+                <BadgeBox
+                  $bgColor={themeColor.bgContainerColor}
+                  $hoverColor={themeColor.hoverColor}
+                >
                   <TrophyOutlined
-                    className={styles.badgeIcon}
+                    className={'badgeIcon'}
                     style={{ color: '#faad14' }}
                   />
                   <Text>登录达人</Text>
-                </div>
+                </BadgeBox>
               </Col>
               <Col span={8}>
-                <div className={styles.badge}>
+                <BadgeBox
+                  $bgColor={themeColor.bgContainerColor}
+                  $hoverColor={themeColor.hoverColor}
+                >
                   <StarOutlined
-                    className={styles.badgeIcon}
+                    className={'badgeIcon'}
                     style={{ color: '#1890ff' }}
                   />
                   <Text>活跃用户</Text>
-                </div>
+                </BadgeBox>
               </Col>
               <Col span={8}>
-                <div className={styles.badge}>
+                <BadgeBox
+                  $bgColor={themeColor.bgContainerColor}
+                  $hoverColor={themeColor.hoverColor}
+                >
                   <SafetyCertificateOutlined
-                    className={styles.badgeIcon}
+                    className={'badgeIcon'}
                     style={{ color: '#52c41a' }}
                   />
                   <Text>安全专家</Text>
-                </div>
+                </BadgeBox>
               </Col>
               <Col span={8}>
-                <div className={styles.badge}>
+                <BadgeBox
+                  $bgColor={themeColor.bgContainerColor}
+                  $hoverColor={themeColor.hoverColor}
+                >
                   <TeamOutlined
-                    className={styles.badgeIcon}
+                    className={'badgeIcon'}
                     style={{ color: '#722ed1' }}
                   />
                   <Text>团队协作</Text>
-                </div>
+                </BadgeBox>
               </Col>
               <Col span={8}>
-                <div className={styles.badge}>
+                <BadgeBox
+                  $bgColor={themeColor.bgContainerColor}
+                  $hoverColor={themeColor.hoverColor}
+                >
                   <HeartOutlined
-                    className={styles.badgeIcon}
+                    className={'badgeIcon'}
                     style={{ color: '#f5222d' }}
                   />
                   <Text>贡献者</Text>
-                </div>
+                </BadgeBox>
               </Col>
               <Col span={8}>
-                <div className={styles.badge}>
+                <BadgeBox
+                  $bgColor={themeColor.bgContainerColor}
+                  $hoverColor={themeColor.hoverColor}
+                >
                   <CheckCircleOutlined
-                    className={styles.badgeIcon}
+                    className={'badgeIcon'}
                     style={{ color: '#13c2c2' }}
                   />
                   <Text>完美主义</Text>
-                </div>
+                </BadgeBox>
               </Col>
             </Row>
           </Card>
@@ -717,7 +765,10 @@ export default function ProfilePage() {
   };
 
   return (
-    <PageWrapper className={styles.profileContainer}>
+    <PageWrapper
+      className={styles.profileContainer}
+      $dark={themeMode === 'dark'}
+    >
       <Row gutter={24}>
         <Col span={6}>
           <Card className={styles.menuCard}>

@@ -1,4 +1,5 @@
 import { useAppTheme } from '@/hooks';
+import useThemeColor from '@/hooks/useThemeColor';
 import { logout } from '@/services/login';
 import { useThemeStore } from '@/stores';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
@@ -11,7 +12,6 @@ import {
   MenuProps,
   Space,
   message,
-  theme,
 } from 'antd';
 import { useState } from 'react';
 import { flushSync } from 'react-dom';
@@ -25,7 +25,7 @@ const { Header, Content } = Layout;
 const HeaderBox = styled.div`
   height: 64px;
   padding: 0 12px 0 0;
-  background: #fff;
+  /* background: #fff; */
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
   position: relative;
 `;
@@ -45,11 +45,9 @@ const HeaderAction = styled.div`
 export default function BaseLayout() {
   const { initialState, setInitialState } = useModel('@@initialState');
   const [collapsed, setCollapsed] = useState(false);
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
 
-  const { token } = useThemeStore();
+  const themeColor = useThemeColor();
+  const { token: themeToken } = useThemeStore();
 
   const handleLogout = async () => {
     try {
@@ -58,10 +56,13 @@ export default function BaseLayout() {
       // 退出登陆 清空状态
       storetify.remove(__APP_API_TOKEN_KEY__);
       flushSync(() => {
-        setInitialState((s) => ({
-          ...s,
-          currentUser: undefined,
-        }));
+        setInitialState(
+          (s) =>
+            ({
+              ...s,
+              currentUser: undefined,
+            } as any),
+        );
       });
       history.push('/login');
     } catch (error) {}
@@ -95,13 +96,13 @@ export default function BaseLayout() {
     <ConfigProvider
       theme={{
         algorithm: themeAlgorithm,
-        token,
+        token: themeToken,
       }}
     >
       <Layout>
         <SideMenu collapsed={collapsed} />
         <Layout>
-          <Header style={{ padding: 0, background: colorBgContainer }}>
+          <Header style={{ padding: 0, background: themeColor.bgColor }}>
             <HeaderBox>
               <Button
                 type="text"

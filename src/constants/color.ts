@@ -24,3 +24,17 @@ export const PRIMARY_COLOR_LABELS: Record<PrimaryColor, string> = {
   '#722ed1': '酱紫',
   '#eb2f96': '酱紫',
 };
+
+export const PRIMARY_COLOR_GRADIENTS: Record<PrimaryColor, [string, string]> = {
+  '#1677ff': ['#1677ff', '#6f00ff'], // 拂晓蓝 + 紫电
+  '#1890ff': ['#1890ff', '#722ed1'], // 极客蓝 + 酱紫
+  '#f5222d': ['#f5222d', '#faad14'], // 薄暮 + 日暮
+  '#fa541c': ['#fa541c', '#13c2c2'], // 火山 + 海蓝
+  '#faad14': ['#faad14', '#722ed1'], // 日暮 + 酱紫
+  '#a0d911': ['#a0d911', '#13c2c2'], // 明青 + 海蓝
+  '#52c41a': ['#52c41a', '#2f54eb'], // 极光绿 + 极客蓝
+  '#13c2c2': ['#13c2c2', '#fa541c'], // 海蓝 + 火山
+  '#2f54eb': ['#2f54eb', '#f5222d'], // 极客蓝 + 薄暮
+  '#722ed1': ['#722ed1', '#eb2f96'], // 酱紫 + 樱桃粉
+  '#eb2f96': ['#eb2f96', '#1890ff'], // 樱桃粉 + 极客蓝
+};
