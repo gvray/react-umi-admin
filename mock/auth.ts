@@ -315,7 +315,7 @@ export default {
               todayLogins: 89,
               pendingTasks: 12,
             },
-            nickName: 'Gavin',
+            nickname: 'Gavin',
           },
         });
         return;

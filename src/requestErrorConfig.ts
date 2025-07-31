@@ -94,7 +94,7 @@ export const errorConfig: RequestConfig = {
   requestInterceptors: [
     (config: RequestOptions) => {
       const { headers = {}, url, skipAuthHandler, ...restConfig } = config;
-      logger.info(`API请求路径：${url}`);
+      logger.trace(`API请求路径：${url}`);
       if (!skipAuthHandler) {
         headers.Authorization = `Bearer ${storetify(__APP_API_TOKEN_KEY__)}`;
       }

@@ -1,3 +1,4 @@
+import { logger } from '@/utils';
 import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   Button,
@@ -34,43 +35,50 @@ const TableProFunction: React.ForwardRefRenderFunction<
   const [loading, setLogging] = useState(false);
   const [listData, setListData] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
+  const [pagination, setPagination] = useState({ page: 1, pageSize: 10 });
+  const [etag, setEtag] = useState(Date.now());
 
   // 高级搜索
   const [showSearch, setShowSearch] = useState(true);
+  // 高级搜索参数
+  const paramsRef = useRef<Record<string, any>>({});
 
-  const paramsRef = useRef<any>({
-    current: 1,
-    pageSize: 10,
-  });
-
-  const handleList = async () => {
+  const handleList = async (paginationParams?: Record<string, any>) => {
     try {
       setLogging(true);
       const { data } = await request({
         ...paramsRef.current,
-        pageNum: paramsRef.current.current,
-        current: undefined,
+        ...(paginationParams ?? pagination),
       });
 
-      setListData([...data.rows]);
+      setListData([...data.items]);
       setTotal(data.total);
     } catch (error: any) {
-      console.log(error.info);
+      logger.error(error.info);
       setListData([]);
     } finally {
       setLogging(false);
     }
   };
 
+  const handleReload = () => {
+    setEtag(Date.now());
+  };
+
+  const handleResetPage = () => {
+    setPagination((pre) => ({ ...pre, page: 1 }));
+    setEtag(Date.now());
+  };
+
   const reload = () => {
-    handleList();
+    handleReload();
   };
 
   // 高级搜索
   const handleAdvancedQuery = (values: Record<string, any>) => {
-    const newParams = { ...paramsRef.current, current: 1, ...values };
+    const newParams = { ...paramsRef.current, ...values };
     paramsRef.current = newParams;
-    handleList();
+    handleResetPage();
   };
 
   useImperativeHandle(
@@ -83,7 +91,7 @@ const TableProFunction: React.ForwardRefRenderFunction<
 
   useEffect(() => {
     handleList();
-  }, []);
+  }, [pagination.page, pagination.pageSize, etag]);
 
   const toolbar = toolbarRender();
   return (
@@ -94,6 +102,11 @@ const TableProFunction: React.ForwardRefRenderFunction<
             (item: any) => item.advancedSearch !== undefined,
           )}
           onSearchFinish={handleAdvancedQuery}
+          resetSearch={() => {
+            // 重制高级搜索参数
+            paramsRef.current = {};
+            handleResetPage();
+          }}
         ></AdvancedSearchForm>
       )}
       <Flex justify="space-between" align="center">
@@ -122,18 +135,16 @@ const TableProFunction: React.ForwardRefRenderFunction<
         pagination={false}
         {...rest}
       />
-      {total > 0 && total > paramsRef.current.pageSize && (
+      {total > 0 && total > pagination.pageSize && (
         <Pagination
           total={total}
           showSizeChanger
           showQuickJumper
-          defaultCurrent={paramsRef.current.current}
-          defaultPageSize={paramsRef.current.pageSize}
+          current={pagination.page}
+          pageSize={pagination.pageSize}
           showTotal={(total) => `共 ${total} 条`}
           onChange={(page, pageSize) => {
-            paramsRef.current.current = page;
-            paramsRef.current.pageSize = pageSize;
-            handleList();
+            setPagination({ page, pageSize });
           }}
           style={{ textAlign: 'right', marginTop: '10px' }}
         />

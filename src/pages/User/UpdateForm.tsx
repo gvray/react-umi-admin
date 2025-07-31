@@ -59,6 +59,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
     try {
       setConfirmLoading(true);
       const values = await form.validateFields();
+      console.log(values);
       if (form.getFieldValue('userId') === undefined) {
         await addUser(values);
         message.success('新增成功');
@@ -91,9 +92,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           setVisible(true);
           reset();
           if (data) {
-            if (data.userId !== undefined) {
-              setIsEdit(true);
-            }
+            setIsEdit(true);
             form.setFieldsValue(data);
           } else {
             setIsEdit(false);
@@ -127,7 +126,12 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
         form={form}
         layout="horizontal"
         name="form_in_modal"
-        initialValues={{ status: '0', postIds: [], roleIds: [] }}
+        initialValues={{
+          status: 1,
+          password: '123456',
+          postIds: [],
+          roleIds: [],
+        }}
       >
         <Form.Item name="userId" label="用户Id" hidden>
           <Input />
@@ -135,16 +139,16 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
         <Row gutter={24}>
           <Col span={12}>
             <Form.Item
-              name="nickName"
-              label="用户昵称"
-              rules={[{ required: true, message: '用户昵称不能为空' }]}
+              name="nickname"
+              label="用户名称"
+              rules={[{ required: true, message: '用户名称不能为空' }]}
             >
-              <Input placeholder="请输入用户昵称" />
+              <Input placeholder="请输入用户名称" />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
-              name="phoneNumber"
+              name="phone"
               label="手机号码"
               rules={[
                 {
@@ -170,18 +174,18 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           <Col span={isEdit ? 0 : 12}>
             <Form.Item
               hidden={isEdit}
-              name="userName"
-              label="用户名称"
+              name="username"
+              label="登陆账号"
               rules={[
-                { required: true, message: '用户名称不能为空' },
+                { required: true, message: '登陆账号不能为空' },
                 {
                   min: 2,
                   max: 20,
-                  message: '用户名称长度必须介于 2 和 20 之间',
+                  message: '登陆账号长度必须介于 2 和 20 之间',
                 },
               ]}
             >
-              <Input placeholder="请输用户名称" maxLength={30} />
+              <Input placeholder="请输登陆账号" maxLength={30} />
             </Form.Item>
           </Col>
           {!isEdit && (
@@ -204,14 +208,14 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           )}
           <Col span={12}>
             <Form.Item name="status" label="用户状态">
-              <Radio.Group>
-                <Radio value={'0'} key={'normal'}>
-                  正常
-                </Radio>
-                <Radio value={'1'} key={'blockUp'}>
-                  停用
-                </Radio>
-              </Radio.Group>
+              <Radio.Group
+                options={[
+                  { value: 0, label: '停用' },
+                  { value: 1, label: '启用' },
+                  { value: 2, label: '审核中' },
+                  // { value: 3, label: '封禁' },
+                ]}
+              ></Radio.Group>
             </Form.Item>
           </Col>
           <Col span={24}>

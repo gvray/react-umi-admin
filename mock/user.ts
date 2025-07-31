@@ -1,30 +1,36 @@
 import dayjs from 'dayjs';
 import { Request, Response } from 'express';
 import { sleep } from 'ts-copilot';
-
+const uuid = () =>
+  'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 const resultData = new Map();
 let index = 39;
 for (let i = 1; i <= index; i++) {
-  resultData.set(i, {
+  const userId = uuid();
+  resultData.set(userId, {
+    id: i,
     createBy: 'admin',
     createTime: new Date().getTime(),
     updateBy: null,
     updateTime: null,
     remark: '管理员',
-    userId: i,
-    userName: 'admin' + i,
-    nickName: 'Gavin' + i,
+    userId,
+    username: 'admin' + i,
+    nickname: 'Gavin' + i,
     email: 'admin@gmail.com',
-    phoneNumber: '1588888888' + (i % 10),
+    phone: '1588888888' + (i % 10),
     sex: '1',
-    status: i % 2 === 0 ? '0' : '1',
+    status: i % 4,
     delFlag: '0',
   });
 }
 export default {
-  'GET /api/user/list': async (req: Request, res: Response) => {
-    const { pageNum, pageSize, userName, phoneNumber, dateRange, status } =
-      req.query;
+  'GET /api/users': async (req: Request, res: Response) => {
+    const { page, pageSize, username, phone, dateRange, status } = req.query;
     await sleep(500);
     if (false) {
       res.json({
@@ -38,14 +44,14 @@ export default {
     }
     const rows = [...resultData.values()].filter((item) => {
       let flag = true;
-      if (userName) {
-        flag = item.userName.includes(userName as string);
+      if (username) {
+        flag = item.username?.includes(username);
       }
-      if (phoneNumber) {
-        flag = item.phoneNumber.includes(phoneNumber as string);
+      if (phone) {
+        flag = item.phone?.includes(phone);
       }
-      if (status) {
-        flag = item.status === status;
+      if (status !== undefined) {
+        flag = item.status === Number(status);
       }
       if (dateRange) {
         const [start, end] = (dateRange as string).split('_to_');
@@ -74,31 +80,30 @@ export default {
       code: 200,
       message: '操作成功',
       data: {
-        rows: rows.slice(
-          (parseInt(pageNum as string) - 1) * parseInt(pageSize as string),
-          (parseInt(pageNum as string) - 1) * parseInt(pageSize as string) +
+        items: rows.slice(
+          (parseInt(page as string) - 1) * parseInt(pageSize as string),
+          (parseInt(page as string) - 1) * parseInt(pageSize as string) +
             parseInt(pageSize as string),
         ),
         total: rows.length,
       },
     });
   },
-  'DELETE /api/user/:id': async (req: Request, res: Response) => {
-    const { id } = req.params;
-    resultData.delete(parseInt(id));
+  'DELETE /api/users/:userId': async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    resultData.delete(userId);
     res.json({
       success: true,
       code: 200,
       message: '操作成功',
     });
   },
-  'POST /api/user': async (req: Request, res: Response) => {
-    const { ...rest } = req.body;
-    const userId = ++index;
+  'POST /api/users': async (req: Request, res: Response) => {
+    const userId = uuid();
     resultData.set(userId, {
       createTime: new Date(),
       userId,
-      ...rest,
+      ...req.body,
     });
     res.json({
       success: true,
@@ -106,25 +111,34 @@ export default {
       message: '操作成功',
     });
   },
-  'PUT /api/user': async (req: Request, res: Response) => {
-    const { userId, ...rest } = req.body;
-    const oldUser = resultData.get(parseInt(userId));
+  'PATCH /api/users/:userId': async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    const oldUser = resultData.get(userId);
     resultData.set(userId, {
       ...oldUser,
-      ...rest,
+      ...req.body,
       updateTime: new Date(),
-      userId,
     });
-    await sleep(1000);
+    await sleep(200);
     res.json({
       success: true,
       code: 200,
       message: '操作成功',
     });
   },
-  'GET /api/user/:id': async (req: Request, res: Response) => {
-    const { id: userId } = req.params;
-    const user = resultData.get(parseInt(userId));
+  'GET /api/users/:userId': async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    const user = resultData.get(userId);
+    if (!user) {
+      res.json({
+        success: false,
+        code: 500,
+        message: '用户不存在',
+        data: null,
+        showType: 1,
+      });
+      return;
+    }
     res.json({
       success: true,
       code: 200,

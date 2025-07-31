@@ -152,8 +152,8 @@ export default function ProfilePage() {
           <Col flex={1}>
             <Space direction="vertical" size={12}>
               <div>
-                <Title level={2} className={styles.userName}>
-                  {profile?.nickName || profile?.username || '用户名'}
+                <Title level={2} className={styles.username}>
+                  {profile?.nickname || profile?.username || '用户名'}
                   <Tag color="blue" className={styles.userTag}>
                     {profile?.roles
                       ?.map((item: any) => item.description)
@@ -488,7 +488,7 @@ export default function ProfilePage() {
               layout="vertical"
               onFinish={handleSave}
               initialValues={{
-                nickName: profile?.nickName || profile?.username || '-',
+                nickname: profile?.nickname || profile?.username || '-',
                 email: profile?.email || '-',
                 phone: profile?.phone || '-',
                 department: profile?.department?.name || '-',
@@ -498,7 +498,7 @@ export default function ProfilePage() {
             >
               <Row gutter={16}>
                 <Col span={12}>
-                  <Form.Item name="nickName" label="昵称">
+                  <Form.Item name="nickname" label="昵称">
                     <Input placeholder="请输入昵称" />
                   </Form.Item>
                 </Col>
@@ -538,7 +538,7 @@ export default function ProfilePage() {
           ) : (
             <Descriptions column={2} size="middle">
               <Descriptions.Item label="昵称" span={1}>
-                {profile?.nickName || profile?.username || '未设置'}
+                {profile?.nickname || profile?.username || '未设置'}
               </Descriptions.Item>
               <Descriptions.Item label="邮箱" span={1}>
                 {profile?.email || '未设置'}

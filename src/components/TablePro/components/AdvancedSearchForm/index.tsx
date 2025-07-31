@@ -12,7 +12,7 @@ export interface AdvancedSearchItem<T> {
   type: 'INPUT' | 'SELECT' | 'TIME_RANGE';
   value?: T[];
   mapState?: {
-    value: string;
+    value: string | number;
     label: string;
   };
 }
@@ -133,19 +133,18 @@ const AdvancedSearchForm = forwardRef(
     };
 
     const handleFinish = (values: FinishedParams) => {
-      const query = { ...values };
-      const timeFlag = query.createTime ? 'createTime' : 'loginTime';
-      const rangeTime = query[timeFlag];
-      if (rangeTime && rangeTime.length === 2) {
-        // 根据自己的业务去调整
-        // query[`params[beginTime]`] = rangeTime[0].format('YYYY-MM-DD');
-        // query[`params[endTime]`] = rangeTime[1].format('YYYY-MM-DD');
-        query.dateRange = `${rangeTime[0].format(
-          'YYYY-MM-DD',
-        )}_to_${rangeTime[1].format('YYYY-MM-DD')}`;
+      const { createTime, ...rest } = values;
+      if (!createTime || createTime.length === 0) {
+        onSearchFinish?.({ ...rest, dateRange: undefined });
+        return;
       }
-      delete query[timeFlag];
-      onSearchFinish?.(query);
+      const dateRange = `${createTime[0].format(
+        'YYYY-MM-DD',
+      )}_to_${createTime[1].format('YYYY-MM-DD')}`;
+      // 根据自己的业务去调整
+      // query[`params[beginTime]`] = createTime[0].format('YYYY-MM-DD');
+      // query[`params[endTime]`] = createTime[1].format('YYYY-MM-DD');
+      onSearchFinish?.({ ...rest, dateRange });
     };
 
     return (

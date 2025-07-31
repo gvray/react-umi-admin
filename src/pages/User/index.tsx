@@ -7,12 +7,13 @@ import {
   EditOutlined,
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
-import { Button, Modal, Space, Tag, message } from 'antd';
+import { Button, Modal, Space, Tag, Typography, message } from 'antd';
 import { ColumnProps } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { useRef } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 
+const { Paragraph } = Typography;
 interface DataType {
   createBy: string;
   createTime: string;
@@ -20,10 +21,10 @@ interface DataType {
   updateTime?: string;
   remark: string;
   userId: number;
-  userName: string;
-  nickName: string;
+  username: string;
+  nickname: string;
   email: string;
-  phoneNumber: string;
+  phone: string;
   sex: string;
   status: string;
   delFlag: string;
@@ -78,85 +79,102 @@ const UserPage = () => {
     handleTableReload();
   };
 
-  const columns: UserColumnProps<DataType, Record<string, string>>[] = [
-    {
-      title: '用户编号',
-      dataIndex: 'userId',
-      key: 'userId',
-    },
-    {
-      title: '用户名称',
-      dataIndex: 'userName',
-      key: 'userName',
-      advancedSearch: { type: 'INPUT' },
-    },
-    {
-      title: '用户昵称',
-      dataIndex: 'nickName',
-      key: 'nickName',
-    },
-    {
-      title: '手机号码',
-      key: 'phoneNumber',
-      dataIndex: 'phoneNumber',
-      advancedSearch: { type: 'INPUT' },
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      key: 'status',
-      advancedSearch: {
-        type: 'SELECT',
-        value: [
-          { label: '正常', value: '0' },
-          { label: '停用', value: '1' },
-        ],
+  const columns: UserColumnProps<DataType, Record<string, string | number>>[] =
+    [
+      {
+        title: '用户编号',
+        dataIndex: 'userId',
+        key: 'userId',
+        render: (userId: string) => {
+          return (
+            <Paragraph ellipsis copyable style={{ width: '100px' }}>
+              {userId}
+            </Paragraph>
+          );
+        },
       },
-      render: (status: string) => {
-        return status === '0' ? (
-          <Tag color="success">正常</Tag>
-        ) : (
-          <Tag color="error">停用</Tag>
-        );
+      {
+        title: '登陆账号',
+        dataIndex: 'username',
+        key: 'username',
+        advancedSearch: { type: 'INPUT' },
       },
-    },
-    {
-      title: '创建时间',
-      key: 'createTime',
-      dataIndex: 'createTime',
-      render: (time: string) => {
-        return dayjs(time).format('YYYY MM-DD');
+      {
+        title: '用户名称',
+        dataIndex: 'nickname',
+        key: 'nickname',
       },
-      advancedSearch: {
-        type: 'TIME_RANGE',
+      {
+        title: '手机号码',
+        key: 'phone',
+        dataIndex: 'phone',
+        advancedSearch: { type: 'INPUT' },
       },
-    },
-    {
-      title: '操作',
-      key: 'action',
-      render: (record) => {
-        return (
-          <Space size={0}>
-            <Button
-              type="link"
-              icon={<EditOutlined />}
-              onClick={() => handleUpdate(record)}
-            >
-              修改
-            </Button>
-            <Button
-              danger
-              type="link"
-              icon={<DeleteOutlined />}
-              onClick={() => handleDelete(record)}
-            >
-              删除
-            </Button>
-          </Space>
-        );
+      {
+        title: '状态',
+        dataIndex: 'status',
+        key: 'status',
+        advancedSearch: {
+          type: 'SELECT',
+          value: [
+            { label: '停用', value: 0 },
+            { label: '正常', value: 1 },
+            { label: '审核中', value: 2 },
+            { label: '封禁', value: 3 },
+          ],
+        },
+        render: (status: number) => {
+          switch (status) {
+            case 0:
+              return <Tag color="error">停用</Tag>;
+            case 1:
+              return <Tag color="success">正常</Tag>;
+            case 2:
+              return <Tag color="warning">审核中</Tag>;
+            case 3:
+              return <Tag color="error">封禁</Tag>;
+            default:
+              return <Tag color="error">未知</Tag>;
+          }
+        },
       },
-    },
-  ];
+      {
+        title: '创建时间',
+        key: 'createTime',
+        dataIndex: 'createTime',
+        render: (time: string) => {
+          return dayjs(time).format('YYYY MM-DD');
+        },
+        advancedSearch: {
+          type: 'TIME_RANGE',
+        },
+      },
+      {
+        title: '操作',
+        key: 'action',
+        render: (record) => {
+          return (
+            <Space size={0}>
+              <Button
+                type="link"
+                icon={<EditOutlined />}
+                onClick={() => handleUpdate(record)}
+              >
+                修改
+              </Button>
+              <Button
+                danger
+                type="link"
+                icon={<DeleteOutlined />}
+                onClick={() => handleDelete(record)}
+              >
+                删除
+              </Button>
+            </Space>
+          );
+        },
+      },
+    ];
 
   return (
     <PageContainer>
