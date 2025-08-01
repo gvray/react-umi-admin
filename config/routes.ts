@@ -7,17 +7,28 @@ const routes = [
         path: '/',
         component: 'Dashboard',
       },
+
       {
         path: '/profile',
         component: 'Profile',
       },
-      {
-        path: '/user',
-        component: 'User',
-      },
+
       {
         path: '/docs',
         component: 'Docs',
+      },
+    ],
+  },
+  {
+    path: '/system',
+    routes: [
+      {
+        path: '/system/user',
+        component: 'User',
+      },
+      {
+        path: '/system/resource',
+        component: 'Resource',
       },
     ],
   },

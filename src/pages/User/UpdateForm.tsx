@@ -59,7 +59,6 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
     try {
       setConfirmLoading(true);
       const values = await form.validateFields();
-      console.log(values);
       if (form.getFieldValue('userId') === undefined) {
         await addUser(values);
         message.success('新增成功');

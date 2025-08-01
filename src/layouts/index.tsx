@@ -132,7 +132,8 @@ export default function BaseLayout() {
                         }
                       />
                       <span style={{ marginLeft: 8 }}>
-                        {initialState?.profile?.name}
+                        {initialState?.profile?.nickname ||
+                          initialState?.profile?.username}
                       </span>
                     </HeaderAction>
                   </Dropdown>
