@@ -50,7 +50,7 @@ export async function listResources(
   params?: ResourceListParams,
   options?: { [key: string]: any },
 ) {
-  return request('/resources', {
+  return request('/resources/tree', {
     method: 'GET',
     params,
     ...(options || {}),

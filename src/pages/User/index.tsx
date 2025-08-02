@@ -1,4 +1,5 @@
 import { PageContainer, TablePro } from '@/components';
+import StatusTag from '@/components/StatusTag';
 import { TableProRef } from '@/components/TablePro';
 import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
 import { deleteUser, getUser, listUser } from '@/services/user';
@@ -7,7 +8,7 @@ import {
   EditOutlined,
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
-import { Button, Modal, Space, Tag, Typography, message } from 'antd';
+import { Button, Modal, Space, Typography, message } from 'antd';
 import { ColumnProps } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { useRef } from 'react';
@@ -124,18 +125,7 @@ const UserPage = () => {
           ],
         },
         render: (status: number) => {
-          switch (status) {
-            case 0:
-              return <Tag color="error">停用</Tag>;
-            case 1:
-              return <Tag color="success">正常</Tag>;
-            case 2:
-              return <Tag color="warning">审核中</Tag>;
-            case 3:
-              return <Tag color="error">封禁</Tag>;
-            default:
-              return <Tag color="error">未知</Tag>;
-          }
+          return <StatusTag status={status} />;
         },
       },
       {
