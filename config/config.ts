@@ -92,5 +92,6 @@ export default defineConfig({
   publicPath: process.env.APP_CDN_URL || '/',
   outputPath: outputDir,
   // end plugins
+  mfsu: false,
   npmClient: 'pnpm',
 });

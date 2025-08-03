@@ -14,7 +14,10 @@ type StatusTagProps = {
 
 const StatusTag: React.FC<StatusTagProps> = ({ status }) => {
   const tag = statusTag[status as keyof typeof statusTag];
-  return <Tag color={tag.color}>{tag.text}</Tag>;
+  if (tag) {
+    return <Tag color={tag.color}>{tag.text}</Tag>;
+  }
+  return status;
 };
 
 export default StatusTag;

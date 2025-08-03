@@ -133,17 +133,17 @@ const AdvancedSearchForm = forwardRef(
     };
 
     const handleFinish = (values: FinishedParams) => {
-      const { createTime, ...rest } = values;
-      if (!createTime || createTime.length === 0) {
+      const { createdAt, ...rest } = values;
+      if (!createdAt || createdAt.length === 0) {
         onSearchFinish?.({ ...rest, dateRange: undefined });
         return;
       }
-      const dateRange = `${createTime[0].format(
+      const dateRange = `${createdAt[0].format(
         'YYYY-MM-DD',
-      )}_to_${createTime[1].format('YYYY-MM-DD')}`;
+      )}_to_${createdAt[1].format('YYYY-MM-DD')}`;
       // 根据自己的业务去调整
-      // query[`params[beginTime]`] = createTime[0].format('YYYY-MM-DD');
-      // query[`params[endTime]`] = createTime[1].format('YYYY-MM-DD');
+      // query[`params[beginTime]`] = createdAt[0].format('YYYY-MM-DD');
+      // query[`params[endTime]`] = createdAt[1].format('YYYY-MM-DD');
       onSearchFinish?.({ ...rest, dateRange });
     };
 

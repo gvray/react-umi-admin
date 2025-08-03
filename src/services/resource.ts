@@ -2,7 +2,7 @@ import { request } from 'umi';
 
 // 资源数据类型定义
 export interface Resource {
-  id: number;
+  resourceId: string;
   name: string;
   type: string;
   url?: string;
@@ -14,6 +14,20 @@ export interface Resource {
   tags?: string[];
   size?: number;
   mimeType?: string;
+}
+export interface ResourceMeta {
+  resourceId: string;
+  name: string;
+  type: string;
+  parentId: string | null;
+  children?: ResourceMeta[]; // 用于前端展示 tree 结构
+  // 可选字段
+  path?: string; // 菜单路由
+  method?: string; // API 方法 (如 GET, POST)
+  code?: string; // 权限标识
+  sort?: number; // 排序
+  icon?: string; // 图标（常用于菜单）
+  [key: string]: any; // 允许扩展
 }
 
 export interface ResourceListParams {
@@ -36,7 +50,7 @@ export interface ResourceCreateParams {
 }
 
 export interface ResourceUpdateParams extends Partial<ResourceCreateParams> {
-  id: number;
+  resourceId: number;
 }
 
 // CRUD API 服务函数
@@ -47,6 +61,17 @@ export interface ResourceUpdateParams extends Partial<ResourceCreateParams> {
  * @param options 请求选项
  */
 export async function listResources(
+  params?: ResourceListParams,
+  options?: { [key: string]: any },
+) {
+  return request('/resources', {
+    method: 'GET',
+    params,
+    ...(options || {}),
+  });
+}
+
+export async function getResourceTree(
   params?: ResourceListParams,
   options?: { [key: string]: any },
 ) {
@@ -113,8 +138,8 @@ export async function updateResource(
   values: ResourceUpdateParams,
   options?: { [key: string]: any },
 ) {
-  const { id, ...rest } = values;
-  return request(`/resources/${id}`, {
+  const { resourceId, ...rest } = values;
+  return request(`/resources/${resourceId}`, {
     method: 'PATCH',
     data: rest,
     ...(options || {}),

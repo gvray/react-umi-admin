@@ -30,6 +30,14 @@ const routes = [
         path: '/system/resource',
         component: 'Resource',
       },
+      {
+        path: '/system/role',
+        component: 'Role',
+      },
+      {
+        path: '/system/position',
+        component: 'Position',
+      },
     ],
   },
   { path: '*', component: '404' },

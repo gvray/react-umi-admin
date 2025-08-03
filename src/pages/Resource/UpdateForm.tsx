@@ -1,15 +1,19 @@
-import { addUser, updateUser } from '@/services/user';
+import { createResource, updateResource } from '@/services/resource';
 import {
   Col,
   Form,
   FormInstance,
   Input,
+  InputNumber,
   Modal,
   Radio,
   Row,
+  Select,
+  TreeSelect,
   message,
 } from 'antd';
 import React, { useImperativeHandle, useState } from 'react';
+import { useUpdataFormModel } from './model';
 
 interface UpdateFormProps {
   onCancel?: () => void;
@@ -22,22 +26,22 @@ export interface UpdateFormRef {
   form: FormInstance;
 }
 
-const formItemLayout = {
-  labelCol: {
-    span: 6,
-  },
-  wrapperCol: {
-    span: 18,
-  },
-};
-const formItemFullLayout = {
-  labelCol: {
-    span: 3,
-  },
-  wrapperCol: {
-    span: 21,
-  },
-};
+// const formItemLayout = {
+//   labelCol: {
+//     span: 4,
+//   },
+//   wrapperCol: {
+//     span: 20,
+//   },
+// };
+// const formItemFullLayout = {
+//   labelCol: {
+//     span: 4,
+//   },
+//   wrapperCol: {
+//     span: 20,
+//   },
+// };
 
 const UpdateFormFunction: React.ForwardRefRenderFunction<
   UpdateFormRef,
@@ -45,9 +49,10 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
 > = ({ onOk, onCancel }, ref) => {
   const [title, setTitle] = useState('未设置弹出层标题');
   const [visible, setVisible] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
+  const resourceType = Form.useWatch('type', form);
+  const { data: resourceList } = useUpdataFormModel(visible);
 
   // 重置弹出层表单
   const reset = () => {
@@ -58,12 +63,18 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-      const values = await form.validateFields();
-      if (form.getFieldValue('userId') === undefined) {
-        await addUser(values);
+      const { parentResourceId, ...values } = await form.validateFields();
+      if (form.getFieldValue('resourceId') === undefined) {
+        await createResource({
+          ...values,
+          parentResourceId: parentResourceId === '0' ? null : parentResourceId,
+        });
         message.success('新增成功');
       } else {
-        await updateUser(values);
+        await updateResource({
+          ...values,
+          parentResourceId: parentResourceId === '0' ? null : parentResourceId,
+        });
         message.success('修改成功');
       }
       setVisible(false);
@@ -82,20 +93,23 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
     reset();
   };
 
+  const handleValuesChange = () => {};
+
   useImperativeHandle(
     ref,
     () => {
       return {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         show: (title, data) => {
           setTitle(title);
           setVisible(true);
           reset();
-          if (data) {
-            setIsEdit(true);
-            form.setFieldsValue(data);
-          } else {
-            setIsEdit(false);
-          }
+          // if (data) {
+          //   setIsEdit(true);
+          //   form.setFieldsValue(data);
+          // } else {
+          //   setIsEdit(false);
+          // }
         },
         hide: () => {
           setVisible(false);
@@ -121,16 +135,18 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       cancelText="取消"
     >
       <Form
-        {...formItemLayout}
+        // {...formItemLayout}
+        // layout="vertical"
         form={form}
         layout="horizontal"
         name="form_in_modal"
         initialValues={{
           status: 1,
-          password: '123456',
-          postIds: [],
-          roleIds: [],
+          parentResourceId: '0',
+          type: 'DIRECTORY',
+          sort: 0,
         }}
+        onValuesChange={handleValuesChange}
       >
         <Form.Item name="resourceId" label="资源Id" hidden>
           <Input />
@@ -138,75 +154,86 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
         <Row gutter={24}>
           <Col span={24}>
             <Form.Item
-              name="nickname"
-              label="用户名称"
-              rules={[{ required: true, message: '用户名称不能为空' }]}
+              name="parentResourceId"
+              label="上级资源"
+              rules={[{ required: true, message: '上级资源不能为空' }]}
             >
-              <Input placeholder="请输入用户名称" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="phone"
-              label="手机号码"
-              rules={[
-                {
-                  validator: (_, phone) => {
-                    const reg = /^1[3|4|5|6|7|8|9][0-9]\d{8}$/;
-                    if (!phone || reg.test(phone)) {
-                      return Promise.resolve();
-                    } else {
-                      return Promise.reject(new Error('请输入正确的手机号码'));
-                    }
-                  },
-                },
-              ]}
-            >
-              <Input placeholder="请输入手机号码" maxLength={11} />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item name="email" label="邮箱" rules={[{ type: 'email' }]}>
-              <Input placeholder="请输入邮箱" maxLength={50} />
-            </Form.Item>
-          </Col>
-          <Col span={isEdit ? 0 : 12}>
-            <Form.Item
-              hidden={isEdit}
-              name="username"
-              label="登陆账号"
-              rules={[
-                { required: true, message: '登陆账号不能为空' },
-                {
-                  min: 2,
-                  max: 20,
-                  message: '登陆账号长度必须介于 2 和 20 之间',
-                },
-              ]}
-            >
-              <Input placeholder="请输登陆账号" maxLength={30} />
-            </Form.Item>
-          </Col>
-          {!isEdit && (
-            <Col span={12}>
-              <Form.Item
-                name="password"
-                label="用户密码"
-                rules={[
-                  { required: true, message: '用户密码不能为空' },
+              <TreeSelect
+                treeDefaultExpandAll
+                allowClear
+                fieldNames={{
+                  value: 'resourceId',
+                  label: 'name',
+                }}
+                treeDataSimpleMode={{
+                  id: 'resourceId',
+                  pId: 'parentResourceId',
+                }}
+                treeData={[
                   {
-                    min: 5,
-                    max: 20,
-                    message: '用户密码长度必须介于 5 和 20 之间',
+                    resourceId: '0',
+                    name: '顶级资源',
+                    parentResourceId: null,
                   },
+                ].concat(
+                  resourceList
+                    .filter(
+                      (item: any) =>
+                        item.type === 'MENU' || item.type === 'DIRECTORY',
+                    )
+                    .map((item: any) => ({
+                      ...item,
+                      parentResourceId: item.parentResourceId || '0',
+                    })),
+                )}
+                placeholder="请选择上级资源"
+              />
+            </Form.Item>
+          </Col>
+          <Col span={14}>
+            <Form.Item name="type" label="资源类型">
+              <Radio.Group
+                options={[
+                  { value: 'DIRECTORY', label: '目录' },
+                  { value: 'MENU', label: '菜单' },
+                  { value: 'BUTTON', label: '按钮' },
+                  { value: 'DATA', label: '数据' },
                 ]}
-              >
-                <Input.Password placeholder="请输用户密码" maxLength={20} />
+              ></Radio.Group>
+            </Form.Item>
+          </Col>
+          <Col span={6}>
+            <Form.Item
+              name="sort"
+              label="排序"
+              rules={[{ required: true, message: '排序不能为空' }]}
+            >
+              <InputNumber />
+            </Form.Item>
+          </Col>
+          {(resourceType === 'DIRECTORY' || resourceType === 'MENU') && (
+            <Col span={24}>
+              <Form.Item name="icon" label="资源图标">
+                <Input />
               </Form.Item>
             </Col>
           )}
-          <Col span={12}>
-            <Form.Item name="status" label="用户状态">
+
+          <Col span={14}>
+            <Form.Item
+              name="name"
+              label="资源名称"
+              rules={[{ required: true, message: '资源名称不能为空' }]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Col span={10}>
+            <Form.Item
+              name="status"
+              label="资源状态"
+              rules={[{ required: true, message: '资源状态不能为空' }]}
+            >
               <Radio.Group
                 options={[
                   { value: 0, label: '停用' },
@@ -217,8 +244,49 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
               ></Radio.Group>
             </Form.Item>
           </Col>
+
+          {resourceType !== 'BUTTON' && (
+            <Col span={14}>
+              <Form.Item
+                name="path"
+                label="资源路径"
+                rules={[{ required: true, message: '资源路径不能为空' }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          )}
+          {resourceType === 'DATA' && (
+            <Col span={10}>
+              <Form.Item
+                name="method"
+                label="资源方法"
+                rules={[{ required: true, message: '资源方法不能为空' }]}
+              >
+                <Select
+                  options={[
+                    { value: 'GET', label: 'GET' },
+                    { value: 'POST', label: 'POST' },
+                    { value: 'PUT', label: 'PUT' },
+                    { value: 'PATCH', label: 'PATCH' },
+                    { value: 'DELETE', label: 'DELETE' },
+                  ]}
+                />
+              </Form.Item>
+            </Col>
+          )}
+
+          <Col span={10}>
+            <Form.Item
+              name="code"
+              label="资源编码"
+              rules={[{ required: true, message: '资源编码不能为空' }]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
           <Col span={24}>
-            <Form.Item name="remark" label="备注" {...formItemFullLayout}>
+            <Form.Item name="description" label="描述信息">
               <Input.TextArea placeholder="请输入内容"></Input.TextArea>
             </Form.Item>
           </Col>

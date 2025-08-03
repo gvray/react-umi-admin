@@ -14,9 +14,9 @@ for (let i = 1; i <= index; i++) {
   resultData.set(userId, {
     id: i,
     createBy: 'admin',
-    createTime: new Date().getTime(),
+    createdAt: new Date().getTime(),
     updateBy: null,
-    updateTime: null,
+    updatedAt: null,
     remark: '管理员',
     userId,
     username: 'admin' + i,
@@ -59,16 +59,14 @@ export default {
         const startDate = dayjs(start);
         const endDate = dayjs(end);
 
-        // 判断 item.createTime 是否在范围内
+        // 判断 item.createdAt 是否在范围内
         flag =
-          dayjs(dayjs(item.createTime).format('YYYY MM-DD')).isSame(
-            startDate,
-          ) ||
-          dayjs(dayjs(item.createTime).format('YYYY MM-DD')).isSame(endDate) ||
-          (dayjs(dayjs(item.createTime).format('YYYY MM-DD')).isAfter(
+          dayjs(dayjs(item.createdAt).format('YYYY MM-DD')).isSame(startDate) ||
+          dayjs(dayjs(item.createdAt).format('YYYY MM-DD')).isSame(endDate) ||
+          (dayjs(dayjs(item.createdAt).format('YYYY MM-DD')).isAfter(
             startDate,
           ) &&
-            dayjs(dayjs(item.createTime).format('YYYY MM-DD')).isBefore(
+            dayjs(dayjs(item.createdAt).format('YYYY MM-DD')).isBefore(
               endDate,
             ));
       }
@@ -101,7 +99,7 @@ export default {
   'POST /api/users': async (req: Request, res: Response) => {
     const userId = uuid();
     resultData.set(userId, {
-      createTime: new Date(),
+      createdAt: new Date(),
       userId,
       ...req.body,
     });
@@ -117,7 +115,7 @@ export default {
     resultData.set(userId, {
       ...oldUser,
       ...req.body,
-      updateTime: new Date(),
+      updatedAt: new Date(),
     });
     await sleep(200);
     res.json({

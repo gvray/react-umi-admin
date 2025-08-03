@@ -1,25 +1,75 @@
 import { PageContainer } from '@/components';
 import StatusTag from '@/components/StatusTag';
 import AdvancedSearchForm from '@/components/TablePro/components/AdvancedSearchForm';
-import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Flex, Space, Table, Tooltip } from 'antd';
+import { deleteResource, getResource } from '@/services/resource';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+  ReloadOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
+import { Button, Flex, Modal, Space, Table, Tooltip, message } from 'antd';
 import { useRef, useState } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 import { useResourceModel } from './model';
 
+export interface ResourceMeta {
+  id: string;
+  name: string;
+  type: string;
+  parentId: string | null;
+  children?: ResourceMeta[]; // 用于前端展示 tree 结构
+  // 可选字段
+  path?: string; // 菜单路由
+  method?: string; // API 方法 (如 GET, POST)
+  code?: string; // 权限标识
+  sort?: number; // 排序
+  icon?: string; // 图标（常用于菜单）
+  [key: string]: any; // 允许扩展
+}
 const ResourcePage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
-  const [showSearch, setShowSearch] = useState(false);
+  const [showSearch, setShowSearch] = useState(true);
   const { data, loading, reload } = useResourceModel();
   // 高级搜索参数
   const paramsRef = useRef<Record<string, any>>({});
   const handleAdd = async () => {
     updateFormRef.current?.show('添加资源');
   };
+
+  const handleDelete = async (record: ResourceMeta) => {
+    Modal.confirm({
+      title: `系统提示`,
+      icon: <ExclamationCircleOutlined />,
+      content: `是否确认删除资源编号为"${record.resourceId}"的数据项？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk() {
+        return deleteResource(record.resourceId)
+          .then(() => {
+            reload();
+            message.success(`删除成功`);
+          })
+          .catch(() => {});
+      },
+    });
+  };
+
+  const handleUpdate = async (record: ResourceMeta) => {
+    const resourceId = record.resourceId;
+    try {
+      const msg = await getResource(resourceId);
+      updateFormRef.current?.show('修改资源', {
+        ...msg.data,
+      });
+    } catch (error) {}
+  };
   // 高级搜索
   const handleAdvancedQuery = (values: Record<string, any>) => {
     const newParams = { ...paramsRef.current, ...values };
     paramsRef.current = newParams;
+    reload(newParams);
   };
   const handleOk = () => {
     reload();
@@ -29,6 +79,10 @@ const ResourcePage = () => {
       title: '资源名称',
       dataIndex: 'name',
       key: 'name',
+      fixed: 'left',
+      advancedSearch: {
+        type: 'INPUT',
+      },
     },
     {
       title: '图标',
@@ -88,13 +142,33 @@ const ResourcePage = () => {
     },
     {
       title: '创建时间',
-      dataIndex: 'createTime',
-      key: 'createTime',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
     },
     {
       title: '操作',
-      dataIndex: 'operation',
-      key: 'operation',
+      key: 'action',
+      render: (record: ResourceMeta) => {
+        return (
+          <Space size={0}>
+            <Button
+              type="link"
+              icon={<EditOutlined />}
+              onClick={() => handleUpdate(record)}
+            >
+              修改
+            </Button>
+            <Button
+              danger
+              type="link"
+              icon={<DeleteOutlined />}
+              onClick={() => handleDelete(record)}
+            >
+              删除
+            </Button>
+          </Space>
+        );
+      },
     },
   ];
   return (
@@ -137,13 +211,14 @@ const ResourcePage = () => {
         </Space>
       </Flex>
       <Table
+        scroll={{ x: 'max-content' }}
         rowKey={'resourceId'}
         loading={loading}
         columns={columns}
         dataSource={data}
         pagination={false}
       />
-      {/* 用户新增修改弹出层 */}
+      {/* 资源新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} onOk={handleOk} />
     </PageContainer>
   );

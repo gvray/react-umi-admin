@@ -2,7 +2,7 @@ import { PageContainer, TablePro } from '@/components';
 import StatusTag from '@/components/StatusTag';
 import { TableProRef } from '@/components/TablePro';
 import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
-import { deleteUser, getUser, listUser } from '@/services/user';
+import { deletePosition, getPosition, listPosition } from '@/services/position';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -21,14 +21,11 @@ interface DataType {
   updateBy?: string;
   updatedAt?: string;
   remark: string;
-  userId: number;
-  username: string;
-  nickname: string;
-  email: string;
-  phone: string;
-  sex: string;
+  positionId: number;
+  name: string;
+  code: string;
+  description: string;
   status: string;
-  delFlag: string;
 }
 
 interface UserColumnProps<T, U> extends ColumnProps<T> {
@@ -45,18 +42,18 @@ const UserPage = () => {
   };
 
   const handleAdd = async () => {
-    updateFormRef.current?.show('添加用户');
+    updateFormRef.current?.show('添加职位');
   };
 
   const handleDelete = async (record: DataType) => {
     Modal.confirm({
       title: `系统提示`,
       icon: <ExclamationCircleOutlined />,
-      content: `是否确认删除用户编号为"${record.userId}"的数据项？`,
+      content: `是否确认删除职位编号为"${record.positionId}"的数据项？`,
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        return deleteUser(record.userId)
+        return deletePosition(record.positionId)
           .then(() => {
             handleTableReload();
             message.success(`删除成功`);
@@ -67,10 +64,10 @@ const UserPage = () => {
   };
 
   const handleUpdate = async (record: DataType) => {
-    const userId = record.userId;
+    const positionId = record.positionId;
     try {
-      const msg = await getUser(userId);
-      updateFormRef.current?.show('修改用户', {
+      const msg = await getPosition(positionId);
+      updateFormRef.current?.show('修改职位', {
         ...msg.data,
       });
     } catch (error) {}
@@ -83,32 +80,21 @@ const UserPage = () => {
   const columns: UserColumnProps<DataType, Record<string, string | number>>[] =
     [
       {
-        title: '用户编号',
-        dataIndex: 'userId',
-        key: 'userId',
-        render: (userId: string) => {
+        title: '职位编号',
+        dataIndex: 'positionId',
+        key: 'positionId',
+        render: (positionId: string) => {
           return (
             <Paragraph ellipsis copyable style={{ width: '100px' }}>
-              {userId}
+              {positionId}
             </Paragraph>
           );
         },
       },
       {
-        title: '登陆账号',
-        dataIndex: 'username',
-        key: 'username',
-        advancedSearch: { type: 'INPUT' },
-      },
-      {
-        title: '用户名称',
-        dataIndex: 'nickname',
-        key: 'nickname',
-      },
-      {
-        title: '手机号码',
-        key: 'phone',
-        dataIndex: 'phone',
+        title: '职位名称',
+        dataIndex: 'name',
+        key: 'name',
         advancedSearch: { type: 'INPUT' },
       },
       {
@@ -169,19 +155,19 @@ const UserPage = () => {
   return (
     <PageContainer>
       <TablePro
-        rowKey={'userId'}
+        rowKey={'positionId'}
         toolbarRender={() => (
           <>
             <Button type="primary" onClick={handleAdd}>
-              新增用户
+              新增职位
             </Button>
           </>
         )}
         ref={tableProRef}
         columns={columns}
-        request={listUser}
+        request={listPosition}
       />
-      {/* 用户新增修改弹出层 */}
+      {/* 职位新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} onOk={handleOk} />
     </PageContainer>
   );

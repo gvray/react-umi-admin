@@ -2,7 +2,7 @@ import { PageContainer, TablePro } from '@/components';
 import StatusTag from '@/components/StatusTag';
 import { TableProRef } from '@/components/TablePro';
 import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
-import { deleteUser, getUser, listUser } from '@/services/user';
+import { deleteRole, getRole, listRole } from '@/services/role';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -21,14 +21,11 @@ interface DataType {
   updateBy?: string;
   updatedAt?: string;
   remark: string;
-  userId: number;
-  username: string;
-  nickname: string;
-  email: string;
-  phone: string;
-  sex: string;
+  roleId: number;
+  name: string;
+  code: string;
+  description: string;
   status: string;
-  delFlag: string;
 }
 
 interface UserColumnProps<T, U> extends ColumnProps<T> {
@@ -45,18 +42,18 @@ const UserPage = () => {
   };
 
   const handleAdd = async () => {
-    updateFormRef.current?.show('添加用户');
+    updateFormRef.current?.show('添加角色');
   };
 
   const handleDelete = async (record: DataType) => {
     Modal.confirm({
       title: `系统提示`,
       icon: <ExclamationCircleOutlined />,
-      content: `是否确认删除用户编号为"${record.userId}"的数据项？`,
+      content: `是否确认删除角色编号为"${record.roleId}"的数据项？`,
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        return deleteUser(record.userId)
+        return deleteRole(record.roleId)
           .then(() => {
             handleTableReload();
             message.success(`删除成功`);
@@ -67,10 +64,10 @@ const UserPage = () => {
   };
 
   const handleUpdate = async (record: DataType) => {
-    const userId = record.userId;
+    const roleId = record.roleId;
     try {
-      const msg = await getUser(userId);
-      updateFormRef.current?.show('修改用户', {
+      const msg = await getRole(roleId);
+      updateFormRef.current?.show('修改角色', {
         ...msg.data,
       });
     } catch (error) {}
@@ -83,33 +80,27 @@ const UserPage = () => {
   const columns: UserColumnProps<DataType, Record<string, string | number>>[] =
     [
       {
-        title: '用户编号',
-        dataIndex: 'userId',
-        key: 'userId',
-        render: (userId: string) => {
+        title: '角色编号',
+        dataIndex: 'roleId',
+        key: 'roleId',
+        render: (roleId: string) => {
           return (
             <Paragraph ellipsis copyable style={{ width: '100px' }}>
-              {userId}
+              {roleId}
             </Paragraph>
           );
         },
       },
       {
-        title: '登陆账号',
-        dataIndex: 'username',
-        key: 'username',
+        title: '角色名称',
+        dataIndex: 'name',
+        key: 'name',
         advancedSearch: { type: 'INPUT' },
       },
       {
-        title: '用户名称',
-        dataIndex: 'nickname',
-        key: 'nickname',
-      },
-      {
-        title: '手机号码',
-        key: 'phone',
-        dataIndex: 'phone',
-        advancedSearch: { type: 'INPUT' },
+        title: '显示顺序',
+        dataIndex: 'sort',
+        key: 'sort',
       },
       {
         title: '状态',
@@ -169,19 +160,19 @@ const UserPage = () => {
   return (
     <PageContainer>
       <TablePro
-        rowKey={'userId'}
+        rowKey={'roleId'}
         toolbarRender={() => (
           <>
             <Button type="primary" onClick={handleAdd}>
-              新增用户
+              新增角色
             </Button>
           </>
         )}
         ref={tableProRef}
         columns={columns}
-        request={listUser}
+        request={listRole}
       />
-      {/* 用户新增修改弹出层 */}
+      {/* 角色新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} onOk={handleOk} />
     </PageContainer>
   );

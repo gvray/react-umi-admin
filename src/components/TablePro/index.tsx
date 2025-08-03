@@ -51,8 +51,8 @@ const TableProFunction: React.ForwardRefRenderFunction<
         ...(paginationParams ?? pagination),
       });
 
-      setListData([...data.items]);
-      setTotal(data.total);
+      setListData([...(data.items ?? data)]);
+      setTotal(data.total ?? data.length);
     } catch (error: any) {
       logger.error(error.info);
       setListData([]);
