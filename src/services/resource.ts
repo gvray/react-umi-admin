@@ -104,7 +104,7 @@ export async function getMenus(
  * @param options 请求选项
  */
 export async function getResource(
-  resourceId: number,
+  resourceId: string,
   options?: { [key: string]: any },
 ) {
   return request(`/resources/${resourceId}`, {

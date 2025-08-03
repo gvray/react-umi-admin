@@ -35,6 +35,10 @@ const routes = [
         component: 'Role',
       },
       {
+        path: '/system/department',
+        component: 'Department',
+      },
+      {
         path: '/system/position',
         component: 'Position',
       },

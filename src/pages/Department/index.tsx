@@ -12,33 +12,34 @@ import {
 import { Button, Flex, Modal, Space, Table, Tooltip, message } from 'antd';
 import { useRef, useState } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
-import { useResourceModel } from './model';
+import { useDepartmentModel } from './model';
 
-export interface ResourceMeta {
-  resourceId: string;
+export interface DepartmentMeta {
+  departmentId: string;
   name: string;
-  type: string;
   parentId: string | null;
-  children?: ResourceMeta[]; // 用于前端展示 tree 结构
+  code: string;
+  description: string;
+  level: number;
+  sort: number;
+  managerId: string;
+  status: string;
+  phone: string;
+  children?: DepartmentMeta[]; // 用于前端展示 tree 结构
   // 可选字段
-  path?: string; // 菜单路由
-  method?: string; // API 方法 (如 GET, POST)
-  code?: string; // 权限标识
-  sort?: number; // 排序
-  icon?: string; // 图标（常用于菜单）
   [key: string]: any; // 允许扩展
 }
 const ResourcePage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
   const [showSearch, setShowSearch] = useState(true);
-  const { data, loading, reload } = useResourceModel();
+  const { data, loading, reload } = useDepartmentModel();
   // 高级搜索参数
   const paramsRef = useRef<Record<string, any>>({});
   const handleAdd = async () => {
     updateFormRef.current?.show('添加资源');
   };
 
-  const handleDelete = async (record: ResourceMeta) => {
+  const handleDelete = async (record: DepartmentMeta) => {
     Modal.confirm({
       title: `系统提示`,
       icon: <ExclamationCircleOutlined />,
@@ -56,7 +57,7 @@ const ResourcePage = () => {
     });
   };
 
-  const handleUpdate = async (record: ResourceMeta) => {
+  const handleUpdate = async (record: DepartmentMeta) => {
     const resourceId = record.resourceId;
     try {
       const msg = await getResource(resourceId);
@@ -76,18 +77,12 @@ const ResourcePage = () => {
   };
   const columns = [
     {
-      title: '资源名称',
+      title: '部门名称',
       dataIndex: 'name',
-      key: 'name',
       fixed: 'left',
       advancedSearch: {
         type: 'INPUT',
       },
-    },
-    {
-      title: '图标',
-      dataIndex: 'icon',
-      key: 'icon',
     },
     {
       title: '排序',
@@ -95,40 +90,8 @@ const ResourcePage = () => {
       key: 'sort',
     },
     {
-      title: '资源类型',
-      dataIndex: 'type',
-      key: 'type',
-      render: (resourceType: string) => {
-        switch (resourceType) {
-          case 'DIRECTORY':
-            return '目录';
-          case 'MENU':
-            return '菜单';
-          case 'BUTTON':
-            return '按钮';
-          case 'API':
-            return '接口';
-          case 'Data':
-            return '数据';
-          default:
-            return '未知';
-        }
-      },
-    },
-    {
-      title: '资源路径',
-      dataIndex: 'path',
-      key: 'path',
-    },
-    {
-      title: '资源权限',
-      dataIndex: 'code',
-      key: 'code',
-    },
-    {
       title: '状态',
       dataIndex: 'status',
-      key: 'status',
       advancedSearch: {
         type: 'SELECT',
         value: [
@@ -143,12 +106,11 @@ const ResourcePage = () => {
     {
       title: '创建时间',
       dataIndex: 'createdAt',
-      key: 'createdAt',
     },
     {
       title: '操作',
       key: 'action',
-      render: (record: ResourceMeta) => {
+      render: (record: DepartmentMeta) => {
         return (
           <Space size={0}>
             <Button
