@@ -2,39 +2,45 @@ import { request } from 'umi';
 
 // 资源数据类型定义
 export interface Resource {
-  resourceId: string;
+  resourceId: number;
   name: string;
-  type: string;
-  url?: string;
+  type: 'directory' | 'menu';
+  path?: string;
+  icon?: string;
+  component?: string;
+  parentId?: number;
+  parentName?: string;
+  level: number;
+  sort: number;
   description?: string;
   status: 'active' | 'inactive';
+  hidden?: boolean;
+  children?: Resource[];
   createdAt: string;
   updatedAt: string;
   createdBy?: string;
-  tags?: string[];
-  size?: number;
-  mimeType?: string;
 }
 export interface ResourceMeta {
-  resourceId: string;
+  resourceId: number;
   name: string;
-  type: string;
-  parentId: string | null;
-  children?: ResourceMeta[]; // 用于前端展示 tree 结构
-  // 可选字段
-  path?: string; // 菜单路由
-  method?: string; // API 方法 (如 GET, POST)
-  code?: string; // 权限标识
-  sort?: number; // 排序
-  icon?: string; // 图标（常用于菜单）
-  [key: string]: any; // 允许扩展
+  type: 'directory' | 'menu';
+  parentId: number | null;
+  children?: ResourceMeta[];
+  path?: string;
+  icon?: string;
+  component?: string;
+  sort?: number;
+  level?: number;
+  [key: string]: any;
 }
 
 export interface ResourceListParams {
   current?: number;
   pageSize?: number;
   name?: string;
-  type?: string;
+  type?: 'directory' | 'menu';
+  parentId?: number;
+  level?: number;
   status?: 'active' | 'inactive';
   sortField?: string;
   sortOrder?: 'ascend' | 'descend';
@@ -42,11 +48,15 @@ export interface ResourceListParams {
 
 export interface ResourceCreateParams {
   name: string;
-  type: string;
-  url?: string;
+  type: 'directory' | 'menu';
+  path?: string;
+  icon?: string;
+  component?: string;
+  parentId?: number;
+  sort?: number;
   description?: string;
   status?: 'active' | 'inactive';
-  tags?: string[];
+  hidden?: boolean;
 }
 
 export interface ResourceUpdateParams extends Partial<ResourceCreateParams> {
