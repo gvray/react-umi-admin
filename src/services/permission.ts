@@ -104,7 +104,7 @@ export async function getPermissionTree(options?: { [key: string]: any }) {
  * @param options 请求选项
  */
 export async function getPermission(
-  permissionId: number,
+  permissionId: string,
   options?: { [key: string]: any },
 ) {
   return request(`/permissions/${permissionId}`, {

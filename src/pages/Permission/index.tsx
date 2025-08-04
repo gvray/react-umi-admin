@@ -1,6 +1,7 @@
 import { PageContainer } from '@/components';
 import AdvancedSearchForm from '@/components/TablePro/components/AdvancedSearchForm';
 import { deletePermission, getPermission } from '@/services/permission';
+import { ResourceMeta } from '@/services/resource';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -13,18 +14,14 @@ import { useRef, useState } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 import { useResourceModel } from './model';
 
-export interface ResourceMeta {
-  resourceId: string;
+export interface PermissionMeta {
+  permissionId: string;
   name: string;
-  type: string;
-  parentId: string | null;
-  children?: ResourceMeta[]; // 用于前端展示 tree 结构
+  action: string;
+  resourceId: string;
+  children?: PermissionMeta[]; // 用于前端展示 tree 结构
   // 可选字段
-  path?: string; // 菜单路由
-  method?: string; // API 方法 (如 GET, POST)
   code?: string; // 权限标识
-  sort?: number; // 排序
-  icon?: string; // 图标（常用于菜单）
   [key: string]: any; // 允许扩展
 }
 const ResourcePage = () => {
@@ -37,7 +34,7 @@ const ResourcePage = () => {
     updateFormRef.current?.show('添加权限');
   };
 
-  const handleDelete = async (record: ResourceMeta) => {
+  const handleDelete = async (record: ResourceMeta | PermissionMeta) => {
     Modal.confirm({
       title: `系统提示`,
       icon: <ExclamationCircleOutlined />,
@@ -55,7 +52,7 @@ const ResourcePage = () => {
     });
   };
 
-  const handleUpdate = async (record: ResourceMeta) => {
+  const handleUpdate = async (record: PermissionMeta) => {
     const permissionId = record.permissionId;
     try {
       const msg = await getPermission(permissionId);
@@ -87,7 +84,10 @@ const ResourcePage = () => {
       title: '权限类型',
       dataIndex: 'action',
       key: 'action',
-      render: (action: string) => {
+      render: (action: string, record: ResourceMeta) => {
+        if (record.permissionId === undefined) {
+          return '-';
+        }
         switch (action) {
           case 'view':
             return '查看';
@@ -114,6 +114,12 @@ const ResourcePage = () => {
       title: '权限点',
       dataIndex: 'code',
       key: 'code',
+      render: (code: string, record: ResourceMeta) => {
+        if (record.permissionId === undefined) {
+          return '-';
+        }
+        return code;
+      },
     },
     {
       title: '创建时间',
@@ -124,6 +130,9 @@ const ResourcePage = () => {
       title: '操作',
       key: 'action',
       render: (record: ResourceMeta) => {
+        if (record.permissionId === undefined) {
+          return '-';
+        }
         return (
           <Space size={0}>
             <Button
