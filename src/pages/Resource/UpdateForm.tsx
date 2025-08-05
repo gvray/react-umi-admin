@@ -1,3 +1,4 @@
+import { IconSelector } from '@/components';
 import { createResource, updateResource } from '@/services/resource';
 import {
   Col,
@@ -104,12 +105,12 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           setTitle(title);
           setVisible(true);
           reset();
-          // if (data) {
-          //   setIsEdit(true);
-          //   form.setFieldsValue(data);
-          // } else {
-          //   setIsEdit(false);
-          // }
+          if (data) {
+            // setIsEdit(true);
+            form.setFieldsValue(data);
+          } else {
+            // setIsEdit(false);
+          }
         },
         hide: () => {
           setVisible(false);
@@ -214,7 +215,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           {(resourceType === 'DIRECTORY' || resourceType === 'MENU') && (
             <Col span={24}>
               <Form.Item name="icon" label="资源图标">
-                <Input />
+                <IconSelector />
               </Form.Item>
             </Col>
           )}

@@ -57,6 +57,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ collapsed }) => {
       <Logo theme={loading ? 'light' : 'dark'} collapsed={collapsed} />
       <Skeleton loading={loading} active round style={{ padding: '15px' }}>
         <Menu
+          inlineIndent={10}
           defaultOpenKeys={['/system']}
           theme={loading ? 'light' : 'dark'}
           mode="inline"

@@ -1,4 +1,4 @@
-import { createResource, updateResource } from '@/services/resource';
+import { createDepartment, updateDepartment } from '@/services/department';
 import {
   Col,
   Form,
@@ -52,9 +52,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
   const resourceType = Form.useWatch('type', form);
-  const { data: resourceList } = useUpdataFormModel(visible);
-
-  // 重置弹出层表单
+  const { data: departmentList } = useUpdataFormModel(visible);
   const reset = () => {
     form.resetFields();
     setConfirmLoading(false);
@@ -63,17 +61,19 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-      const { parentResourceId, ...values } = await form.validateFields();
-      if (form.getFieldValue('resourceId') === undefined) {
-        await createResource({
+      const { parentDepartmentId, ...values } = await form.validateFields();
+      if (form.getFieldValue('departmentId') === undefined) {
+        await createDepartment({
           ...values,
-          parentResourceId: parentResourceId === '0' ? null : parentResourceId,
+          parentDepartmentId:
+            parentDepartmentId === '0' ? null : parentDepartmentId,
         });
         message.success('新增成功');
       } else {
-        await updateResource({
+        await updateDepartment({
           ...values,
-          parentResourceId: parentResourceId === '0' ? null : parentResourceId,
+          parentDepartmentId:
+            parentDepartmentId === '0' ? null : parentDepartmentId,
         });
         message.success('修改成功');
       }
@@ -99,17 +99,16 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
     ref,
     () => {
       return {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         show: (title, data) => {
           setTitle(title);
           setVisible(true);
           reset();
-          // if (data) {
-          //   setIsEdit(true);
-          //   form.setFieldsValue(data);
-          // } else {
-          //   setIsEdit(false);
-          // }
+          if (data) {
+            // setIsEdit(true);
+            form.setFieldsValue(data);
+          } else {
+            // setIsEdit(false);
+          }
         },
         hide: () => {
           setVisible(false);
@@ -148,15 +147,15 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
         }}
         onValuesChange={handleValuesChange}
       >
-        <Form.Item name="resourceId" label="资源Id" hidden>
+        <Form.Item name="resourceId" label="部门Id" hidden>
           <Input />
         </Form.Item>
         <Row gutter={24}>
           <Col span={24}>
             <Form.Item
               name="parentResourceId"
-              label="上级资源"
-              rules={[{ required: true, message: '上级资源不能为空' }]}
+              label="上级部门"
+              rules={[{ required: true, message: '上级部门不能为空' }]}
             >
               <TreeSelect
                 treeDefaultExpandAll
@@ -172,11 +171,11 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
                 treeData={[
                   {
                     resourceId: '0',
-                    name: '顶级资源',
+                    name: '顶级部门',
                     parentResourceId: null,
                   },
                 ].concat(
-                  resourceList
+                  departmentList
                     .filter(
                       (item: any) =>
                         item.type === 'MENU' || item.type === 'DIRECTORY',
@@ -186,12 +185,12 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
                       parentResourceId: item.parentResourceId || '0',
                     })),
                 )}
-                placeholder="请选择上级资源"
+                placeholder="请选择上级部门"
               />
             </Form.Item>
           </Col>
           <Col span={14}>
-            <Form.Item name="type" label="资源类型">
+            <Form.Item name="type" label="部门类型">
               <Radio.Group
                 options={[
                   { value: 'DIRECTORY', label: '目录' },
@@ -213,7 +212,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           </Col>
           {(resourceType === 'DIRECTORY' || resourceType === 'MENU') && (
             <Col span={24}>
-              <Form.Item name="icon" label="资源图标">
+              <Form.Item name="icon" label="部门图标">
                 <Input />
               </Form.Item>
             </Col>
@@ -222,8 +221,8 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           <Col span={14}>
             <Form.Item
               name="name"
-              label="资源名称"
-              rules={[{ required: true, message: '资源名称不能为空' }]}
+              label="部门名称"
+              rules={[{ required: true, message: '部门名称不能为空' }]}
             >
               <Input />
             </Form.Item>
@@ -231,8 +230,8 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           <Col span={10}>
             <Form.Item
               name="status"
-              label="资源状态"
-              rules={[{ required: true, message: '资源状态不能为空' }]}
+              label="部门状态"
+              rules={[{ required: true, message: '部门状态不能为空' }]}
             >
               <Radio.Group
                 options={[
@@ -249,8 +248,8 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
             <Col span={14}>
               <Form.Item
                 name="path"
-                label="资源路径"
-                rules={[{ required: true, message: '资源路径不能为空' }]}
+                label="部门路径"
+                rules={[{ required: true, message: '部门路径不能为空' }]}
               >
                 <Input />
               </Form.Item>
@@ -260,8 +259,8 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
             <Col span={10}>
               <Form.Item
                 name="method"
-                label="资源方法"
-                rules={[{ required: true, message: '资源方法不能为空' }]}
+                label="部门方法"
+                rules={[{ required: true, message: '部门方法不能为空' }]}
               >
                 <Select
                   options={[
@@ -279,8 +278,8 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           <Col span={10}>
             <Form.Item
               name="code"
-              label="资源编码"
-              rules={[{ required: true, message: '资源编码不能为空' }]}
+              label="部门编码"
+              rules={[{ required: true, message: '部门编码不能为空' }]}
             >
               <Input />
             </Form.Item>

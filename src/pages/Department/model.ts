@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 export const useDepartmentModel = () => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const getResourceList = async (params?: Record<string, any>) => {
+  const getDepartmentList = async (params?: Record<string, any>) => {
     try {
       setLoading(true);
       const res = await getDepartmentTree(params);
@@ -17,12 +17,12 @@ export const useDepartmentModel = () => {
     }
   };
   useEffect(() => {
-    getResourceList({});
+    getDepartmentList({});
   }, []);
   return {
     data,
     loading,
-    reload: getResourceList,
+    reload: getDepartmentList,
   };
 };
 
@@ -30,7 +30,7 @@ export const useUpdataFormModel = (open: boolean) => {
   console.log('open', open);
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const getResourceList = async () => {
+  const getDepartmentList = async () => {
     try {
       setLoading(true);
       const res = await listDepartment();
@@ -44,12 +44,12 @@ export const useUpdataFormModel = (open: boolean) => {
   };
   useEffect(() => {
     if (open) {
-      getResourceList();
+      getDepartmentList();
     }
   }, [open]);
   return {
     data,
     loading,
-    reload: getResourceList,
+    reload: getDepartmentList,
   };
 };

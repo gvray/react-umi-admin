@@ -86,17 +86,16 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
     ref,
     () => {
       return {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        show: (title, _data) => {
+        show: (title, data) => {
           setTitle(title);
           setVisible(true);
           reset();
-          // if (data) {
-          //   setIsEdit(true);
-          //   form.setFieldsValue(data);
-          // } else {
-          //   setIsEdit(false);
-          // }
+          if (data) {
+            // setIsEdit(true);
+            form.setFieldsValue(data);
+          } else {
+            // setIsEdit(false);
+          }
         },
         hide: () => {
           setVisible(false);

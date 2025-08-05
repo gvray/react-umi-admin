@@ -36,14 +36,14 @@ const ResourcePage = () => {
   // 高级搜索参数
   const paramsRef = useRef<Record<string, any>>({});
   const handleAdd = async () => {
-    updateFormRef.current?.show('添加资源');
+    updateFormRef.current?.show('添加部门');
   };
 
   const handleDelete = async (record: DepartmentMeta) => {
     Modal.confirm({
       title: `系统提示`,
       icon: <ExclamationCircleOutlined />,
-      content: `是否确认删除资源编号为"${record.resourceId}"的数据项？`,
+      content: `是否确认删除部门编号为"${record.resourceId}"的数据项？`,
       okText: '确认',
       cancelText: '取消',
       onOk() {
@@ -61,7 +61,7 @@ const ResourcePage = () => {
     const resourceId = record.resourceId;
     try {
       const msg = await getResource(resourceId);
-      updateFormRef.current?.show('修改资源', {
+      updateFormRef.current?.show('修改部门', {
         ...msg.data,
       });
     } catch (error) {}
@@ -152,7 +152,7 @@ const ResourcePage = () => {
         <Space style={{ marginBottom: 16 }}>
           {' '}
           <Button type="primary" onClick={handleAdd}>
-            新增资源
+            新增部门
           </Button>
         </Space>
         <Space>
@@ -174,13 +174,13 @@ const ResourcePage = () => {
       </Flex>
       <Table
         scroll={{ x: 'max-content' }}
-        rowKey={'resourceId'}
+        rowKey={'departmentId'}
         loading={loading}
         columns={columns}
         dataSource={data}
         pagination={false}
       />
-      {/* 资源新增修改弹出层 */}
+      {/* 部门新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} onOk={handleOk} />
     </PageContainer>
   );
