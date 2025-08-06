@@ -1,4 +1,4 @@
-import { PageContainer } from '@/components';
+import { AntIcon, PageContainer } from '@/components';
 import StatusTag from '@/components/StatusTag';
 import AdvancedSearchForm from '@/components/TablePro/components/AdvancedSearchForm';
 import { deleteResource, getResource } from '@/services/resource';
@@ -9,7 +9,8 @@ import {
   ReloadOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-import { Button, Flex, Modal, Space, Table, Tooltip, message } from 'antd';
+import { Button, Flex, Modal, Space, Table, Tag, Tooltip, message } from 'antd';
+import dayjs from 'dayjs';
 import { useRef, useState } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 import { useResourceModel } from './model';
@@ -88,6 +89,9 @@ const ResourcePage = () => {
       title: '图标',
       dataIndex: 'icon',
       key: 'icon',
+      render: (icon: string) => {
+        return icon ? <AntIcon icon={icon} /> : '-';
+      },
     },
     {
       title: '排序',
@@ -124,6 +128,9 @@ const ResourcePage = () => {
       title: '资源权限',
       dataIndex: 'code',
       key: 'code',
+      render: (code: string) => {
+        return <Tag color="blue">{code}</Tag>;
+      },
     },
     {
       title: '状态',
@@ -144,6 +151,9 @@ const ResourcePage = () => {
       title: '创建时间',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      render: (createdAt: string) => {
+        return createdAt ? dayjs(createdAt).format('YYYY-MM-DD') : '-';
+      },
     },
     {
       title: '操作',

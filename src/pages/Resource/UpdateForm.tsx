@@ -9,7 +9,6 @@ import {
   Modal,
   Radio,
   Row,
-  Select,
   TreeSelect,
   message,
 } from 'antd';
@@ -52,7 +51,6 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
-  const resourceType = Form.useWatch('type', form);
   const { data: resourceList } = useUpdataFormModel(visible);
 
   // 重置弹出层表单
@@ -143,7 +141,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
         name="form_in_modal"
         initialValues={{
           status: 1,
-          parentResourceId: '0',
+          parentResourceId: null,
           type: 'DIRECTORY',
           sort: 0,
         }}
@@ -157,7 +155,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
             <Form.Item
               name="parentResourceId"
               label="上级资源"
-              rules={[{ required: true, message: '上级资源不能为空' }]}
+              rules={[{ required: false, message: '上级资源不能为空' }]}
             >
               <TreeSelect
                 treeDefaultExpandAll
@@ -170,35 +168,18 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
                   id: 'resourceId',
                   pId: 'parentResourceId',
                 }}
-                treeData={[
-                  {
-                    resourceId: '0',
-                    name: '顶级资源',
-                    parentResourceId: null,
-                  },
-                ].concat(
-                  resourceList
-                    .filter(
-                      (item: any) =>
-                        item.type === 'MENU' || item.type === 'DIRECTORY',
-                    )
-                    .map((item: any) => ({
-                      ...item,
-                      parentResourceId: item.parentResourceId || '0',
-                    })),
-                )}
-                placeholder="请选择上级资源"
+                treeData={resourceList}
+                placeholder="不选表示顶级资源"
               />
             </Form.Item>
           </Col>
           <Col span={14}>
             <Form.Item name="type" label="资源类型">
               <Radio.Group
+                optionType="button"
                 options={[
                   { value: 'DIRECTORY', label: '目录' },
                   { value: 'MENU', label: '菜单' },
-                  { value: 'BUTTON', label: '按钮' },
-                  { value: 'DATA', label: '数据' },
                 ]}
               ></Radio.Group>
             </Form.Item>
@@ -212,13 +193,11 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
               <InputNumber />
             </Form.Item>
           </Col>
-          {(resourceType === 'DIRECTORY' || resourceType === 'MENU') && (
-            <Col span={24}>
-              <Form.Item name="icon" label="资源图标">
-                <IconSelector />
-              </Form.Item>
-            </Col>
-          )}
+          <Col span={24}>
+            <Form.Item name="icon" label="资源图标">
+              <IconSelector />
+            </Form.Item>
+          </Col>
 
           <Col span={14}>
             <Form.Item
@@ -246,37 +225,15 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
             </Form.Item>
           </Col>
 
-          {resourceType !== 'BUTTON' && (
-            <Col span={14}>
-              <Form.Item
-                name="path"
-                label="资源路径"
-                rules={[{ required: true, message: '资源路径不能为空' }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-          )}
-          {resourceType === 'DATA' && (
-            <Col span={10}>
-              <Form.Item
-                name="method"
-                label="资源方法"
-                rules={[{ required: true, message: '资源方法不能为空' }]}
-              >
-                <Select
-                  options={[
-                    { value: 'GET', label: 'GET' },
-                    { value: 'POST', label: 'POST' },
-                    { value: 'PUT', label: 'PUT' },
-                    { value: 'PATCH', label: 'PATCH' },
-                    { value: 'DELETE', label: 'DELETE' },
-                  ]}
-                />
-              </Form.Item>
-            </Col>
-          )}
-
+          <Col span={14}>
+            <Form.Item
+              name="path"
+              label="资源路径"
+              rules={[{ required: true, message: '资源路径不能为空' }]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
           <Col span={10}>
             <Form.Item
               name="code"
