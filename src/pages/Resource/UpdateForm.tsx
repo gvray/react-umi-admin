@@ -62,17 +62,17 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-      const { parentResourceId, ...values } = await form.validateFields();
+      const { parentId, ...values } = await form.validateFields();
       if (form.getFieldValue('resourceId') === undefined) {
         await createResource({
           ...values,
-          parentResourceId: parentResourceId === '0' ? null : parentResourceId,
+          parentId: parentId === '0' ? null : parentId,
         });
         message.success('新增成功');
       } else {
         await updateResource({
           ...values,
-          parentResourceId: parentResourceId === '0' ? null : parentResourceId,
+          parentId: parentId === '0' ? null : parentId,
         });
         message.success('修改成功');
       }
@@ -141,7 +141,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
         name="form_in_modal"
         initialValues={{
           status: 1,
-          parentResourceId: null,
+          parentId: null,
           type: 'DIRECTORY',
           sort: 0,
         }}
@@ -153,7 +153,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
         <Row gutter={24}>
           <Col span={24}>
             <Form.Item
-              name="parentResourceId"
+              name="parentId"
               label="上级资源"
               rules={[{ required: false, message: '上级资源不能为空' }]}
             >
@@ -166,7 +166,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
                 }}
                 treeDataSimpleMode={{
                   id: 'resourceId',
-                  pId: 'parentResourceId',
+                  pId: 'parentId',
                 }}
                 treeData={resourceList}
                 placeholder="不选表示顶级资源"
