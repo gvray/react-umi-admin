@@ -81,7 +81,7 @@ export async function listDepartment(
  * @param options 请求选项
  */
 export async function getDepartment(
-  departmentId: number,
+  departmentId: string,
   options?: { [key: string]: any },
 ) {
   return request(`/departments/${departmentId}`, {
@@ -129,7 +129,7 @@ export async function updateDepartment(
  * @param options 请求选项
  */
 export async function deleteDepartment(
-  departmentId: number,
+  departmentId: string,
   options?: { [key: string]: any },
 ) {
   return request(`/departments/${departmentId}`, {

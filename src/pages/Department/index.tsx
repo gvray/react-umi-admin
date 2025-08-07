@@ -1,7 +1,7 @@
 import { PageContainer } from '@/components';
 import StatusTag from '@/components/StatusTag';
 import AdvancedSearchForm from '@/components/TablePro/components/AdvancedSearchForm';
-import { deleteResource, getResource } from '@/services/resource';
+import { deleteDepartment, getDepartment } from '@/services/department';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -29,7 +29,7 @@ export interface DepartmentMeta {
   // 可选字段
   [key: string]: any; // 允许扩展
 }
-const ResourcePage = () => {
+const DepartmentPage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
   const [showSearch, setShowSearch] = useState(true);
   const { data, loading, reload } = useDepartmentModel();
@@ -43,11 +43,11 @@ const ResourcePage = () => {
     Modal.confirm({
       title: `系统提示`,
       icon: <ExclamationCircleOutlined />,
-      content: `是否确认删除部门编号为"${record.resourceId}"的数据项？`,
+      content: `是否确认删除部门编号为"${record.departmentId}"的数据项？`,
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        return deleteResource(record.resourceId)
+        return deleteDepartment(record.departmentId)
           .then(() => {
             reload();
             message.success(`删除成功`);
@@ -58,9 +58,9 @@ const ResourcePage = () => {
   };
 
   const handleUpdate = async (record: DepartmentMeta) => {
-    const resourceId = record.resourceId;
+    const departmentId = record.departmentId;
     try {
-      const msg = await getResource(resourceId);
+      const msg = await getDepartment(departmentId);
       updateFormRef.current?.show('修改部门', {
         ...msg.data,
       });
@@ -173,6 +173,9 @@ const ResourcePage = () => {
         </Space>
       </Flex>
       <Table
+        expandable={{
+          defaultExpandAllRows: true,
+        }}
         scroll={{ x: 'max-content' }}
         rowKey={'departmentId'}
         loading={loading}
@@ -186,4 +189,4 @@ const ResourcePage = () => {
   );
 };
 
-export default ResourcePage;
+export default DepartmentPage;
