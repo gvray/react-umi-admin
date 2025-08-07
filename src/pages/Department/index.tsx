@@ -10,6 +10,7 @@ import {
   SearchOutlined,
 } from '@ant-design/icons';
 import { Button, Flex, Modal, Space, Table, Tooltip, message } from 'antd';
+import dayjs from 'dayjs';
 import { useRef, useState } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 import { useDepartmentModel } from './model';
@@ -106,6 +107,9 @@ const DepartmentPage = () => {
     {
       title: '创建时间',
       dataIndex: 'createdAt',
+      render: (createdAt: string) => {
+        return createdAt ? dayjs(createdAt).format('YYYY-MM-DD') : '-';
+      },
     },
     {
       title: '操作',
