@@ -1,6 +1,6 @@
 // 职位管理
 
-import { request } from 'umi';
+import { request } from '@/utils/request';
 
 // 职位数据类型定义
 export interface Position {

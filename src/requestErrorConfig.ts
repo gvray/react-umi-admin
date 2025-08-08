@@ -3,6 +3,7 @@ import type { RequestOptions } from '@@/plugin-request/request';
 import { message as msg, notification } from 'antd';
 import storetify from 'storetify';
 import type { RequestConfig } from 'umi';
+// 这里 umi request插件的错误处理方案， 可以在这里做自己的改动，但我不打算使用 完将完全暴露request到utils中
 
 // 错误处理方案： 错误类型
 enum ErrorShowType {
@@ -29,7 +30,7 @@ interface ResponseStructure {
 export const errorConfig: RequestConfig = {
   // 错误处理： umi@3 的错误处理方案。
   errorConfig: {
-    // 错误抛出
+    // 当响应的数据 success 是 false 的时候，抛出 error 以供 errorHandler 处理。
     errorThrower: (res) => {
       const { success, data, code, message, showType } =
         res as unknown as ResponseStructure;
@@ -41,7 +42,8 @@ export const errorConfig: RequestConfig = {
         throw error; // 抛出自制的错误
       }
     },
-    // 错误接收及处理
+    // 接受 axios 的错误。
+    // 接受 errorThrower 抛出的错误。
     errorHandler: (error: any, opts: any) => {
       if (opts?.skipErrorHandler) throw error;
       // 我们的 errorThrower 抛出的错误。
@@ -105,9 +107,8 @@ export const errorConfig: RequestConfig = {
   // 响应拦截器
   responseInterceptors: [
     (response) => {
-      // 拦截响应数据，进行个性化处理
+      // 拦截200-299的响应数据，进行个性化处理,这里比 errorThrower 那拦截器早执行
       const { data } = response as unknown as ResponseStructure;
-
       if (data?.success === false) {
         logger.trace('服务判定错误');
       }
