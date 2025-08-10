@@ -17,6 +17,7 @@ const PermissionTree: React.FC<PermissionTreeProps> = ({
   onChange,
   treeData = [],
 }) => {
+  //   console.log(value);
   const handleCheck: TreeProps['onCheck'] = (checkedKeys, info) => {
     const checkedNodeKeys = info.checkedNodes
       .filter((item: any) => item.permissionId)

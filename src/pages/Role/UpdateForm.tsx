@@ -99,7 +99,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
             const permissionsIds = new Set(
               data.permissions.map((item: any) => item.permissionId),
             );
-            // data.permissions.forEach((item: any) => {
+            // each(data.permissions, (item: any) => {
             //   permissionsIds.add(item.resource.resourceId);
             // });
             form.setFieldsValue({ permissionIds: Array.from(permissionsIds) });
