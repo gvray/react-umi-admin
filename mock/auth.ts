@@ -1,5 +1,5 @@
+import { sleep } from '@gvray/eskit';
 import { Request, Response } from 'express';
-import { sleep } from 'ts-copilot';
 
 export default {
   'POST /api/auth/login': async (req: Request, res: Response) => {

@@ -1,5 +1,5 @@
+import { sleep } from '@gvray/eskit';
 import { Request, Response } from 'express';
-import { sleep } from 'ts-copilot';
 export default {
   'GET /api/resources/menus': async (_req: Request, res: Response) => {
     await sleep(800);

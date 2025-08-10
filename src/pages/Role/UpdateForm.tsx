@@ -1,15 +1,19 @@
-import { addUser, updateUser } from '@/services/user';
+import { PermissionTree } from '@/components';
+import { addRole, updateRole } from '@/services/role';
+import { mapTree } from '@gvray/eskit';
 import {
   Col,
   Form,
   FormInstance,
   Input,
+  InputNumber,
   Modal,
   Radio,
   Row,
   message,
 } from 'antd';
 import React, { useImperativeHandle, useState } from 'react';
+import useUpdataFormModel from './model';
 
 interface UpdateFormProps {
   onCancel?: () => void;
@@ -45,10 +49,9 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
 > = ({ onOk, onCancel }, ref) => {
   const [title, setTitle] = useState('未设置弹出层标题');
   const [visible, setVisible] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
-
+  const { data } = useUpdataFormModel(visible);
   // 重置弹出层表单
   const reset = () => {
     form.resetFields();
@@ -59,11 +62,11 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
     try {
       setConfirmLoading(true);
       const values = await form.validateFields();
-      if (form.getFieldValue('userId') === undefined) {
-        await addUser(values);
+      if (form.getFieldValue('roleId') === undefined) {
+        await addRole(values);
         message.success('新增成功');
       } else {
-        await updateUser(values);
+        await updateRole(values);
         message.success('修改成功');
       }
       setVisible(false);
@@ -91,10 +94,17 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           setVisible(true);
           reset();
           if (data) {
-            setIsEdit(true);
+            // setIsEdit(true);
             form.setFieldsValue(data);
+            const permissionsIds = new Set(
+              data.permissions.map((item: any) => item.permissionId),
+            );
+            // data.permissions.forEach((item: any) => {
+            //   permissionsIds.add(item.resource.resourceId);
+            // });
+            form.setFieldsValue({ permissionIds: Array.from(permissionsIds) });
           } else {
-            setIsEdit(false);
+            // setIsEdit(false);
           }
         },
         hide: () => {
@@ -111,7 +121,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
     <Modal
       destroyOnClose
       forceRender
-      width={820}
+      width={520}
       title={title}
       open={visible}
       onOk={handleOk}
@@ -127,86 +137,63 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
         name="form_in_modal"
         initialValues={{
           status: 1,
-          password: '123456',
-          postIds: [],
-          roleIds: [],
+          sort: 0,
         }}
       >
-        <Form.Item name="userId" label="用户Id" hidden>
+        <Form.Item name="roleId" label="角色Id" hidden>
           <Input />
         </Form.Item>
         <Row gutter={24}>
-          <Col span={12}>
+          <Col span={24}>
             <Form.Item
-              name="nickname"
-              label="用户名称"
-              rules={[{ required: true, message: '用户名称不能为空' }]}
+              name="name"
+              label="角色名称"
+              rules={[{ required: true, message: '角色名称不能为空' }]}
             >
-              <Input placeholder="请输入用户名称" />
+              <Input placeholder="请输入角色名称" />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={24}>
             <Form.Item
-              name="phone"
-              label="手机号码"
-              rules={[
-                {
-                  validator: (_, phone) => {
-                    const reg = /^1[3|4|5|6|7|8|9][0-9]\d{8}$/;
-                    if (!phone || reg.test(phone)) {
-                      return Promise.resolve();
-                    } else {
-                      return Promise.reject(new Error('请输入正确的手机号码'));
-                    }
-                  },
-                },
-              ]}
+              name="roleKey"
+              label="角色标识"
+              rules={[{ required: true, message: '角色标识不能为空' }]}
             >
-              <Input placeholder="请输入手机号码" maxLength={11} />
+              <Input placeholder="请输入角色标识" maxLength={50} />
             </Form.Item>
           </Col>
-          <Col span={12}>
-            <Form.Item name="email" label="邮箱" rules={[{ type: 'email' }]}>
-              <Input placeholder="请输入邮箱" maxLength={50} />
-            </Form.Item>
-          </Col>
-          <Col span={isEdit ? 0 : 12}>
+          <Col span={24}>
             <Form.Item
-              hidden={isEdit}
-              name="username"
-              label="登陆账号"
-              rules={[
-                { required: true, message: '登陆账号不能为空' },
-                {
-                  min: 2,
-                  max: 20,
-                  message: '登陆账号长度必须介于 2 和 20 之间',
-                },
-              ]}
+              name="sort"
+              label="排序"
+              rules={[{ required: true, message: '排序不能为空' }]}
             >
-              <Input placeholder="请输登陆账号" maxLength={30} />
+              <InputNumber placeholder="请输入排序" />
             </Form.Item>
           </Col>
-          {!isEdit && (
-            <Col span={12}>
-              <Form.Item
-                name="password"
-                label="用户密码"
-                rules={[
-                  { required: true, message: '用户密码不能为空' },
-                  {
-                    min: 5,
-                    max: 20,
-                    message: '用户密码长度必须介于 5 和 20 之间',
-                  },
-                ]}
-              >
-                <Input.Password placeholder="请输用户密码" maxLength={20} />
-              </Form.Item>
-            </Col>
-          )}
-          <Col span={12}>
-            <Form.Item name="status" label="用户状态">
+          {/* <Col span={12}>
+            <Form.Item name="dataScope" label="数据范围" rules={[{ required: true, message: '数据范围不能为空' }]}>
+              <Radio.Group>
+                <Radio value="1">全部数据</Radio>
+                <Radio value="2">本部门数据</Radio>
+                <Radio value="3">本部门及子部门数据</Radio>
+              </Radio.Group>
+            </Form.Item>
+          </Col> */}
+          <Col span={24}>
+            <Form.Item name="permissionIds" label="权限点分配">
+              <PermissionTree
+                treeData={mapTree(data, (item: any) => ({
+                  ...item,
+                  key: item.permissionId ?? item.resourceId,
+                  title: item.name,
+                  children: item.children,
+                }))}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item name="status" label="角色状态">
               <Radio.Group
                 options={[
                   { value: 0, label: '停用' },

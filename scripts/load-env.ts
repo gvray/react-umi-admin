@@ -7,7 +7,8 @@ export const loadEnvFromEnv = (env: string) => {
   if (fs.existsSync(envPath)) {
     dotenv.config({ path: envPath });
 
-    console.log('⚙️ 环境变量检查:', {
+    console.log('⚙️ 环境变量检查:');
+    console.table({
       __APP_ENV__: process.env.APP_ENV,
       __APP_API_URL__: process.env.APP_API_URL,
       __APP_API_TOKEN_KEY__: process.env.APP_API_TOKEN_KEY,

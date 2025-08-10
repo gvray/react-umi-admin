@@ -76,7 +76,7 @@ export async function getRole(
  * @param values 角色数据
  * @param options 请求选项
  */
-export async function createRole(
+export async function addRole(
   values: RoleCreateParams,
   options?: { [key: string]: any },
 ) {

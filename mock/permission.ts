@@ -1,6 +1,6 @@
+import { sleep } from '@gvray/eskit';
 import dayjs from 'dayjs';
 import { Request, Response } from 'express';
-import { sleep } from 'ts-copilot';
 
 // const uuid = () =>
 //   'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {

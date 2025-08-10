@@ -1,6 +1,6 @@
+import { sleep } from '@gvray/eskit';
 import dayjs from 'dayjs';
 import { Request, Response } from 'express';
-import { sleep } from 'ts-copilot';
 
 // 模拟资源数据（目录和菜单）
 const resourceData = new Map();
