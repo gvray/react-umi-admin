@@ -7,9 +7,12 @@ import {
   Modal,
   Radio,
   Row,
+  Select,
+  TreeSelect,
   message,
 } from 'antd';
 import React, { useImperativeHandle, useState } from 'react';
+import useUpdateForm from './model';
 
 interface UpdateFormProps {
   onCancel?: () => void;
@@ -48,6 +51,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
   const [isEdit, setIsEdit] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
+  const { deptTree, roleList, positionList } = useUpdateForm(visible);
 
   // 重置弹出层表单
   const reset = () => {
@@ -185,6 +189,47 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
               ]}
             >
               <Input placeholder="请输登陆账号" maxLength={30} />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name="roleIds" label="角色">
+              <Select
+                options={roleList}
+                fieldNames={{ value: 'roleId', label: 'name' }}
+                mode="multiple"
+                allowClear
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name="gender" label="性别">
+              <Select
+                options={[
+                  { value: 0, label: '未知' },
+                  { value: 1, label: '男' },
+                  { value: 2, label: '女' },
+                  { value: 3, label: '其他' },
+                ]}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name="departmentId" label="部门">
+              <TreeSelect
+                treeData={deptTree}
+                fieldNames={{ value: 'departmentId', label: 'name' }}
+                allowClear
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item name="positionIds" label="岗位">
+              <Select
+                options={positionList}
+                fieldNames={{ value: 'positionId', label: 'name' }}
+                mode="multiple"
+                allowClear
+              />
             </Form.Item>
           </Col>
           {!isEdit && (
