@@ -39,11 +39,23 @@ export async function updateUser(
 }
 
 export async function getUser(
-  userId: number,
+  userId: string,
   options?: { [key: string]: any },
 ) {
   return request(`/users/${userId}`, {
     method: 'GET',
+    ...(options || {}),
+  });
+}
+
+export async function updateUserRole(
+  userId: string,
+  data: any,
+  options?: { [key: string]: any },
+) {
+  return request(`/users/${userId}/roles`, {
+    method: 'PUT',
+    data,
     ...(options || {}),
   });
 }

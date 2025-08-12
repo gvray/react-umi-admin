@@ -46,6 +46,11 @@ const routes = [
         path: '/system/position',
         component: 'Position',
       },
+      // 用户分配角色
+      {
+        path: '/system/user-auth/role/:userId',
+        component: 'User/AuthRole',
+      },
     ],
   },
   { path: '*', component: '404' },

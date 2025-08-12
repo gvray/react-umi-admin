@@ -1,4 +1,4 @@
-import { PageContainer, TablePro } from '@/components';
+import { DateTimeFormat, PageContainer, TablePro } from '@/components';
 import StatusTag from '@/components/StatusTag';
 import { TableProRef } from '@/components/TablePro';
 import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
@@ -7,11 +7,12 @@ import {
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
 import { Button, Modal, Space, Typography, message } from 'antd';
 import { ColumnProps } from 'antd/es/table';
-import dayjs from 'dayjs';
 import { useRef } from 'react';
+import { useNavigate } from 'umi';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 
 const { Paragraph } = Typography;
@@ -36,8 +37,8 @@ interface UserColumnProps<T, U> extends ColumnProps<T> {
 }
 
 const UserPage = () => {
+  const navigate = useNavigate();
   const updateFormRef = useRef<UpdateFormRef>(null);
-
   const tableProRef = useRef<TableProRef>(null);
 
   const handleTableReload = () => {
@@ -69,15 +70,23 @@ const UserPage = () => {
   const handleUpdate = async (record: DataType) => {
     const userId = record.userId;
     try {
-      const msg = await getUser(userId);
-      updateFormRef.current?.show('修改用户', {
-        ...msg.data,
-      });
+      const res = await getUser(userId);
+      const data = {
+        ...res.data,
+        positionIds: res.data.positions.map((item: any) => item.positionId),
+        roleIds: res.data.roles.map((item: any) => item.roleId),
+        departmentId: res.data.department.departmentId,
+      };
+      updateFormRef.current?.show('修改用户', data);
     } catch (error) {}
   };
 
   const handleOk = () => {
     handleTableReload();
+  };
+
+  const handleAuthRole = (userId: string) => {
+    navigate(`/system/user-auth/role/${userId}`);
   };
 
   const columns: UserColumnProps<DataType, Record<string, string | number>>[] =
@@ -133,7 +142,7 @@ const UserPage = () => {
         key: 'createdAt',
         dataIndex: 'createdAt',
         render: (time: string) => {
-          return dayjs(time).format('YYYY MM-DD');
+          return <DateTimeFormat value={time} />;
         },
         advancedSearch: {
           type: 'TIME_RANGE',
@@ -159,6 +168,13 @@ const UserPage = () => {
                 onClick={() => handleDelete(record)}
               >
                 删除
+              </Button>
+              <Button
+                type="link"
+                icon={<UserOutlined />}
+                onClick={() => handleAuthRole(record.userId)}
+              >
+                分配角色
               </Button>
             </Space>
           );

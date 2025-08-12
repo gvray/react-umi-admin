@@ -1,6 +1,7 @@
 import AllIconsPreview from './AllIconsPreview';
 import AntIcon from './AntIcon';
 import Charts from './Charts';
+import DateTimeFormat from './DateTimeFormat';
 import IconSelector from './IconSelector';
 import PageContainer from './PageContainer';
 import PermissionTree from './PermissionTree';
@@ -11,6 +12,7 @@ export {
   AllIconsPreview,
   AntIcon,
   Charts,
+  DateTimeFormat,
   IconSelector,
   PageContainer,
   PermissionTree,
