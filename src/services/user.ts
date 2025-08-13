@@ -1,6 +1,6 @@
 import { request } from 'umi';
 
-export async function listUser(params: any, options?: { [key: string]: any }) {
+export async function listUser(params?: any, options?: { [key: string]: any }) {
   return request('/users', {
     method: 'GET',
     params,

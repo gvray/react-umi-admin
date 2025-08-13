@@ -51,6 +51,16 @@ const routes = [
         path: '/system/user-auth/role/:userId',
         component: 'User/AuthRole',
       },
+      // 角色分配权限
+      {
+        path: '/system/role-auth/permission/:roleId',
+        component: 'Role/AuthPermission',
+      },
+      // 角色分配用户
+      {
+        path: '/system/role-auth/user/:roleId',
+        component: 'Role/AuthUser',
+      },
     ],
   },
   { path: '*', component: '404' },

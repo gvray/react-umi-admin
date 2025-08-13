@@ -7,11 +7,13 @@ import {
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
 import { Button, Modal, Space, Typography, message } from 'antd';
 import { ColumnProps } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { useRef } from 'react';
+import { useNavigate } from 'umi';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 
 const { Paragraph } = Typography;
@@ -21,7 +23,7 @@ interface DataType {
   updateBy?: string;
   updatedAt?: string;
   remark: string;
-  roleId: number;
+  roleId: string;
   name: string;
   code: string;
   description: string;
@@ -33,6 +35,7 @@ interface UserColumnProps<T, U> extends ColumnProps<T> {
 }
 
 const UserPage = () => {
+  const navigate = useNavigate();
   const updateFormRef = useRef<UpdateFormRef>(null);
 
   const tableProRef = useRef<TableProRef>(null);
@@ -75,6 +78,10 @@ const UserPage = () => {
 
   const handleOk = () => {
     handleTableReload();
+  };
+
+  const handleAuthUser = (record: DataType) => {
+    navigate(`/system/role-auth/user/${record.roleId}`);
   };
 
   const columns: UserColumnProps<DataType, Record<string, string | number>>[] =
@@ -150,6 +157,13 @@ const UserPage = () => {
                 onClick={() => handleDelete(record)}
               >
                 删除
+              </Button>
+              <Button
+                type="link"
+                icon={<UserOutlined />}
+                onClick={() => handleAuthUser(record)}
+              >
+                分配用户
               </Button>
             </Space>
           );

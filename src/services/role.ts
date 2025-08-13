@@ -62,7 +62,7 @@ export async function listRole(
  * @param options 请求选项
  */
 export async function getRole(
-  roleId: number,
+  roleId: string,
   options?: { [key: string]: any },
 ) {
   return request(`/roles/${roleId}`, {
@@ -197,6 +197,19 @@ export async function getRoleUsers(
 ) {
   return request(`/roles/${roleId}/users`, {
     method: 'GET',
+    ...(options || {}),
+  });
+}
+
+// 分配用户
+export async function assignRoleUsers(
+  roleId: string,
+  users: string[],
+  options?: { [key: string]: any },
+) {
+  return request(`/roles/${roleId}/users`, {
+    method: 'Put',
+    data: { userIds: users },
     ...(options || {}),
   });
 }

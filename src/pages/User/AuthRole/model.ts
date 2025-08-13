@@ -59,7 +59,7 @@ export const useAuthRole = (userId?: string) => {
 
         return true;
       } catch (error) {
-        message.error('角色分配失败');
+        // message.error('角色分配失败');
         return false;
       } finally {
         setSubmitting(false);
