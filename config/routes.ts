@@ -46,6 +46,14 @@ const routes = [
         path: '/system/position',
         component: 'Position',
       },
+      {
+        path: '/system/dictionary',
+        component: 'Dictionary',
+      },
+      {
+        path: '/system/dictionary/items/:typeId',
+        component: 'Dictionary/Items',
+      },
       // 用户分配角色
       {
         path: '/system/user-auth/role/:userId',
