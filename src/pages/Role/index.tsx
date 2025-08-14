@@ -7,6 +7,7 @@ import {
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
+  KeyOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { Button, Modal, Space, Typography, message } from 'antd';
@@ -84,6 +85,10 @@ const UserPage = () => {
     navigate(`/system/role-auth/user/${record.roleId}`);
   };
 
+  const handleAuthPermission = (record: DataType) => {
+    navigate(`/system/role-auth/permission/${record.roleId}`);
+  };
+
   const columns: UserColumnProps<DataType, Record<string, string | number>>[] =
     [
       {
@@ -151,12 +156,11 @@ const UserPage = () => {
                 修改
               </Button>
               <Button
-                danger
                 type="link"
-                icon={<DeleteOutlined />}
-                onClick={() => handleDelete(record)}
+                icon={<KeyOutlined />}
+                onClick={() => handleAuthPermission(record)}
               >
-                删除
+                分配权限
               </Button>
               <Button
                 type="link"
@@ -164,6 +168,14 @@ const UserPage = () => {
                 onClick={() => handleAuthUser(record)}
               >
                 分配用户
+              </Button>
+              <Button
+                danger
+                type="link"
+                icon={<DeleteOutlined />}
+                onClick={() => handleDelete(record)}
+              >
+                删除
               </Button>
             </Space>
           );

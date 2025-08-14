@@ -161,12 +161,12 @@ export async function updateRoleStatus(
  */
 export async function assignRolePermissions(
   roleId: number,
-  permissions: string[],
+  permissionIds: string[],
   options?: { [key: string]: any },
 ) {
   return request(`/roles/${roleId}/permissions`, {
     method: 'PUT',
-    data: { permissions },
+    data: { permissionIds },
     ...(options || {}),
   });
 }
