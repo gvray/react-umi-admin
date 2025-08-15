@@ -1,9 +1,11 @@
 import {
   createDictionaryItem,
+  getDictionaryType,
   updateDictionaryItem,
 } from '@/services/dictionary';
 import { Form, Input, InputNumber, Modal, Select, message } from 'antd';
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import { useParams } from 'umi';
 
 const { TextArea } = Input;
 
@@ -20,13 +22,12 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>((props, ref) => {
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-  const [initialData, setInitialData] = useState<any>(null);
+  const { typeId } = useParams();
 
   useImperativeHandle(ref, () => ({
     show: (title: string, data?: any) => {
       setTitle(title);
       setVisible(true);
-      setInitialData(data);
       if (data) {
         form.setFieldsValue(data);
       } else {
@@ -40,9 +41,9 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>((props, ref) => {
       const values = await form.validateFields();
       setLoading(true);
 
-      if (initialData?.itemId) {
+      if (values?.itemId) {
         // 更新
-        await updateDictionaryItem(initialData.itemId, values);
+        await updateDictionaryItem(values.itemId, values);
         message.success('更新成功');
       } else {
         // 新增
@@ -64,6 +65,22 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>((props, ref) => {
     form.resetFields();
   };
 
+  useEffect(() => {
+    const fetchDictionaryType = async () => {
+      if (typeId) {
+        try {
+          const res: any = await getDictionaryType(typeId);
+          form.setFieldsValue({
+            typeCode: res.data.code,
+          });
+        } catch (error) {
+          console.error('获取字典类型信息失败:', error);
+        }
+      }
+    };
+    fetchDictionaryType();
+  }, [typeId]);
+
   return (
     <Modal
       title={title}
@@ -82,26 +99,8 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>((props, ref) => {
           sort: 0,
         }}
       >
-        <Form.Item
-          name="code"
-          label="字典项编码"
-          rules={[
-            { required: true, message: '请输入字典项编码' },
-            {
-              pattern: /^[a-zA-Z0-9_]+$/,
-              message: '编码只能包含字母、数字和下划线',
-            },
-          ]}
-        >
-          <Input placeholder="请输入字典项编码" />
-        </Form.Item>
-
-        <Form.Item
-          name="name"
-          label="字典项名称"
-          rules={[{ required: true, message: '请输入字典项名称' }]}
-        >
-          <Input placeholder="请输入字典项名称" />
+        <Form.Item name="typeCode" label="字典类型">
+          <Input disabled />
         </Form.Item>
 
         <Form.Item

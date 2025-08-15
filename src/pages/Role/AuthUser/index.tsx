@@ -276,7 +276,7 @@ export default function AuthUserPage() {
                 dataIndex: 'createdAt',
                 key: 'createdAt',
                 width: 120,
-                render: (text: string) => <DateTimeFormat value={text} />,
+                render: (time: string) => <DateTimeFormat value={time} />,
               },
             ]}
             dataSource={filteredUsers}

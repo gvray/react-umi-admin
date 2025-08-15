@@ -1,4 +1,4 @@
-import { PageContainer, TablePro } from '@/components';
+import { DateTimeFormat, PageContainer, TablePro } from '@/components';
 import StatusTag from '@/components/StatusTag';
 import { TableProRef } from '@/components/TablePro';
 import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
@@ -12,7 +12,6 @@ import {
 } from '@ant-design/icons';
 import { Button, Modal, Space, Typography, message } from 'antd';
 import { ColumnProps } from 'antd/es/table';
-import dayjs from 'dayjs';
 import { useRef } from 'react';
 import { useNavigate } from 'umi';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
@@ -136,7 +135,7 @@ const UserPage = () => {
         key: 'createdAt',
         dataIndex: 'createdAt',
         render: (time: string) => {
-          return dayjs(time).format('YYYY MM-DD');
+          return <DateTimeFormat value={time} />;
         },
         advancedSearch: {
           type: 'TIME_RANGE',

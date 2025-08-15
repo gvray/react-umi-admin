@@ -1,4 +1,4 @@
-import { PageContainer } from '@/components';
+import { DateTimeFormat, PageContainer } from '@/components';
 import StatusTag from '@/components/StatusTag';
 import AdvancedSearchForm from '@/components/TablePro/components/AdvancedSearchForm';
 import { deleteDepartment, getDepartment } from '@/services/department';
@@ -10,7 +10,6 @@ import {
   SearchOutlined,
 } from '@ant-design/icons';
 import { Button, Flex, Modal, Space, Table, Tooltip, message } from 'antd';
-import dayjs from 'dayjs';
 import { useRef, useState } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 import { useDepartmentModel } from './model';
@@ -107,8 +106,8 @@ const DepartmentPage = () => {
     {
       title: '创建时间',
       dataIndex: 'createdAt',
-      render: (createdAt: string) => {
-        return createdAt ? dayjs(createdAt).format('YYYY-MM-DD') : '-';
+      render: (time: string) => {
+        return <DateTimeFormat value={time} />;
       },
     },
     {

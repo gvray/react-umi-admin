@@ -1,4 +1,4 @@
-import { PageContainer, TablePro } from '@/components';
+import { DateTimeFormat, PageContainer, TablePro } from '@/components';
 import StatusTag from '@/components/StatusTag';
 import { TableProRef } from '@/components/TablePro';
 import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
@@ -10,20 +10,29 @@ import {
 } from '@/services/dictionary';
 import {
   ArrowLeftOutlined,
+  BookOutlined,
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
-import { Button, Card, Modal, Space, Typography, message } from 'antd';
+import {
+  Button,
+  Card,
+  Col,
+  Modal,
+  Row,
+  Space,
+  Tag,
+  Typography,
+  message,
+} from 'antd';
 import { ColumnProps } from 'antd/es/table';
-import dayjs from 'dayjs';
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'umi';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 
-const { Title, Text } = Typography;
-
+const { Title, Text, Paragraph } = Typography;
 interface DataType {
   itemId: string;
   typeId: string;
@@ -54,7 +63,7 @@ const DictionaryItemsPage = () => {
     if (!typeId) return;
     try {
       setLoading(true);
-      const res = await getDictionaryType(typeId);
+      const res: any = await getDictionaryType(typeId);
       setDictionaryType(res.data);
     } catch (error) {
       message.error('获取字典类型信息失败');
@@ -62,6 +71,12 @@ const DictionaryItemsPage = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (typeId) {
+      fetchDictionaryType();
+    }
+  }, [typeId]);
 
   const handleTableReload = () => {
     tableProRef.current?.reload();
@@ -73,16 +88,26 @@ const DictionaryItemsPage = () => {
 
   const handleDelete = async (record: DataType) => {
     Modal.confirm({
-      title: `系统提示`,
+      title: `删除确认`,
       icon: <ExclamationCircleOutlined />,
-      content: `是否确认删除字典项"${record.name}"？`,
-      okText: '确认',
+      content: (
+        <div>
+          <p>
+            确定要删除字典项 <strong>&quot;{record.name}&quot;</strong> 吗？
+          </p>
+          <p style={{ color: '#ff4d4f', fontSize: '12px', marginTop: '8px' }}>
+            删除后将无法恢复！
+          </p>
+        </div>
+      ),
+      okText: '确认删除',
       cancelText: '取消',
+      okType: 'danger',
       onOk() {
         return deleteDictionaryItem(record.itemId)
           .then(() => {
             handleTableReload();
-            message.success(`删除成功`);
+            message.success(`字典项"${record.name}"删除成功`);
           })
           .catch(() => {});
       },
@@ -92,7 +117,7 @@ const DictionaryItemsPage = () => {
   const handleUpdate = async (record: DataType) => {
     const itemId = record.itemId;
     try {
-      const msg = await getDictionaryItem(itemId);
+      const msg: any = await getDictionaryItem(itemId);
       updateFormRef.current?.show('修改字典项', {
         ...msg.data,
         typeId,
@@ -104,12 +129,6 @@ const DictionaryItemsPage = () => {
     handleTableReload();
   };
 
-  useEffect(() => {
-    if (typeId) {
-      fetchDictionaryType();
-    }
-  }, [typeId]);
-
   const columns: DictionaryItemColumnProps<
     DataType,
     Record<string, string | number>
@@ -119,65 +138,48 @@ const DictionaryItemsPage = () => {
       dataIndex: 'itemId',
       key: 'itemId',
       width: 120,
-      render: (itemId: string) => {
-        return (
-          <Text copyable style={{ fontSize: '12px' }}>
-            {itemId}
-          </Text>
-        );
-      },
+      render: (itemId: string) => (
+        <Paragraph ellipsis copyable style={{ width: '100px' }}>
+          {itemId}
+        </Paragraph>
+      ),
     },
     {
-      title: '字典项编码',
-      dataIndex: 'code',
-      key: 'code',
-      width: 120,
-      advancedSearch: { type: 'INPUT' },
-      render: (code: string) => {
-        return (
-          <Text copyable style={{ fontSize: '12px' }}>
-            {code}
-          </Text>
-        );
-      },
-    },
-    {
-      title: '字典项名称',
-      dataIndex: 'name',
-      key: 'name',
-      advancedSearch: { type: 'INPUT' },
-    },
-    {
-      title: '字典项值',
-      dataIndex: 'value',
-      key: 'value',
-      width: 120,
-      advancedSearch: { type: 'INPUT' },
-    },
-    {
-      title: '显示标签',
+      title: '字典标签',
       dataIndex: 'label',
       key: 'label',
       width: 120,
+      render: (label: string) => (
+        <Text style={{ fontSize: '13px' }}>{label}</Text>
+      ),
     },
     {
-      title: '描述',
-      dataIndex: 'description',
-      key: 'description',
-      ellipsis: true,
-      width: 200,
+      title: '字典值',
+      dataIndex: 'value',
+      key: 'value',
+      width: 100,
+      advancedSearch: { type: 'INPUT' },
+      render: (value: string) => (
+        <Tag color="purple" style={{ fontFamily: 'monospace' }}>
+          {value}
+        </Tag>
+      ),
     },
+
     {
       title: '排序',
       dataIndex: 'sort',
       key: 'sort',
       width: 80,
+      render: (sort: number) => (
+        <Tag color={sort === 0 ? 'default' : 'green'}>{sort}</Tag>
+      ),
     },
     {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      width: 80,
+      width: 100,
       advancedSearch: {
         type: 'SELECT',
         value: [
@@ -185,18 +187,14 @@ const DictionaryItemsPage = () => {
           { label: '启用', value: 1 },
         ],
       },
-      render: (status: number) => {
-        return <StatusTag status={status} />;
-      },
+      render: (status: number) => <StatusTag status={status} />,
     },
     {
       title: '创建时间',
       key: 'createdAt',
       dataIndex: 'createdAt',
-      width: 120,
-      render: (time: string) => {
-        return dayjs(time).format('YYYY-MM-DD HH:mm');
-      },
+      width: 140,
+      render: (time: string) => <DateTimeFormat value={time} />,
       advancedSearch: {
         type: 'TIME_RANGE',
       },
@@ -205,19 +203,22 @@ const DictionaryItemsPage = () => {
       title: '操作',
       key: 'action',
       width: 150,
+      fixed: 'right',
       render: (record) => {
         return (
-          <Space size={0}>
+          <Space size="small">
             <Button
               type="link"
+              size="small"
               icon={<EditOutlined />}
               onClick={() => handleUpdate(record)}
             >
-              修改
+              编辑
             </Button>
             <Button
               danger
               type="link"
+              size="small"
               icon={<DeleteOutlined />}
               onClick={() => handleDelete(record)}
             >
@@ -246,14 +247,8 @@ const DictionaryItemsPage = () => {
   return (
     <PageContainer>
       <Card style={{ marginBottom: 16 }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div>
+        <Row align="middle" justify="space-between">
+          <Col>
             <Button
               type="link"
               icon={<ArrowLeftOutlined />}
@@ -263,30 +258,42 @@ const DictionaryItemsPage = () => {
               返回字典类型列表
             </Button>
             <div>
-              <Title level={4} style={{ margin: 0 }}>
+              <Title level={4} style={{ margin: 0, marginBottom: 4 }}>
+                <BookOutlined
+                  style={{ marginRight: '8px', color: '#1890ff' }}
+                />
                 {dictionaryType?.name || '字典项管理'}
               </Title>
               <Text type="secondary">
-                {dictionaryType?.code} -{' '}
+                编码：{dictionaryType?.code} | 描述：
                 {dictionaryType?.description || '暂无描述'}
               </Text>
             </div>
-          </div>
-          <div>
+          </Col>
+          <Col>
             <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
               新增字典项
             </Button>
-          </div>
-        </div>
+          </Col>
+        </Row>
       </Card>
 
-      <TablePro
-        rowKey={'itemId'}
-        ref={tableProRef}
-        columns={columns}
-        request={(params) => listDictionaryItem(typeId, params)}
-        loading={loading}
-      />
+      <Card>
+        <TablePro
+          rowKey={'itemId'}
+          ref={tableProRef}
+          columns={columns}
+          request={(params) => listDictionaryItem(dictionaryType.code, params)}
+          loading={loading}
+          scroll={{ x: 1200 }}
+          pagination={{
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total, range) =>
+              `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
+          }}
+        />
+      </Card>
 
       {/* 字典项新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} onOk={handleOk} />

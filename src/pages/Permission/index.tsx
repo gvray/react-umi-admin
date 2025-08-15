@@ -1,4 +1,4 @@
-import { PageContainer } from '@/components';
+import { DateTimeFormat, PageContainer } from '@/components';
 import AdvancedSearchForm from '@/components/TablePro/components/AdvancedSearchForm';
 import { deletePermission, getPermission } from '@/services/permission';
 import { ResourceMeta } from '@/services/resource';
@@ -125,6 +125,7 @@ const ResourcePage = () => {
       title: '创建时间',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      render: (time: string) => <DateTimeFormat value={time} />,
     },
     {
       title: '操作',

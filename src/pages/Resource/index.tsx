@@ -1,4 +1,4 @@
-import { AntIcon, PageContainer } from '@/components';
+import { AntIcon, DateTimeFormat, PageContainer } from '@/components';
 import StatusTag from '@/components/StatusTag';
 import AdvancedSearchForm from '@/components/TablePro/components/AdvancedSearchForm';
 import { deleteResource, getResource } from '@/services/resource';
@@ -10,7 +10,6 @@ import {
   SearchOutlined,
 } from '@ant-design/icons';
 import { Button, Flex, Modal, Space, Table, Tag, Tooltip, message } from 'antd';
-import dayjs from 'dayjs';
 import { useRef, useState } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 import { useResourceModel } from './model';
@@ -151,8 +150,8 @@ const ResourcePage = () => {
       title: '创建时间',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      render: (createdAt: string) => {
-        return createdAt ? dayjs(createdAt).format('YYYY-MM-DD') : '-';
+      render: (time: string) => {
+        return <DateTimeFormat value={time} />;
       },
     },
     {

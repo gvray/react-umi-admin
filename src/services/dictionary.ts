@@ -65,7 +65,7 @@ export const updateDictionaryType = (
   data: Partial<DictionaryType>,
 ) => {
   return request(`/dictionaries/types/${typeId}`, {
-    method: 'PUT',
+    method: 'PATCH',
     data,
   });
 };
@@ -78,12 +78,12 @@ export const deleteDictionaryType = (typeId: string) => {
 };
 
 // 字典项列表
-export const listDictionaryItem = (typeId: string, params?: any) => {
+export const listDictionaryItem = (typeCode: string, params?: any) => {
   return request('/dictionaries/items', {
     method: 'GET',
     params: {
       ...params,
-      typeId,
+      typeCode,
     },
   });
 };
