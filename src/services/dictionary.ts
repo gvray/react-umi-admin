@@ -120,3 +120,13 @@ export const deleteDictionaryItem = (itemId: string) => {
     method: 'DELETE',
   });
 };
+
+// 批量获取字典项
+export const getDictionaryTypesBatch = (typeCodes: string) => {
+  return request(`/dictionaries/types/batch`, {
+    method: 'GET',
+    params: {
+      typeCodes,
+    },
+  });
+};

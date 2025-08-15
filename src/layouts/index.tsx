@@ -1,4 +1,5 @@
 import { useAppTheme } from '@/hooks';
+import useDict from '@/hooks/useDict';
 import useThemeColor from '@/hooks/useThemeColor';
 import { logout } from '@/services/auth';
 import { useThemeStore } from '@/stores';
@@ -49,6 +50,8 @@ export default function BaseLayout() {
   const themeColor = useThemeColor();
   const { token: themeToken } = useThemeStore();
 
+  const dict = useDict(['user_status', 'user_sex']);
+  console.log(dict);
   const handleLogout = async () => {
     try {
       const msg = await logout();

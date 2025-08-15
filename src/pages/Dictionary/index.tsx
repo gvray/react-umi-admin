@@ -15,7 +15,7 @@ import {
   PlusOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import { Button, Card, Modal, Space, Tag, Typography, message } from 'antd';
+import { Button, Modal, Space, Tag, Typography, message } from 'antd';
 import { ColumnProps } from 'antd/es/table';
 import { useRef } from 'react';
 import { useNavigate } from 'umi';
@@ -140,21 +140,6 @@ const DictionaryPage = () => {
       ),
     },
     {
-      title: '字典项数量',
-      key: 'itemCount',
-      width: 120,
-      render: (_, record: DataType) => (
-        <div style={{ textAlign: 'center' }}>
-          <div
-            style={{ fontSize: '16px', fontWeight: 'bold', color: '#1890ff' }}
-          >
-            {record.items?.length || 0}
-          </div>
-          <div style={{ fontSize: '12px', color: '#666' }}>个字典项</div>
-        </div>
-      ),
-    },
-    {
       title: '排序',
       dataIndex: 'sort',
       key: 'sort',
@@ -228,34 +213,20 @@ const DictionaryPage = () => {
 
   return (
     <PageContainer>
-      <Card
-        title={
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <BookOutlined style={{ marginRight: '8px', color: '#1890ff' }} />
-            字典类型管理
-          </div>
-        }
-        extra={
-          <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
-            新增字典类型
-          </Button>
-        }
-      >
-        <TablePro
-          rowKey={'typeId'}
-          ref={tableProRef}
-          columns={columns}
-          request={listDictionaryType}
-          scroll={{ x: 1200 }}
-          pagination={{
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total, range) =>
-              `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
-          }}
-        />
-      </Card>
-
+      <TablePro
+        rowKey={'typeId'}
+        ref={tableProRef}
+        columns={columns}
+        request={listDictionaryType}
+        scroll={{ x: 1200 }}
+        toolbarRender={() => {
+          return (
+            <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
+              新增字典类型
+            </Button>
+          );
+        }}
+      />
       {/* 字典类型新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} onOk={handleOk} />
     </PageContainer>

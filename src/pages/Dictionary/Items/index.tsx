@@ -246,14 +246,6 @@ const DictionaryItemsPage = () => {
       <Card style={{ marginBottom: 16 }}>
         <Row align="middle" justify="space-between">
           <Col>
-            <Button
-              type="link"
-              icon={<ArrowLeftOutlined />}
-              onClick={() => window.history.back()}
-              style={{ padding: 0, marginBottom: 8 }}
-            >
-              返回字典类型列表
-            </Button>
             <div>
               <Title level={4} style={{ margin: 0, marginBottom: 4 }}>
                 <BookOutlined
@@ -268,8 +260,13 @@ const DictionaryItemsPage = () => {
             </div>
           </Col>
           <Col>
-            <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
-              新增字典项
+            <Button
+              type="link"
+              icon={<ArrowLeftOutlined />}
+              onClick={() => window.history.back()}
+              style={{ padding: 0, marginBottom: 8 }}
+            >
+              返回字典类型列表
             </Button>
           </Col>
         </Row>
@@ -278,6 +275,17 @@ const DictionaryItemsPage = () => {
       <Card>
         {dictionaryType?.code && (
           <TablePro
+            toolbarRender={() => {
+              return (
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={handleAdd}
+                >
+                  新增字典项
+                </Button>
+              );
+            }}
             rowKey={'itemId'}
             ref={tableProRef}
             columns={columns}
