@@ -35,9 +35,7 @@ import UpdateForm, { UpdateFormRef } from './UpdateForm';
 const { Title, Text, Paragraph } = Typography;
 interface DataType {
   itemId: string;
-  typeId: string;
-  code: string;
-  name: string;
+  typeCode: string;
   value: string;
   label: string;
   description?: string;
@@ -83,7 +81,9 @@ const DictionaryItemsPage = () => {
   };
 
   const handleAdd = async () => {
-    updateFormRef.current?.show('添加字典项', { typeId });
+    updateFormRef.current?.show('添加字典项', {
+      typeCode: dictionaryType.code,
+    });
   };
 
   const handleDelete = async (record: DataType) => {
@@ -93,10 +93,7 @@ const DictionaryItemsPage = () => {
       content: (
         <div>
           <p>
-            确定要删除字典项 <strong>&quot;{record.name}&quot;</strong> 吗？
-          </p>
-          <p style={{ color: '#ff4d4f', fontSize: '12px', marginTop: '8px' }}>
-            删除后将无法恢复！
+            确定要删除字典项 <strong>&quot;{record.label}&quot;</strong> 吗？
           </p>
         </div>
       ),
@@ -107,7 +104,7 @@ const DictionaryItemsPage = () => {
         return deleteDictionaryItem(record.itemId)
           .then(() => {
             handleTableReload();
-            message.success(`字典项"${record.name}"删除成功`);
+            message.success(`字典项"${record.label}"删除成功`);
           })
           .catch(() => {});
       },
@@ -279,24 +276,25 @@ const DictionaryItemsPage = () => {
       </Card>
 
       <Card>
-        <TablePro
-          rowKey={'itemId'}
-          ref={tableProRef}
-          columns={columns}
-          request={(params) => listDictionaryItem(dictionaryType.code, params)}
-          loading={loading}
-          scroll={{ x: 1200 }}
-          pagination={{
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total, range) =>
-              `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
-          }}
-        />
+        {dictionaryType?.code && (
+          <TablePro
+            rowKey={'itemId'}
+            ref={tableProRef}
+            columns={columns}
+            request={(params) =>
+              listDictionaryItem(dictionaryType?.code, params)
+            }
+            loading={loading}
+          />
+        )}
       </Card>
 
       {/* 字典项新增修改弹出层 */}
-      <UpdateForm ref={updateFormRef} onOk={handleOk} />
+      <UpdateForm
+        ref={updateFormRef}
+        onOk={handleOk}
+        typeCode={dictionaryType?.code}
+      />
     </PageContainer>
   );
 };

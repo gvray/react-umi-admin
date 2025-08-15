@@ -1,11 +1,9 @@
 import {
   createDictionaryItem,
-  getDictionaryType,
   updateDictionaryItem,
 } from '@/services/dictionary';
 import { Form, Input, InputNumber, Modal, Select, message } from 'antd';
-import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
-import { useParams } from 'umi';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 
 const { TextArea } = Input;
 
@@ -15,6 +13,7 @@ export interface UpdateFormRef {
 
 interface UpdateFormProps {
   onOk: () => void;
+  typeCode?: string;
 }
 
 const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>((props, ref) => {
@@ -22,7 +21,6 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>((props, ref) => {
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-  const { typeId } = useParams();
 
   useImperativeHandle(ref, () => ({
     show: (title: string, data?: any) => {
@@ -42,8 +40,9 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>((props, ref) => {
       setLoading(true);
 
       if (values?.itemId) {
+        const { itemId, ...rest } = values;
         // 更新
-        await updateDictionaryItem(values.itemId, values);
+        await updateDictionaryItem(itemId, rest);
         message.success('更新成功');
       } else {
         // 新增
@@ -65,22 +64,6 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>((props, ref) => {
     form.resetFields();
   };
 
-  useEffect(() => {
-    const fetchDictionaryType = async () => {
-      if (typeId) {
-        try {
-          const res: any = await getDictionaryType(typeId);
-          form.setFieldsValue({
-            typeCode: res.data.code,
-          });
-        } catch (error) {
-          console.error('获取字典类型信息失败:', error);
-        }
-      }
-    };
-    fetchDictionaryType();
-  }, [typeId]);
-
   return (
     <Modal
       title={title}
@@ -97,8 +80,10 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>((props, ref) => {
         initialValues={{
           status: 1,
           sort: 0,
+          typeCode: props.typeCode,
         }}
       >
+        <Form.Item name="itemId" label="字典项ID" hidden></Form.Item>
         <Form.Item name="typeCode" label="字典类型">
           <Input disabled />
         </Form.Item>

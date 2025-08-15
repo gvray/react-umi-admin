@@ -109,7 +109,7 @@ export const updateDictionaryItem = (
   data: Partial<DictionaryItem>,
 ) => {
   return request(`/dictionaries/items/${itemId}`, {
-    method: 'PUT',
+    method: 'PATCH',
     data,
   });
 };
