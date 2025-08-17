@@ -54,6 +54,10 @@ const routes = [
         path: '/system/dictionary/items/:typeId',
         component: 'Dictionary/Items',
       },
+      {
+        path: '/system/config',
+        component: 'Config',
+      },
       // 用户分配角色
       {
         path: '/system/user-auth/role/:userId',

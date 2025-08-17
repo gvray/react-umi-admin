@@ -8,6 +8,8 @@
 
 基于 react18，umi4，antd5 等的中后台管理模版，可以快速开展我们的业务功能。
 
+特别说明，目前前后端一起开发，可能数据不对版，大家关注耐心等待。我要把前后做到极致的专业，无可挑剔。后面前端架构部分会切换 vite，业务部分不变。
+
 ## 🎯 适用场景
 
 1. 快速开发中后台管理系统，不必要为技术选型和封装模块而浪费精力和时间，而且不需要其他业务代码。
@@ -68,22 +70,6 @@
 - **编辑器**: VSCode (推荐)
 - **浏览器**: Chrome >= 80
 
-## umijs 鸡肋功能
-
-| 功能 | 鸡肋理由 | 替代建议 |
-| --- | --- | --- |
-| ✅ **access 权限模型** | 简单场景好用，但复杂权限结构（资源级、角色组合）扩展难，类型提示不友好，和 wrappers 冲突多 | 用自定义 hooks + 权限组件，如 `<Permission>` 或更细粒度的策略系统 |
-| ✅ **wrappers（高阶组件配置路由）** | 把权限、布局用路由配置绑定，有侵入性且难调试，不如 React 中常规 HOC/useEffect 写法清晰 | 自定义 Layout 或页面内部逻辑判断更灵活 |
-| ✅ **request 插件（封装的** `umi-request`**）** | 封装层太重、依赖旧版 fetch polyfill，灵活性差，不如 axios 或 useRequest、react-query 灵活 | 替换为 axios + 自定义 hooks，或直接用 SWR/react-query |
-| ✅ **@/models 全局状态管理** | 适合老项目或约定式开发，但模型共享复杂，异步逻辑不如 Redux Toolkit、zustand 明确 | 中大型项目建议直接用 Zustand、Redux Toolkit |
-| ✅ **locale 国际化插件** | 强耦合约定式目录、ts 类型提示差，多语言资源集中管理不便 | 推荐用 `i18next` 或 `vue-i18n/react-i18next` 自主控制 |
-| ✅ **约定式目录结构（特别是** `page/document.tsx`**,** `layouts`**,** `app.ts`**）** | 项目复杂后耦合度高，逻辑分散在多个文件中，不易统一维护 | 转向配置式或者 module-based 结构（如 routes.ts + 全局 layout） |
-| ✅ **微前端 qiankun 集成插件** | 一般项目微前端用不了，插件配置繁琐，调试体验不如手写集成 | 自己手写 qiankun 接入（很简单，3-5 个生命周期） |
-| ✅ **链式插件系统（插件套插件）** | 插件机制很强但调试和定制化麻烦，业务团队二次封装成本高 | 只启用必须插件，其余功能裸写更透明 |
-| ✅ **内置 DVA 支持** | DVA 学习成本高，异步和副作用处理陈旧，现代项目极少使用 | 推荐 Zustand、RTK、Recoil 等现代状态库 |
-
-注意: @umijs/max，黑盒比较严重，后期项目修改扩展成本太大。
-
 ## 其他技术栈
 
 - [vue-pinia-admin](https://github.com/gvray/vue-pinia-admin) 开发中
@@ -94,10 +80,14 @@
 
 ## 后台数据
 
-主要考虑快速开展前端业务，所以后台数据都是 mock 的。后面会考虑对接一个后端服务。
+后端 api 地址 [nest-admin](https://github.com/gvray/nest-admin) 开发中
+
+当后端没有数据的时候我们可以自己`mock`数据
 
 - 目前后台数据都在`~/mock`下，这里是基于 express 启动的本地 api 服务。
 - 这样就可以很灵活的做好前端部分，然后灵活的对接一个后端服务。
+
+注意：目前只提供了登陆和 user 模块的 mock 数据
 
 ## 启动项目
 
@@ -138,3 +128,19 @@ npm run analyze
 ```
 
 ![analyze](./src/assets/snapshoot/screencapture-analyze.png)
+
+## umijs 鸡肋功能
+
+| 功能 | 鸡肋理由 | 替代建议 |
+| --- | --- | --- |
+| ✅ **access 权限模型** | 简单场景好用，但复杂权限结构（资源级、角色组合）扩展难，类型提示不友好，和 wrappers 冲突多 | 用自定义 hooks + 权限组件，如 `<Permission>` 或更细粒度的策略系统 |
+| ✅ **wrappers（高阶组件配置路由）** | 把权限、布局用路由配置绑定，有侵入性且难调试，不如 React 中常规 HOC/useEffect 写法清晰 | 自定义 Layout 或页面内部逻辑判断更灵活 |
+| ✅ **request 插件（封装的** `umi-request`**）** | 封装层太重、依赖旧版 fetch polyfill，灵活性差，不如 axios 或 useRequest、react-query 灵活 | 替换为 axios + 自定义 hooks，或直接用 SWR/react-query |
+| ✅ **@/models 全局状态管理** | 适合老项目或约定式开发，但模型共享复杂，异步逻辑不如 Redux Toolkit、zustand 明确 | 中大型项目建议直接用 Zustand、Redux Toolkit |
+| ✅ **locale 国际化插件** | 强耦合约定式目录、ts 类型提示差，多语言资源集中管理不便 | 推荐用 `i18next` 或 `vue-i18n/react-i18next` 自主控制 |
+| ✅ **约定式目录结构（特别是** `page/document.tsx`**,** `layouts`**,** `app.ts`**）** | 项目复杂后耦合度高，逻辑分散在多个文件中，不易统一维护 | 转向配置式或者 module-based 结构（如 routes.ts + 全局 layout） |
+| ✅ **微前端 qiankun 集成插件** | 一般项目微前端用不了，插件配置繁琐，调试体验不如手写集成 | 自己手写 qiankun 接入（很简单，3-5 个生命周期） |
+| ✅ **链式插件系统（插件套插件）** | 插件机制很强但调试和定制化麻烦，业务团队二次封装成本高 | 只启用必须插件，其余功能裸写更透明 |
+| ✅ **内置 DVA 支持** | DVA 学习成本高，异步和副作用处理陈旧，现代项目极少使用 | 推荐 Zustand、RTK、Recoil 等现代状态库 |
+
+注意: @umijs/max，黑盒比较严重，后期项目修改扩展成本太大。
