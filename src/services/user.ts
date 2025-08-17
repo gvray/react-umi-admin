@@ -9,7 +9,7 @@ export async function listUser(params?: any, options?: { [key: string]: any }) {
 }
 
 export async function deleteUser(
-  userId: number,
+  userId: string,
   options?: { [key: string]: any },
 ) {
   return request(`/users/${userId}`, {

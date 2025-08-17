@@ -17,6 +17,7 @@ import useUpdateForm from './model';
 interface UpdateFormProps {
   onCancel?: () => void;
   onOk?: () => void;
+  dict: any;
 }
 
 export interface UpdateFormRef {
@@ -45,7 +46,7 @@ const formItemFullLayout = {
 const UpdateFormFunction: React.ForwardRefRenderFunction<
   UpdateFormRef,
   UpdateFormProps
-> = ({ onOk, onCancel }, ref) => {
+> = ({ onOk, onCancel, dict }, ref) => {
   const [title, setTitle] = useState('未设置弹出层标题');
   const [visible, setVisible] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -203,14 +204,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           </Col>
           <Col span={12}>
             <Form.Item name="gender" label="性别">
-              <Select
-                options={[
-                  { value: 0, label: '未知' },
-                  { value: 1, label: '男' },
-                  { value: 2, label: '女' },
-                  { value: 3, label: '其他' },
-                ]}
-              />
+              <Select options={dict['user_gender']} />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -252,14 +246,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           )}
           <Col span={12}>
             <Form.Item name="status" label="用户状态">
-              <Radio.Group
-                options={[
-                  { value: 0, label: '停用' },
-                  { value: 1, label: '启用' },
-                  { value: 2, label: '审核中' },
-                  // { value: 3, label: '封禁' },
-                ]}
-              ></Radio.Group>
+              <Radio.Group options={dict['user_status']}></Radio.Group>
             </Form.Item>
           </Col>
           <Col span={24}>

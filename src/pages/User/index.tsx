@@ -2,6 +2,7 @@ import { DateTimeFormat, PageContainer, TablePro } from '@/components';
 import StatusTag from '@/components/StatusTag';
 import { TableProRef } from '@/components/TablePro';
 import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
+import useDict from '@/hooks/useDict';
 import { deleteUser, getUser, listUser } from '@/services/user';
 import {
   DeleteOutlined,
@@ -22,7 +23,7 @@ interface DataType {
   updateBy?: string;
   updatedAt?: string;
   remark: string;
-  userId: number;
+  userId: string;
   username: string;
   nickname: string;
   email: string;
@@ -40,6 +41,7 @@ const UserPage = () => {
   const navigate = useNavigate();
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
+  const dict = useDict(['user_status', 'user_gender']);
 
   const handleTableReload = () => {
     tableProRef.current?.reload();
@@ -126,12 +128,7 @@ const UserPage = () => {
         key: 'status',
         advancedSearch: {
           type: 'SELECT',
-          value: [
-            { label: '停用', value: 0 },
-            { label: '正常', value: 1 },
-            { label: '审核中', value: 2 },
-            { label: '封禁', value: 3 },
-          ],
+          value: dict['user_status'],
         },
         render: (status: number) => {
           return <StatusTag status={status} />;
@@ -198,7 +195,7 @@ const UserPage = () => {
         request={listUser}
       />
       {/* 用户新增修改弹出层 */}
-      <UpdateForm ref={updateFormRef} onOk={handleOk} />
+      <UpdateForm ref={updateFormRef} dict={dict} onOk={handleOk} />
     </PageContainer>
   );
 };

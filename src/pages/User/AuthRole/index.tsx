@@ -1,11 +1,30 @@
 import { DateTimeFormat, PageContainer, StatusTag } from '@/components';
-import { Avatar, Button, Card, Space, Table, Tag } from 'antd';
+import {
+  ArrowLeftOutlined,
+  KeyOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
+import {
+  Avatar,
+  Button,
+  Card,
+  Col,
+  Row,
+  Space,
+  Table,
+  Tag,
+  Typography,
+} from 'antd';
 import { useEffect, useState } from 'react';
-import { useParams } from 'umi';
+import { useNavigate, useParams } from 'umi';
 import { useAuthRole } from './model';
+
+const { Title, Text } = Typography;
 
 export default function AuthRolePage() {
   const { userId } = useParams();
+  const navigate = useNavigate();
   const [selectedRoleIds, setSelectedRoleIds] = useState<string[]>([]);
   const {
     roles,
@@ -28,6 +47,11 @@ export default function AuthRolePage() {
       setSelectedRoleIds(selectedUser.roles.map((role: any) => role.roleId));
     }
   }, [selectedUser]);
+
+  // 返回用户列表页面
+  const handleBackToUsers = () => {
+    navigate('/system/user');
+  };
 
   // 提交角色分配
   const handleSubmit = async () => {
@@ -63,10 +87,7 @@ export default function AuthRolePage() {
 
   if (!userId) {
     return (
-      <PageContainer
-      // title="用户角色分配"
-      // subTitle="为用户分配系统角色，控制用户权限"
-      >
+      <PageContainer>
         <Card>
           <div
             style={{ textAlign: 'center', color: '#999', padding: '40px 0' }}
@@ -80,10 +101,7 @@ export default function AuthRolePage() {
 
   if (loading) {
     return (
-      <PageContainer
-      // title="用户角色分配"
-      // subTitle="为用户分配系统角色，控制用户权限"
-      >
+      <PageContainer>
         <Card loading={true} />
       </PageContainer>
     );
@@ -91,10 +109,7 @@ export default function AuthRolePage() {
 
   if (!selectedUser) {
     return (
-      <PageContainer
-      // title="用户角色分配"
-      // subTitle="为用户分配系统角色，控制用户权限"
-      >
+      <PageContainer>
         <Card>
           <div
             style={{ textAlign: 'center', color: '#999', padding: '40px 0' }}
@@ -107,43 +122,125 @@ export default function AuthRolePage() {
   }
 
   return (
-    <PageContainer
-    //   title="用户角色分配"
-    //   subTitle="为用户分配系统角色，控制用户权限"
-    >
-      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+    <PageContainer>
+      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        {/* 页面头部导航 */}
+        <Card style={{ marginBottom: '16px' }}>
+          <Row align="middle" justify="space-between">
+            <Col>
+              <Button
+                type="link"
+                icon={<ArrowLeftOutlined />}
+                onClick={handleBackToUsers}
+                style={{ padding: 0, marginBottom: 8 }}
+              >
+                返回用户列表
+              </Button>
+              <div>
+                <Title level={4} style={{ margin: 0, marginBottom: 4 }}>
+                  <KeyOutlined
+                    style={{ marginRight: '8px', color: '#1890ff' }}
+                  />
+                  用户角色分配
+                </Title>
+                <Text type="secondary">
+                  为用户分配系统角色，控制用户权限访问
+                </Text>
+              </div>
+            </Col>
+            <Col>
+              <Space>
+                <Button
+                  type="primary"
+                  onClick={handleSubmit}
+                  loading={submitting}
+                  icon={<KeyOutlined />}
+                >
+                  保存分配
+                </Button>
+                <Button onClick={handleReset}>重置</Button>
+              </Space>
+            </Col>
+          </Row>
+        </Card>
+
         {/* 用户信息卡片 */}
-        <Card title="用户信息" style={{ marginBottom: '16px' }}>
+        <Card
+          title={
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <UserOutlined style={{ marginRight: '8px', color: '#1890ff' }} />
+              用户信息
+            </div>
+          }
+          style={{ marginBottom: '16px' }}
+        >
+          <Row gutter={24}>
+            <Col span={8}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Avatar
+                  src={selectedUser.avatar}
+                  size={80}
+                  style={{ marginRight: '16px' }}
+                >
+                  {selectedUser.username.charAt(0).toUpperCase()}
+                </Avatar>
+                <div>
+                  <Title level={4} style={{ margin: 0, marginBottom: '4px' }}>
+                    {selectedUser.username}
+                  </Title>
+                  <Text type="secondary">{selectedUser.email}</Text>
+                </div>
+              </div>
+            </Col>
+            <Col span={8}>
+              <div>
+                <Text strong>用户ID：</Text>
+                <Text code>{selectedUser.userId}</Text>
+              </div>
+              <div style={{ marginTop: '8px' }}>
+                <Text strong>状态：</Text>
+                <StatusTag status={selectedUser.status} />
+              </div>
+            </Col>
+            <Col span={8}>
+              <div>
+                <Text strong>当前角色数量：</Text>
+                <Text style={{ color: '#1890ff', fontWeight: 'bold' }}>
+                  {selectedUser.roles?.length || 0} 个
+                </Text>
+              </div>
+              <div style={{ marginTop: '8px' }}>
+                <Text strong>创建时间：</Text>
+                <DateTimeFormat value={selectedUser.createdAt} />
+              </div>
+            </Col>
+          </Row>
+
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              marginBottom: '16px',
+              marginTop: '16px',
+              paddingTop: '16px',
+              borderTop: '1px solid #f0f0f0',
             }}
           >
-            <Avatar
-              src={selectedUser.avatar}
-              size={64}
-              style={{ marginRight: '16px' }}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '8px',
+              }}
             >
-              {selectedUser.username.charAt(0).toUpperCase()}
-            </Avatar>
-            <div>
-              <h3 style={{ margin: 0, marginBottom: '4px' }}>
-                {selectedUser.username}
-              </h3>
-              <p style={{ margin: 0, color: '#666' }}>{selectedUser.email}</p>
-            </div>
-          </div>
-
-          <div style={{ marginTop: '16px' }}>
-            <div style={{ fontWeight: 500, marginBottom: '8px' }}>
-              当前角色：
+              <TeamOutlined style={{ marginRight: '8px', color: '#52c41a' }} />
+              <Text strong>当前角色：</Text>
             </div>
             <Space wrap size={4}>
               {selectedUser.roles && selectedUser.roles.length > 0 ? (
                 selectedUser.roles.map((role: any) => (
-                  <Tag key={role.roleId} color="blue">
+                  <Tag
+                    key={role.roleId}
+                    color="blue"
+                    style={{ padding: '4px 8px' }}
+                  >
                     {role.name}
                   </Tag>
                 ))
@@ -156,26 +253,38 @@ export default function AuthRolePage() {
 
         {/* 角色分配表格 */}
         <Card
-          title="分配角色"
+          title={
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <KeyOutlined style={{ marginRight: '8px', color: '#52c41a' }} />
+              分配角色
+            </div>
+          }
           extra={
             <Space>
-              <Button
-                type="primary"
-                onClick={handleSubmit}
-                loading={submitting}
-              >
-                保存分配
-              </Button>
-              <Button onClick={handleReset}>重置</Button>
               <Button onClick={handleSelectAll}>全选</Button>
               <Button onClick={handleClearAll}>清空</Button>
             </Space>
           }
         >
           <div
-            style={{ marginBottom: '16px', color: '#666', fontSize: '14px' }}
+            style={{
+              marginBottom: '16px',
+              color: '#666',
+              fontSize: '14px',
+              padding: '12px 16px',
+              backgroundColor: '#f6f8fa',
+              borderRadius: '6px',
+              border: '1px solid #e1e4e8',
+            }}
           >
-            可以选择多个角色，用户将拥有所选角色的所有权限
+            <Text>
+              可以选择多个角色，用户将拥有所选角色的所有权限。当前已选择
+              <Text strong style={{ color: '#1890ff' }}>
+                {' '}
+                {selectedRoleIds.length}{' '}
+              </Text>
+              个角色。
+            </Text>
           </div>
 
           <Table
