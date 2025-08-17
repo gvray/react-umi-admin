@@ -1,4 +1,3 @@
-import { logger } from '@/utils';
 import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   Button,
@@ -9,14 +8,9 @@ import {
   TableProps,
   Tooltip,
 } from 'antd';
-import {
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react';
+import { forwardRef, useCallback, useImperativeHandle } from 'react';
 import AdvancedSearchForm from './components/AdvancedSearchForm';
+import { useTablePro } from './useTablePro';
 
 interface TableProProps<T> extends TableProps<T> {
   request: (params: any, options?: { [key: string]: any }) => Promise<any>;
@@ -32,54 +26,24 @@ const TableProFunction: React.ForwardRefRenderFunction<
   TableProProps<any>
 > = (props, ref) => {
   const { columns, request, toolbarRender = () => null, ...rest } = props;
-  const [loading, setLogging] = useState(false);
-  const [listData, setListData] = useState<any[]>([]);
-  const [total, setTotal] = useState(0);
-  const [pagination, setPagination] = useState({ page: 1, pageSize: 10 });
-  const [etag, setEtag] = useState(Date.now());
 
-  // 高级搜索
-  const [showSearch, setShowSearch] = useState(true);
-  // 高级搜索参数
-  const paramsRef = useRef<Record<string, any>>({});
+  const {
+    loading,
+    listData,
+    total,
+    pagination,
+    handleReload,
+    handleResetPage,
+    handleAdvancedQuery,
+    showSearch,
+    paramsRef,
+    setPagination,
+    setShowSearch,
+  } = useTablePro(request);
 
-  const handleList = async (paginationParams?: Record<string, any>) => {
-    try {
-      setLogging(true);
-      const { data } = await request({
-        ...paramsRef.current,
-        ...(paginationParams ?? pagination),
-      });
-
-      setListData([...(data.items ?? data)]);
-      setTotal(data.total ?? data.length);
-    } catch (error: any) {
-      logger.error(error.info);
-      setListData([]);
-    } finally {
-      setLogging(false);
-    }
-  };
-
-  const handleReload = () => {
-    setEtag(Date.now());
-  };
-
-  const handleResetPage = () => {
-    setPagination((pre) => ({ ...pre, page: 1 }));
-    setEtag(Date.now());
-  };
-
-  const reload = () => {
+  const reload = useCallback(() => {
     handleReload();
-  };
-
-  // 高级搜索
-  const handleAdvancedQuery = (values: Record<string, any>) => {
-    const newParams = { ...paramsRef.current, ...values };
-    paramsRef.current = newParams;
-    handleResetPage();
-  };
+  }, [handleReload]);
 
   useImperativeHandle(
     ref,
@@ -88,10 +52,6 @@ const TableProFunction: React.ForwardRefRenderFunction<
     }),
     [],
   );
-
-  useEffect(() => {
-    handleList();
-  }, [pagination.page, pagination.pageSize, etag]);
 
   const toolbar = toolbarRender();
   return (
@@ -134,6 +94,7 @@ const TableProFunction: React.ForwardRefRenderFunction<
         loading={loading}
         pagination={false}
         {...rest}
+        scroll={{ x: 'max-content' }}
       />
       {total > 0 && total > pagination.pageSize && (
         <Pagination
