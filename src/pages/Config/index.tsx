@@ -1,50 +1,50 @@
 import {
+  ConfigValueViewer,
   DateTimeFormat,
   PageContainer,
   StatusTag,
   TablePro,
 } from '@/components';
+import { ConfigData } from '@/components/ConfigValueViewer';
 import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
 import { deleteConfig, getConfig, listConfig } from '@/services/config';
 import {
+  ArrowLeftOutlined,
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
+  EyeOutlined,
   PlusOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
 import { Button, Card, Modal, Space, Tag, Typography, message } from 'antd';
 import { ColumnProps } from 'antd/es/table';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import { useNavigate } from 'umi';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 
-const { Text } = Typography;
+const { Title, Text } = Typography;
 
-interface DataType {
-  configId: string;
-  key: string;
-  value: string;
-  name: string;
-  description?: string;
-  type: string;
-  group: string;
-  status: number;
-  sort: number;
-  remark?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+type DataType = ConfigData;
 
 interface ConfigColumnProps<T, U> extends ColumnProps<T> {
   advancedSearch?: AdvancedSearchItem<U>;
 }
 
 const ConfigPage = () => {
+  const navigate = useNavigate();
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<any>(null);
+  const [viewModalVisible, setViewModalVisible] = useState(false);
+  const [currentConfig, setCurrentConfig] = useState<DataType | null>(null);
 
   const handleTableReload = () => {
     tableProRef.current?.reload();
+  };
+
+  // 返回角色列表页面
+  const handleBackToRoles = () => {
+    navigate('/system/role');
   };
 
   const handleAdd = async () => {
@@ -89,6 +89,17 @@ const ConfigPage = () => {
     } catch (error) {}
   };
 
+  // 查看配置值
+  const handleViewValue = async (record: DataType) => {
+    try {
+      const msg: any = await getConfig(record.configId);
+      setCurrentConfig(msg.data);
+      setViewModalVisible(true);
+    } catch (error) {
+      message.error('获取配置详情失败');
+    }
+  };
+
   const handleOk = () => {
     handleTableReload();
   };
@@ -124,7 +135,7 @@ const ConfigPage = () => {
       title: '配置名称',
       dataIndex: 'name',
       key: 'name',
-      width: 200,
+      width: 220,
       advancedSearch: { type: 'INPUT' },
       render: (name: string, record: DataType) => (
         <div>
@@ -132,15 +143,29 @@ const ConfigPage = () => {
             style={{
               display: 'flex',
               alignItems: 'center',
-              marginBottom: '4px',
+              marginBottom: '6px',
             }}
           >
             <SettingOutlined style={{ color: '#1890ff', marginRight: '8px' }} />
-            <Text strong>{name}</Text>
+            <Text strong style={{ fontSize: '14px' }}>
+              {name}
+            </Text>
           </div>
-          <div style={{ fontSize: '12px', color: '#666' }}>
-            {record.description || '暂无描述'}
-          </div>
+          {record.description && (
+            <div
+              style={{
+                fontSize: '12px',
+                color: '#666',
+                lineHeight: '1.4',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+              }}
+            >
+              {record.description}
+            </div>
+          )}
         </div>
       ),
     },
@@ -148,29 +173,12 @@ const ConfigPage = () => {
       title: '配置键',
       dataIndex: 'key',
       key: 'key',
-      width: 150,
+      width: 160,
       advancedSearch: { type: 'INPUT' },
       render: (key: string) => (
-        <Tag color="blue" style={{ fontFamily: 'monospace' }}>
+        <Tag color="blue" style={{ fontFamily: 'monospace', fontSize: '12px' }}>
           {key}
         </Tag>
-      ),
-    },
-    {
-      title: '配置值',
-      dataIndex: 'value',
-      key: 'value',
-      width: 200,
-      ellipsis: true,
-      render: (value: string, record: DataType) => (
-        <div>
-          <div style={{ fontSize: '12px', fontFamily: 'monospace' }}>
-            {value.length > 30 ? `${value.substring(0, 30)}...` : value}
-          </div>
-          {record.type === 'json' && (
-            <div style={{ fontSize: '11px', color: '#999' }}>JSON格式</div>
-          )}
-        </div>
       ),
     },
     {
@@ -188,7 +196,7 @@ const ConfigPage = () => {
         ],
       },
       render: (type: string) => (
-        <Tag color={getTypeColor(type)}>
+        <Tag color={getTypeColor(type)} style={{ fontSize: '12px' }}>
           {type === 'string' && '字符串'}
           {type === 'number' && '数字'}
           {type === 'boolean' && '布尔值'}
@@ -212,7 +220,7 @@ const ConfigPage = () => {
         ],
       },
       render: (group: string) => (
-        <Tag color={getGroupColor(group)}>
+        <Tag color={getGroupColor(group)} style={{ fontSize: '12px' }}>
           {group === 'system' && '系统'}
           {group === 'business' && '业务'}
           {group === 'security' && '安全'}
@@ -227,7 +235,12 @@ const ConfigPage = () => {
       key: 'sort',
       width: 80,
       render: (sort: number) => (
-        <Tag color={sort === 0 ? 'default' : 'green'}>{sort}</Tag>
+        <Tag
+          color={sort === 0 ? 'default' : 'green'}
+          style={{ fontSize: '12px' }}
+        >
+          {sort}
+        </Tag>
       ),
     },
     {
@@ -257,7 +270,7 @@ const ConfigPage = () => {
     {
       title: '操作',
       key: 'action',
-      width: 150,
+      width: 200,
       fixed: 'right',
       render: (record) => {
         return (
@@ -265,8 +278,18 @@ const ConfigPage = () => {
             <Button
               type="link"
               size="small"
+              icon={<EyeOutlined />}
+              onClick={() => handleViewValue(record)}
+              style={{ padding: '4px 8px' }}
+            >
+              查看值
+            </Button>
+            <Button
+              type="link"
+              size="small"
               icon={<EditOutlined />}
               onClick={() => handleUpdate(record)}
+              style={{ padding: '4px 8px' }}
             >
               编辑
             </Button>
@@ -276,6 +299,7 @@ const ConfigPage = () => {
               size="small"
               icon={<DeleteOutlined />}
               onClick={() => handleDelete(record)}
+              style={{ padding: '4px 8px' }}
             >
               删除
             </Button>
@@ -287,36 +311,79 @@ const ConfigPage = () => {
 
   return (
     <PageContainer>
-      <Card
-        title={
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <SettingOutlined style={{ marginRight: '8px', color: '#1890ff' }} />
-            系统配置管理
+      {/* 页面头部导航 */}
+      <Card style={{ marginBottom: '16px' }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <div>
+            <Button
+              type="link"
+              icon={<ArrowLeftOutlined />}
+              onClick={handleBackToRoles}
+              style={{ padding: 0, marginBottom: 8 }}
+            >
+              返回角色列表
+            </Button>
+            <div>
+              <Title level={4} style={{ margin: 0, marginBottom: 4 }}>
+                <SettingOutlined
+                  style={{ marginRight: '8px', color: '#1890ff' }}
+                />
+                系统配置管理
+              </Title>
+              <Text type="secondary">
+                管理系统配置参数，支持多种数据类型和分组管理
+              </Text>
+            </div>
           </div>
-        }
-        extra={
           <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
             新增配置
           </Button>
-        }
+        </div>
+      </Card>
+
+      {/* 配置表格 */}
+      <Card
+        style={{
+          boxShadow:
+            '0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02)',
+          borderRadius: '8px',
+        }}
       >
         <TablePro
           rowKey={'configId'}
           ref={tableProRef}
           columns={columns}
           request={listConfig}
-          scroll={{ x: 1400 }}
+          scroll={{ x: 1200 }}
           pagination={{
             showSizeChanger: true,
             showQuickJumper: true,
             showTotal: (total, range) =>
               `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
+            pageSize: 20,
           }}
+          size="middle"
+          bordered
         />
       </Card>
 
       {/* 配置新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} onOk={handleOk} />
+
+      {/* 查看配置值弹出层 */}
+      {currentConfig && (
+        <ConfigValueViewer
+          config={currentConfig}
+          visible={viewModalVisible}
+          onClose={() => setViewModalVisible(false)}
+        />
+      )}
     </PageContainer>
   );
 };

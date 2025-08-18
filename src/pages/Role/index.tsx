@@ -109,6 +109,12 @@ const UserPage = () => {
         advancedSearch: { type: 'INPUT' },
       },
       {
+        title: '角色标识符',
+        dataIndex: 'roleKey',
+        key: 'roleKey',
+        advancedSearch: { type: 'INPUT' },
+      },
+      {
         title: '显示顺序',
         dataIndex: 'sort',
         key: 'sort',

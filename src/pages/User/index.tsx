@@ -4,6 +4,7 @@ import { TableProRef } from '@/components/TablePro';
 import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
 import useDict from '@/hooks/useDict';
 import { deleteUser, getUser, listUser } from '@/services/user';
+import { logger } from '@/utils';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -75,12 +76,14 @@ const UserPage = () => {
       const res = await getUser(userId);
       const data = {
         ...res.data,
-        positionIds: res.data.positions.map((item: any) => item.positionId),
-        roleIds: res.data.roles.map((item: any) => item.roleId),
-        departmentId: res.data.department.departmentId,
+        positionIds: res.data.positions?.map((item: any) => item.positionId),
+        roleIds: res.data.roles?.map((item: any) => item.roleId),
+        departmentId: res.data.department?.departmentId,
       };
       updateFormRef.current?.show('修改用户', data);
-    } catch (error) {}
+    } catch (error) {
+      logger.error(error as string);
+    }
   };
 
   const handleOk = () => {

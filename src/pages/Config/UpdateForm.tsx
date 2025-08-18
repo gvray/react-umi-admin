@@ -94,6 +94,7 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
               placeholder="请输入数字值"
               style={{ width: '100%' }}
               precision={0}
+              min={0}
             />
           );
         case 'boolean':
@@ -101,10 +102,11 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
         case 'json':
           return (
             <TextArea
-              placeholder="请输入JSON格式的值"
-              rows={4}
+              placeholder="请输入JSON格式的值，例如：{'key': 'value'}"
+              rows={6}
               showCount
-              maxLength={1000}
+              maxLength={2000}
+              style={{ fontFamily: 'monospace', fontSize: '12px' }}
             />
           );
         default:
@@ -114,60 +116,121 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
 
     return (
       <Modal
-        title={title}
+        title={
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
+              {title}
+            </span>
+          </div>
+        }
         open={visible}
         onOk={handleOk}
         onCancel={handleCancel}
         confirmLoading={loading}
-        width={600}
+        width={700}
         destroyOnClose
+        okText="保存"
+        cancelText="取消"
+        style={{ top: 50 }}
       >
-        <Form form={form} layout="vertical" style={{ marginTop: 16 }}>
+        <Form
+          form={form}
+          layout="vertical"
+          style={{ marginTop: 16 }}
+          labelCol={{ span: 24 }}
+          wrapperCol={{ span: 24 }}
+        >
           <Form.Item name="configId" hidden>
             <Input />
           </Form.Item>
 
-          <Form.Item
-            label="配置名称"
-            name="name"
-            rules={[
-              { required: true, message: '请输入配置名称' },
-              { max: 100, message: '配置名称不能超过100个字符' },
-            ]}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '16px',
+            }}
           >
-            <Input placeholder="请输入配置名称" />
-          </Form.Item>
-
-          <Form.Item
-            label="配置键"
-            name="key"
-            rules={[
-              { required: true, message: '请输入配置键' },
-              {
-                pattern: /^[a-zA-Z][a-zA-Z0-9.]*$/,
-                message: '配置键只能包含字母、数字和点，且必须以字母开头',
-              },
-              { max: 50, message: '配置键不能超过50个字符' },
-            ]}
-          >
-            <Input placeholder="请输入配置键" />
-          </Form.Item>
-
-          <Form.Item
-            label="配置类型"
-            name="type"
-            rules={[{ required: true, message: '请选择配置类型' }]}
-          >
-            <Select
-              placeholder="请选择配置类型"
-              options={[
-                { label: '字符串', value: 'string' },
-                { label: '数字', value: 'number' },
-                { label: '布尔值', value: 'boolean' },
-                { label: 'JSON', value: 'json' },
+            <Form.Item
+              label="配置名称"
+              name="name"
+              rules={[
+                { required: true, message: '请输入配置名称' },
+                { max: 100, message: '配置名称不能超过100个字符' },
               ]}
-            />
-          </Form.Item>
+            >
+              <Input placeholder="请输入配置名称" />
+            </Form.Item>
+
+            <Form.Item
+              label="配置键"
+              name="key"
+              rules={[
+                { required: true, message: '请输入配置键' },
+                {
+                  pattern: /^[a-zA-Z][a-zA-Z0-9.]*$/,
+                  message: '配置键只能包含字母、数字和点，且必须以字母开头',
+                },
+                { max: 50, message: '配置键不能超过50个字符' },
+              ]}
+            >
+              <Input placeholder="请输入配置键" />
+            </Form.Item>
+          </div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr 1fr',
+              gap: '16px',
+            }}
+          >
+            <Form.Item
+              label="配置类型"
+              name="type"
+              rules={[{ required: true, message: '请选择配置类型' }]}
+            >
+              <Select
+                placeholder="请选择配置类型"
+                options={[
+                  { label: '字符串', value: 'string' },
+                  { label: '数字', value: 'number' },
+                  { label: '布尔值', value: 'boolean' },
+                  { label: 'JSON', value: 'json' },
+                ]}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="配置分组"
+              name="group"
+              rules={[{ required: true, message: '请选择配置分组' }]}
+            >
+              <Select
+                placeholder="请选择配置分组"
+                options={[
+                  { label: '系统', value: 'system' },
+                  { label: '业务', value: 'business' },
+                  { label: '安全', value: 'security' },
+                  { label: '界面', value: 'ui' },
+                  { label: '接口', value: 'api' },
+                ]}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="排序权重"
+              name="sort"
+              rules={[{ required: true, message: '请输入排序权重' }]}
+            >
+              <InputNumber
+                placeholder="请输入排序权重"
+                min={0}
+                max={999}
+                style={{ width: '100%' }}
+              />
+            </Form.Item>
+          </div>
 
           <Form.Item
             label="配置值"
@@ -190,36 +253,6 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
             ]}
           >
             {renderValueInput()}
-          </Form.Item>
-
-          <Form.Item
-            label="配置分组"
-            name="group"
-            rules={[{ required: true, message: '请选择配置分组' }]}
-          >
-            <Select
-              placeholder="请选择配置分组"
-              options={[
-                { label: '系统', value: 'system' },
-                { label: '业务', value: 'business' },
-                { label: '安全', value: 'security' },
-                { label: '界面', value: 'ui' },
-                { label: '接口', value: 'api' },
-              ]}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="排序权重"
-            name="sort"
-            rules={[{ required: true, message: '请输入排序权重' }]}
-          >
-            <InputNumber
-              placeholder="请输入排序权重"
-              min={0}
-              max={999}
-              style={{ width: '100%' }}
-            />
           </Form.Item>
 
           <Form.Item

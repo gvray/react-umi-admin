@@ -246,7 +246,14 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           )}
           <Col span={12}>
             <Form.Item name="status" label="用户状态">
-              <Radio.Group options={dict['user_status']}></Radio.Group>
+              <Radio.Group
+                options={dict['user_status']
+                  ?.map((item: any) => ({
+                    label: item.label,
+                    value: Number(item.value),
+                  }))
+                  .filter((item: any) => item.value < 3)}
+              ></Radio.Group>
             </Form.Item>
           </Col>
           <Col span={24}>

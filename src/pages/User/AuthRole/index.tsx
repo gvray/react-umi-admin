@@ -195,7 +195,9 @@ export default function AuthRolePage() {
             <Col span={8}>
               <div>
                 <Text strong>用户ID：</Text>
-                <Text code>{selectedUser.userId}</Text>
+                <Text ellipsis code copyable>
+                  {selectedUser.userId}
+                </Text>
               </div>
               <div style={{ marginTop: '8px' }}>
                 <Text strong>状态：</Text>

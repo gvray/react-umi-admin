@@ -69,9 +69,9 @@ const TableProFunction: React.ForwardRefRenderFunction<
           }}
         ></AdvancedSearchForm>
       )}
-      <Flex justify="space-between" align="center">
-        <Space style={{ marginBottom: 16 }}>{toolbar}</Space>
-        <Space>
+      <Flex justify="space-between" align="center" style={{ marginBottom: 12 }}>
+        <Space>{toolbar}</Space>
+        <Space style={{ flex: 1, justifyContent: 'flex-end' }}>
           <Tooltip title={showSearch ? '隐藏搜索' : '显示搜索'}>
             <Button
               shape="circle"
