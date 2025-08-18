@@ -196,6 +196,20 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
                   { value: 'create', label: '新增' },
                   { value: 'update', label: '修改' },
                   { value: 'delete', label: '删除' },
+                  { value: 'export', label: '导出' },
+                  { value: 'import', label: '导入' },
+                  { value: 'print', label: '打印' },
+                  { value: 'download', label: '下载' },
+                  { value: 'upload', label: '上传' },
+                  { value: 'batch', label: '批量' },
+                  { value: 'batchDelete', label: '批量删除' },
+                  { value: 'batchUpdate', label: '批量修改' },
+                  { value: 'batchImport', label: '批量导入' },
+                  { value: 'batchExport', label: '批量导出' },
+                  { value: 'batchPrint', label: '批量打印' },
+                  { value: 'batchDownload', label: '批量下载' },
+                  { value: 'batchUpload', label: '批量上传' },
+                  { value: 'other', label: '其他' },
                 ]}
               />
             </Form.Item>
