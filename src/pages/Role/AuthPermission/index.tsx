@@ -1,5 +1,6 @@
 import { PageContainer } from '@/components';
 import {
+  ArrowLeftOutlined,
   EyeOutlined,
   FileOutlined,
   FolderOutlined,
@@ -18,7 +19,7 @@ import {
   Typography,
 } from 'antd';
 import { useEffect, useState } from 'react';
-import { styled, useParams } from 'umi';
+import { styled, useNavigate, useParams } from 'umi';
 import { useAuthPermission } from './model';
 
 const { Title, Text } = Typography;
@@ -132,6 +133,10 @@ const PermissionInfo = styled.div`
     font-weight: 500;
     font-size: 14px;
     line-height: 1.4;
+    min-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .permission-description {
@@ -317,6 +322,7 @@ interface TreeNode {
 
 export default function AuthPermissionPage() {
   const { roleId } = useParams();
+  const navigate = useNavigate();
   const [selectedPermissionIds, setSelectedPermissionIds] = useState<string[]>(
     [],
   );
@@ -348,6 +354,11 @@ export default function AuthPermissionPage() {
       setCheckedKeys(permissionIds);
     }
   }, [selectedRole]);
+
+  // 返回角色列表页面
+  const handleBackToRoles = () => {
+    navigate('/system/role');
+  };
 
   // 处理权限选择
   const handleCheck = (checkedKeys: any) => {
@@ -554,6 +565,46 @@ export default function AuthPermissionPage() {
   return (
     <PageContainer>
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        {/* 页面头部导航 */}
+        <Card style={{ marginBottom: '16px' }}>
+          <Row align="middle" justify="space-between">
+            <Col>
+              <Button
+                type="link"
+                icon={<ArrowLeftOutlined />}
+                onClick={handleBackToRoles}
+                style={{ padding: 0, marginBottom: 8 }}
+              >
+                返回角色列表
+              </Button>
+              <div>
+                <Title level={4} style={{ margin: 0, marginBottom: 4 }}>
+                  <KeyOutlined
+                    style={{ marginRight: '8px', color: '#1890ff' }}
+                  />
+                  角色权限分配
+                </Title>
+                <Text type="secondary">
+                  为角色分配系统权限，控制功能访问范围
+                </Text>
+              </div>
+            </Col>
+            <Col>
+              <Space>
+                <Button
+                  type="primary"
+                  onClick={handleSubmit}
+                  loading={submitting}
+                  icon={<KeyOutlined />}
+                >
+                  保存分配
+                </Button>
+                <Button onClick={handleReset}>重置</Button>
+              </Space>
+            </Col>
+          </Row>
+        </Card>
+
         {/* 角色信息卡片 */}
         <RoleInfoCard>
           <Row align="middle" gutter={24}>
@@ -590,15 +641,6 @@ export default function AuthPermissionPage() {
           }
           extra={
             <Space>
-              <Button
-                type="primary"
-                onClick={handleSubmit}
-                loading={submitting}
-                icon={<KeyOutlined />}
-              >
-                保存分配
-              </Button>
-              <Button onClick={handleReset}>重置</Button>
               <Button onClick={handleSelectAll}>全选</Button>
               <Button onClick={handleClearAll}>清空</Button>
             </Space>
