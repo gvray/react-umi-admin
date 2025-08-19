@@ -120,6 +120,9 @@ const ResourcePage = () => {
         }
         return code;
       },
+      advancedSearch: {
+        type: 'INPUT',
+      },
     },
     {
       title: '创建时间',
