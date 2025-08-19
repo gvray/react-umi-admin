@@ -481,7 +481,7 @@ export default function AuthPermissionPage() {
       ).map((name) => `resource-${name}`);
       setExpandedKeys(allResourceKeys);
     } else {
-      // 清空搜索时，展开所有节点
+      // 默认展开所有资源节点（第一层）
       const allResourceKeys = Array.from(
         new Set(permissions.map((p) => p.resource?.name || '其他')),
       ).map((name) => `resource-${name}`);
@@ -674,7 +674,6 @@ export default function AuthPermissionPage() {
                   treeData={treeData}
                   showLine
                   showIcon={false}
-                  defaultExpandAll
                 />
               </TreeContainer>
             </Col>

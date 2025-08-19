@@ -162,7 +162,7 @@ export async function updateResource(
  * @param options 请求选项
  */
 export async function deleteResource(
-  resourceId: number,
+  resourceId: string,
   options?: { [key: string]: any },
 ) {
   return request(`/resources/${resourceId}`, {

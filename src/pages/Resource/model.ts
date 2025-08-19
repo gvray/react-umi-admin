@@ -1,13 +1,18 @@
 import { getResourceTree, listResources } from '@/services/resource';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export const useResourceModel = () => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showSearch, setShowSearch] = useState(true);
+  const paramsRef = useRef<Record<string, any>>({});
   const getResourceList = async (params?: Record<string, any>) => {
     try {
       setLoading(true);
-      const res = await getResourceTree(params);
+      const res = await getResourceTree({
+        ...paramsRef.current,
+        ...params,
+      });
       if (res.data) {
         setData(res.data);
       }
@@ -23,6 +28,9 @@ export const useResourceModel = () => {
     data,
     loading,
     reload: getResourceList,
+    showSearch,
+    setShowSearch,
+    paramsRef,
   };
 };
 
@@ -30,6 +38,7 @@ export const useUpdataFormModel = (open: boolean) => {
   console.log('open', open);
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
   const getResourceList = async () => {
     try {
       setLoading(true);

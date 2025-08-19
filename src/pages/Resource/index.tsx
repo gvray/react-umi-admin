@@ -10,7 +10,7 @@ import {
   SearchOutlined,
 } from '@ant-design/icons';
 import { Button, Flex, Modal, Space, Table, Tag, Tooltip, message } from 'antd';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 import { useResourceModel } from './model';
 
@@ -30,10 +30,9 @@ export interface ResourceMeta {
 }
 const ResourcePage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
-  const [showSearch, setShowSearch] = useState(true);
-  const { data, loading, reload } = useResourceModel();
+  const { data, loading, reload, showSearch, setShowSearch, paramsRef } =
+    useResourceModel();
   // 高级搜索参数
-  const paramsRef = useRef<Record<string, any>>({});
   const handleAdd = async () => {
     updateFormRef.current?.show('添加资源');
   };
@@ -107,12 +106,6 @@ const ResourcePage = () => {
             return '目录';
           case 'MENU':
             return '菜单';
-          case 'BUTTON':
-            return '按钮';
-          case 'API':
-            return '接口';
-          case 'Data':
-            return '数据';
           default:
             return '未知';
         }
@@ -140,6 +133,7 @@ const ResourcePage = () => {
         value: [
           { label: '停用', value: 0 },
           { label: '正常', value: 1 },
+          { label: '审核中', value: 2 },
         ],
       },
       render: (status: number) => {
