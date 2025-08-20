@@ -68,7 +68,7 @@ export async function listPosition(
   params?: PositionListParams,
   options?: { [key: string]: any },
 ) {
-  return request('/positions', {
+  return request('/system/positions', {
     method: 'GET',
     params,
     ...(options || {}),
@@ -84,7 +84,7 @@ export async function getPosition(
   positionId: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/positions/${positionId}`, {
+  return request(`/system/positions/${positionId}`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -99,7 +99,7 @@ export async function createPosition(
   values: PositionCreateParams,
   options?: { [key: string]: any },
 ) {
-  return request('/positions', {
+  return request('/system/positions', {
     method: 'POST',
     data: values,
     ...(options || {}),
@@ -116,7 +116,7 @@ export async function updatePosition(
   options?: { [key: string]: any },
 ) {
   const { positionId, ...rest } = values;
-  return request(`/positions/${positionId}`, {
+  return request(`/system/positions/${positionId}`, {
     method: 'PATCH',
     data: rest,
     ...(options || {}),
@@ -132,7 +132,7 @@ export async function deletePosition(
   positionId: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/positions/${positionId}`, {
+  return request(`/system/positions/${positionId}`, {
     method: 'DELETE',
     ...(options || {}),
   });
@@ -147,7 +147,7 @@ export async function batchDeletePositions(
   positionIds: number[],
   options?: { [key: string]: any },
 ) {
-  return request('/positions/batch-delete', {
+  return request('/system/positions/batch-delete', {
     method: 'POST',
     data: { ids: positionIds },
     ...(options || {}),
@@ -165,7 +165,7 @@ export async function updatePositionStatus(
   status: 'active' | 'inactive',
   options?: { [key: string]: any },
 ) {
-  return request(`/positions/${positionId}/status`, {
+  return request(`/system/positions/${positionId}/status`, {
     method: 'PATCH',
     data: { status },
     ...(options || {}),
@@ -181,7 +181,7 @@ export async function getPositionEmployees(
   positionId: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/positions/${positionId}/employees`, {
+  return request(`/system/positions/${positionId}/employees`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -196,7 +196,7 @@ export async function getPositionsByDepartment(
   departmentId: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/departments/${departmentId}/positions`, {
+  return request(`/departments/${departmentId}/system/positions`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -207,7 +207,7 @@ export async function getPositionsByDepartment(
  * @param options 请求选项
  */
 export async function getPositionStats(options?: { [key: string]: any }) {
-  return request('/positions/stats', {
+  return request('/system/positions/stats', {
     method: 'GET',
     ...(options || {}),
   });
@@ -222,7 +222,7 @@ export async function searchPositions(
   keyword: string,
   options?: { [key: string]: any },
 ) {
-  return request('/positions/search', {
+  return request('/system/positions/search', {
     method: 'GET',
     params: { keyword },
     ...(options || {}),
@@ -234,7 +234,7 @@ export async function searchPositions(
  * @param options 请求选项
  */
 export async function getPositionTree(options?: { [key: string]: any }) {
-  return request('/positions/tree', {
+  return request('/system/positions/tree', {
     method: 'GET',
     ...(options || {}),
   });

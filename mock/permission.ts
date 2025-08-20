@@ -431,7 +431,7 @@ userPermissions.set(2, ['dashboard:view', 'profile:view', 'profile:update']);
 
 export default {
   // 获取权限分组（按资源分组）- 必须在参数路由之前
-  'GET /api/permissions/groups': async (req: Request, res: Response) => {
+  'GET /api/system/permissions/groups': async (req: Request, res: Response) => {
     const { type } = req.query;
     await sleep(300);
 
@@ -451,7 +451,7 @@ export default {
   },
 
   // 按资源获取权限列表 - 必须在参数路由之前
-  'GET /api/resources/:resourceId/permissions': async (
+  'GET /api/system/resources/:resourceId/permissions': async (
     req: Request,
     res: Response,
   ) => {
@@ -469,7 +469,7 @@ export default {
   },
 
   // 获取权限统计信息 - 必须在参数路由之前
-  'GET /api/permissions/stats': async (req: Request, res: Response) => {
+  'GET /api/system/permissions/stats': async (req: Request, res: Response) => {
     await sleep(200);
 
     const permissions = [...permissionData.values()];
@@ -531,7 +531,7 @@ export default {
   },
 
   // 搜索权限 - 必须在参数路由之前
-  'GET /api/permissions/search': async (req: Request, res: Response) => {
+  'GET /api/system/permissions/search': async (req: Request, res: Response) => {
     const { keyword } = req.query;
     await sleep(300);
 
@@ -557,7 +557,10 @@ export default {
   },
 
   // 批量删除权限 - 必须在参数路由之前
-  'POST /api/permissions/batch-delete': async (req: Request, res: Response) => {
+  'POST /api/system/permissions/batch-delete': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { ids } = req.body;
     await sleep(400);
 
@@ -606,7 +609,7 @@ export default {
   },
 
   // 检查权限 - 必须在参数路由之前
-  'POST /api/permissions/check': async (req: Request, res: Response) => {
+  'POST /api/system/permissions/check': async (req: Request, res: Response) => {
     const { permissionCode } = req.body;
     await sleep(200);
 
@@ -626,7 +629,10 @@ export default {
   },
 
   // 批量检查权限 - 必须在参数路由之前
-  'POST /api/permissions/batch-check': async (req: Request, res: Response) => {
+  'POST /api/system/permissions/batch-check': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { permissionCodes } = req.body;
     await sleep(300);
 
@@ -660,7 +666,7 @@ export default {
   },
 
   // 获取权限列表
-  'GET /api/permissions': async (req: Request, res: Response) => {
+  'GET /api/system/permissions': async (req: Request, res: Response) => {
     const {
       current = 1,
       pageSize = 10,
@@ -737,7 +743,7 @@ export default {
   },
 
   // 获取单个权限详情
-  'GET /api/permissions/:id': async (req: Request, res: Response) => {
+  'GET /api/system/permissions/:id': async (req: Request, res: Response) => {
     const { id } = req.params;
     await sleep(200);
 
@@ -759,7 +765,7 @@ export default {
   },
 
   // 创建权限
-  'POST /api/permissions': async (req: Request, res: Response) => {
+  'POST /api/system/permissions': async (req: Request, res: Response) => {
     const {
       name,
       code,
@@ -847,7 +853,7 @@ export default {
   },
 
   // 更新权限
-  'PATCH /api/permissions/:id': async (req: Request, res: Response) => {
+  'PATCH /api/system/permissions/:id': async (req: Request, res: Response) => {
     const { id } = req.params;
     const updateData = req.body;
     await sleep(400);
@@ -910,7 +916,7 @@ export default {
   },
 
   // 删除权限
-  'DELETE /api/permissions/:id': async (req: Request, res: Response) => {
+  'DELETE /api/system/permissions/:id': async (req: Request, res: Response) => {
     const { id } = req.params;
     await sleep(300);
 
@@ -950,7 +956,10 @@ export default {
   },
 
   // 更新权限状态
-  'PATCH /api/permissions/:id/status': async (req: Request, res: Response) => {
+  'PATCH /api/system/permissions/:id/status': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { id } = req.params;
     const { status } = req.body;
     await sleep(300);
@@ -982,7 +991,10 @@ export default {
   },
 
   // 移动权限到新的父权限
-  'PATCH /api/permissions/:id/move': async (req: Request, res: Response) => {
+  'PATCH /api/system/permissions/:id/move': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { id } = req.params;
     const { parentId } = req.body;
     await sleep(400);
@@ -1053,7 +1065,10 @@ export default {
   },
 
   // 更新权限排序
-  'PATCH /api/permissions/:id/sort': async (req: Request, res: Response) => {
+  'PATCH /api/system/permissions/:id/sort': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { id } = req.params;
     const { sort } = req.body;
     await sleep(300);
@@ -1085,7 +1100,10 @@ export default {
   },
 
   // 获取子权限列表
-  'GET /api/permissions/:id/children': async (req: Request, res: Response) => {
+  'GET /api/system/permissions/:id/children': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { id } = req.params;
     await sleep(300);
 
@@ -1111,7 +1129,10 @@ export default {
   },
 
   // 获取用户权限
-  'GET /api/users/:userId/permissions': async (req: Request, res: Response) => {
+  'GET /api/system/users/:userId/permissions': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { userId } = req.params;
     await sleep(300);
 
@@ -1127,7 +1148,10 @@ export default {
   },
 
   // 获取角色权限
-  'GET /api/roles/:roleId/permissions': async (req: Request, res: Response) => {
+  'GET /api/system/roles/:roleId/permissions': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { roleId } = req.params;
     await sleep(300);
 
@@ -1156,7 +1180,10 @@ export default {
   },
 
   // 分配角色权限
-  'PUT /api/roles/:roleId/permissions': async (req: Request, res: Response) => {
+  'PUT /api/system/roles/:roleId/permissions': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { roleId } = req.params;
     const { permissionIds } = req.body;
     await sleep(400);
@@ -1185,7 +1212,10 @@ export default {
   },
 
   // 批量创建资源的标准权限
-  'POST /api/permissions/batch-create': async (req: Request, res: Response) => {
+  'POST /api/system/permissions/batch-create': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { resourceId, permissionTypes } = req.body;
     await sleep(500);
 

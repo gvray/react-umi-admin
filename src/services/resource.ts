@@ -74,7 +74,7 @@ export async function listResources(
   params?: ResourceListParams,
   options?: { [key: string]: any },
 ) {
-  return request('/resources', {
+  return request('/system/resources', {
     method: 'GET',
     params,
     ...(options || {}),
@@ -85,7 +85,7 @@ export async function getResourceTree(
   params?: ResourceListParams,
   options?: { [key: string]: any },
 ) {
-  return request('/resources/tree', {
+  return request('/system/resources/tree', {
     method: 'GET',
     params,
     ...(options || {}),
@@ -101,7 +101,7 @@ export async function getMenus(
   params?: ResourceListParams,
   options?: { [key: string]: any },
 ) {
-  return request('/resources/menus', {
+  return request('/system/resources/menus', {
     method: 'GET',
     params,
     ...(options || {}),
@@ -117,7 +117,7 @@ export async function getResource(
   resourceId: string,
   options?: { [key: string]: any },
 ) {
-  return request(`/resources/${resourceId}`, {
+  return request(`/system/resources/${resourceId}`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -132,7 +132,7 @@ export async function createResource(
   values: ResourceCreateParams,
   options?: { [key: string]: any },
 ) {
-  return request('/resources', {
+  return request('/system/resources', {
     method: 'POST',
     data: values,
     ...(options || {}),
@@ -149,7 +149,7 @@ export async function updateResource(
   options?: { [key: string]: any },
 ) {
   const { resourceId, ...rest } = values;
-  return request(`/resources/${resourceId}`, {
+  return request(`/system/resources/${resourceId}`, {
     method: 'PATCH',
     data: rest,
     ...(options || {}),
@@ -165,7 +165,7 @@ export async function deleteResource(
   resourceId: string,
   options?: { [key: string]: any },
 ) {
-  return request(`/resources/${resourceId}`, {
+  return request(`/system/resources/${resourceId}`, {
     method: 'DELETE',
     ...(options || {}),
   });
@@ -180,7 +180,7 @@ export async function batchDeleteResources(
   resourceIds: number[],
   options?: { [key: string]: any },
 ) {
-  return request('/resources/batch-delete', {
+  return request('/system/resources/batch-delete', {
     method: 'POST',
     data: { ids: resourceIds },
     ...(options || {}),
@@ -199,7 +199,7 @@ export async function uploadResource(
   const formData = new FormData();
   formData.append('file', file);
 
-  return request('/resources/upload', {
+  return request('/system/resources/upload', {
     method: 'POST',
     data: formData,
     headers: {
@@ -220,7 +220,7 @@ export async function updateResourceStatus(
   status: 'active' | 'inactive',
   options?: { [key: string]: any },
 ) {
-  return request(`/resources/${resourceId}/status`, {
+  return request(`/system/resources/${resourceId}/status`, {
     method: 'PATCH',
     data: { status },
     ...(options || {}),
@@ -232,7 +232,7 @@ export async function updateResourceStatus(
  * @param options 请求选项
  */
 export async function getResourceStats(options?: { [key: string]: any }) {
-  return request('/resources/stats', {
+  return request('/system/resources/stats', {
     method: 'GET',
     ...(options || {}),
   });
@@ -247,7 +247,7 @@ export async function searchResources(
   keyword: string,
   options?: { [key: string]: any },
 ) {
-  return request('/resources/search', {
+  return request('/system/resources/search', {
     method: 'GET',
     params: { keyword },
     ...(options || {}),

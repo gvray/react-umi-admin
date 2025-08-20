@@ -87,7 +87,7 @@ function buildResourceTree(
 
 export default {
   // 获取资源树结构 - 必须在参数路由之前
-  'GET /api/resources/tree': async (req: Request, res: Response) => {
+  'GET /api/system/resources/tree': async (req: Request, res: Response) => {
     await sleep(300);
 
     const resources = [...resourceData.values()];
@@ -100,7 +100,7 @@ export default {
   },
 
   // 获取菜单资源树 - 必须在参数路由之前
-  'GET /api/resources/menus': async (req: Request, res: Response) => {
+  'GET /api/system/resources/menus': async (req: Request, res: Response) => {
     await sleep(300);
 
     const resources = [...resourceData.values()];
@@ -113,7 +113,7 @@ export default {
   },
 
   // 搜索资源 - 必须在参数路由之前
-  'GET /api/resources/search': async (req: Request, res: Response) => {
+  'GET /api/system/resources/search': async (req: Request, res: Response) => {
     const { keyword } = req.query;
     await sleep(300);
 
@@ -139,7 +139,10 @@ export default {
   },
 
   // 批量删除资源 - 必须在参数路由之前
-  'POST /api/resources/batch-delete': async (req: Request, res: Response) => {
+  'POST /api/system/resources/batch-delete': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { ids } = req.body;
     await sleep(400);
 
@@ -188,7 +191,7 @@ export default {
   },
 
   // 获取资源列表
-  'GET /api/resources': async (req: Request, res: Response) => {
+  'GET /api/system/resources': async (req: Request, res: Response) => {
     const {
       current = 1,
       pageSize = 10,
@@ -259,7 +262,7 @@ export default {
   },
 
   // 获取单个资源详情
-  'GET /api/resources/:id': async (req: Request, res: Response) => {
+  'GET /api/system/resources/:id': async (req: Request, res: Response) => {
     const { id } = req.params;
     await sleep(200);
 
@@ -281,7 +284,7 @@ export default {
   },
 
   // 创建资源
-  'POST /api/resources': async (req: Request, res: Response) => {
+  'POST /api/system/resources': async (req: Request, res: Response) => {
     const {
       name,
       type,
@@ -363,7 +366,7 @@ export default {
   },
 
   // 更新资源
-  'PATCH /api/resources/:id': async (req: Request, res: Response) => {
+  'PATCH /api/system/resources/:id': async (req: Request, res: Response) => {
     const { id } = req.params;
     const updateData = req.body;
     await sleep(400);
@@ -426,7 +429,7 @@ export default {
   },
 
   // 删除资源
-  'DELETE /api/resources/:id': async (req: Request, res: Response) => {
+  'DELETE /api/system/resources/:id': async (req: Request, res: Response) => {
     const { id } = req.params;
     await sleep(300);
 
@@ -466,7 +469,10 @@ export default {
   },
 
   // 获取资源下的权限列表
-  'GET /api/resources/:id/permissions': async (req: Request, res: Response) => {
+  'GET /api/system/resources/:id/permissions': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { id } = req.params;
     await sleep(300);
 

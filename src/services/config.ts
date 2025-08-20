@@ -18,7 +18,7 @@ export interface Config {
 
 // 配置列表
 export const listConfig = (params?: any) => {
-  return request('/configs', {
+  return request('/system/configs', {
     method: 'GET',
     params,
   });
@@ -26,14 +26,14 @@ export const listConfig = (params?: any) => {
 
 // 获取配置详情
 export const getConfig = (configId: string) => {
-  return request(`/configs/${configId}`, {
+  return request(`/system/configs/${configId}`, {
     method: 'GET',
   });
 };
 
 // 创建配置
 export const createConfig = (data: Partial<Config>) => {
-  return request('/configs', {
+  return request('/system/configs', {
     method: 'POST',
     data,
   });
@@ -41,7 +41,7 @@ export const createConfig = (data: Partial<Config>) => {
 
 // 更新配置
 export const updateConfig = (configId: string, data: Partial<Config>) => {
-  return request(`/configs/${configId}`, {
+  return request(`/system/configs/${configId}`, {
     method: 'PATCH',
     data,
   });
@@ -49,21 +49,21 @@ export const updateConfig = (configId: string, data: Partial<Config>) => {
 
 // 删除配置
 export const deleteConfig = (configId: string) => {
-  return request(`/configs/${configId}`, {
+  return request(`/system/configs/${configId}`, {
     method: 'DELETE',
   });
 };
 
 // 根据键获取配置值
 export const getConfigByKey = (key: string) => {
-  return request(`/configs/key/${key}`, {
+  return request(`/system/configs/key/${key}`, {
     method: 'GET',
   });
 };
 
 // 批量更新配置
 export const batchUpdateConfig = (data: { key: string; value: string }[]) => {
-  return request('/configs/batch', {
+  return request('/system/configs/batch', {
     method: 'PUT',
     data,
   });

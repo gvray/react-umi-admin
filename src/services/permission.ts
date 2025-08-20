@@ -80,7 +80,7 @@ export async function listPermission(
   params?: PermissionListParams,
   options?: { [key: string]: any },
 ) {
-  return request('/permissions', {
+  return request('/system/permissions', {
     method: 'GET',
     params,
     ...(options || {}),
@@ -95,7 +95,7 @@ export async function getPermissionTree(
   params?: Record<string, any>,
   options?: { [key: string]: any },
 ) {
-  return request('/permissions/tree', {
+  return request('/system/permissions/tree', {
     method: 'GET',
     params,
     ...(options || {}),
@@ -111,7 +111,7 @@ export async function getPermission(
   permissionId: string,
   options?: { [key: string]: any },
 ) {
-  return request(`/permissions/${permissionId}`, {
+  return request(`/system/permissions/${permissionId}`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -126,7 +126,7 @@ export async function createPermission(
   values: PermissionCreateParams,
   options?: { [key: string]: any },
 ) {
-  return request('/permissions', {
+  return request('/system/permissions', {
     method: 'POST',
     data: values,
     ...(options || {}),
@@ -143,7 +143,7 @@ export async function updatePermission(
   options?: { [key: string]: any },
 ) {
   const { permissionId, ...rest } = values;
-  return request(`/permissions/${permissionId}`, {
+  return request(`/system/permissions/${permissionId}`, {
     method: 'PATCH',
     data: rest,
     ...(options || {}),
@@ -159,7 +159,7 @@ export async function deletePermission(
   permissionId: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/permissions/${permissionId}`, {
+  return request(`/system/permissions/${permissionId}`, {
     method: 'DELETE',
     ...(options || {}),
   });
@@ -174,7 +174,7 @@ export async function batchDeletePermissions(
   permissionIds: number[],
   options?: { [key: string]: any },
 ) {
-  return request('/permissions/batch-delete', {
+  return request('/system/permissions/batch-delete', {
     method: 'POST',
     data: { ids: permissionIds },
     ...(options || {}),
@@ -192,7 +192,7 @@ export async function updatePermissionStatus(
   status: 'active' | 'inactive',
   options?: { [key: string]: any },
 ) {
-  return request(`/permissions/${permissionId}/status`, {
+  return request(`/system/permissions/${permissionId}/status`, {
     method: 'PATCH',
     data: { status },
     ...(options || {}),
@@ -208,7 +208,7 @@ export async function getPermissionsByResource(
   resourceId: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/resources/${resourceId}/permissions`, {
+  return request(`/resources/${resourceId}/system/permissions`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -219,7 +219,7 @@ export async function getPermissionsByResource(
  * @param options 请求选项
  */
 export async function getPermissionGroups(options?: { [key: string]: any }) {
-  return request('/permissions/groups', {
+  return request('/system/permissions/groups', {
     method: 'GET',
     ...(options || {}),
   });
@@ -236,7 +236,7 @@ export async function movePermissionToResource(
   resourceId: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/permissions/${permissionId}/move`, {
+  return request(`/system/permissions/${permissionId}/move`, {
     method: 'PATCH',
     data: { resourceId },
     ...(options || {}),
@@ -254,7 +254,7 @@ export async function updatePermissionSort(
   sort: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/permissions/${permissionId}/sort`, {
+  return request(`/system/permissions/${permissionId}/sort`, {
     method: 'PATCH',
     data: { sort },
     ...(options || {}),
@@ -270,7 +270,7 @@ export async function getUserPermissions(
   userId: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/users/${userId}/permissions`, {
+  return request(`/users/${userId}/system/permissions`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -285,7 +285,7 @@ export async function getRolePermissions(
   roleId: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/roles/${roleId}/permissions`, {
+  return request(`/roles/${roleId}/system/permissions`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -302,7 +302,7 @@ export async function assignRolePermissions(
   permissionIds: number[],
   options?: { [key: string]: any },
 ) {
-  return request(`/roles/${roleId}/permissions`, {
+  return request(`/roles/${roleId}/system/permissions`, {
     method: 'PUT',
     data: { permissionIds },
     ...(options || {}),
@@ -318,7 +318,7 @@ export async function checkPermission(
   permissionCode: string,
   options?: { [key: string]: any },
 ) {
-  return request('/permissions/check', {
+  return request('/system/permissions/check', {
     method: 'POST',
     data: { permissionCode },
     ...(options || {}),
@@ -334,7 +334,7 @@ export async function checkPermissions(
   permissionCodes: string[],
   options?: { [key: string]: any },
 ) {
-  return request('/permissions/batch-check', {
+  return request('/system/permissions/batch-check', {
     method: 'POST',
     data: { permissionCodes },
     ...(options || {}),
@@ -346,7 +346,7 @@ export async function checkPermissions(
  * @param options 请求选项
  */
 export async function getPermissionStats(options?: { [key: string]: any }) {
-  return request('/permissions/stats', {
+  return request('/system/permissions/stats', {
     method: 'GET',
     ...(options || {}),
   });
@@ -361,7 +361,7 @@ export async function searchPermissions(
   keyword: string,
   options?: { [key: string]: any },
 ) {
-  return request('/permissions/search', {
+  return request('/system/permissions/search', {
     method: 'GET',
     params: { keyword },
     ...(options || {}),
@@ -379,7 +379,7 @@ export async function createStandardPermissions(
   permissionTypes: ('view' | 'create' | 'update' | 'delete')[],
   options?: { [key: string]: any },
 ) {
-  return request('/permissions/batch-create', {
+  return request('/system/permissions/batch-create', {
     method: 'POST',
     data: { resourceId, permissionTypes },
     ...(options || {}),

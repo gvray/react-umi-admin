@@ -38,7 +38,7 @@ export interface DictionaryItem {
 
 // 字典类型列表
 export const listDictionaryType = (params?: any) => {
-  return request('/dictionaries/types', {
+  return request('/system/dictionaries/types', {
     method: 'GET',
     params,
   });
@@ -46,14 +46,14 @@ export const listDictionaryType = (params?: any) => {
 
 // 获取字典类型详情
 export const getDictionaryType = (typeId: string) => {
-  return request(`/dictionaries/types/${typeId}`, {
+  return request(`/system/dictionaries/types/${typeId}`, {
     method: 'GET',
   });
 };
 
 // 创建字典类型
 export const createDictionaryType = (data: Partial<DictionaryType>) => {
-  return request('/dictionaries/types', {
+  return request('/system/dictionaries/types', {
     method: 'POST',
     data,
   });
@@ -64,7 +64,7 @@ export const updateDictionaryType = (
   typeId: string,
   data: Partial<DictionaryType>,
 ) => {
-  return request(`/dictionaries/types/${typeId}`, {
+  return request(`/system/dictionaries/types/${typeId}`, {
     method: 'PATCH',
     data,
   });
@@ -72,14 +72,14 @@ export const updateDictionaryType = (
 
 // 删除字典类型
 export const deleteDictionaryType = (typeId: string) => {
-  return request(`/dictionaries/types/${typeId}`, {
+  return request(`/system/dictionaries/types/${typeId}`, {
     method: 'DELETE',
   });
 };
 
 // 字典项列表
 export const listDictionaryItem = (typeCode: string, params?: any) => {
-  return request('/dictionaries/items', {
+  return request('/system/dictionaries/items', {
     method: 'GET',
     params: {
       ...params,
@@ -90,14 +90,14 @@ export const listDictionaryItem = (typeCode: string, params?: any) => {
 
 // 获取字典项详情
 export const getDictionaryItem = (itemId: string) => {
-  return request(`/dictionaries/items/${itemId}`, {
+  return request(`/system/dictionaries/items/${itemId}`, {
     method: 'GET',
   });
 };
 
 // 创建字典项
 export const createDictionaryItem = (data: Partial<DictionaryItem>) => {
-  return request('/dictionaries/items', {
+  return request('/system/dictionaries/items', {
     method: 'POST',
     data,
   });
@@ -108,7 +108,7 @@ export const updateDictionaryItem = (
   itemId: string,
   data: Partial<DictionaryItem>,
 ) => {
-  return request(`/dictionaries/items/${itemId}`, {
+  return request(`/system/dictionaries/items/${itemId}`, {
     method: 'PATCH',
     data,
   });
@@ -116,14 +116,14 @@ export const updateDictionaryItem = (
 
 // 删除字典项
 export const deleteDictionaryItem = (itemId: string) => {
-  return request(`/dictionaries/items/${itemId}`, {
+  return request(`/system/dictionaries/items/${itemId}`, {
     method: 'DELETE',
   });
 };
 
 // 批量获取字典项
 export const getDictionaryTypesBatch = (typeCodes: string) => {
-  return request(`/dictionaries/types/batch`, {
+  return request(`/system/dictionaries/types/batch`, {
     method: 'GET',
     params: {
       typeCodes,

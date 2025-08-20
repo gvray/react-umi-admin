@@ -107,7 +107,7 @@ for (let i = 1; i <= index; i++) {
 
 export default {
   // 获取职位列表
-  'GET /api/positions': async (req: Request, res: Response) => {
+  'GET /api/system/positions': async (req: Request, res: Response) => {
     const {
       current = 1,
       pageSize = 10,
@@ -177,7 +177,7 @@ export default {
   },
 
   // 获取单个职位详情
-  'GET /api/positions/:id': async (req: Request, res: Response) => {
+  'GET /api/system/positions/:id': async (req: Request, res: Response) => {
     const { id } = req.params;
     await sleep(200);
 
@@ -199,7 +199,7 @@ export default {
   },
 
   // 创建职位
-  'POST /api/positions': async (req: Request, res: Response) => {
+  'POST /api/system/positions': async (req: Request, res: Response) => {
     const {
       name,
       code,
@@ -260,7 +260,7 @@ export default {
   },
 
   // 更新职位
-  'PATCH /api/positions/:id': async (req: Request, res: Response) => {
+  'PATCH /api/system/positions/:id': async (req: Request, res: Response) => {
     const { id } = req.params;
     const updateData = req.body;
     await sleep(400);
@@ -317,7 +317,7 @@ export default {
   },
 
   // 删除职位
-  'DELETE /api/positions/:id': async (req: Request, res: Response) => {
+  'DELETE /api/system/positions/:id': async (req: Request, res: Response) => {
     const { id } = req.params;
     await sleep(300);
 
@@ -342,7 +342,10 @@ export default {
   },
 
   // 批量删除职位
-  'POST /api/positions/batch-delete': async (req: Request, res: Response) => {
+  'POST /api/system/positions/batch-delete': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { ids } = req.body;
     await sleep(400);
 
@@ -373,7 +376,10 @@ export default {
   },
 
   // 更新职位状态
-  'PATCH /api/positions/:id/status': async (req: Request, res: Response) => {
+  'PATCH /api/system/positions/:id/status': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { id } = req.params;
     const { status } = req.body;
     await sleep(300);
@@ -405,7 +411,10 @@ export default {
   },
 
   // 获取职位下的员工列表
-  'GET /api/positions/:id/employees': async (req: Request, res: Response) => {
+  'GET /api/system/positions/:id/employees': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { id } = req.params;
     await sleep(300);
 
@@ -441,7 +450,10 @@ export default {
   },
 
   // 按部门获取职位列表
-  'GET /api/departments/:id/positions': async (req: Request, res: Response) => {
+  'GET /api/system/departments/:id/positions': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { id } = req.params;
     await sleep(300);
 
@@ -456,7 +468,7 @@ export default {
   },
 
   // 获取职位统计信息
-  'GET /api/positions/stats': async (req: Request, res: Response) => {
+  'GET /api/system/positions/stats': async (req: Request, res: Response) => {
     await sleep(200);
 
     const positions = [...positionData.values()];
@@ -483,7 +495,7 @@ export default {
   },
 
   // 搜索职位
-  'GET /api/positions/search': async (req: Request, res: Response) => {
+  'GET /api/system/positions/search': async (req: Request, res: Response) => {
     const { keyword } = req.query;
     await sleep(300);
 
@@ -509,7 +521,7 @@ export default {
   },
 
   // 获取职位层级树
-  'GET /api/positions/tree': async (req: Request, res: Response) => {
+  'GET /api/system/positions/tree': async (req: Request, res: Response) => {
     await sleep(300);
 
     const tree = departments.map((dept) => {

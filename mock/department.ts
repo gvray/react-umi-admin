@@ -278,7 +278,7 @@ function buildDepartmentTree(
 
 export default {
   // 获取部门树结构 - 必须在参数路由之前
-  'GET /api/departments/tree': async (req: Request, res: Response) => {
+  'GET /api/system/departments/tree': async (req: Request, res: Response) => {
     await sleep(300);
 
     const departments = [...departmentData.values()];
@@ -291,7 +291,7 @@ export default {
   },
 
   // 获取部门统计信息 - 必须在参数路由之前
-  'GET /api/departments/stats': async (req: Request, res: Response) => {
+  'GET /api/system/departments/stats': async (req: Request, res: Response) => {
     await sleep(200);
 
     const departments = [...departmentData.values()];
@@ -320,7 +320,7 @@ export default {
   },
 
   // 搜索部门 - 必须在参数路由之前
-  'GET /api/departments/search': async (req: Request, res: Response) => {
+  'GET /api/system/departments/search': async (req: Request, res: Response) => {
     const { keyword } = req.query;
     await sleep(300);
 
@@ -346,7 +346,10 @@ export default {
   },
 
   // 批量删除部门 - 必须在参数路由之前
-  'POST /api/departments/batch-delete': async (req: Request, res: Response) => {
+  'POST /api/system/departments/batch-delete': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { ids } = req.body;
     await sleep(400);
 
@@ -395,7 +398,7 @@ export default {
   },
 
   // 获取部门列表
-  'GET /api/departments': async (req: Request, res: Response) => {
+  'GET /api/system/departments': async (req: Request, res: Response) => {
     const {
       current = 1,
       pageSize = 10,
@@ -474,7 +477,7 @@ export default {
   },
 
   // 获取单个部门详情
-  'GET /api/departments/:id': async (req: Request, res: Response) => {
+  'GET /api/system/departments/:id': async (req: Request, res: Response) => {
     const { id } = req.params;
     await sleep(200);
 
@@ -496,7 +499,7 @@ export default {
   },
 
   // 创建部门
-  'POST /api/departments': async (req: Request, res: Response) => {
+  'POST /api/system/departments': async (req: Request, res: Response) => {
     const {
       name,
       code,
@@ -579,7 +582,7 @@ export default {
   },
 
   // 更新部门
-  'PATCH /api/departments/:id': async (req: Request, res: Response) => {
+  'PATCH /api/system/departments/:id': async (req: Request, res: Response) => {
     const { id } = req.params;
     const updateData = req.body;
     await sleep(400);
@@ -647,7 +650,7 @@ export default {
   },
 
   // 删除部门
-  'DELETE /api/departments/:id': async (req: Request, res: Response) => {
+  'DELETE /api/system/departments/:id': async (req: Request, res: Response) => {
     const { id } = req.params;
     await sleep(300);
 
@@ -687,7 +690,10 @@ export default {
   },
 
   // 更新部门状态
-  'PATCH /api/departments/:id/status': async (req: Request, res: Response) => {
+  'PATCH /api/system/departments/:id/status': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { id } = req.params;
     const { status } = req.body;
     await sleep(300);
@@ -719,7 +725,10 @@ export default {
   },
 
   // 获取部门下的员工列表
-  'GET /api/departments/:id/employees': async (req: Request, res: Response) => {
+  'GET /api/system/departments/:id/employees': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { id } = req.params;
     await sleep(300);
 
@@ -757,7 +766,10 @@ export default {
   },
 
   // 获取部门下的职位列表
-  'GET /api/departments/:id/positions': async (req: Request, res: Response) => {
+  'GET /api/system/departments/:id/positions': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { id } = req.params;
     await sleep(300);
 
@@ -794,7 +806,10 @@ export default {
   },
 
   // 移动部门到新的父部门
-  'PATCH /api/departments/:id/move': async (req: Request, res: Response) => {
+  'PATCH /api/system/departments/:id/move': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { id } = req.params;
     const { parentId } = req.body;
     await sleep(400);
@@ -866,7 +881,10 @@ export default {
   },
 
   // 更新部门排序
-  'PATCH /api/departments/:id/sort': async (req: Request, res: Response) => {
+  'PATCH /api/system/departments/:id/sort': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { id } = req.params;
     const { sort } = req.body;
     await sleep(300);
@@ -898,7 +916,10 @@ export default {
   },
 
   // 设置部门主管
-  'PATCH /api/departments/:id/manager': async (req: Request, res: Response) => {
+  'PATCH /api/system/departments/:id/manager': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { id } = req.params;
     const { managerId } = req.body;
     await sleep(300);
@@ -931,7 +952,10 @@ export default {
   },
 
   // 获取子部门列表
-  'GET /api/departments/:id/children': async (req: Request, res: Response) => {
+  'GET /api/system/departments/:id/children': async (
+    req: Request,
+    res: Response,
+  ) => {
     const { id } = req.params;
     await sleep(300);
 

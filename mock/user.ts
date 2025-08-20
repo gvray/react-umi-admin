@@ -29,7 +29,7 @@ for (let i = 1; i <= index; i++) {
   });
 }
 export default {
-  'GET /api/users': async (req: Request, res: Response) => {
+  'GET /api/system/users': async (req: Request, res: Response) => {
     const { page, pageSize, username, phone, dateRange, status } = req.query;
     await sleep(500);
     if (false) {
@@ -87,7 +87,7 @@ export default {
       },
     });
   },
-  'DELETE /api/users/:userId': async (req: Request, res: Response) => {
+  'DELETE /api/system/users/:userId': async (req: Request, res: Response) => {
     const { userId } = req.params;
     resultData.delete(userId);
     res.json({
@@ -96,7 +96,7 @@ export default {
       message: '操作成功',
     });
   },
-  'POST /api/users': async (req: Request, res: Response) => {
+  'POST /api/system/users': async (req: Request, res: Response) => {
     const userId = uuid();
     resultData.set(userId, {
       createdAt: new Date(),
@@ -109,7 +109,7 @@ export default {
       message: '操作成功',
     });
   },
-  'PATCH /api/users/:userId': async (req: Request, res: Response) => {
+  'PATCH /api/system/users/:userId': async (req: Request, res: Response) => {
     const { userId } = req.params;
     const oldUser = resultData.get(userId);
     resultData.set(userId, {
@@ -124,7 +124,7 @@ export default {
       message: '操作成功',
     });
   },
-  'GET /api/users/:userId': async (req: Request, res: Response) => {
+  'GET /api/system/users/:userId': async (req: Request, res: Response) => {
     const { userId } = req.params;
     const user = resultData.get(userId);
     if (!user) {

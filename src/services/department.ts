@@ -68,7 +68,7 @@ export async function listDepartment(
   params?: DepartmentListParams,
   options?: { [key: string]: any },
 ) {
-  return request('/departments', {
+  return request('/system/departments', {
     method: 'GET',
     params,
     ...(options || {}),
@@ -84,7 +84,7 @@ export async function getDepartment(
   departmentId: string,
   options?: { [key: string]: any },
 ) {
-  return request(`/departments/${departmentId}`, {
+  return request(`/system/departments/${departmentId}`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -99,7 +99,7 @@ export async function createDepartment(
   values: DepartmentCreateParams,
   options?: { [key: string]: any },
 ) {
-  return request('/departments', {
+  return request('/system/departments', {
     method: 'POST',
     data: values,
     ...(options || {}),
@@ -116,7 +116,7 @@ export async function updateDepartment(
   options?: { [key: string]: any },
 ) {
   const { departmentId, ...rest } = values;
-  return request(`/departments/${departmentId}`, {
+  return request(`/system/departments/${departmentId}`, {
     method: 'PATCH',
     data: rest,
     ...(options || {}),
@@ -132,7 +132,7 @@ export async function deleteDepartment(
   departmentId: string,
   options?: { [key: string]: any },
 ) {
-  return request(`/departments/${departmentId}`, {
+  return request(`/system/departments/${departmentId}`, {
     method: 'DELETE',
     ...(options || {}),
   });
@@ -147,7 +147,7 @@ export async function batchDeleteDepartments(
   departmentIds: number[],
   options?: { [key: string]: any },
 ) {
-  return request('/departments/batch-delete', {
+  return request('/system/departments/batch-delete', {
     method: 'POST',
     data: { ids: departmentIds },
     ...(options || {}),
@@ -165,7 +165,7 @@ export async function updateDepartmentStatus(
   status: 'active' | 'inactive',
   options?: { [key: string]: any },
 ) {
-  return request(`/departments/${departmentId}/status`, {
+  return request(`/system/departments/${departmentId}/status`, {
     method: 'PATCH',
     data: { status },
     ...(options || {}),
@@ -180,7 +180,7 @@ export async function getDepartmentTree(
   params?: Record<string, any>,
   options?: { [key: string]: any },
 ) {
-  return request('/departments/tree', {
+  return request('/system/departments/tree', {
     method: 'GET',
     params,
     ...(options || {}),
@@ -196,7 +196,7 @@ export async function getDepartmentEmployees(
   departmentId: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/departments/${departmentId}/employees`, {
+  return request(`/system/departments/${departmentId}/employees`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -211,7 +211,7 @@ export async function getDepartmentPositions(
   departmentId: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/departments/${departmentId}/positions`, {
+  return request(`/system/departments/${departmentId}/positions`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -228,7 +228,7 @@ export async function moveDepartment(
   parentId: number | null,
   options?: { [key: string]: any },
 ) {
-  return request(`/departments/${departmentId}/move`, {
+  return request(`/system/departments/${departmentId}/move`, {
     method: 'PATCH',
     data: { parentId },
     ...(options || {}),
@@ -246,7 +246,7 @@ export async function updateDepartmentSort(
   sort: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/departments/${departmentId}/sort`, {
+  return request(`/system/departments/${departmentId}/sort`, {
     method: 'PATCH',
     data: { sort },
     ...(options || {}),
@@ -264,7 +264,7 @@ export async function setDepartmentManager(
   managerId: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/departments/${departmentId}/manager`, {
+  return request(`/system/departments/${departmentId}/manager`, {
     method: 'PATCH',
     data: { managerId },
     ...(options || {}),
@@ -276,7 +276,7 @@ export async function setDepartmentManager(
  * @param options 请求选项
  */
 export async function getDepartmentStats(options?: { [key: string]: any }) {
-  return request('/departments/stats', {
+  return request('/system/departments/stats', {
     method: 'GET',
     ...(options || {}),
   });
@@ -291,7 +291,7 @@ export async function searchDepartments(
   keyword: string,
   options?: { [key: string]: any },
 ) {
-  return request('/departments/search', {
+  return request('/system/departments/search', {
     method: 'GET',
     params: { keyword },
     ...(options || {}),
@@ -307,7 +307,7 @@ export async function getChildDepartments(
   parentId: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/departments/${parentId}/children`, {
+  return request(`/system/departments/${parentId}/children`, {
     method: 'GET',
     ...(options || {}),
   });

@@ -49,7 +49,7 @@ export async function listRole(
   params?: RoleListParams,
   options?: { [key: string]: any },
 ) {
-  return request('/roles', {
+  return request('/system/roles', {
     method: 'GET',
     params,
     ...(options || {}),
@@ -65,7 +65,7 @@ export async function getRole(
   roleId: string,
   options?: { [key: string]: any },
 ) {
-  return request(`/roles/${roleId}`, {
+  return request(`/system/roles/${roleId}`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -80,7 +80,7 @@ export async function addRole(
   values: RoleCreateParams,
   options?: { [key: string]: any },
 ) {
-  return request('/roles', {
+  return request('/system/roles', {
     method: 'POST',
     data: values,
     ...(options || {}),
@@ -97,7 +97,7 @@ export async function updateRole(
   options?: { [key: string]: any },
 ) {
   const { roleId, ...rest } = values;
-  return request(`/roles/${roleId}`, {
+  return request(`/system/roles/${roleId}`, {
     method: 'PATCH',
     data: rest,
     ...(options || {}),
@@ -113,7 +113,7 @@ export async function deleteRole(
   roleId: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/roles/${roleId}`, {
+  return request(`/system/roles/${roleId}`, {
     method: 'DELETE',
     ...(options || {}),
   });
@@ -128,7 +128,7 @@ export async function batchDeleteRoles(
   roleIds: number[],
   options?: { [key: string]: any },
 ) {
-  return request('/roles/batch-delete', {
+  return request('/system/roles/batch-delete', {
     method: 'POST',
     data: { ids: roleIds },
     ...(options || {}),
@@ -146,7 +146,7 @@ export async function updateRoleStatus(
   status: 'active' | 'inactive',
   options?: { [key: string]: any },
 ) {
-  return request(`/roles/${roleId}/status`, {
+  return request(`/system/roles/${roleId}/status`, {
     method: 'PATCH',
     data: { status },
     ...(options || {}),
@@ -164,7 +164,7 @@ export async function assignRolePermissions(
   permissionIds: string[],
   options?: { [key: string]: any },
 ) {
-  return request(`/roles/${roleId}/permissions`, {
+  return request(`/system/roles/${roleId}/permissions`, {
     method: 'PUT',
     data: { permissionIds },
     ...(options || {}),
@@ -180,7 +180,7 @@ export async function getRolePermissions(
   roleId: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/roles/${roleId}/permissions`, {
+  return request(`/system/roles/${roleId}/permissions`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -195,7 +195,7 @@ export async function getRoleUsers(
   roleId: number,
   options?: { [key: string]: any },
 ) {
-  return request(`/roles/${roleId}/users`, {
+  return request(`/system/roles/${roleId}/users`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -207,7 +207,7 @@ export async function assignRoleUsers(
   users: string[],
   options?: { [key: string]: any },
 ) {
-  return request(`/roles/${roleId}/users`, {
+  return request(`/system/roles/${roleId}/users`, {
     method: 'Put',
     data: { userIds: users },
     ...(options || {}),

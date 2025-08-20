@@ -1,7 +1,7 @@
 import { sleep } from '@gvray/eskit';
 import { Request, Response } from 'express';
 export default {
-  'GET /api/resources/menus': async (_req: Request, res: Response) => {
+  'GET /api/system/resources/menus': async (_req: Request, res: Response) => {
     await sleep(800);
     res.json({
       success: true,
