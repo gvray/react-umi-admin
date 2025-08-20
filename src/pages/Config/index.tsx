@@ -1,15 +1,12 @@
 import {
-  ConfigValueViewer,
   DateTimeFormat,
   PageContainer,
   StatusTag,
   TablePro,
 } from '@/components';
-import { ConfigData } from '@/components/ConfigValueViewer';
 import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
 import { deleteConfig, getConfig, listConfig } from '@/services/config';
 import {
-  ArrowLeftOutlined,
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
@@ -17,13 +14,13 @@ import {
   PlusOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import { Button, Card, Modal, Space, Tag, Typography, message } from 'antd';
+import { Button, Modal, Space, Tag, Typography, message } from 'antd';
 import { ColumnProps } from 'antd/es/table';
 import { useRef, useState } from 'react';
-import { useNavigate } from 'umi';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
+import ConfigValueViewer, { ConfigData } from './components/ConfigValueViewer';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 type DataType = ConfigData;
 
@@ -32,7 +29,6 @@ interface ConfigColumnProps<T, U> extends ColumnProps<T> {
 }
 
 const ConfigPage = () => {
-  const navigate = useNavigate();
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<any>(null);
   const [viewModalVisible, setViewModalVisible] = useState(false);
@@ -40,11 +36,6 @@ const ConfigPage = () => {
 
   const handleTableReload = () => {
     tableProRef.current?.reload();
-  };
-
-  // 返回角色列表页面
-  const handleBackToRoles = () => {
-    navigate('/system/role');
   };
 
   const handleAdd = async () => {
@@ -311,68 +302,21 @@ const ConfigPage = () => {
 
   return (
     <PageContainer>
-      {/* 页面头部导航 */}
-      <Card style={{ marginBottom: '16px' }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <div>
-            <Button
-              type="link"
-              icon={<ArrowLeftOutlined />}
-              onClick={handleBackToRoles}
-              style={{ padding: 0, marginBottom: 8 }}
-            >
-              返回角色列表
-            </Button>
-            <div>
-              <Title level={4} style={{ margin: 0, marginBottom: 4 }}>
-                <SettingOutlined
-                  style={{ marginRight: '8px', color: '#1890ff' }}
-                />
-                系统配置管理
-              </Title>
-              <Text type="secondary">
-                管理系统配置参数，支持多种数据类型和分组管理
-              </Text>
-            </div>
-          </div>
-          <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
-            新增配置
-          </Button>
-        </div>
-      </Card>
-
       {/* 配置表格 */}
-      <Card
-        style={{
-          boxShadow:
-            '0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02)',
-          borderRadius: '8px',
+      <TablePro
+        toolbarRender={() => {
+          return (
+            <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
+              新增配置
+            </Button>
+          );
         }}
-      >
-        <TablePro
-          rowKey={'configId'}
-          ref={tableProRef}
-          columns={columns}
-          request={listConfig}
-          scroll={{ x: 1200 }}
-          pagination={{
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total, range) =>
-              `第 ${range[0]}-${range[1]} 条/共 ${total} 条`,
-            pageSize: 20,
-          }}
-          size="middle"
-          bordered
-        />
-      </Card>
-
+        rowKey={'configId'}
+        ref={tableProRef}
+        columns={columns}
+        request={listConfig}
+        pagination={false}
+      />
       {/* 配置新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} onOk={handleOk} />
 
