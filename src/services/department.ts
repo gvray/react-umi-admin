@@ -176,9 +176,13 @@ export async function updateDepartmentStatus(
  * 获取部门树结构
  * @param options 请求选项
  */
-export async function getDepartmentTree(options?: { [key: string]: any }) {
+export async function getDepartmentTree(
+  params?: Record<string, any>,
+  options?: { [key: string]: any },
+) {
   return request('/departments/tree', {
     method: 'GET',
+    params,
     ...(options || {}),
   });
 }

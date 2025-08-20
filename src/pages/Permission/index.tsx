@@ -10,7 +10,7 @@ import {
   SearchOutlined,
 } from '@ant-design/icons';
 import { Button, Flex, Modal, Space, Table, Tooltip, message } from 'antd';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 import { useResourceModel } from './model';
 
@@ -26,10 +26,9 @@ export interface PermissionMeta {
 }
 const ResourcePage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
-  const [showSearch, setShowSearch] = useState(true);
-  const { data, loading, reload } = useResourceModel();
-  // 高级搜索参数
-  const paramsRef = useRef<Record<string, any>>({});
+  const { data, loading, reload, showSearch, setShowSearch, paramsRef } =
+    useResourceModel();
+
   const handleAdd = async () => {
     updateFormRef.current?.show('添加权限');
   };

@@ -146,6 +146,7 @@ const DictionaryItemsPage = () => {
       dataIndex: 'label',
       key: 'label',
       width: 120,
+      advancedSearch: { type: 'INPUT' },
       render: (label: string) => (
         <Text style={{ fontSize: '13px' }}>{label}</Text>
       ),
@@ -192,9 +193,9 @@ const DictionaryItemsPage = () => {
       dataIndex: 'createdAt',
       width: 140,
       render: (time: string) => <DateTimeFormat value={time} />,
-      advancedSearch: {
-        type: 'TIME_RANGE',
-      },
+      // advancedSearch: {
+      //   type: 'TIME_RANGE',
+      // },
     },
     {
       title: '操作',

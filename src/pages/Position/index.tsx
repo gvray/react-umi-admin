@@ -41,14 +41,14 @@ const UserPage = () => {
   };
 
   const handleAdd = async () => {
-    updateFormRef.current?.show('添加职位');
+    updateFormRef.current?.show('添加岗位');
   };
 
   const handleDelete = async (record: DataType) => {
     Modal.confirm({
       title: `系统提示`,
       icon: <ExclamationCircleOutlined />,
-      content: `是否确认删除职位编号为"${record.positionId}"的数据项？`,
+      content: `是否确认删除岗位编号为"${record.positionId}"的数据项？`,
       okText: '确认',
       cancelText: '取消',
       onOk() {
@@ -66,7 +66,7 @@ const UserPage = () => {
     const positionId = record.positionId;
     try {
       const msg = await getPosition(positionId);
-      updateFormRef.current?.show('修改职位', {
+      updateFormRef.current?.show('修改岗位', {
         ...msg.data,
       });
     } catch (error) {}
@@ -79,7 +79,7 @@ const UserPage = () => {
   const columns: UserColumnProps<DataType, Record<string, string | number>>[] =
     [
       {
-        title: '职位编号',
+        title: '岗位编号',
         dataIndex: 'positionId',
         key: 'positionId',
         render: (positionId: string) => {
@@ -91,7 +91,13 @@ const UserPage = () => {
         },
       },
       {
-        title: '职位名称',
+        title: '岗位编码',
+        dataIndex: 'code',
+        key: 'code',
+        advancedSearch: { type: 'INPUT' },
+      },
+      {
+        title: '岗位名称',
         dataIndex: 'name',
         key: 'name',
         advancedSearch: { type: 'INPUT' },
@@ -120,9 +126,9 @@ const UserPage = () => {
         render: (time: string) => {
           return <DateTimeFormat value={time} />;
         },
-        advancedSearch: {
-          type: 'TIME_RANGE',
-        },
+        // advancedSearch: {
+        //   type: 'TIME_RANGE',
+        // },
       },
       {
         title: '操作',
@@ -158,7 +164,7 @@ const UserPage = () => {
         toolbarRender={() => (
           <>
             <Button type="primary" onClick={handleAdd}>
-              新增职位
+              新增岗位
             </Button>
           </>
         )}
@@ -166,7 +172,7 @@ const UserPage = () => {
         columns={columns}
         request={listPosition}
       />
-      {/* 职位新增修改弹出层 */}
+      {/* 岗位新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} onOk={handleOk} />
     </PageContainer>
   );

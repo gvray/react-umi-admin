@@ -1,14 +1,21 @@
 import { getPermissionTree } from '@/services/permission';
 import { listResources } from '@/services/resource';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export const useResourceModel = () => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showSearch, setShowSearch] = useState(true);
+
+  // 高级搜索参数
+  const paramsRef = useRef<Record<string, any>>({});
   const getPermissionList = async (params?: Record<string, any>) => {
     try {
       setLoading(true);
-      const res = await getPermissionTree(params);
+      const res = await getPermissionTree({
+        ...paramsRef.current,
+        ...params,
+      });
       if (res.data) {
         setData(res.data.tree);
       }
@@ -18,12 +25,17 @@ export const useResourceModel = () => {
     }
   };
   useEffect(() => {
-    getPermissionList({});
+    getPermissionList({
+      ...paramsRef.current,
+    });
   }, []);
   return {
     data,
     loading,
     reload: getPermissionList,
+    showSearch,
+    setShowSearch,
+    paramsRef,
   };
 };
 

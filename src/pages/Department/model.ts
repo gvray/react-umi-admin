@@ -1,13 +1,20 @@
 import { getDepartmentTree, listDepartment } from '@/services/department';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export const useDepartmentModel = () => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showSearch, setShowSearch] = useState(true);
+
+  // 高级搜索参数
+  const paramsRef = useRef<Record<string, any>>({});
   const getDepartments = async (params?: Record<string, any>) => {
     try {
       setLoading(true);
-      const res = await getDepartmentTree(params);
+      const res = await getDepartmentTree({
+        ...paramsRef.current,
+        ...params,
+      });
       if (res.data) {
         setData(res.data);
       }
@@ -17,12 +24,17 @@ export const useDepartmentModel = () => {
     }
   };
   useEffect(() => {
-    getDepartments({});
+    getDepartments({
+      ...paramsRef.current,
+    });
   }, []);
   return {
     data,
     loading,
     reload: getDepartments,
+    showSearch,
+    setShowSearch,
+    paramsRef,
   };
 };
 

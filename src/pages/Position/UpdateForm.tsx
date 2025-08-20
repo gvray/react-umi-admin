@@ -130,26 +130,26 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           sort: 0,
         }}
       >
-        <Form.Item name="positionId" label="职位Id" hidden>
+        <Form.Item name="positionId" label="岗位Id" hidden>
           <Input />
         </Form.Item>
         <Row gutter={24}>
           <Col span={24}>
             <Form.Item
               name="name"
-              label="职位名称"
-              rules={[{ required: true, message: '职位名称不能为空' }]}
+              label="岗位名称"
+              rules={[{ required: true, message: '岗位名称不能为空' }]}
             >
-              <Input placeholder="请输入职位名称" />
+              <Input placeholder="请输入岗位名称" />
             </Form.Item>
           </Col>
           <Col span={24}>
             <Form.Item
               name="code"
-              label="职位编码"
-              rules={[{ required: true, message: '职位编码不能为空' }]}
+              label="岗位编码"
+              rules={[{ required: true, message: '岗位编码不能为空' }]}
             >
-              <Input placeholder="请输入职位编码" />
+              <Input placeholder="请输入岗位编码" />
             </Form.Item>
           </Col>
           <Col span={16}>

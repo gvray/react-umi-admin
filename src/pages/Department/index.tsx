@@ -10,7 +10,7 @@ import {
   SearchOutlined,
 } from '@ant-design/icons';
 import { Button, Flex, Modal, Space, Table, Tooltip, message } from 'antd';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 import { useDepartmentModel } from './model';
 
@@ -31,10 +31,9 @@ export interface DepartmentMeta {
 }
 const DepartmentPage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
-  const [showSearch, setShowSearch] = useState(true);
-  const { data, loading, reload } = useDepartmentModel();
-  // 高级搜索参数
-  const paramsRef = useRef<Record<string, any>>({});
+  const { data, loading, reload, showSearch, setShowSearch, paramsRef } =
+    useDepartmentModel();
+
   const handleAdd = async () => {
     updateFormRef.current?.show('添加部门');
   };

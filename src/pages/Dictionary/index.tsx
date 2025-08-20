@@ -21,7 +21,7 @@ import { useRef } from 'react';
 import { useNavigate } from 'umi';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 
-const { Text } = Typography;
+const { Text, Paragraph } = Typography;
 
 interface DataType {
   typeId: string;
@@ -104,7 +104,18 @@ const DictionaryPage = () => {
     Record<string, string | number>
   >[] = [
     {
-      title: '字典类型',
+      title: '字典编号',
+      dataIndex: 'typeId',
+      key: 'typeId',
+      width: 100,
+      render: (typeId: string) => (
+        <Paragraph ellipsis copyable style={{ width: '80px' }}>
+          {typeId}
+        </Paragraph>
+      ),
+    },
+    {
+      title: '字典名称',
       dataIndex: 'name',
       key: 'name',
       width: 200,
@@ -128,7 +139,7 @@ const DictionaryPage = () => {
       ),
     },
     {
-      title: '编码',
+      title: '字典类型',
       dataIndex: 'code',
       key: 'code',
       width: 150,

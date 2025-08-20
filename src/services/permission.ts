@@ -91,9 +91,13 @@ export async function listPermission(
  * 获取权限树
  * @param options 请求选项
  */
-export async function getPermissionTree(options?: { [key: string]: any }) {
+export async function getPermissionTree(
+  params?: Record<string, any>,
+  options?: { [key: string]: any },
+) {
   return request('/permissions/tree', {
     method: 'GET',
+    params,
     ...(options || {}),
   });
 }
