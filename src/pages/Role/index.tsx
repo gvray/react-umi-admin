@@ -17,7 +17,7 @@ import { Button, Dropdown, Modal, Space, Typography, message } from 'antd';
 import { ColumnProps } from 'antd/es/table';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'umi';
-import DataPermissionModal from './DataPermissionModal';
+import AuthDataScopeModal from './AuthDataScopeModal';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 
 const { Paragraph } = Typography;
@@ -247,7 +247,7 @@ const UserPage = () => {
 
       {/* 数据权限分配弹窗 */}
       {currentRole && (
-        <DataPermissionModal
+        <AuthDataScopeModal
           visible={dataPermissionVisible}
           roleId={currentRole.roleId}
           roleName={currentRole.name}

@@ -132,21 +132,21 @@ interface RoleState {
   roleKey: string;
 }
 
-interface DataPermissionModalProps {
+interface AuthDataScopeModalProps {
   visible: boolean;
   roleId: string;
   roleName: string;
-  onCancel?: () => void;
-  onSuccess?: () => void;
+  onCancel: () => void;
+  onSuccess: () => void;
 }
 
-export default function DataPermissionModal({
+export default function AuthDataScopeModal({
   visible,
   roleId,
   roleName,
   onCancel,
   onSuccess,
-}: DataPermissionModalProps) {
+}: AuthDataScopeModalProps) {
   const [currentRole, setCurrentRole] = useState<RoleState | null>(null);
   const [departments, setDepartments] = useState<any[]>([]);
   const [dataScope, setDataScope] = useState<DataScope>(DataScope.SELF);
