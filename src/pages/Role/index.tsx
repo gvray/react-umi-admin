@@ -4,19 +4,24 @@ import { TableProRef } from '@/components/TablePro';
 import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
 import { deleteRole, getRole, listRole } from '@/services/role';
 import {
+  DatabaseOutlined,
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
   KeyOutlined,
+  MoreOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Button, Modal, Space, Typography, message } from 'antd';
+import type { MenuProps } from 'antd';
+import { Button, Dropdown, Modal, Space, Typography, message } from 'antd';
 import { ColumnProps } from 'antd/es/table';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useNavigate } from 'umi';
+import DataPermissionModal from './DataPermissionModal';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 
 const { Paragraph } = Typography;
+
 interface DataType {
   createBy: string;
   createdAt: string;
@@ -37,8 +42,11 @@ interface UserColumnProps<T, U> extends ColumnProps<T> {
 const UserPage = () => {
   const navigate = useNavigate();
   const updateFormRef = useRef<UpdateFormRef>(null);
-
   const tableProRef = useRef<TableProRef>(null);
+
+  // 数据权限弹窗状态
+  const [dataPermissionVisible, setDataPermissionVisible] = useState(false);
+  const [currentRole, setCurrentRole] = useState<DataType | null>(null);
 
   const handleTableReload = () => {
     tableProRef.current?.reload();
@@ -69,7 +77,7 @@ const UserPage = () => {
   const handleUpdate = async (record: DataType) => {
     const roleId = record.roleId;
     try {
-      const msg = await getRole(roleId);
+      const msg = await getRole(roleId as any);
       updateFormRef.current?.show('修改角色', {
         ...msg.data,
       });
@@ -87,6 +95,42 @@ const UserPage = () => {
   const handleAuthPermission = (record: DataType) => {
     navigate(`/system/role-auth/permission/${record.roleId}`);
   };
+
+  const handleAuthDataPermission = (record: DataType) => {
+    setCurrentRole(record);
+    setDataPermissionVisible(true);
+  };
+
+  const handleDataPermissionSuccess = () => {
+    handleTableReload();
+  };
+
+  const handleDataPermissionCancel = () => {
+    setDataPermissionVisible(false);
+    setCurrentRole(null);
+  };
+
+  // 更多操作菜单
+  const getMoreMenu = (record: DataType): MenuProps['items'] => [
+    {
+      key: 'permission',
+      icon: <KeyOutlined />,
+      label: '分配权限',
+      onClick: () => handleAuthPermission(record),
+    },
+    {
+      key: 'dataPermission',
+      icon: <DatabaseOutlined />,
+      label: '数据权限',
+      onClick: () => handleAuthDataPermission(record),
+    },
+    {
+      key: 'user',
+      icon: <UserOutlined />,
+      label: '分配用户',
+      onClick: () => handleAuthUser(record),
+    },
+  ];
 
   const columns: UserColumnProps<DataType, Record<string, string | number>>[] =
     [
@@ -109,10 +153,9 @@ const UserPage = () => {
         advancedSearch: { type: 'INPUT' },
       },
       {
-        title: '角色标识符',
+        title: '角色标识',
         dataIndex: 'roleKey',
         key: 'roleKey',
-        advancedSearch: { type: 'INPUT' },
       },
       {
         title: '显示顺序',
@@ -160,20 +203,7 @@ const UserPage = () => {
               >
                 修改
               </Button>
-              <Button
-                type="link"
-                icon={<KeyOutlined />}
-                onClick={() => handleAuthPermission(record)}
-              >
-                分配权限
-              </Button>
-              <Button
-                type="link"
-                icon={<UserOutlined />}
-                onClick={() => handleAuthUser(record)}
-              >
-                分配用户
-              </Button>
+
               <Button
                 danger
                 type="link"
@@ -182,6 +212,15 @@ const UserPage = () => {
               >
                 删除
               </Button>
+              <Dropdown
+                menu={{ items: getMoreMenu(record) }}
+                placement="bottomRight"
+                trigger={['click']}
+              >
+                <Button type="link" icon={<MoreOutlined />}>
+                  更多
+                </Button>
+              </Dropdown>
             </Space>
           );
         },
@@ -205,6 +244,17 @@ const UserPage = () => {
       />
       {/* 角色新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} onOk={handleOk} />
+
+      {/* 数据权限分配弹窗 */}
+      {currentRole && (
+        <DataPermissionModal
+          visible={dataPermissionVisible}
+          roleId={currentRole.roleId}
+          roleName={currentRole.name}
+          onCancel={handleDataPermissionCancel}
+          onSuccess={handleDataPermissionSuccess}
+        />
+      )}
     </PageContainer>
   );
 };

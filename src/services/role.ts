@@ -110,7 +110,7 @@ export async function updateRole(
  * @param options 请求选项
  */
 export async function deleteRole(
-  roleId: number,
+  roleId: string,
   options?: { [key: string]: any },
 ) {
   return request(`/system/roles/${roleId}`, {
@@ -210,6 +210,33 @@ export async function assignRoleUsers(
   return request(`/system/roles/${roleId}/users`, {
     method: 'Put',
     data: { userIds: users },
+    ...(options || {}),
+  });
+}
+
+// 获取角色的数据权限
+export async function getRoleDataScopes(
+  roleId: string,
+  options?: { [key: string]: any },
+) {
+  return request(`/system/roles/${roleId}/data-scope`, {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+// 为角色分配数据权限（替换所有数据权限）
+export async function assignRoleDataScopes(
+  roleId: string,
+  data: {
+    dataScope: number;
+    departments?: string[];
+  },
+  options?: { [key: string]: any },
+) {
+  return request(`/system/roles/${roleId}/data-scope`, {
+    method: 'PUT',
+    data,
     ...(options || {}),
   });
 }
