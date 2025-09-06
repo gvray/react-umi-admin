@@ -3,6 +3,7 @@ import AntIcon from './AntIcon';
 import Charts from './Charts';
 import DateTimeFormat from './DateTimeFormat';
 import IconSelector from './IconSelector';
+import NavigationProgress from './NavigationProgress';
 import PageContainer from './PageContainer';
 import PermissionTree from './PermissionTree';
 import StatusTag from './StatusTag';
@@ -14,6 +15,7 @@ export {
   Charts,
   DateTimeFormat,
   IconSelector,
+  NavigationProgress,
   PageContainer,
   PermissionTree,
   StatusTag,

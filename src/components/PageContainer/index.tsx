@@ -1,4 +1,5 @@
 import { withAuth } from '@/hocs';
+import { useRoutePermissions } from '@/hooks';
 import { theme } from 'antd';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { styled } from 'umi';
@@ -37,6 +38,7 @@ const PageContainer: React.FC<PropsWithChildren<PageContainerProps>> = ({
   useEffect(() => {
     setIsVisible(true); // 组件挂载时设置为可见，触发进场动画
   }, []);
+
   return (
     <PageContainerWrapper
       $isVisible={isVisible}
@@ -49,4 +51,14 @@ const PageContainer: React.FC<PropsWithChildren<PageContainerProps>> = ({
   );
 };
 
-export default withAuth(PageContainer);
+// 动态权限检查的PageContainer
+const PageContainerWithAuth: React.FC<PropsWithChildren<PageContainerProps>> = (
+  props,
+) => {
+  const routePermissions = useRoutePermissions();
+  return withAuth(PageContainer, {
+    requirePermissions: routePermissions,
+  })(props);
+};
+
+export default PageContainerWithAuth;
