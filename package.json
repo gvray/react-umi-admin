@@ -7,7 +7,7 @@
     "umi",
     "umi4"
   ],
-  "author": "Gavin Birkhoff <gavinbirkhoff@gmail.com>",
+  "author": "Gavin Ray <gavinbirkhoff@gmail.com>",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "npm run build:dev && npm run build:staging && npm run build:prod",
