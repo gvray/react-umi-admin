@@ -1,4 +1,9 @@
-import { DateTimeFormat, PageContainer, TablePro } from '@/components';
+import {
+  AuthButton,
+  DateTimeFormat,
+  PageContainer,
+  TablePro,
+} from '@/components';
 import StatusTag from '@/components/StatusTag';
 import { TableProRef } from '@/components/TablePro';
 import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
@@ -11,7 +16,7 @@ import {
   ExclamationCircleOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Button, Modal, Space, Typography, message } from 'antd';
+import { Modal, Space, Typography, message } from 'antd';
 import { ColumnProps } from 'antd/es/table';
 import { useRef } from 'react';
 import { useNavigate } from 'umi';
@@ -42,7 +47,10 @@ const UserPage = () => {
   const navigate = useNavigate();
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
-  const dict = useDict(['user_status', 'user_gender']);
+  const dict = useDict<{
+    user_status: any[];
+    user_gender: any[];
+  }>(['user_status', 'user_gender']);
 
   const handleTableReload = () => {
     tableProRef.current?.reload();
@@ -154,28 +162,31 @@ const UserPage = () => {
         render: (record) => {
           return (
             <Space size={0}>
-              <Button
+              <AuthButton
                 type="link"
                 icon={<EditOutlined />}
                 onClick={() => handleUpdate(record)}
+                perms={['user:update']}
               >
                 修改
-              </Button>
-              <Button
+              </AuthButton>
+              <AuthButton
                 danger
                 type="link"
                 icon={<DeleteOutlined />}
                 onClick={() => handleDelete(record)}
+                perms={['user:delete']}
               >
                 删除
-              </Button>
-              <Button
+              </AuthButton>
+              <AuthButton
                 type="link"
                 icon={<UserOutlined />}
                 onClick={() => handleAuthRole(record.userId)}
+                perms={['user:update']}
               >
                 分配角色
-              </Button>
+              </AuthButton>
             </Space>
           );
         },
@@ -188,9 +199,13 @@ const UserPage = () => {
         rowKey={'userId'}
         toolbarRender={() => (
           <>
-            <Button type="primary" onClick={handleAdd}>
+            <AuthButton
+              type="primary"
+              onClick={handleAdd}
+              perms={['user:create']}
+            >
               新增用户
-            </Button>
+            </AuthButton>
           </>
         )}
         ref={tableProRef}

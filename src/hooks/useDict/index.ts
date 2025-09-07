@@ -1,19 +1,25 @@
 import { getDictionaryTypesBatch } from '@/services/dictionary';
+import { logger } from '@/utils';
 import { useEffect, useState } from 'react';
 
-const useDict = (codes: string[]) => {
-  const [dict, setDict] = useState<any[]>([]);
+const useDict = <T>(codes: string[]) => {
+  const [dict, setDict] = useState<T>({} as T);
+  const codeString = codes.join(',');
   useEffect(() => {
     const fetchDict = async () => {
       try {
-        const res: any = await getDictionaryTypesBatch(codes.join(','));
-        setDict(res.data);
+        const res: any = await getDictionaryTypesBatch(codeString);
+        if (res.data) {
+          setDict(res.data);
+        }
       } catch (error) {
-        console.error(error);
+        logger.error(
+          `获取字典类型失败，字典类型编码：${codeString} ，错误信息：${error}`,
+        );
       }
     };
     fetchDict();
-  }, [codes.join(',')]);
+  }, [codeString]);
   return dict;
 };
 

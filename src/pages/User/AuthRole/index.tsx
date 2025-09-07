@@ -1,4 +1,9 @@
-import { DateTimeFormat, PageContainer, StatusTag } from '@/components';
+import {
+  AuthButton,
+  DateTimeFormat,
+  PageContainer,
+  StatusTag,
+} from '@/components';
 import {
   ArrowLeftOutlined,
   KeyOutlined,
@@ -150,14 +155,15 @@ export default function AuthRolePage() {
             </Col>
             <Col>
               <Space>
-                <Button
+                <AuthButton
                   type="primary"
                   onClick={handleSubmit}
                   loading={submitting}
                   icon={<KeyOutlined />}
+                  perms={['user:update']}
                 >
                   保存分配
-                </Button>
+                </AuthButton>
                 <Button onClick={handleReset}>重置</Button>
               </Space>
             </Col>
