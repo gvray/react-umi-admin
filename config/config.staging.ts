@@ -6,11 +6,16 @@ export default defineConfig({
   codeSplitting: {
     jsStrategy: 'granularChunks',
   },
+  jsMinifierOptions: {
+    // terser配置，各环境可以在各自配置文件中覆盖
+    compress: {
+      drop_console: false,
+      drop_debugger: true,
+    },
+  },
   // 保留source map以便于测试环境调试
   devtool: 'source-map',
   // CSS压缩由默认配置处理
-  // 禁用MFSU以避免构建问题
-  mfsu: false,
   chainWebpack: function (config) {
     // 设置chunk大小警告阈值
     config.performance
@@ -18,20 +23,16 @@ export default defineConfig({
       .maxEntrypointSize(1000000)
       .maxAssetSize(1000000);
 
-    // 配置代码压缩但保留console以便于测试环境调试
-    if (config.plugins.has('terser')) {
-      config.plugin('terser').tap((args) => {
-        args[0].terserOptions = {
-          ...args[0].terserOptions,
-          compress: {
-            ...args[0].terserOptions?.compress,
-            drop_console: false, // 保留console
-            drop_debugger: true, // 移除debugger
-          },
-        };
-        return args;
-      });
-    }
+    // 添加gzip压缩插件
+    const CompressionPlugin = require('compression-webpack-plugin');
+    config.plugin('compression-webpack-plugin').use(CompressionPlugin, [
+      {
+        test: /\.(js|css|html|svg)$/,
+        threshold: 10240, // 只有大小大于10kb的资源会被处理
+        deleteOriginalAssets: false, // 保留原始文件
+      },
+    ]);
+
     return config;
   },
 });

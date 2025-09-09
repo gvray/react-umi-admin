@@ -6,8 +6,6 @@ export default defineConfig({
   devtool: 'cheap-module-source-map',
   // 启用快速刷新以提高开发体验
   fastRefresh: true,
-  // 禁用MFSU以避免构建问题
-  mfsu: false,
   proxy: {
     '/dev-api': {
       target: 'http://jsonplaceholder.typicode.com/',
