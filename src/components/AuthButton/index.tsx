@@ -27,6 +27,7 @@ const AuthButton: React.FC<AuthButtonProps> = ({
     const required = perms ?? requirePermissions ?? [];
     if (!required || required.length === 0) return true;
     if (!permissions || permissions.length === 0) return false;
+    if (permissions.includes('*:*:*')) return true;
     return anyOf
       ? required.some((p) => permissions.includes(p))
       : required.every((p) => permissions.includes(p));

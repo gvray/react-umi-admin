@@ -1,5 +1,6 @@
 import { listPermission } from '@/services/permission';
 import { assignRolePermissions, getRole } from '@/services/role';
+import { logger } from '@/utils';
 import { message } from 'antd';
 import { useCallback, useState } from 'react';
 
@@ -58,8 +59,8 @@ export const useAuthPermission = () => {
         }
 
         return true;
-      } catch (error) {
-        message.error('权限分配失败');
+      } catch (error: any) {
+        logger.error(`权限分配失败：${error.message}`);
         return false;
       } finally {
         setSubmitting(false);

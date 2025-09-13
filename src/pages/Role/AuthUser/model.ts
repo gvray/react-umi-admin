@@ -1,5 +1,6 @@
 import { assignRoleUsers, getRole } from '@/services/role';
 import { listUser } from '@/services/user';
+import { logger } from '@/utils';
 import { message } from 'antd';
 import { useCallback, useState } from 'react';
 
@@ -58,7 +59,7 @@ export const useAuthUser = (roleId?: string) => {
 
         return true;
       } catch (error) {
-        message.error('用户分配失败');
+        logger.error(`分配角色用户失败：${error}`);
         return false;
       } finally {
         setSubmitting(false);

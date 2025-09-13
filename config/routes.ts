@@ -39,7 +39,7 @@ const routes = [
         component: 'User',
         meta: {
           title: '用户管理',
-          permissions: ['user:view'],
+          permissions: ['system:user:view'],
         },
       },
       {
@@ -47,7 +47,7 @@ const routes = [
         component: 'Resource',
         meta: {
           title: '资源管理',
-          permissions: ['resource:view'],
+          permissions: ['system:resource:view'],
         },
       },
       {
@@ -55,7 +55,7 @@ const routes = [
         component: 'Role',
         meta: {
           title: '角色管理',
-          permissions: ['role:view'],
+          permissions: ['system:role:view'],
         },
       },
       {
@@ -63,7 +63,7 @@ const routes = [
         component: 'Permission',
         meta: {
           title: '权限管理',
-          permissions: ['permission:view'],
+          permissions: ['system:permission:view'],
         },
       },
       {
@@ -71,7 +71,7 @@ const routes = [
         component: 'Department',
         meta: {
           title: '部门管理',
-          permissions: ['department:view'],
+          permissions: ['system:department:view'],
         },
       },
       {
@@ -79,7 +79,7 @@ const routes = [
         component: 'Position',
         meta: {
           title: '职位管理',
-          permissions: ['position:view'],
+          permissions: ['system:position:view'],
         },
       },
       {
@@ -87,7 +87,7 @@ const routes = [
         component: 'Dictionary',
         meta: {
           title: '字典管理',
-          permissions: ['dictionary:view'],
+          permissions: ['system:dictionary:view'],
         },
       },
       {
@@ -95,7 +95,7 @@ const routes = [
         component: 'Dictionary/Items',
         meta: {
           title: '字典项管理',
-          permissions: ['dictionary:view'],
+          permissions: ['system:dictionary:view'],
         },
       },
       {
@@ -103,7 +103,7 @@ const routes = [
         component: 'Config',
         meta: {
           title: '系统配置',
-          permissions: ['config:view'],
+          permissions: ['system:config:view'],
         },
       },
       // 用户分配角色
@@ -112,7 +112,7 @@ const routes = [
         component: 'User/AuthRole',
         meta: {
           title: '用户分配角色',
-          permissions: ['user:update'],
+          permissions: ['system:user:update'],
         },
       },
       // 角色分配权限
@@ -121,7 +121,7 @@ const routes = [
         component: 'Role/AuthPermission',
         meta: {
           title: '角色分配权限',
-          permissions: ['role:update'],
+          permissions: ['system:role:update'],
         },
       },
       // 角色分配用户
@@ -130,7 +130,7 @@ const routes = [
         component: 'Role/AuthUser',
         meta: {
           title: '角色分配用户',
-          permissions: ['role:update'],
+          permissions: ['system:role:update'],
         },
       },
     ],

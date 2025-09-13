@@ -27,6 +27,8 @@ const withAuth = (
     const { requirePermissions = [], fallback } = options;
     // 检查权限
     const hasPermission =
+      // 超级管理员
+      permissions?.includes('*:*:*') ||
       requirePermissions.length === 0 ||
       requirePermissions.every((permission) =>
         permissions?.includes(permission),

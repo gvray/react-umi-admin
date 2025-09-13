@@ -166,7 +166,7 @@ const UserPage = () => {
                 type="link"
                 icon={<EditOutlined />}
                 onClick={() => handleUpdate(record)}
-                perms={['user:update']}
+                perms={['system:user:update']}
               >
                 修改
               </AuthButton>
@@ -175,7 +175,7 @@ const UserPage = () => {
                 type="link"
                 icon={<DeleteOutlined />}
                 onClick={() => handleDelete(record)}
-                perms={['user:delete']}
+                perms={['system:user:delete']}
               >
                 删除
               </AuthButton>
@@ -183,7 +183,7 @@ const UserPage = () => {
                 type="link"
                 icon={<UserOutlined />}
                 onClick={() => handleAuthRole(record.userId)}
-                perms={['user:update']}
+                perms={['system:user:update']}
               >
                 分配角色
               </AuthButton>
@@ -202,7 +202,7 @@ const UserPage = () => {
             <AuthButton
               type="primary"
               onClick={handleAdd}
-              perms={['user:create']}
+              perms={['system:user:create']}
             >
               新增用户
             </AuthButton>

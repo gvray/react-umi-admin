@@ -4,6 +4,7 @@ import {
   getRole,
   getRoleDataScopes,
 } from '@/services/role';
+import { logger } from '@/utils';
 import { DatabaseOutlined, EyeOutlined, TeamOutlined } from '@ant-design/icons';
 import {
   Button,
@@ -230,8 +231,8 @@ export default function AuthDataScopeModal({
       message.success('数据权限分配成功');
       onSuccess?.();
       onCancel?.();
-    } catch (error) {
-      message.error('数据权限分配失败');
+    } catch (error: any) {
+      logger.error(`数据权限分配失败：${error.message}`);
     } finally {
       setSubmitting(false);
     }

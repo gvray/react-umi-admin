@@ -1,4 +1,5 @@
 import { addUser, updateUser } from '@/services/user';
+import { logger } from '@/utils';
 import {
   Col,
   Form,
@@ -52,7 +53,11 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
   const [isEdit, setIsEdit] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
-  const { deptTree, roleList, positionList } = useUpdateForm(visible);
+  const {
+    deptTree,
+    // roleList,
+    positionList,
+  } = useUpdateForm(visible);
 
   // 重置弹出层表单
   const reset = () => {
@@ -75,7 +80,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       onOk?.();
       reset();
     } catch (errorInfo) {
-      message.error('数据验证失败不能提交');
+      logger.error(`更新用户失败：${errorInfo}`);
     } finally {
       setConfirmLoading(false);
     }
@@ -192,7 +197,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
               <Input placeholder="请输登陆账号" maxLength={30} />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          {/* <Col span={12}>
             <Form.Item name="roleIds" label="角色">
               <Select
                 options={roleList}
@@ -201,7 +206,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
                 allowClear
               />
             </Form.Item>
-          </Col>
+          </Col> */}
           <Col span={12}>
             <Form.Item name="gender" label="性别">
               <Select options={dict['user_gender']} />

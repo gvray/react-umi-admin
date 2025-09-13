@@ -1,5 +1,6 @@
 import { PermissionTree } from '@/components';
 import { addRole, updateRole } from '@/services/role';
+import { logger } from '@/utils';
 import { mapTree } from '@gvray/eskit';
 import {
   Col,
@@ -72,8 +73,9 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       setVisible(false);
       onOk?.();
       reset();
-    } catch (errorInfo) {
-      message.error('数据验证失败不能提交');
+    } catch (errorInfo: any) {
+      console.log(errorInfo);
+      logger.error(`更新角色失败：${errorInfo?.message}`);
     } finally {
       setConfirmLoading(false);
     }

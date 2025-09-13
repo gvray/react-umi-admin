@@ -160,7 +160,7 @@ export default function AuthRolePage() {
                   onClick={handleSubmit}
                   loading={submitting}
                   icon={<KeyOutlined />}
-                  perms={['user:update']}
+                  perms={['system:user:manage']}
                 >
                   保存分配
                 </AuthButton>
