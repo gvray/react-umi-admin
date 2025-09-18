@@ -106,6 +106,31 @@ const routes = [
           permissions: ['system:config:view'],
         },
       },
+      {
+        path: '/system/log',
+        meta: {
+          title: '日志管理',
+          permissions: ['system:log:view'],
+        },
+        routes: [
+          // {
+          //   path: '/system/log/operation',
+          //   component: 'Log/Operation',
+          //   meta: {
+          //     title: '操作日志',
+          //     permissions: ['system:log:view'],
+          //   },
+          // },
+          {
+            path: '/system/log/login',
+            component: 'Log/Login',
+            meta: {
+              title: '登录日志',
+              permissions: ['system:log:view'],
+            },
+          },
+        ],
+      },
       // 用户分配角色
       {
         path: '/system/user-auth/role/:userId',
