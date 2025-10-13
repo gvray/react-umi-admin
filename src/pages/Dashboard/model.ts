@@ -1,167 +1,73 @@
 import {
-  CategoryData,
-  DashboardStats,
-  HotSearchData,
-  RankData,
-  RealtimeData,
-  SalesData,
-  SystemMetrics,
-  TrendData,
-  getCategoryData,
-  getDashboardStats,
-  getHotSearchData,
-  getRankData,
-  getRealtimeData,
-  getSalesData,
-  getSystemMetrics,
-  getTrendData,
+  getDashboardOverview,
+  getRoleDistribution,
 } from '@/services/dashboard';
 import { useCallback, useEffect, useState } from 'react';
 
-export interface DashboardModelState {
-  stats: DashboardStats | null;
-  trendData: TrendData[];
-  rankData: RankData[];
-  systemMetrics: SystemMetrics | null;
-  realtimeData: RealtimeData[];
-  salesData: SalesData[];
-  hotSearchData: HotSearchData[];
-  categoryData: CategoryData[];
-  loading: boolean;
-}
-
-// Dashboard Hook
-export const useDashboardModel = () => {
-  const [state, setState] = useState<DashboardModelState>({
-    stats: null,
-    trendData: [],
-    rankData: [],
-    systemMetrics: null,
-    realtimeData: [],
-    salesData: [],
-    hotSearchData: [],
-    categoryData: [],
-    loading: false,
-  });
-
-  // 加载所有数据
-  const loadAllData = useCallback(async () => {
-    setState((prev) => ({ ...prev, loading: true }));
-
+export const useDashboard = () => {
+  const [overview, setOverview] = useState<any>(null);
+  const [roleDistribution, setRoleDistribution] = useState<any>(null);
+  const [loginData, setLoginData] = useState<number[]>([]);
+  const [logs, setLogs] = useState<any[]>([]);
+  const fetchOverview = useCallback(async () => {
     try {
-      const [
-        statsRes,
-        trendRes,
-        rankRes,
-        systemRes,
-        realtimeRes,
-        salesRes,
-        hotSearchRes,
-        categoryRes,
-      ] = await Promise.all([
-        getDashboardStats(),
-        getTrendData(7),
-        getRankData(),
-        getSystemMetrics(),
-        getRealtimeData(),
-        getSalesData(),
-        getHotSearchData(),
-        getCategoryData(),
-      ]);
-
-      setState({
-        stats: statsRes.data,
-        trendData: trendRes.data,
-        rankData: rankRes.data,
-        systemMetrics: systemRes.data,
-        realtimeData: realtimeRes.data,
-        salesData: salesRes.data,
-        hotSearchData: hotSearchRes.data,
-        categoryData: categoryRes.data,
-        loading: false,
-      });
+      const res = await getDashboardOverview();
+      if (res.data) {
+        setOverview(res.data);
+      }
     } catch (error) {
-      console.error('加载数据失败:', error);
-      setState((prev) => ({ ...prev, loading: false }));
+      console.log(error);
     }
   }, []);
 
-  // 刷新数据
-  const refreshData = useCallback(async () => {
-    await loadAllData();
-  }, [loadAllData]);
-
-  // 实时数据更新
-  useEffect(() => {
-    // 初始加载
-    loadAllData();
-
-    let isActive = true;
-
-    // 使用while循环 + setTimeout进行定时更新
-    const updateLoop = async () => {
-      while (isActive) {
-        await new Promise((resolve) => {
-          setTimeout(() => resolve(undefined), 60000);
-        }); // 等待60秒
-
-        if (!isActive) break; // 检查是否还需要继续
-
-        try {
-          const [statsRes, systemRes, realtimeRes] = await Promise.all([
-            getDashboardStats(),
-            getSystemMetrics(),
-            getRealtimeData(),
-          ]);
-
-          if (isActive) {
-            // 再次检查，避免组件卸载后还在更新状态
-            setState((prev) => ({
-              ...prev,
-              stats: statsRes.data,
-              systemMetrics: systemRes.data,
-              realtimeData: realtimeRes.data,
-            }));
-          }
-        } catch (error) {
-          console.error('实时数据更新失败:', error);
-        }
+  const fetchRoleDistribution = useCallback(async () => {
+    try {
+      const res = await getRoleDistribution();
+      if (res.data) {
+        setRoleDistribution(res.data);
       }
-    };
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
-    updateLoop();
+  useEffect(() => {
+    fetchOverview();
+    fetchRoleDistribution();
+  }, [fetchOverview, fetchRoleDistribution]);
 
-    return () => {
-      isActive = false; // 停止循环
-    };
-  }, [loadAllData]);
+  // 模拟加载数据
+  useEffect(() => {
+    setLoginData([50, 120, 150, 80, 70, 110, 130]);
+    setLogs([
+      {
+        time: '2025-10-13 09:21',
+        user: 'admin',
+        action: '删除角色',
+        status: '成功',
+        ip: '192.168.1.5',
+      },
+      {
+        time: '2025-10-13 09:20',
+        user: 'user1',
+        action: '登录',
+        status: '成功',
+        ip: '192.168.1.23',
+      },
+      {
+        time: '2025-10-13 09:15',
+        user: 'user2',
+        action: '修改权限',
+        status: '失败',
+        ip: '192.168.1.8',
+      },
+    ]);
+  }, []);
 
   return {
-    ...state,
-    refreshData,
+    overview,
+    roleDistribution,
+    loginData,
+    logs,
   };
-};
-
-// 工具函数
-export const formatNumber = (num: number): string => {
-  if (num >= 10000) {
-    return (num / 10000).toFixed(1) + 'w';
-  }
-  if (num >= 1000) {
-    return (num / 1000).toFixed(1) + 'k';
-  }
-  return num.toString();
-};
-
-export const formatCurrency = (num: number): string => {
-  return '¥' + num.toLocaleString();
-};
-
-export const getStatusColor = (
-  value: number,
-  thresholds: { warning: number; danger: number },
-) => {
-  if (value >= thresholds.danger) return '#ff4d4f';
-  if (value >= thresholds.warning) return '#faad14';
-  return '#52c41a';
 };

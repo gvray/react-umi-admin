@@ -74,6 +74,7 @@ export default {
             positionId: 2,
             createdAt: '2025-07-26T14:17:12.818Z',
             updatedAt: '2025-07-26T14:31:16.119Z',
+            permissionCodes: ['*:*:*'],
             roles: [
               {
                 id: 1,
