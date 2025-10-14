@@ -1,5 +1,6 @@
 import {
   getDashboardOverview,
+  getLoginTrend,
   getRoleDistribution,
 } from '@/services/dashboard';
 import { useCallback, useEffect, useState } from 'react';
@@ -7,7 +8,9 @@ import { useCallback, useEffect, useState } from 'react';
 export const useDashboard = () => {
   const [overview, setOverview] = useState<any>(null);
   const [roleDistribution, setRoleDistribution] = useState<any>(null);
-  const [loginData, setLoginData] = useState<number[]>([]);
+  const [loginData, setLoginData] = useState<{ date: string; value: number }[]>(
+    [],
+  );
   const [logs, setLogs] = useState<any[]>([]);
   const fetchOverview = useCallback(async () => {
     try {
@@ -31,14 +34,25 @@ export const useDashboard = () => {
     }
   }, []);
 
+  const fetchLoginTrend = useCallback(async () => {
+    try {
+      const res = await getLoginTrend();
+      if (res.data) {
+        setLoginData(res.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
+
   useEffect(() => {
     fetchOverview();
     fetchRoleDistribution();
+    fetchLoginTrend();
   }, [fetchOverview, fetchRoleDistribution]);
 
   // 模拟加载数据
   useEffect(() => {
-    setLoginData([50, 120, 150, 80, 70, 110, 130]);
     setLogs([
       {
         time: '2025-10-13 09:21',

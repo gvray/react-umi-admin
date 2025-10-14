@@ -127,12 +127,12 @@ APP_API_URL=https://api.dev.example.com
     <td><img src="./src/assets/snapshoot/dashboard2.png" alt="dashboard"></td>
   </tr>
     <tr>
-    <td><img src="./src/assets/snapshoot/menu.png" alt="dashboard"></td>
-    <td><img src="./src/assets/snapshoot/dept.png" alt="user"></td>
+    <td><img src="./src/assets/snapshoot/resource.png" alt="resource"></td>
+    <td><img src="./src/assets/snapshoot/dept.png" alt="dept"></td>
   </tr>
   <tr>
-    <td><img src="./src/assets/snapshoot/permisson.png" alt="dashboard"></td>
-    <td><img src="./src/assets/snapshoot/role.png" alt="user"></td>
+    <td><img src="./src/assets/snapshoot/permisson.png" alt="permisson"></td>
+    <td><img src="./src/assets/snapshoot/role.png" alt="role"></td>
   </tr>
   <tr>
     <td><img src="./src/assets/snapshoot/profile.png" alt="profile"></td>

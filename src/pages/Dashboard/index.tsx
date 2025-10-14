@@ -19,9 +19,7 @@ const DashboardWrapper = styled.div`
 const Dashboard: React.FC = () => {
   const { overview, roleDistribution, loginData, logs } = useDashboard();
 
-  console.log(overview, roleDistribution);
-
-  // 操作日志表格抽离为组件 OperationLogTable
+  console.log(overview, roleDistribution, loginData, logs);
 
   return (
     <DashboardWrapper>

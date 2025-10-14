@@ -3,7 +3,7 @@ import type { EChartsOption } from 'echarts';
 import React from 'react';
 
 interface LoginTrendProps {
-  data: number[];
+  data: { date: string; value: number }[];
   height?: number;
 }
 
@@ -30,7 +30,7 @@ const LoginTrend: React.FC<LoginTrendProps> = ({ data, height = 320 }) => {
     },
     xAxis: {
       type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      data: [...data.map((item) => item.date)],
       axisLine: { show: true, lineStyle: { color: '#e5e7eb' } },
       axisTick: { show: true, lineStyle: { color: '#e5e7eb' } },
       axisLabel: { color: '#94a3b8' },
@@ -45,7 +45,7 @@ const LoginTrend: React.FC<LoginTrendProps> = ({ data, height = 320 }) => {
     series: [
       {
         name: '登录次数',
-        data,
+        data: [...data.map((item) => item.value)],
         type: 'line',
         smooth: true,
         areaStyle: {
