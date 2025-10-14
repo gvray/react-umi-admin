@@ -124,7 +124,15 @@ APP_API_URL=https://api.dev.example.com
 <table>
   <tr>
     <td><img src="./src/assets/snapshoot/screencaptrue-dashboard.png" alt="dashboard"></td>
-    <td><img src="./src/assets/snapshoot/screencapture-user.png" alt="user"></td>
+    <td><img src="./src/assets/snapshoot/screencapture-dashboard2.png" alt="user"></td>
+  </tr>
+    <tr>
+    <td><img src="./src/assets/snapshoot/screencaptrue-menu.png" alt="dashboard"></td>
+    <td><img src="./src/assets/snapshoot/screencapture-dept.png" alt="user"></td>
+  </tr>
+  <tr>
+    <td><img src="./src/assets/snapshoot/screencaptrue-permisson.png" alt="dashboard"></td>
+    <td><img src="./src/assets/snapshoot/screencapture-role.png" alt="user"></td>
   </tr>
   <tr>
     <td><img src="./src/assets/snapshoot/screencaptrue-profile.png" alt="profile"></td>

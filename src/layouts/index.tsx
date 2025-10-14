@@ -144,7 +144,7 @@ export default function BaseLayout() {
               </HeaderRight>
             </HeaderBox>
           </Header>
-          <Content>
+          <Content style={{ height: 'calc(100vh - 64px)', overflow: 'auto' }}>
             <Outlet />
           </Content>
         </Layout>
