@@ -117,26 +117,26 @@ APP_API_URL=https://api.dev.example.com
 
 登陆路径：/login 登陆账号：admin@example/admin/13800138000 登陆密码：admin123
 
-![login](./src/assets/snapshoot/screencapture-login.png)
+![login](./src/assets/snapshoot/login.png)
 
 ---
 
 <table>
   <tr>
-    <td><img src="./src/assets/snapshoot/screencaptrue-dashboard.png" alt="dashboard"></td>
-    <td><img src="./src/assets/snapshoot/screencapture-dashboard2.png" alt="user"></td>
+    <td><img src="./src/assets/snapshoot/dashboard.png" alt="dashboard"></td>
+    <td><img src="./src/assets/snapshoot/dashboard2.png" alt="dashboard"></td>
   </tr>
     <tr>
-    <td><img src="./src/assets/snapshoot/screencaptrue-menu.png" alt="dashboard"></td>
-    <td><img src="./src/assets/snapshoot/screencapture-dept.png" alt="user"></td>
+    <td><img src="./src/assets/snapshoot/menu.png" alt="dashboard"></td>
+    <td><img src="./src/assets/snapshoot/dept.png" alt="user"></td>
   </tr>
   <tr>
-    <td><img src="./src/assets/snapshoot/screencaptrue-permisson.png" alt="dashboard"></td>
-    <td><img src="./src/assets/snapshoot/screencapture-role.png" alt="user"></td>
+    <td><img src="./src/assets/snapshoot/permisson.png" alt="dashboard"></td>
+    <td><img src="./src/assets/snapshoot/role.png" alt="user"></td>
   </tr>
   <tr>
-    <td><img src="./src/assets/snapshoot/screencaptrue-profile.png" alt="profile"></td>
-    <td><img src="./src/assets/snapshoot/screencapture-analyze.png" alt="analyze"></td>
+    <td><img src="./src/assets/snapshoot/profile.png" alt="profile"></td>
+    <td><img src="./src/assets/snapshoot/analyze.png" alt="analyze"></td>
   </tr>
 </table>
 
