@@ -11,9 +11,13 @@ export interface OperationLogItem {
 
 interface OperationLogTableProps {
   logs: OperationLogItem[];
+  loading?: boolean;
 }
 
-const OperationLogTable: React.FC<OperationLogTableProps> = ({ logs }) => {
+const OperationLogTable: React.FC<OperationLogTableProps> = ({
+  logs,
+  loading,
+}) => {
   const columns = [
     { title: '时间', dataIndex: 'time' },
     { title: '用户', dataIndex: 'user' },
@@ -38,6 +42,7 @@ const OperationLogTable: React.FC<OperationLogTableProps> = ({ logs }) => {
       dataSource={logs}
       rowKey={(r) => r.time + r.user}
       pagination={false}
+      loading={loading}
     />
   );
 };

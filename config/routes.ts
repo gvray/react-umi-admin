@@ -113,19 +113,19 @@ const routes = [
           permissions: ['system:log:view'],
         },
         routes: [
-          // {
-          //   path: '/system/log/operation',
-          //   component: 'Log/Operation',
-          //   meta: {
-          //     title: '操作日志',
-          //     permissions: ['system:log:view'],
-          //   },
-          // },
           {
             path: '/system/log/login',
             component: 'Log/Login',
             meta: {
               title: '登录日志',
+              permissions: ['system:log:view'],
+            },
+          },
+          {
+            path: '/system/log/operation',
+            component: 'Log/Operation',
+            meta: {
+              title: '操作日志',
               permissions: ['system:log:view'],
             },
           },
