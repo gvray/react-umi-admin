@@ -56,9 +56,17 @@ export async function getOperationLogDetail(logId: string) {
 }
 
 /** 删除单条操作日志 */
-export async function deleteOperationLog(logId: string) {
-  return request(`/system/operation-logs/${logId}`, {
+export async function deleteOperationLog(id: number) {
+  return request(`/system/operation-logs/${id}`, {
     method: 'DELETE',
+  });
+}
+
+/** 批量删除操作日志 */
+export async function deleteOperationLogs(ids: number[]) {
+  return request('/system/operation-logs/batch-delete', {
+    method: 'POST',
+    data: { ids },
   });
 }
 
