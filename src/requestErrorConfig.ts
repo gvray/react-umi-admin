@@ -97,7 +97,7 @@ export const errorConfig: RequestConfig = {
   requestInterceptors: [
     (config: RequestOptions) => {
       const { headers = {}, url, skipAuthHandler, ...restConfig } = config;
-      logger.trace(`API请求路径：${url}`);
+      logger.info(`API请求路径：${url}`);
       if (!skipAuthHandler) {
         headers.Authorization = `Bearer ${storetify(__APP_API_TOKEN_KEY__)}`;
       }
@@ -111,7 +111,7 @@ export const errorConfig: RequestConfig = {
       // 拦截200-299的响应数据，进行个性化处理,这里比 errorThrower 那拦截器早执行
       const { data } = response as unknown as ResponseStructure;
       if (data?.success === false) {
-        logger.trace('服务判定错误');
+        logger.warn('服务判定错误');
       }
       return response;
     },
