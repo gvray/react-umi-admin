@@ -1,107 +1,252 @@
-import { PageContainer } from '@/components';
+import { PageContainer, StatusTag } from '@/components';
 import {
   ArrowLeftOutlined,
-  EyeOutlined,
   FileOutlined,
   FolderOutlined,
   KeyOutlined,
+  SaveOutlined,
   SearchOutlined,
+  UndoOutlined,
 } from '@ant-design/icons';
-import {
-  Button,
-  Card,
-  Col,
-  Input,
-  Row,
-  Space,
-  Tag,
-  Tree,
-  Typography,
-} from 'antd';
+import { Button, Card, Input, Space, Spin, Tag, Tree, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { styled, useNavigate, useParams } from 'umi';
 import { useAuthPermission } from './model';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
-// Styled Components
-const RoleInfoCard = styled(Card)`
-  margin-bottom: 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+// 页面容器 - 左右分栏布局
+const PageWrapper = styled.div`
+  display: flex;
+  gap: 16px;
+  height: calc(100vh - 120px);
+  min-height: 500px;
+`;
 
-  .ant-card-body {
-    padding: 24px;
+// 返回按钮栏
+const BackBar = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: #722ed1;
+    color: #722ed1;
+  }
+
+  .back-icon {
+    font-size: 14px;
+  }
+
+  .back-text {
+    font-size: 14px;
+    font-weight: 500;
   }
 `;
 
+// 左侧角色信息栏
+const Sidebar = styled.div`
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+// 角色卡片
+const RoleCard = styled(Card)`
+  .ant-card-body {
+    padding: 20px;
+  }
+`;
+
+const RoleHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
 const RoleAvatar = styled.div`
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.2);
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #722ed1 0%, #1890ff 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-size: 32px;
-  font-weight: bold;
-  border: 3px solid rgba(255, 255, 255, 0.3);
+  font-size: 20px;
+  font-weight: 600;
+  flex-shrink: 0;
 `;
 
-const RoleTitle = styled(Title)`
-  color: white !important;
-  margin: 0 !important;
-  margin-bottom: 8px !important;
-`;
+const RoleInfo = styled.div`
+  flex: 1;
+  min-width: 0;
 
-const RoleSubtitle = styled(Text)`
-  color: rgba(255, 255, 255, 0.8) !important;
-  font-size: 16px;
-`;
-
-const RoleDescription = styled.div`
-  color: rgba(255, 255, 255, 0.7);
-  margin-top: 8px;
-`;
-
-const PermissionCount = styled.div`
-  text-align: right;
-
-  .count-label {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 14px;
+  .name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .count-number {
-    color: white;
+  .role-key {
+    font-size: 12px;
+    color: #722ed1;
+    background: #f9f0ff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    font-family: 'SF Mono', Monaco, monospace;
+  }
+`;
+
+const InfoItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 13px;
+
+  .label {
+    color: #666;
+  }
+
+  .value {
+    color: #1a1a1a;
+    font-weight: 500;
+  }
+`;
+
+// 统计卡片
+const StatsBox = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+`;
+
+const StatItem = styled.div<{ $highlight?: boolean }>`
+  background: ${(props) => (props.$highlight ? '#f9f0ff' : '#fafafa')};
+  border: 1px solid ${(props) => (props.$highlight ? '#d3adf7' : '#f0f0f0')};
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+
+  .number {
     font-size: 24px;
-    font-weight: bold;
+    font-weight: 600;
+    color: ${(props) => (props.$highlight ? '#722ed1' : '#1a1a1a')};
+    line-height: 1;
+    margin-bottom: 4px;
   }
-`;
 
-const PermissionCard = styled(Card)`
-  .ant-card-head-title {
-    display: flex;
-    align-items: center;
-  }
-`;
-
-const SearchContainer = styled.div`
-  margin-bottom: 16px;
-
-  .search-result {
-    margin-top: 8px;
+  .label {
     font-size: 12px;
     color: #666;
   }
 `;
 
-const TreeContainer = styled.div`
-  border: 1px solid #f0f0f0;
+// 右侧主内容区
+const MainContent = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+`;
+
+// 顶部操作栏
+const ActionBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 12px 16px;
+  background: white;
   border-radius: 8px;
+  border: 1px solid #f0f0f0;
+`;
+
+const ActionLeft = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .title-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #722ed1 0%, #1890ff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+  }
+
+  .title-content {
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: #999;
+      margin-top: 2px;
+    }
+  }
+`;
+
+const SearchBox = styled.div`
+  margin-bottom: 12px;
+  padding: 12px 16px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .search-result {
+    font-size: 12px;
+    color: #999;
+  }
+`;
+
+// 权限树容器
+const TreeWrapper = styled.div`
+  flex: 1;
   padding: 16px;
-  max-height: 600px;
-  overflow: auto;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  overflow-y: auto;
+
+  // 修复 showLine 模式下 checkbox 与连接线对齐问题
+  .ant-tree-show-line .ant-tree-switcher {
+    background: white;
+  }
+
+  .ant-tree .ant-tree-treenode {
+    align-items: center;
+  }
+
+  .ant-tree .ant-tree-node-content-wrapper {
+    display: flex;
+    align-items: center;
+  }
 `;
 
 const ResourceNode = styled.div`
@@ -112,7 +257,7 @@ const ResourceNode = styled.div`
 
 const PermissionNode = styled.div`
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   width: 100%;
   gap: 10px;
@@ -122,7 +267,7 @@ const PermissionNode = styled.div`
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: #f5f5f5;
+    background-color: #f9f0ff;
   }
 `;
 
@@ -156,159 +301,16 @@ const PermissionTags = styled(Space)`
   }
 `;
 
-const StatsCard = styled(Card)`
-  margin-bottom: 16px;
-
-  .stats-main {
-    text-align: center;
-    padding: 24px 0;
-    margin: 16px 0;
-  }
-
-  .stats-number {
-    font-size: 42px;
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 8px;
-    line-height: 1;
-  }
-
-  .stats-label {
-    font-size: 14px;
-    color: #7f8c8d;
-    font-weight: 500;
-  }
-
-  .stats-details {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-top: 20px;
-  }
-
-  .stats-item {
-    text-align: center;
-    padding: 16px 12px;
-    background: #ffffff;
-    border: 1px solid #ecf0f1;
-    border-radius: 8px;
-
-    .item-number {
-      font-size: 20px;
-      font-weight: 600;
-      color: #2c3e50;
-      margin-bottom: 6px;
-    }
-
-    .item-label {
-      font-size: 12px;
-      color: #7f8c8d;
-      font-weight: 500;
-    }
-  }
-`;
-
-const PreviewCard = styled(Card)`
-  .preview-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    padding: 16px;
-    background: #ffffff;
-    border: 1px solid #ecf0f1;
-    border-radius: 8px;
-
-    .header-info {
-      .header-title {
-        font-size: 15px;
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 4px;
-      }
-
-      .header-subtitle {
-        font-size: 13px;
-        color: #7f8c8d;
-      }
-    }
-
-    .header-icon {
-      color: #3498db;
-      font-size: 18px;
-    }
-  }
-
-  .preview-content {
-    max-height: 300px;
-    overflow: auto;
-
-    .preview-item {
-      display: flex;
-      align-items: center;
-      padding: 12px 16px;
-      background: #ffffff;
-      border: 1px solid #ecf0f1;
-      border-radius: 6px;
-      margin-bottom: 8px;
-
-      .item-icon {
-        width: 28px;
-        height: 28px;
-        border-radius: 6px;
-        background: #3498db;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 12px;
-        font-weight: 600;
-        margin-right: 12px;
-        flex-shrink: 0;
-      }
-
-      .item-content {
-        flex: 1;
-
-        .item-name {
-          font-weight: 500;
-          font-size: 14px;
-          color: #2c3e50;
-          margin-bottom: 3px;
-        }
-
-        .item-code {
-          font-size: 12px;
-          color: #7f8c8d;
-          font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono',
-            monospace;
-        }
-      }
-    }
-
-    .preview-empty {
-      text-align: center;
-      padding: 40px 20px;
-      color: #bdc3c7;
-
-      .empty-icon {
-        font-size: 36px;
-        margin-bottom: 12px;
-        opacity: 0.6;
-      }
-
-      .empty-text {
-        font-size: 14px;
-        font-weight: 500;
-      }
-    }
-  }
-`;
-
 const EmptyState = styled.div`
   text-align: center;
   color: #999;
-  padding: 40px 0;
+  padding: 60px 20px;
+
+  .icon {
+    font-size: 48px;
+    color: #d9d9d9;
+    margin-bottom: 16px;
+  }
 `;
 
 interface TreeNode {
@@ -336,7 +338,7 @@ export default function AuthPermissionPage() {
     submitting,
     initializeData,
     submitPermissionAssignment,
-  } = useAuthPermission(roleId);
+  } = useAuthPermission();
 
   useEffect(() => {
     if (roleId) {
@@ -534,12 +536,23 @@ export default function AuthPermissionPage() {
     setCheckedKeys([]);
   };
 
+  // 判断是否有变更
+  const hasChanges = () => {
+    const originalIds =
+      selectedRole?.permissions?.map((p: any) => p.permissionId) || [];
+    if (originalIds.length !== selectedPermissionIds.length) return true;
+    return !originalIds.every((id: string) =>
+      selectedPermissionIds.includes(id),
+    );
+  };
+
   if (!roleId) {
     return (
       <PageContainer>
-        <Card>
-          <EmptyState>请提供角色ID来分配权限</EmptyState>
-        </Card>
+        <EmptyState>
+          <KeyOutlined className="icon" />
+          <div>请提供角色ID来分配权限</div>
+        </EmptyState>
       </PageContainer>
     );
   }
@@ -547,7 +560,16 @@ export default function AuthPermissionPage() {
   if (loading) {
     return (
       <PageContainer>
-        <Card loading={true} />
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: 'calc(100vh - 120px)',
+          }}
+        >
+          <Spin size="large" />
+        </div>
       </PageContainer>
     );
   }
@@ -555,216 +577,156 @@ export default function AuthPermissionPage() {
   if (!selectedRole) {
     return (
       <PageContainer>
-        <Card>
-          <EmptyState>未找到角色信息</EmptyState>
-        </Card>
+        <EmptyState>
+          <KeyOutlined className="icon" />
+          <div>未找到角色信息</div>
+        </EmptyState>
       </PageContainer>
     );
   }
 
   return (
     <PageContainer>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        {/* 页面头部导航 */}
-        <Card style={{ marginBottom: '16px' }}>
-          <Row align="middle" justify="space-between">
-            <Col>
-              <Button
-                type="link"
-                icon={<ArrowLeftOutlined />}
-                onClick={handleBackToRoles}
-                style={{ padding: 0, marginBottom: 8 }}
-              >
-                返回角色列表
-              </Button>
-              <div>
-                <Title level={4} style={{ margin: 0, marginBottom: 4 }}>
-                  <KeyOutlined
-                    style={{ marginRight: '8px', color: '#1890ff' }}
-                  />
-                  角色权限分配
-                </Title>
-                <Text type="secondary">
-                  为角色分配系统权限，控制功能访问范围
-                </Text>
-              </div>
-            </Col>
-            <Col>
-              <Space>
-                <Button
-                  type="primary"
-                  onClick={handleSubmit}
-                  loading={submitting}
-                  icon={<KeyOutlined />}
-                >
-                  保存分配
-                </Button>
-                <Button onClick={handleReset}>重置</Button>
-              </Space>
-            </Col>
-          </Row>
-        </Card>
+      <PageWrapper>
+        {/* 左侧边栏 - 角色信息 */}
+        <Sidebar>
+          {/* 返回按钮 */}
+          <BackBar onClick={handleBackToRoles}>
+            <ArrowLeftOutlined className="back-icon" />
+            <span className="back-text">返回角色列表</span>
+          </BackBar>
 
-        {/* 角色信息卡片 */}
-        <RoleInfoCard>
-          <Row align="middle" gutter={24}>
-            <Col>
+          <RoleCard>
+            <RoleHeader>
               <RoleAvatar>
                 <KeyOutlined />
               </RoleAvatar>
-            </Col>
-            <Col flex={1}>
-              <RoleTitle level={3}>{selectedRole.roleName}</RoleTitle>
-              <RoleSubtitle>{selectedRole.roleKey}</RoleSubtitle>
-              {selectedRole.remark && (
-                <RoleDescription>{selectedRole.remark}</RoleDescription>
-              )}
-            </Col>
-            <Col>
-              <PermissionCount>
-                <div className="count-label">当前权限数量</div>
-                <div className="count-number">
-                  {selectedRole.permissions?.length || 0}
-                </div>
-              </PermissionCount>
-            </Col>
-          </Row>
-        </RoleInfoCard>
+              <RoleInfo>
+                <div className="name">{selectedRole.roleName}</div>
+                <span className="role-key">{selectedRole.roleKey}</span>
+              </RoleInfo>
+            </RoleHeader>
 
-        {/* 权限分配区域 */}
-        <PermissionCard
-          title={
-            <div>
-              <KeyOutlined style={{ marginRight: '8px', color: '#1890ff' }} />
-              权限分配
-            </div>
-          }
-          extra={
+            <div style={{ borderTop: '1px solid #f0f0f0', margin: '16px 0' }} />
+
+            <InfoItem>
+              <span className="label">状态</span>
+              <StatusTag status={selectedRole.status} />
+            </InfoItem>
+            {selectedRole.remark && (
+              <InfoItem>
+                <span className="label">描述</span>
+                <span
+                  className="value"
+                  style={{
+                    maxWidth: 150,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {selectedRole.remark}
+                </span>
+              </InfoItem>
+            )}
+          </RoleCard>
+
+          <Card size="small" title="分配统计">
+            <StatsBox>
+              <StatItem $highlight>
+                <div className="number">{selectedPermissionIds.length}</div>
+                <div className="label">已选择</div>
+              </StatItem>
+              <StatItem>
+                <div className="number">{permissions.length}</div>
+                <div className="label">总权限</div>
+              </StatItem>
+            </StatsBox>
+          </Card>
+
+          <Card size="small" title="当前已分配">
+            {selectedRole.permissions && selectedRole.permissions.length > 0 ? (
+              <Space wrap size={[4, 8]}>
+                {selectedRole.permissions.slice(0, 10).map((p: any) => (
+                  <Tag key={p.permissionId} color="purple">
+                    {p.name}
+                  </Tag>
+                ))}
+                {selectedRole.permissions.length > 10 && (
+                  <Tag>+{selectedRole.permissions.length - 10}</Tag>
+                )}
+              </Space>
+            ) : (
+              <Text type="secondary">暂无权限</Text>
+            )}
+          </Card>
+        </Sidebar>
+
+        {/* 右侧主内容区 */}
+        <MainContent>
+          {/* 顶部操作栏 */}
+          <ActionBar>
+            <ActionLeft>
+              <div className="title-icon">
+                <KeyOutlined />
+              </div>
+              <div className="title-content">
+                <div className="title">选择权限</div>
+                <div className="subtitle">
+                  已选 {selectedPermissionIds.length} / {permissions.length} 个
+                </div>
+              </div>
+            </ActionLeft>
             <Space>
               <Button onClick={handleSelectAll}>全选</Button>
               <Button onClick={handleClearAll}>清空</Button>
+              <Button icon={<UndoOutlined />} onClick={handleReset}>
+                重置
+              </Button>
+              <Button
+                type="primary"
+                icon={<SaveOutlined />}
+                onClick={handleSubmit}
+                loading={submitting}
+                disabled={!hasChanges()}
+              >
+                保存分配
+              </Button>
             </Space>
-          }
-        >
-          <Row gutter={16}>
-            <Col span={16}>
-              <SearchContainer>
-                <Input
-                  placeholder="搜索权限名称、权限标识、描述、资源名称或操作类型"
-                  prefix={<SearchOutlined />}
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  allowClear
-                  size="large"
-                />
-                {searchText && (
-                  <div className="search-result">
-                    找到 {filteredPermissions.length} 个权限
-                  </div>
-                )}
-              </SearchContainer>
+          </ActionBar>
 
-              <TreeContainer>
-                <Tree
-                  checkable
-                  expandedKeys={expandedKeys}
-                  checkedKeys={checkedKeys}
-                  onExpand={handleExpand}
-                  onCheck={handleCheck}
-                  treeData={treeData}
-                  showLine
-                  showIcon={false}
-                />
-              </TreeContainer>
-            </Col>
+          {/* 搜索框 */}
+          <SearchBox>
+            <Input
+              placeholder="搜索权限名称、标识、描述或资源名称"
+              prefix={<SearchOutlined />}
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              allowClear
+              style={{ width: 320 }}
+            />
+            {searchText && (
+              <span className="search-result">
+                找到 {filteredPermissions.length} 个权限
+              </span>
+            )}
+          </SearchBox>
 
-            <Col span={8}>
-              <StatsCard title="分配统计" size="small">
-                <div className="stats-main">
-                  <div className="stats-number">
-                    {selectedPermissionIds.length}
-                  </div>
-                  <div className="stats-label">已选择权限</div>
-                </div>
-
-                <div className="stats-details">
-                  <div className="stats-item">
-                    <div className="item-number">{permissions.length}</div>
-                    <div className="item-label">总权限数</div>
-                  </div>
-                  <div className="stats-item">
-                    <div className="item-number">
-                      {selectedRole.permissions?.length || 0}
-                    </div>
-                    <div className="item-label">已分配</div>
-                  </div>
-                  <div className="stats-item">
-                    <div className="item-number">
-                      {selectedPermissionIds.length -
-                        (selectedRole.permissions?.length || 0)}
-                    </div>
-                    <div className="item-label">待分配</div>
-                  </div>
-                  <div className="stats-item">
-                    <div className="item-number">
-                      {selectedRole.permissions?.length > 0
-                        ? Math.round(
-                            (selectedRole.permissions.length /
-                              permissions.length) *
-                              100,
-                          )
-                        : 0}
-                      %
-                    </div>
-                    <div className="item-label">分配率</div>
-                  </div>
-                </div>
-              </StatsCard>
-
-              <PreviewCard title="当前权限预览" size="small">
-                <div className="preview-header">
-                  <div className="header-info">
-                    <div className="header-title">已分配权限</div>
-                    <div className="header-subtitle">
-                      {selectedRole.permissions?.length || 0} 个权限已分配
-                    </div>
-                  </div>
-                  <div className="header-icon">
-                    <EyeOutlined />
-                  </div>
-                </div>
-
-                <div className="preview-content">
-                  {selectedRole.permissions &&
-                  selectedRole.permissions.length > 0 ? (
-                    selectedRole.permissions.map((permission: any) => (
-                      <div
-                        key={permission.permissionId}
-                        className="preview-item"
-                      >
-                        {/* <div className="item-icon">
-                          {index + 1}
-                        </div> */}
-                        <div className="item-content">
-                          <div className="item-name">{permission.name}</div>
-                          <div className="item-code">{permission.code}</div>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="preview-empty">
-                      <div className="empty-icon">
-                        <KeyOutlined />
-                      </div>
-                      <div className="empty-text">暂无权限</div>
-                    </div>
-                  )}
-                </div>
-              </PreviewCard>
-            </Col>
-          </Row>
-        </PermissionCard>
-      </div>
+          {/* 权限树 */}
+          <TreeWrapper>
+            <Tree
+              checkable
+              expandedKeys={expandedKeys}
+              checkedKeys={checkedKeys}
+              onExpand={handleExpand}
+              onCheck={handleCheck}
+              treeData={treeData}
+              showLine
+              showIcon={false}
+            />
+          </TreeWrapper>
+        </MainContent>
+      </PageWrapper>
     </PageContainer>
   );
 }
