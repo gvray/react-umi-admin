@@ -1,27 +1,343 @@
-import { DateTimeFormat, PageContainer, StatusTag } from '@/components';
+import { PageContainer, StatusTag } from '@/components';
 import {
   ArrowLeftOutlined,
+  CheckOutlined,
+  SaveOutlined,
   SearchOutlined,
   TeamOutlined,
+  UndoOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
-import {
-  Avatar,
-  Button,
-  Card,
-  Col,
-  Flex,
-  Input,
-  Row,
-  Space,
-  Table,
-  Tag,
-  Typography,
-} from 'antd';
+import { Button, Card, Input, Space, Spin, Tag, Typography } from 'antd';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'umi';
+import { styled, useNavigate, useParams } from 'umi';
 import { useAuthUser } from './model';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
+
+// 页面容器 - 左右分栏布局
+const PageWrapper = styled.div`
+  display: flex;
+  gap: 16px;
+  height: calc(100vh - 120px);
+  min-height: 500px;
+`;
+
+// 返回按钮栏
+const BackBar = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: #1890ff;
+    color: #1890ff;
+  }
+
+  .back-icon {
+    font-size: 14px;
+  }
+
+  .back-text {
+    font-size: 14px;
+    font-weight: 500;
+  }
+`;
+
+// 左侧角色信息栏
+const Sidebar = styled.div`
+  width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+// 角色卡片
+const RoleCard = styled(Card)`
+  .ant-card-body {
+    padding: 20px;
+  }
+`;
+
+const RoleHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+const RoleAvatar = styled.div`
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #52c41a 0%, #1890ff 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  flex-shrink: 0;
+`;
+
+const RoleInfo = styled.div`
+  flex: 1;
+  min-width: 0;
+
+  .name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .role-key {
+    font-size: 12px;
+    color: #1890ff;
+    background: #f0f5ff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    font-family: 'SF Mono', Monaco, monospace;
+  }
+`;
+
+const InfoItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 13px;
+
+  .label {
+    color: #666;
+  }
+
+  .value {
+    color: #1a1a1a;
+    font-weight: 500;
+  }
+`;
+
+// 统计卡片
+const StatsBox = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+`;
+
+const StatItem = styled.div<{ $highlight?: boolean }>`
+  background: ${(props) => (props.$highlight ? '#f6ffed' : '#fafafa')};
+  border: 1px solid ${(props) => (props.$highlight ? '#b7eb8f' : '#f0f0f0')};
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+
+  .number {
+    font-size: 24px;
+    font-weight: 600;
+    color: ${(props) => (props.$highlight ? '#52c41a' : '#1a1a1a')};
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .label {
+    font-size: 12px;
+    color: #666;
+  }
+`;
+
+// 右侧主内容区
+const MainContent = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+`;
+
+// 顶部操作栏
+const ActionBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 12px 16px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+`;
+
+const ActionLeft = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .title-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #52c41a 0%, #1890ff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+  }
+
+  .title-content {
+    .title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: #999;
+      margin-top: 2px;
+    }
+  }
+`;
+
+// 用户网格
+const UserGrid = styled.div`
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  overflow-y: auto;
+  align-content: start;
+`;
+
+// 用户卡片
+const UserItem = styled.div<{ $selected: boolean }>`
+  position: relative;
+  padding: 16px;
+  border-radius: 8px;
+  border: 2px solid ${(props) => (props.$selected ? '#52c41a' : '#e8e8e8')};
+  background: ${(props) => (props.$selected ? '#f6ffed' : '#fff')};
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: ${(props) => (props.$selected ? '#52c41a' : '#b7eb8f')};
+    box-shadow: 0 2px 8px rgba(82, 196, 26, 0.15);
+  }
+
+  .check-icon {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: ${(props) => (props.$selected ? '#52c41a' : '#e8e8e8')};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+  }
+
+  .user-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1890ff 0%, #722ed1 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    flex-shrink: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+
+  .user-info {
+    flex: 1;
+    min-width: 0;
+    padding-right: 20px;
+
+    .username {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a1a;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .nickname {
+      font-size: 12px;
+      color: #666;
+    }
+  }
+
+  .user-email {
+    font-size: 12px;
+    color: #999;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+`;
+
+const SearchBox = styled.div`
+  margin-bottom: 12px;
+  padding: 12px 16px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .search-result {
+    font-size: 12px;
+    color: #999;
+  }
+`;
+
+const EmptyState = styled.div`
+  text-align: center;
+  color: #999;
+  padding: 60px 20px;
+  grid-column: 1 / -1;
+
+  .icon {
+    font-size: 48px;
+    color: #d9d9d9;
+    margin-bottom: 16px;
+  }
+`;
 
 export default function AuthUserPage() {
   const { roleId } = useParams();
@@ -50,6 +366,16 @@ export default function AuthUserPage() {
     }
   }, [selectedRole]);
 
+  // 过滤用户数据
+  const filteredUsers = users.filter((user: any) => {
+    if (!searchText) return true;
+    return (
+      user.nickname?.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.username?.toLowerCase().includes(searchText.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchText.toLowerCase())
+    );
+  });
+
   // 返回角色列表页面
   const handleBackToRoles = () => {
     navigate('/system/role');
@@ -65,7 +391,6 @@ export default function AuthUserPage() {
     });
 
     if (success) {
-      // 刷新角色数据
       await initializeData(roleId);
     }
   };
@@ -79,8 +404,8 @@ export default function AuthUserPage() {
 
   // 全选
   const handleSelectAll = () => {
-    const allUserIds = users.map((user: any) => user.userId);
-    setSelectedUserIds(allUserIds);
+    const filteredIds = filteredUsers.map((user: any) => user.userId);
+    setSelectedUserIds(filteredIds);
   };
 
   // 清空选择
@@ -88,26 +413,29 @@ export default function AuthUserPage() {
     setSelectedUserIds([]);
   };
 
-  // 过滤用户数据
-  const filteredUsers = users.filter((user: any) => {
-    if (!searchText) return true;
-    return (
-      user.nickname?.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.username?.toLowerCase().includes(searchText.toLowerCase()) ||
-      user.email?.toLowerCase().includes(searchText.toLowerCase())
+  // 切换用户选中状态
+  const toggleUser = (userId: string) => {
+    setSelectedUserIds((prev) =>
+      prev.includes(userId)
+        ? prev.filter((id) => id !== userId)
+        : [...prev, userId],
     );
-  });
+  };
+
+  // 判断是否有变更
+  const hasChanges = () => {
+    const originalIds = selectedRole?.users?.map((u: any) => u.userId) || [];
+    if (originalIds.length !== selectedUserIds.length) return true;
+    return !originalIds.every((id: string) => selectedUserIds.includes(id));
+  };
 
   if (!roleId) {
     return (
       <PageContainer>
-        <Card>
-          <div
-            style={{ textAlign: 'center', color: '#999', padding: '40px 0' }}
-          >
-            请提供角色ID来分配用户
-          </div>
-        </Card>
+        <EmptyState>
+          <TeamOutlined className="icon" />
+          <div>请提供角色ID来分配用户</div>
+        </EmptyState>
       </PageContainer>
     );
   }
@@ -115,7 +443,16 @@ export default function AuthUserPage() {
   if (loading) {
     return (
       <PageContainer>
-        <Card loading={true} />
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: 'calc(100vh - 120px)',
+          }}
+        >
+          <Spin size="large" />
+        </div>
       </PageContainer>
     );
   }
@@ -123,328 +460,180 @@ export default function AuthUserPage() {
   if (!selectedRole) {
     return (
       <PageContainer>
-        <Card>
-          <div
-            style={{ textAlign: 'center', color: '#999', padding: '40px 0' }}
-          >
-            未找到角色信息
-          </div>
-        </Card>
+        <EmptyState>
+          <TeamOutlined className="icon" />
+          <div>未找到角色信息</div>
+        </EmptyState>
       </PageContainer>
     );
   }
 
   return (
     <PageContainer>
-      {/* 角色信息卡片 */}
-      <Card style={{ marginBottom: '24px' }}>
-        <Row gutter={24} align="middle">
-          {/* 返回按钮和角色头像 */}
-          <Col span={6}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Button
-                type="link"
-                icon={<ArrowLeftOutlined />}
-                onClick={handleBackToRoles}
-                style={{ padding: 0, marginRight: 12 }}
-              >
-                返回
-              </Button>
-              <div
-                style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: '50%',
-                  backgroundColor: '#1890ff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  fontSize: '24px',
-                  fontWeight: 'bold',
-                  marginRight: '12px',
-                }}
-              >
+      <PageWrapper>
+        {/* 左侧边栏 - 角色信息 */}
+        <Sidebar>
+          {/* 返回按钮 */}
+          <BackBar onClick={handleBackToRoles}>
+            <ArrowLeftOutlined className="back-icon" />
+            <span className="back-text">返回角色列表</span>
+          </BackBar>
+
+          <RoleCard>
+            <RoleHeader>
+              <RoleAvatar>
                 {selectedRole.roleName?.charAt(0)?.toUpperCase() || 'R'}
-              </div>
-              <div>
-                <Title level={4} style={{ margin: 0, marginBottom: '4px' }}>
-                  {selectedRole.roleName}
-                </Title>
-                <Text type="secondary" style={{ fontSize: '12px' }}>
-                  {selectedRole.roleKey}
-                </Text>
-              </div>
-            </div>
-          </Col>
+              </RoleAvatar>
+              <RoleInfo>
+                <div className="name">{selectedRole.roleName}</div>
+                <span className="role-key">{selectedRole.roleKey}</span>
+              </RoleInfo>
+            </RoleHeader>
 
-          {/* 角色详细信息 */}
-          <Col span={12}>
-            <Row gutter={16}>
-              <Col span={6}>
-                <div style={{ marginBottom: '8px' }}>
-                  <Text type="secondary" style={{ fontSize: '12px' }}>
-                    角色ID
-                  </Text>
-                  <div>
-                    <Text
-                      code
-                      style={{ fontSize: '12px' }}
-                      ellipsis={{ tooltip: selectedRole.roleId }}
-                    >
-                      {selectedRole.roleId}
-                    </Text>
-                  </div>
-                </div>
-              </Col>
-              <Col span={6}>
-                <div style={{ marginBottom: '8px' }}>
-                  <Text type="secondary" style={{ fontSize: '12px' }}>
-                    状态
-                  </Text>
-                  <div>
-                    <StatusTag status={selectedRole.status} />
-                  </div>
-                </div>
-              </Col>
-              <Col span={6}>
-                <div style={{ marginBottom: '8px' }}>
-                  <Text type="secondary" style={{ fontSize: '12px' }}>
-                    当前用户
-                  </Text>
-                  <div>
-                    <Text strong style={{ color: '#1890ff', fontSize: '14px' }}>
-                      {selectedRole.users?.length || 0} 个
-                    </Text>
-                  </div>
-                </div>
-              </Col>
-              <Col span={6}>
-                <div style={{ marginBottom: '8px' }}>
-                  <Text type="secondary" style={{ fontSize: '12px' }}>
-                    创建时间
-                  </Text>
-                  <div>
-                    <DateTimeFormat value={selectedRole.createdAt} />
-                  </div>
-                </div>
-              </Col>
-            </Row>
+            <div style={{ borderTop: '1px solid #f0f0f0', margin: '16px 0' }} />
 
-            {/* 角色描述 */}
-            {selectedRole.description && (
-              <Row style={{ marginTop: '8px' }}>
-                <Col span={24}>
-                  <div
-                    style={{
-                      padding: '8px 12px',
-                      backgroundColor: '#f8f9fa',
-                      borderRadius: '4px',
-                      border: '1px solid #e9ecef',
-                    }}
-                  >
-                    <Text
-                      type="secondary"
-                      style={{ fontSize: '12px', marginRight: '8px' }}
-                    >
-                      描述：
-                    </Text>
-                    <Text style={{ fontSize: '12px', color: '#666' }}>
-                      {selectedRole.description}
-                    </Text>
-                  </div>
-                </Col>
-              </Row>
+            <InfoItem>
+              <span className="label">状态</span>
+              <StatusTag status={selectedRole.status} />
+            </InfoItem>
+            {selectedRole.remark && (
+              <InfoItem>
+                <span className="label">描述</span>
+                <span
+                  className="value"
+                  style={{
+                    maxWidth: 150,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {selectedRole.remark}
+                </span>
+              </InfoItem>
             )}
-          </Col>
+          </RoleCard>
 
-          {/* 操作按钮 */}
-          <Col span={6} style={{ textAlign: 'right' }}>
-            <Space size="middle">
+          <Card size="small" title="分配统计">
+            <StatsBox>
+              <StatItem $highlight>
+                <div className="number">{selectedUserIds.length}</div>
+                <div className="label">已选择</div>
+              </StatItem>
+              <StatItem>
+                <div className="number">{users.length}</div>
+                <div className="label">总用户</div>
+              </StatItem>
+            </StatsBox>
+          </Card>
+
+          <Card size="small" title="当前已分配">
+            {selectedRole.users && selectedRole.users.length > 0 ? (
+              <Space wrap size={[4, 8]}>
+                {selectedRole.users.map((user: any) => (
+                  <Tag key={user.userId} color="green">
+                    {user.username}
+                  </Tag>
+                ))}
+              </Space>
+            ) : (
+              <Text type="secondary">暂无用户</Text>
+            )}
+          </Card>
+        </Sidebar>
+
+        {/* 右侧主内容区 */}
+        <MainContent>
+          {/* 顶部操作栏 */}
+          <ActionBar>
+            <ActionLeft>
+              <div className="title-icon">
+                <UserOutlined />
+              </div>
+              <div className="title-content">
+                <div className="title">选择用户</div>
+                <div className="subtitle">
+                  已选 {selectedUserIds.length} / {users.length} 个
+                </div>
+              </div>
+            </ActionLeft>
+            <Space>
+              <Button onClick={handleSelectAll}>全选</Button>
+              <Button onClick={handleClearAll}>清空</Button>
+              <Button icon={<UndoOutlined />} onClick={handleReset}>
+                重置
+              </Button>
               <Button
                 type="primary"
+                icon={<SaveOutlined />}
                 onClick={handleSubmit}
                 loading={submitting}
-                icon={<TeamOutlined />}
+                disabled={!hasChanges()}
               >
                 保存分配
               </Button>
-              <Button onClick={handleReset}>重置</Button>
             </Space>
-          </Col>
-        </Row>
+          </ActionBar>
 
-        {/* 当前用户列表 */}
-        {selectedRole.users && selectedRole.users.length > 0 && (
-          <div
-            style={{
-              marginTop: '16px',
-              paddingTop: '16px',
-              borderTop: '1px solid #f0f0f0',
-            }}
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                marginBottom: '8px',
-              }}
-            >
-              <TeamOutlined style={{ marginRight: '6px', color: '#52c41a' }} />
-              <Text strong style={{ fontSize: '13px' }}>
-                当前用户
-              </Text>
-              <Text
-                type="secondary"
-                style={{ marginLeft: '6px', fontSize: '12px' }}
-              >
-                ({selectedRole.users.length} 个)
-              </Text>
-            </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-              {selectedRole.users.map((user: any) => (
-                <Tag
-                  key={user.userId}
-                  color="green"
-                  style={{
-                    padding: '4px 8px',
-                    borderRadius: '12px',
-                    fontSize: '12px',
-                  }}
-                >
-                  {user.username}
-                </Tag>
-              ))}
-            </div>
-          </div>
-        )}
-      </Card>
-
-      {/* 用户分配表格 */}
-      <Card
-        title={
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <TeamOutlined style={{ marginRight: '8px', color: '#52c41a' }} />
-            分配用户
-          </div>
-        }
-        extra={
-          <Space>
-            <Button onClick={handleSelectAll}>全选</Button>
-            <Button onClick={handleClearAll}>清空</Button>
-          </Space>
-        }
-      >
-        <Flex
-          justify="space-between"
-          align="center"
-          style={{ marginBottom: '16px' }}
-        >
-          <div
-            style={{
-              color: '#666',
-              fontSize: '14px',
-              padding: '12px 16px',
-              backgroundColor: '#f6f8fa',
-              borderRadius: '6px',
-              border: '1px solid #e1e4e8',
-            }}
-          >
-            <Text>
-              可以选择多个用户，选中的用户将拥有该角色的所有权限。当前已选择
-              <Text strong style={{ color: '#1890ff' }}>
-                {' '}
-                {selectedUserIds.length}{' '}
-              </Text>
-              个用户。
-            </Text>
-          </div>
           {/* 搜索框 */}
-          <div>
+          <SearchBox>
             <Input
-              placeholder="搜索用户昵称、用户名或邮箱"
+              placeholder="搜索用户名、昵称或邮箱"
               prefix={<SearchOutlined />}
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               allowClear
-              style={{ width: '300px' }}
+              style={{ width: 280 }}
             />
             {searchText && (
-              <span
-                style={{ marginLeft: '8px', fontSize: '12px', color: '#666' }}
-              >
+              <span className="search-result">
                 找到 {filteredUsers.length} 个用户
               </span>
             )}
-          </div>
-        </Flex>
-        <Table
-          rowSelection={{
-            type: 'checkbox',
-            selectedRowKeys: selectedUserIds,
-            onChange: (selectedRowKeys) => {
-              setSelectedUserIds(selectedRowKeys as string[]);
-            },
-            getCheckboxProps: () => ({
-              disabled: false,
-            }),
-          }}
-          columns={[
-            {
-              title: '用户信息',
-              dataIndex: 'username',
-              key: 'username',
-              render: (text: string, record: any) => (
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Avatar
-                    src={record.avatar}
-                    size="small"
-                    style={{ marginRight: '8px' }}
+          </SearchBox>
+
+          {/* 用户卡片网格 */}
+          <UserGrid>
+            {filteredUsers.length > 0 ? (
+              filteredUsers.map((user: any) => {
+                const isSelected = selectedUserIds.includes(user.userId);
+                return (
+                  <UserItem
+                    key={user.userId}
+                    $selected={isSelected}
+                    onClick={() => toggleUser(user.userId)}
                   >
-                    {text.charAt(0).toUpperCase()}
-                  </Avatar>
-                  <div>
-                    <div style={{ fontWeight: 500, fontSize: '14px' }}>
-                      {text}
+                    <div className="check-icon">
+                      {isSelected && <CheckOutlined />}
                     </div>
-                    <div style={{ fontSize: '12px', color: '#666' }}>
-                      {record.email}
+                    <div className="user-header">
+                      <div className="user-avatar">
+                        {user.avatar ? (
+                          <img src={user.avatar} alt="avatar" />
+                        ) : (
+                          user.username?.charAt(0).toUpperCase()
+                        )}
+                      </div>
+                      <div className="user-info">
+                        <div className="username">{user.username}</div>
+                        <div className="nickname">{user.nickname || '-'}</div>
+                      </div>
                     </div>
-                  </div>
+                    <div className="user-email">{user.email || '-'}</div>
+                  </UserItem>
+                );
+              })
+            ) : (
+              <EmptyState>
+                <UserOutlined className="icon" />
+                <div>
+                  {searchText ? '未找到匹配的用户' : '暂无可分配的用户'}
                 </div>
-              ),
-            },
-            {
-              title: '昵称',
-              dataIndex: 'nickname',
-              key: 'nickname',
-              width: 120,
-              render: (text: string) => (
-                <span style={{ fontSize: '12px' }}>{text || '-'}</span>
-              ),
-            },
-            {
-              title: '状态',
-              dataIndex: 'status',
-              key: 'status',
-              width: 80,
-              render: (status: number) => <StatusTag status={status} />,
-            },
-            {
-              title: '创建时间',
-              dataIndex: 'createdAt',
-              key: 'createdAt',
-              width: 120,
-              render: (time: string) => <DateTimeFormat value={time} />,
-            },
-          ]}
-          dataSource={filteredUsers}
-          rowKey="userId"
-          size="small"
-          pagination={false}
-          scroll={{ y: 300 }}
-        />
-      </Card>
+              </EmptyState>
+            )}
+          </UserGrid>
+        </MainContent>
+      </PageWrapper>
     </PageContainer>
   );
 }
