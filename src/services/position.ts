@@ -1,6 +1,4 @@
-// 职位管理
-
-import { request } from '@/utils/request';
+import { request } from '@gvray/request';
 
 // 职位数据类型定义
 export interface Position {
