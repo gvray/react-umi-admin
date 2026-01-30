@@ -8,24 +8,46 @@ import {
   TableProps,
   Tooltip,
 } from 'antd';
-import { forwardRef, useCallback, useImperativeHandle } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useState } from 'react';
+import { styled } from 'umi';
 import AdvancedSearchForm from './components/AdvancedSearchForm';
 import { useTablePro } from './useTablePro';
 
 interface TableProProps<T> extends TableProps<T> {
   request: (params: any, options?: { [key: string]: any }) => Promise<any>;
   toolbarRender?: () => React.ReactNode;
+  onSelectionChange?: (keys: React.Key[], rows?: T[]) => void;
 }
 
 export interface TableProRef {
   reload: () => void;
+  loading: boolean;
+  getSelectedRowKeys: () => React.Key[];
+  getSelectedRows: () => any[];
+  clearSelection: () => void;
 }
+
+const TableWrap = styled.div`
+  box-sizing: border-box;
+`;
+
+const PaginationWrap = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+`;
 
 const TableProFunction: React.ForwardRefRenderFunction<
   TableProRef,
   TableProProps<any>
 > = (props, ref) => {
-  const { columns, request, toolbarRender = () => null, ...rest } = props;
+  const {
+    columns,
+    request,
+    toolbarRender = () => null,
+    onSelectionChange,
+    ...rest
+  } = props;
 
   const {
     loading,
@@ -41,21 +63,54 @@ const TableProFunction: React.ForwardRefRenderFunction<
     setShowSearch,
   } = useTablePro(request);
 
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [selectedRows, setSelectedRows] = useState<any[]>([]);
+
   const reload = useCallback(() => {
     handleReload();
   }, [handleReload]);
+
+  const getSelectedRowKeys = useCallback(
+    () => selectedRowKeys,
+    [selectedRowKeys],
+  );
+  const getSelectedRows = useCallback(() => selectedRows, [selectedRows]);
+  const clearSelection = useCallback(() => {
+    setSelectedRowKeys([]);
+    setSelectedRows([]);
+    onSelectionChange?.([], []);
+  }, [onSelectionChange]);
 
   useImperativeHandle(
     ref,
     () => ({
       reload,
+      loading,
+      getSelectedRowKeys,
+      getSelectedRows,
+      clearSelection,
     }),
-    [],
+    [reload, loading, getSelectedRowKeys, getSelectedRows, clearSelection],
   );
 
   const toolbar = toolbarRender();
+  const tableProps: TableProps<any> = {
+    ...rest,
+    ...(onSelectionChange && !rest.rowSelection
+      ? {
+          rowSelection: {
+            selectedRowKeys,
+            onChange: (keys: React.Key[], rows: any[]) => {
+              setSelectedRowKeys(keys);
+              setSelectedRows(rows);
+              onSelectionChange?.(keys, rows);
+            },
+          },
+        }
+      : {}),
+  };
   return (
-    <div>
+    <TableWrap>
       {showSearch && !!columns && (
         <AdvancedSearchForm
           searchFields={columns.filter(
@@ -93,24 +148,25 @@ const TableProFunction: React.ForwardRefRenderFunction<
         dataSource={listData}
         loading={loading}
         pagination={false}
-        {...rest}
+        {...tableProps}
         scroll={{ x: 'max-content' }}
       />
       {total > 0 && total > pagination.pageSize && (
-        <Pagination
-          total={total}
-          showSizeChanger
-          showQuickJumper
-          current={pagination.page}
-          pageSize={pagination.pageSize}
-          showTotal={(total) => `共 ${total} 条`}
-          onChange={(page, pageSize) => {
-            setPagination({ page, pageSize });
-          }}
-          style={{ textAlign: 'right', marginTop: '10px' }}
-        />
+        <PaginationWrap>
+          <Pagination
+            total={total}
+            showSizeChanger
+            showQuickJumper
+            current={pagination.page}
+            pageSize={pagination.pageSize}
+            showTotal={(total) => `共 ${total} 条`}
+            onChange={(page, pageSize) => {
+              setPagination({ page, pageSize });
+            }}
+          />
+        </PaginationWrap>
       )}
-    </div>
+    </TableWrap>
   );
 };
 

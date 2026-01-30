@@ -11,16 +11,26 @@ import {
   DownloadOutlined,
   ExclamationCircleOutlined,
 } from '@ant-design/icons';
-import { Modal, Space, Tag, Typography } from 'antd';
+import { message, Modal, Space, Tag, Typography } from 'antd';
 import React, { useRef } from 'react';
-import { getLoginLogColumns, useLoginLog } from './model';
+import { getLoginLogColumns } from './columns';
+import { useLoginLog } from './model';
 
 const { Paragraph } = Typography;
 
 const LoginLog: React.FC = () => {
   const tableProRef = useRef<TableProRef>(null);
-  const { handleExport, handleClear, getLoginLogData, exporting, clearing } =
-    useLoginLog();
+  const {
+    exportLog,
+    deleteLogs,
+    clearLogs,
+    getLoginLogData,
+    selectionChange,
+    deleting,
+    exporting,
+    clearing,
+    selectedRows,
+  } = useLoginLog();
 
   const handleTableReload = () => {
     tableProRef.current?.reload();
@@ -61,15 +71,36 @@ const LoginLog: React.FC = () => {
     return column;
   });
 
-  const handleExportClick = async () => {
+  const handleExport = async () => {
     try {
-      await handleExport();
+      await exportLog();
+      message.success('导出成功');
     } catch (error) {
-      // 错误已在hook中处理
+      message.error('导出失败');
     }
   };
 
-  const handleClearClick = async () => {
+  const handleDelete = async () => {
+    Modal.confirm({
+      title: '系统提示',
+      icon: <ExclamationCircleOutlined />,
+      content: '是否确认删除选中的登录日志？此操作不可恢复！',
+      okText: '确认',
+      cancelText: '取消',
+      onOk() {
+        return deleteLogs()
+          .then(() => {
+            message.success('删除成功');
+            handleTableReload();
+          })
+          .catch(() => {
+            message.error('删除失败');
+          });
+      },
+    });
+  };
+
+  const handleClear = async () => {
     Modal.confirm({
       title: '系统提示',
       icon: <ExclamationCircleOutlined />,
@@ -77,12 +108,13 @@ const LoginLog: React.FC = () => {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        return handleClear()
+        return clearLogs()
           .then(() => {
+            message.success('清理成功');
             handleTableReload();
           })
           .catch(() => {
-            // 错误已在hook中处理
+            message.error('清理失败');
           });
       },
     });
@@ -95,28 +127,44 @@ const LoginLog: React.FC = () => {
         toolbarRender={() => (
           <Space>
             <AuthButton
-              type="primary"
-              icon={<DownloadOutlined />}
-              onClick={handleExportClick}
-              loading={exporting}
-              perms={['system:log:export']}
+              danger
+              icon={<DeleteOutlined />}
+              onClick={handleDelete}
+              loading={deleting}
+              disabled={selectedRows.length === 0}
+              perms={['system:log:delete']}
             >
-              导出日志
+              删除
             </AuthButton>
             <AuthButton
               danger
               icon={<DeleteOutlined />}
-              onClick={handleClearClick}
+              onClick={handleClear}
               loading={clearing}
               perms={['system:log:delete']}
             >
-              清理日志
+              清空
+            </AuthButton>
+            <AuthButton
+              type="primary"
+              icon={<DownloadOutlined />}
+              onClick={handleExport}
+              loading={exporting}
+              perms={['system:log:export']}
+            >
+              导出日志
             </AuthButton>
           </Space>
         )}
         ref={tableProRef}
         columns={columns}
         request={getLoginLogData}
+        onSelectionChange={
+          selectionChange as (
+            keys: React.Key[],
+            rows?: LoginLogRecord[],
+          ) => void
+        }
       />
     </PageContainer>
   );

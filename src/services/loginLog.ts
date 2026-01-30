@@ -7,7 +7,7 @@ export interface LoginLogRecord {
   location: string;
   browser: string;
   os: string;
-  status: 'success' | 'failed';
+  status: number;
   message: string;
   loginTime: string;
 }
@@ -34,7 +34,7 @@ export interface LoginLogListResponse {
 export async function getLoginLogList(
   params?: LoginLogQueryParams,
 ): Promise<LoginLogListResponse> {
-  return request('/api/system/log/login', {
+  return request('/system/login-logs', {
     method: 'GET',
     params,
   }) as Promise<LoginLogListResponse>;
@@ -44,9 +44,19 @@ export async function getLoginLogList(
  * 导出登录日志
  */
 export async function exportLoginLog(params?: LoginLogQueryParams) {
-  return request('/api/system/log/login/export', {
+  return request('/system/login-logs/export', {
     method: 'POST',
     data: params,
+  });
+}
+
+/**
+ * 删除选中的登录日志
+ */
+export async function deleteLoginLog(ids: string[]) {
+  return request('/system/login-logs/batch-delete', {
+    method: 'POST',
+    data: { ids },
   });
 }
 
@@ -54,7 +64,7 @@ export async function exportLoginLog(params?: LoginLogQueryParams) {
  * 清理登录日志
  */
 export async function clearLoginLog() {
-  return request('/api/system/log/login/clear', {
+  return request('/system/login-logs/clear', {
     method: 'DELETE',
   });
 }
