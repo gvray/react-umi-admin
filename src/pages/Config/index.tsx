@@ -4,8 +4,6 @@ import {
   StatusTag,
   TablePro,
 } from '@/components';
-import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
-import { deleteConfig, getConfig, listConfig } from '@/services/config';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -15,26 +13,35 @@ import {
   SettingOutlined,
 } from '@ant-design/icons';
 import { Button, Modal, Space, Tag, Typography, message } from 'antd';
-import { ColumnProps } from 'antd/es/table';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
-import ConfigValueViewer, { ConfigData } from './components/ConfigValueViewer';
+import { getConfigColumns } from './columns';
+import ConfigValueViewer from './components/ConfigValueViewer';
+import {
+  CONFIG_GROUP_COLORS,
+  CONFIG_GROUP_LABELS,
+  CONFIG_GROUP_OPTIONS,
+} from './constants';
+import { useConfig, type ConfigData } from './model';
 
 const { Text } = Typography;
 
 type DataType = ConfigData;
 
-interface ConfigColumnProps<T, U> extends ColumnProps<T> {
-  advancedSearch?: AdvancedSearchItem<U>;
-}
-
 const ConfigPage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<any>(null);
-  const [viewModalVisible, setViewModalVisible] = useState(false);
-  const [currentConfig, setCurrentConfig] = useState<DataType | null>(null);
+  const {
+    getConfigList,
+    getConfigDetail,
+    deleteConfigItem,
+    viewVisible,
+    currentConfig,
+    viewDetail,
+    closeDetail,
+  } = useConfig();
 
-  const handleTableReload = () => {
+  const tableReload = () => {
     tableProRef.current?.reload();
   };
 
@@ -60,9 +67,9 @@ const ConfigPage = () => {
       cancelText: '取消',
       okType: 'danger',
       onOk() {
-        return deleteConfig(record.configId)
+        return deleteConfigItem(record.configId)
           .then(() => {
-            handleTableReload();
+            tableReload();
             message.success(`配置"${record.name}"删除成功`);
           })
           .catch(() => {});
@@ -73,197 +80,146 @@ const ConfigPage = () => {
   const handleUpdate = async (record: DataType) => {
     const configId = record.configId;
     try {
-      const msg: any = await getConfig(configId);
+      const data: any = await getConfigDetail(configId);
       updateFormRef.current?.show('修改配置', {
-        ...msg.data,
+        ...data,
       });
     } catch (error) {}
   };
 
   // 查看配置值
   const handleViewValue = async (record: DataType) => {
-    try {
-      const msg: any = await getConfig(record.configId);
-      setCurrentConfig(msg.data);
-      setViewModalVisible(true);
-    } catch (error) {
-      message.error('获取配置详情失败');
-    }
+    await viewDetail(record.configId);
   };
 
   const handleOk = () => {
-    handleTableReload();
+    tableReload();
   };
 
-  // 配置类型标签颜色映射
-  const getTypeColor = (type: string) => {
-    const colorMap: { [key: string]: string } = {
-      string: 'blue',
-      number: 'green',
-      boolean: 'orange',
-      json: 'purple',
-    };
-    return colorMap[type] || 'default';
-  };
-
-  // 配置分组标签颜色映射
-  const getGroupColor = (group: string) => {
-    const colorMap: { [key: string]: string } = {
-      system: 'red',
-      business: 'blue',
-      security: 'orange',
-      ui: 'green',
-      api: 'purple',
-    };
-    return colorMap[group] || 'default';
-  };
-
-  const columns: ConfigColumnProps<
-    DataType,
-    Record<string, string | number>
-  >[] = [
-    {
-      title: '配置名称',
-      dataIndex: 'name',
-      key: 'name',
-      width: 220,
-      advancedSearch: { type: 'INPUT' },
-      render: (name: string, record: DataType) => (
-        <div>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              marginBottom: '6px',
-            }}
-          >
-            <SettingOutlined style={{ color: '#1890ff', marginRight: '8px' }} />
-            <Text strong style={{ fontSize: '14px' }}>
-              {name}
-            </Text>
-          </div>
-          {record.description && (
+  const baseColumns = getConfigColumns();
+  let columns = baseColumns.map((column) => {
+    if (column.dataIndex === 'name') {
+      return {
+        ...column,
+        render: (name: string, record: DataType) => (
+          <div>
             <div
               style={{
-                fontSize: '12px',
-                color: '#666',
-                lineHeight: '1.4',
-                display: '-webkit-box',
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: 'vertical',
-                overflow: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '6px',
               }}
             >
-              {record.description}
+              <SettingOutlined
+                style={{ color: '#1890ff', marginRight: '8px' }}
+              />
+              <Text strong style={{ fontSize: '14px' }}>
+                {name}
+              </Text>
             </div>
-          )}
-        </div>
-      ),
-    },
-    {
-      title: '配置键',
-      dataIndex: 'key',
-      key: 'key',
-      width: 160,
-      advancedSearch: { type: 'INPUT' },
-      render: (key: string) => (
-        <Tag color="blue" style={{ fontFamily: 'monospace', fontSize: '12px' }}>
-          {key}
-        </Tag>
-      ),
-    },
-    {
-      title: '类型',
-      dataIndex: 'type',
-      key: 'type',
-      width: 100,
-      advancedSearch: {
-        type: 'SELECT',
-        value: [
-          { label: '字符串', value: 'string' },
-          { label: '数字', value: 'number' },
-          { label: '布尔值', value: 'boolean' },
-          { label: 'JSON', value: 'json' },
-        ],
-      },
-      render: (type: string) => (
-        <Tag color={getTypeColor(type)} style={{ fontSize: '12px' }}>
-          {type === 'string' && '字符串'}
-          {type === 'number' && '数字'}
-          {type === 'boolean' && '布尔值'}
-          {type === 'json' && 'JSON'}
-        </Tag>
-      ),
-    },
-    {
-      title: '分组',
-      dataIndex: 'group',
-      key: 'group',
-      width: 100,
-      advancedSearch: {
-        type: 'SELECT',
-        value: [
-          { label: '系统', value: 'system' },
-          { label: '业务', value: 'business' },
-          { label: '安全', value: 'security' },
-          { label: '界面', value: 'ui' },
-          { label: '接口', value: 'api' },
-        ],
-      },
-      render: (group: string) => (
-        <Tag color={getGroupColor(group)} style={{ fontSize: '12px' }}>
-          {group === 'system' && '系统'}
-          {group === 'business' && '业务'}
-          {group === 'security' && '安全'}
-          {group === 'ui' && '界面'}
-          {group === 'api' && '接口'}
-        </Tag>
-      ),
-    },
-    {
-      title: '排序',
-      dataIndex: 'sort',
-      key: 'sort',
-      width: 80,
-      render: (sort: number) => (
-        <Tag
-          color={sort === 0 ? 'default' : 'green'}
-          style={{ fontSize: '12px' }}
-        >
-          {sort}
-        </Tag>
-      ),
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      key: 'status',
-      width: 100,
-      advancedSearch: {
-        type: 'SELECT',
-        value: [
-          { label: '禁用', value: 0 },
-          { label: '启用', value: 1 },
-        ],
-      },
-      render: (status: number) => <StatusTag status={status} />,
-    },
-    {
-      title: '创建时间',
-      key: 'createdAt',
-      dataIndex: 'createdAt',
-      width: 140,
-      render: (time: string) => <DateTimeFormat value={time} />,
-      advancedSearch: {
-        type: 'DATE_RANGE',
-      },
-    },
+            {record.description && (
+              <div
+                style={{
+                  fontSize: '12px',
+                  color: '#666',
+                  lineHeight: '1.4',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                }}
+              >
+                {record.description}
+              </div>
+            )}
+          </div>
+        ),
+      };
+    }
+    if (column.dataIndex === 'key') {
+      return {
+        ...column,
+        render: (key: string) => (
+          <Tag
+            color="blue"
+            style={{ fontFamily: 'monospace', fontSize: '12px' }}
+          >
+            {key}
+          </Tag>
+        ),
+      };
+    }
+    if (column.dataIndex === 'type') {
+      const getTypeColor = (type: string) => {
+        const colorMap: { [key: string]: string } = {
+          string: 'blue',
+          number: 'green',
+          boolean: 'orange',
+          json: 'purple',
+        };
+        return colorMap[type] || 'default';
+      };
+      return {
+        ...column,
+        render: (type: string) => (
+          <Tag color={getTypeColor(type)} style={{ fontSize: '12px' }}>
+            {type === 'string' && '字符串'}
+            {type === 'number' && '数字'}
+            {type === 'boolean' && '布尔值'}
+            {type === 'json' && 'JSON'}
+          </Tag>
+        ),
+      };
+    }
+    if (column.dataIndex === 'group') {
+      return {
+        ...column,
+        advancedSearch: {
+          type: 'SELECT',
+          value: CONFIG_GROUP_OPTIONS,
+        },
+        render: (group: string) => {
+          const label = CONFIG_GROUP_LABELS[group] || group;
+          const color = CONFIG_GROUP_COLORS[group] || 'default';
+          return <Tag color={color}>{label}</Tag>;
+        },
+      };
+    }
+    if (column.dataIndex === 'sort') {
+      return {
+        ...column,
+        render: (sort: number) => (
+          <Tag
+            color={sort === 0 ? 'default' : 'green'}
+            style={{ fontSize: '12px' }}
+          >
+            {sort}
+          </Tag>
+        ),
+      };
+    }
+    if (column.dataIndex === 'status') {
+      return {
+        ...column,
+        render: (status: number) => <StatusTag status={status} />,
+      };
+    }
+    if (column.dataIndex === 'createdAt') {
+      return {
+        ...column,
+        render: (time: string) => <DateTimeFormat value={time} />,
+      };
+    }
+    return column;
+  });
+  columns = [
+    ...columns,
     {
       title: '操作',
       key: 'action',
       width: 200,
       fixed: 'right',
-      render: (record) => {
+      render: (record: any) => {
         return (
           <Space size="small">
             <Button
@@ -313,9 +269,8 @@ const ConfigPage = () => {
         }}
         rowKey={'configId'}
         ref={tableProRef}
-        columns={columns}
-        request={listConfig}
-        pagination={false}
+        columns={columns as any}
+        request={getConfigList}
       />
       {/* 配置新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} onOk={handleOk} />
@@ -324,8 +279,8 @@ const ConfigPage = () => {
       {currentConfig && (
         <ConfigValueViewer
           config={currentConfig}
-          visible={viewModalVisible}
-          onClose={() => setViewModalVisible(false)}
+          visible={viewVisible}
+          onClose={() => closeDetail()}
         />
       )}
     </PageContainer>

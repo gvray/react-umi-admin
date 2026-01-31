@@ -5,7 +5,7 @@ import {
   TablePro,
 } from '@/components';
 import { TableProRef } from '@/components/TablePro';
-import { Button, Descriptions, Modal, Spin, Tag, Tooltip } from 'antd';
+import { Descriptions, message, Modal, Spin, Tag, Tooltip } from 'antd';
 import React from 'react';
 import { getOperationLogColumns } from './columns';
 import { useOperationLog } from './model';
@@ -14,11 +14,10 @@ const OperationLogPage: React.FC = () => {
   const tableProRef = React.useRef<TableProRef>(null);
   const {
     getOperationLogData,
-    deleteLog,
     batchDeleteLogs,
     cleanLogs,
     selectedRowKeys,
-    onSelectionChange,
+    selectionChange,
     detailOpen,
     detailLoading,
     detail,
@@ -26,23 +25,10 @@ const OperationLogPage: React.FC = () => {
     closeDetail,
   } = useOperationLog();
 
-  const handleTableReload = () => {
+  const tableReload = () => {
     tableProRef.current?.reload();
   };
-  const handleDelete = async (record: any) => {
-    Modal.confirm({
-      title: '删除确认',
-      content: `确认删除该日志记录（ID: ${record.id}）吗？`,
-      okText: '删除',
-      okButtonProps: { danger: true },
-      cancelText: '取消',
-      onOk: async () => {
-        return deleteLog(record.id).then(() => {
-          handleTableReload();
-        });
-      },
-    });
-  };
+
   const handleBatchDelete = () => {
     if (!selectedRowKeys.length) {
       Modal.warning({
@@ -73,7 +59,8 @@ const OperationLogPage: React.FC = () => {
       onOk: async () => {
         const ids = selectedRowKeys.map((k) => Number(k));
         return batchDeleteLogs(ids).then(() => {
-          handleTableReload();
+          message.success('选中的操作日志已删除');
+          tableReload();
         });
       },
     });
@@ -88,7 +75,8 @@ const OperationLogPage: React.FC = () => {
       cancelText: '取消',
       onOk: async () => {
         return cleanLogs().then(() => {
-          handleTableReload();
+          message.success('操作日志已清空');
+          tableReload();
         });
       },
     });
@@ -142,14 +130,6 @@ const OperationLogPage: React.FC = () => {
           >
             详情
           </AuthButton>
-          <AuthButton
-            type="link"
-            danger
-            onClick={() => handleDelete(record)}
-            perms={['system:log:delete']}
-          >
-            删除
-          </AuthButton>
         </>
       ),
     },
@@ -200,23 +180,28 @@ const OperationLogPage: React.FC = () => {
       <TablePro
         toolbarRender={() => (
           <>
-            <Button
+            <AuthButton
               danger
               disabled={!selectedRowKeys.length}
               onClick={handleBatchDelete}
+              perms={['system:log:delete']}
             >
               删除
-            </Button>
-            <Button danger onClick={handleClean}>
+            </AuthButton>
+            <AuthButton
+              danger
+              onClick={handleClean}
+              perms={['system:log:clean']}
+            >
               清空
-            </Button>
+            </AuthButton>
           </>
         )}
         ref={tableProRef}
         columns={columns}
         request={getOperationLogData}
         rowKey="id"
-        onSelectionChange={onSelectionChange}
+        onSelectionChange={selectionChange}
       />
     </PageContainer>
   );

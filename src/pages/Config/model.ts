@@ -5,7 +5,6 @@ import {
   listConfig,
   updateConfig,
 } from '@/services/config';
-import { message } from 'antd';
 import { useCallback, useState } from 'react';
 
 export interface ConfigData {
@@ -27,32 +26,19 @@ export const useConfig = () => {
   const [configs, setConfigs] = useState<ConfigData[]>([]);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [viewVisible, setViewVisible] = useState(false);
+  const [currentConfig, setCurrentConfig] = useState<ConfigData | null>(null);
 
-  // 加载配置列表
-  const loadConfigs = useCallback(async (params?: any) => {
-    try {
-      setLoading(true);
-      const response = await listConfig(params);
-      const data = response.data || [];
-      setConfigs(data);
-      return data;
-    } catch (error) {
-      message.error('加载配置列表失败');
-      return [];
-    } finally {
-      setLoading(false);
-    }
+  const getConfigList = useCallback((params?: any) => {
+    return listConfig(params);
   }, []);
 
   // 获取配置详情
   const getConfigDetail = useCallback(async (configId: string) => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const response = await getConfig(configId);
+      const response: any = await getConfig(configId);
       return response.data;
-    } catch (error) {
-      message.error('获取配置详情失败');
-      throw error;
     } finally {
       setLoading(false);
     }
@@ -60,16 +46,12 @@ export const useConfig = () => {
 
   // 创建配置
   const createConfigItem = useCallback(async (data: Partial<ConfigData>) => {
+    setSubmitting(true);
     try {
-      setSubmitting(true);
-      const response = await createConfig(data);
+      const response: any = await createConfig(data);
       const newConfig = response.data;
       setConfigs((prev) => [...prev, newConfig]);
-      message.success('配置创建成功');
       return newConfig;
-    } catch (error) {
-      message.error('配置创建失败');
-      throw error;
     } finally {
       setSubmitting(false);
     }
@@ -78,37 +60,26 @@ export const useConfig = () => {
   // 更新配置
   const updateConfigItem = useCallback(
     async (configId: string, data: Partial<ConfigData>) => {
-      try {
-        setSubmitting(true);
-        await updateConfig(configId, data);
-        setConfigs((prev) =>
-          prev.map((config) =>
-            config.configId === configId ? { ...config, ...data } : config,
-          ),
-        );
-        message.success('配置更新成功');
-      } catch (error) {
-        message.error('配置更新失败');
-        throw error;
-      } finally {
-        setSubmitting(false);
-      }
+      setSubmitting(true);
+      await updateConfig(configId, data);
+      setConfigs((prev) =>
+        prev.map((config) =>
+          config.configId === configId ? { ...config, ...data } : config,
+        ),
+      );
+      setSubmitting(false);
     },
     [],
   );
 
   // 删除配置
   const deleteConfigItem = useCallback(async (configId: string) => {
+    setSubmitting(true);
     try {
-      setSubmitting(true);
       await deleteConfig(configId);
       setConfigs((prev) =>
         prev.filter((config) => config.configId !== configId),
       );
-      message.success('配置删除成功');
-    } catch (error) {
-      message.error('配置删除失败');
-      throw error;
     } finally {
       setSubmitting(false);
     }
@@ -144,14 +115,32 @@ export const useConfig = () => {
     return configs.filter((config) => config.status === 1);
   }, [configs]);
 
+  const viewDetail = useCallback(async (configId: string) => {
+    setViewVisible(true);
+    setLoading(true);
+    try {
+      const response: any = await getConfig(configId);
+      setCurrentConfig(response.data);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const closeDetail = useCallback(() => {
+    setViewVisible(false);
+    setCurrentConfig(null);
+  }, []);
+
   return {
     // 状态
     configs,
     loading,
     submitting,
+    viewVisible,
+    currentConfig,
 
     // 操作方法
-    loadConfigs,
+    getConfigList,
     getConfigDetail,
     createConfigItem,
     updateConfigItem,
@@ -160,5 +149,7 @@ export const useConfig = () => {
     getConfigsByGroup,
     getConfigsByType,
     getEnabledConfigs,
+    viewDetail,
+    closeDetail,
   };
 };

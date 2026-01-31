@@ -76,7 +76,7 @@ const DictionaryItemsPage = () => {
     }
   }, [typeId]);
 
-  const handleTableReload = () => {
+  const tableReload = () => {
     tableProRef.current?.reload();
   };
 
@@ -103,7 +103,7 @@ const DictionaryItemsPage = () => {
       onOk() {
         return deleteDictionaryItem(record.itemId)
           .then(() => {
-            handleTableReload();
+            tableReload();
             message.success(`字典项"${record.label}"删除成功`);
           })
           .catch(() => {});
@@ -123,7 +123,7 @@ const DictionaryItemsPage = () => {
   };
 
   const handleOk = () => {
-    handleTableReload();
+    tableReload();
   };
 
   const columns: DictionaryItemColumnProps<

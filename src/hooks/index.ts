@@ -1,7 +1,6 @@
 import useAuth from './useAuth';
 import {
   useConfigCache,
-  useConfigManager,
   useConfigValidation,
   useConfigValue,
   useConfigsByGroup,
@@ -20,7 +19,6 @@ export {
   useAppTheme,
   useAuth,
   useConfigCache,
-  useConfigManager,
   useConfigValidation,
   useConfigValue,
   useConfigsByGroup,

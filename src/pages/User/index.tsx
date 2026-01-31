@@ -52,7 +52,7 @@ const UserPage = () => {
     user_gender: any[];
   }>(['user_status', 'user_gender']);
 
-  const handleTableReload = () => {
+  const tableReload = () => {
     tableProRef.current?.reload();
   };
 
@@ -70,7 +70,7 @@ const UserPage = () => {
       onOk() {
         return deleteUser(record.userId)
           .then(() => {
-            handleTableReload();
+            tableReload();
             message.success(`删除成功`);
           })
           .catch(() => {});
@@ -95,7 +95,7 @@ const UserPage = () => {
   };
 
   const handleOk = () => {
-    handleTableReload();
+    tableReload();
   };
 
   const handleAuthRole = (userId: string) => {

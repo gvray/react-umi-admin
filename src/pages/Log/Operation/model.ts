@@ -40,6 +40,7 @@ export const useOperationLog = () => {
     setBatchDeleting(true);
     try {
       await deleteOperationLogs(ids);
+      setSelectedRowKeys([]);
     } finally {
       setBatchDeleting(false);
     }
@@ -54,12 +55,8 @@ export const useOperationLog = () => {
     }
   }, []);
 
-  const onSelectionChange = useCallback((keys: React.Key[]) => {
+  const selectionChange = useCallback((keys: React.Key[]) => {
     setSelectedRowKeys(keys);
-  }, []);
-
-  const clearSelection = useCallback(() => {
-    setSelectedRowKeys([]);
   }, []);
 
   const viewDetail = useCallback(async (id: number) => {
@@ -91,8 +88,7 @@ export const useOperationLog = () => {
     deleteLog,
     batchDeleteLogs,
     cleanLogs,
-    onSelectionChange,
-    clearSelection,
+    selectionChange,
     viewDetail,
     closeDetail,
   };

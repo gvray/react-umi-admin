@@ -1,17 +1,7 @@
 import { useConfig } from '@/pages/Config/model';
 import { useCallback, useEffect, useState } from 'react';
 
-// 配置管理hooks
-export const useConfigManager = () => {
-  const configHook = useConfig();
-
-  // 初始化加载配置
-  useEffect(() => {
-    configHook.loadConfigs();
-  }, [configHook.loadConfigs]);
-
-  return configHook;
-};
+// 配置管理hooks（已移除自动加载逻辑，保留其余工具hooks）
 
 // 根据键获取配置值的hook
 export const useConfigValue = (key: string) => {

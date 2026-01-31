@@ -48,7 +48,7 @@ const UserPage = () => {
   const [dataPermissionVisible, setDataPermissionVisible] = useState(false);
   const [currentRole, setCurrentRole] = useState<DataType | null>(null);
 
-  const handleTableReload = () => {
+  const tableReload = () => {
     tableProRef.current?.reload();
   };
 
@@ -66,7 +66,7 @@ const UserPage = () => {
       onOk() {
         return deleteRole(record.roleId)
           .then(() => {
-            handleTableReload();
+            tableReload();
             message.success(`删除成功`);
           })
           .catch(() => {});
@@ -85,7 +85,7 @@ const UserPage = () => {
   };
 
   const handleOk = () => {
-    handleTableReload();
+    tableReload();
   };
 
   const handleAuthUser = (record: DataType) => {
@@ -102,7 +102,7 @@ const UserPage = () => {
   };
 
   const handleDataPermissionSuccess = () => {
-    handleTableReload();
+    tableReload();
   };
 
   const handleDataPermissionCancel = () => {

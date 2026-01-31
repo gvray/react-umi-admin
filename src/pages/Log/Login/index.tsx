@@ -32,7 +32,7 @@ const LoginLog: React.FC = () => {
     selectedRows,
   } = useLoginLog();
 
-  const handleTableReload = () => {
+  const tableReload = () => {
     tableProRef.current?.reload();
   };
 
@@ -91,7 +91,7 @@ const LoginLog: React.FC = () => {
         return deleteLogs()
           .then(() => {
             message.success('删除成功');
-            handleTableReload();
+            tableReload();
           })
           .catch(() => {
             message.error('删除失败');
@@ -111,7 +111,7 @@ const LoginLog: React.FC = () => {
         return clearLogs()
           .then(() => {
             message.success('清理成功');
-            handleTableReload();
+            tableReload();
           })
           .catch(() => {
             message.error('清理失败');

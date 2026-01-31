@@ -70,10 +70,9 @@ export async function deleteOperationLogs(ids: number[]) {
   });
 }
 
-/** 清理操作日志（可选按时间） */
-export async function cleanOperationLogs(before?: string) {
-  return request('/system/operation-logs', {
+/** 清理操作日志 */
+export async function cleanOperationLogs() {
+  return request('/system/operation-logs/clear', {
     method: 'DELETE',
-    params: before ? { before } : undefined,
   });
 }

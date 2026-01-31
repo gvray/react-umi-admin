@@ -1,6 +1,7 @@
 import { createConfig, updateConfig } from '@/services/config';
-import { Form, Input, InputNumber, Modal, Select, Switch, message } from 'antd';
+import { Form, Input, InputNumber, Modal, Select, message } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
+import { CONFIG_GROUP_OPTIONS } from './constants';
 
 const { TextArea } = Input;
 
@@ -30,8 +31,7 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
         if (data) {
           form.setFieldsValue({
             ...data,
-            // 处理布尔值类型
-            value: data.type === 'boolean' ? data.value === 'true' : data.value,
+            value: data.value,
           });
         } else {
           form.resetFields();
@@ -53,11 +53,6 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
       try {
         const values = await form.validateFields();
         setLoading(true);
-
-        // 处理布尔值类型
-        if (values.type === 'boolean') {
-          values.value = values.value ? 'true' : 'false';
-        }
 
         if (isEdit) {
           const { configId, ...rest } = values;
@@ -83,35 +78,16 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
       form.resetFields();
     };
 
-    // 根据类型渲染不同的值输入组件
     const renderValueInput = () => {
-      const type = form.getFieldValue('type');
-
-      switch (type) {
-        case 'number':
-          return (
-            <InputNumber
-              placeholder="请输入数字值"
-              style={{ width: '100%' }}
-              precision={0}
-              min={0}
-            />
-          );
-        case 'boolean':
-          return <Switch checkedChildren="是" unCheckedChildren="否" />;
-        case 'json':
-          return (
-            <TextArea
-              placeholder="请输入JSON格式的值，例如：{'key': 'value'}"
-              rows={6}
-              showCount
-              maxLength={2000}
-              style={{ fontFamily: 'monospace', fontSize: '12px' }}
-            />
-          );
-        default:
-          return <Input placeholder="请输入配置值" showCount maxLength={500} />;
-      }
+      return (
+        <TextArea
+          placeholder='请输入配置值，例如：1、"1"、true、{"key":"value"}'
+          rows={6}
+          showCount
+          maxLength={2000}
+          style={{ fontFamily: 'monospace', fontSize: '12px' }}
+        />
+      );
     };
 
     return (
@@ -208,13 +184,7 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
             >
               <Select
                 placeholder="请选择配置分组"
-                options={[
-                  { label: '系统', value: 'system' },
-                  { label: '业务', value: 'business' },
-                  { label: '安全', value: 'security' },
-                  { label: '界面', value: 'ui' },
-                  { label: '接口', value: 'api' },
-                ]}
+                options={CONFIG_GROUP_OPTIONS}
               />
             </Form.Item>
 
@@ -235,22 +205,7 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
           <Form.Item
             label="配置值"
             name="value"
-            rules={[
-              { required: true, message: '请输入配置值' },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  const type = getFieldValue('type');
-                  if (type === 'json' && value) {
-                    try {
-                      JSON.parse(value);
-                    } catch (error) {
-                      return Promise.reject(new Error('请输入有效的JSON格式'));
-                    }
-                  }
-                  return Promise.resolve();
-                },
-              }),
-            ]}
+            rules={[{ required: true, message: '请输入配置值' }]}
           >
             {renderValueInput()}
           </Form.Item>

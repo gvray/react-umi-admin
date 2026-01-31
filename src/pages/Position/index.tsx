@@ -36,7 +36,7 @@ const UserPage = () => {
 
   const tableProRef = useRef<TableProRef>(null);
 
-  const handleTableReload = () => {
+  const tableReload = () => {
     tableProRef.current?.reload();
   };
 
@@ -54,7 +54,7 @@ const UserPage = () => {
       onOk() {
         return deletePosition(record.positionId)
           .then(() => {
-            handleTableReload();
+            tableReload();
             message.success(`删除成功`);
           })
           .catch(() => {});
@@ -73,7 +73,7 @@ const UserPage = () => {
   };
 
   const handleOk = () => {
-    handleTableReload();
+    tableReload();
   };
 
   const columns: UserColumnProps<DataType, Record<string, string | number>>[] =

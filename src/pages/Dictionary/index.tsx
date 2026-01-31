@@ -45,7 +45,7 @@ const DictionaryPage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
 
-  const handleTableReload = () => {
+  const tableReload = () => {
     tableProRef.current?.reload();
   };
 
@@ -73,7 +73,7 @@ const DictionaryPage = () => {
       onOk() {
         return deleteDictionaryType(record.typeId)
           .then(() => {
-            handleTableReload();
+            tableReload();
             message.success(`字典类型"${record.name}"删除成功`);
           })
           .catch(() => {});
@@ -96,7 +96,7 @@ const DictionaryPage = () => {
   };
 
   const handleOk = () => {
-    handleTableReload();
+    tableReload();
   };
 
   const columns: DictionaryColumnProps<
