@@ -9,9 +9,9 @@ interface AdvancedSearchFormProps {
 }
 
 export interface AdvancedSearchItem<T> {
-  type: 'INPUT' | 'SELECT' | 'TIME_RANGE';
+  type: 'INPUT' | 'SELECT' | 'DATE_RANGE';
   value?: T[];
-  mapState?: {
+  optionMeta?: {
     value: string | number;
     label: string;
   };
@@ -41,22 +41,22 @@ const AdvancedSearchForm = forwardRef(
     }));
 
     const getFieldElement = (item: any) => {
-      const mapVal = item.advancedSearch?.mapState?.value || 'value';
-      const mapLab = item.advancedSearch?.mapState?.label || 'label';
+      const value = item.advancedSearch?.optionMeta?.value || 'value';
+      const label = item.advancedSearch?.optionMeta?.label || 'label';
       switch (item.advancedSearch.type) {
         case 'INPUT':
           return <Input placeholder={`输入${item.title}`} />;
         case 'SELECT':
           return (
             <Select allowClear>
-              {item.advancedSearch.value?.map((valItem: any) => (
-                <Option key={valItem[mapVal]} value={valItem[mapVal]}>
-                  {valItem[mapLab]}
+              {item.advancedSearch.value?.map((item: any) => (
+                <Option key={item[value]} value={item[value]}>
+                  {item[label]}
                 </Option>
               ))}
             </Select>
           );
-        case 'TIME_RANGE':
+        case 'DATE_RANGE':
           return <DatePicker.RangePicker />;
         default:
           return null;
@@ -135,16 +135,17 @@ const AdvancedSearchForm = forwardRef(
     const handleFinish = (values: FinishedParams) => {
       const { createdAt, ...rest } = values;
       if (!createdAt || createdAt.length === 0) {
-        onSearchFinish?.({ ...rest, dateRange: undefined });
+        onSearchFinish?.({
+          ...rest,
+          createdAtStart: undefined,
+          createdAtEnd: undefined,
+        });
         return;
       }
-      const dateRange = `${createdAt[0].format(
-        'YYYY-MM-DD',
-      )}_to_${createdAt[1].format('YYYY-MM-DD')}`;
-      // 根据自己的业务去调整
-      // query[`params[beginTime]`] = createdAt[0].format('YYYY-MM-DD');
-      // query[`params[endTime]`] = createdAt[1].format('YYYY-MM-DD');
-      onSearchFinish?.({ ...rest, dateRange });
+      // 处理日期范围
+      const createdAtStart = createdAt[0].format('YYYY-MM-DD');
+      const createdAtEnd = createdAt[1].format('YYYY-MM-DD');
+      onSearchFinish?.({ ...rest, createdAtStart, createdAtEnd });
     };
 
     return (

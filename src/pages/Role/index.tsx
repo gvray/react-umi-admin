@@ -187,7 +187,7 @@ const UserPage = () => {
           return <DateTimeFormat value={time} />;
         },
         advancedSearch: {
-          type: 'TIME_RANGE',
+          type: 'DATE_RANGE',
         },
       },
       {

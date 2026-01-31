@@ -63,7 +63,7 @@ export const getLoginLogColumns = (): LoginLogColumnProps<
       dataIndex: 'createdAt',
       key: 'createdAt',
       advancedSearch: {
-        type: 'TIME_RANGE',
+        type: 'DATE_RANGE',
       },
     },
   ];

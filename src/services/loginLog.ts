@@ -53,7 +53,7 @@ export async function exportLoginLog(params?: LoginLogQueryParams) {
 /**
  * 删除选中的登录日志
  */
-export async function deleteLoginLog(ids: string[]) {
+export async function deleteLoginLog(ids: React.Key[]) {
   return request('/system/login-logs/batch-delete', {
     method: 'POST',
     data: { ids },

@@ -30,7 +30,15 @@ for (let i = 1; i <= index; i++) {
 }
 export default {
   'GET /api/system/users': async (req: Request, res: Response) => {
-    const { page, pageSize, username, phone, dateRange, status } = req.query;
+    const {
+      page,
+      pageSize,
+      username,
+      phone,
+      createdAtStart,
+      createdAtEnd,
+      status,
+    } = req.query;
     await sleep(500);
     if (false) {
       res.json({
@@ -53,11 +61,10 @@ export default {
       if (status !== undefined) {
         flag = item.status === Number(status);
       }
-      if (dateRange) {
-        const [start, end] = (dateRange as string).split('_to_');
+      if (createdAtStart && createdAtEnd) {
         // 将字符串形式的日期转换为 Day.js 对象
-        const startDate = dayjs(start);
-        const endDate = dayjs(end);
+        const startDate = dayjs(String(createdAtStart)).startOf('day');
+        const endDate = dayjs(String(createdAtEnd)).endOf('day');
 
         // 判断 item.createdAt 是否在范围内
         flag =

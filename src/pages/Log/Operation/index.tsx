@@ -1,18 +1,30 @@
-import { DateTimeFormat, PageContainer, TablePro } from '@/components';
-import { TableProRef } from '@/components/TablePro';
 import {
-  cleanOperationLogs,
-  deleteOperationLog,
-  deleteOperationLogs,
-  getOperationLogs,
-} from '@/services/operationLog';
-import { Button, Modal, Tag, Tooltip, message } from 'antd';
+  AuthButton,
+  DateTimeFormat,
+  PageContainer,
+  TablePro,
+} from '@/components';
+import { TableProRef } from '@/components/TablePro';
+import { Button, Descriptions, Modal, Spin, Tag, Tooltip } from 'antd';
 import React from 'react';
+import { getOperationLogColumns } from './columns';
+import { useOperationLog } from './model';
 
 const OperationLogPage: React.FC = () => {
   const tableProRef = React.useRef<TableProRef>(null);
-  const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
-  const [selectedRows, setSelectedRows] = React.useState<any[]>([]);
+  const {
+    getOperationLogData,
+    deleteLog,
+    batchDeleteLogs,
+    cleanLogs,
+    selectedRowKeys,
+    onSelectionChange,
+    detailOpen,
+    detailLoading,
+    detail,
+    viewDetail,
+    closeDetail,
+  } = useOperationLog();
 
   const handleTableReload = () => {
     tableProRef.current?.reload();
@@ -25,29 +37,29 @@ const OperationLogPage: React.FC = () => {
       okButtonProps: { danger: true },
       cancelText: '取消',
       onOk: async () => {
-        try {
-          await deleteOperationLog(record.id);
-          message.success('删除成功');
+        return deleteLog(record.id).then(() => {
           handleTableReload();
-        } catch (error) {
-          message.error('删除失败');
-        }
+        });
       },
     });
   };
   const handleBatchDelete = () => {
-    if (!selectedRows.length) {
-      message.warning('请先选择要删除的记录');
+    if (!selectedRowKeys.length) {
+      Modal.warning({
+        title: '提示',
+        content: '请先选择要删除的记录',
+      });
       return;
     }
+    const rows = tableProRef.current?.getSelectedRows() || [];
     Modal.confirm({
       title: '批量删除确认',
       width: 520,
       content: (
         <div>
-          确认删除以下 {selectedRows.length} 条记录？
+          确认删除以下 {selectedRowKeys.length} 条记录？
           <div style={{ maxHeight: 200, overflow: 'auto', marginTop: 8 }}>
-            {selectedRows.map((r) => (
+            {rows.map((r) => (
               <div key={r.id}>
                 ID: {r.id}，用户：{r.username}，操作：{r.action}
               </div>
@@ -59,21 +71,15 @@ const OperationLogPage: React.FC = () => {
       okButtonProps: { danger: true },
       cancelText: '取消',
       onOk: async () => {
-        try {
-          const ids = selectedRows.map((r) => r.id);
-          await deleteOperationLogs(ids);
-          message.success('已删除');
-          setSelectedRowKeys([]);
-          setSelectedRows([]);
+        const ids = selectedRowKeys.map((k) => Number(k));
+        return batchDeleteLogs(ids).then(() => {
           handleTableReload();
-        } catch (error) {
-          message.error('删除失败');
-        }
+        });
       },
     });
   };
 
-  const handleCleanAll = () => {
+  const handleClean = () => {
     Modal.confirm({
       title: '清空日志确认',
       content: '确认清空所有操作日志吗？该操作不可恢复。',
@@ -81,94 +87,69 @@ const OperationLogPage: React.FC = () => {
       okButtonProps: { danger: true },
       cancelText: '取消',
       onOk: async () => {
-        try {
-          await cleanOperationLogs();
-          message.success('已清空');
+        return cleanLogs().then(() => {
           handleTableReload();
-        } catch (error) {
-          message.error('清空失败');
-        }
+        });
       },
     });
   };
-  const handleView = (record: any) => {
-    console.log('查看', record);
+  const handleView = async (record: any) => {
+    await viewDetail(record.id);
   };
-  const columns = [
-    {
-      title: '用户',
-      dataIndex: 'username',
-      key: 'username',
-      advancedSearch: { type: 'INPUT' },
-    },
-    {
-      title: '操作',
-      dataIndex: 'action',
-      key: 'action',
-      advancedSearch: { type: 'INPUT' },
-    },
-    {
-      title: '模块',
-      dataIndex: 'module',
-      key: 'module',
-      advancedSearch: { type: 'INPUT' },
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status: number) =>
-        status === 1 ? (
-          <Tag color="green">成功</Tag>
-        ) : (
-          <Tag color="red">失败</Tag>
+  let columns = getOperationLogColumns().map((column) => {
+    if (column.dataIndex === 'status') {
+      return {
+        ...column,
+        render: (status: number) =>
+          status === 1 ? (
+            <Tag color="green">成功</Tag>
+          ) : (
+            <Tag color="red">失败</Tag>
+          ),
+      };
+    }
+    if (column.dataIndex === 'path') {
+      return {
+        ...column,
+        ellipsis: true,
+        render: (text: string) => (
+          <Tooltip placement="topLeft" title={text}>
+            <span>{text}</span>
+          </Tooltip>
         ),
-      advancedSearch: {
-        type: 'SELECT',
-        value: [
-          { label: '成功', value: 1 },
-          { label: '失败', value: 0 },
-        ],
-      },
-    },
-    {
-      title: 'IP地址',
-      dataIndex: 'ipAddress',
-      key: 'ipAddress',
-    },
-    {
-      title: '路径',
-      dataIndex: 'path',
-      key: 'path',
-      width: 100,
-      ellipsis: true, // 表格单元格超出宽度自动省略
-      render: (text: string) => (
-        <Tooltip placement="topLeft" title={text}>
-          <span>{text}</span>
-        </Tooltip>
-      ),
-    },
-    {
-      title: '时间',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (createdAt: string) => {
-        return <DateTimeFormat value={createdAt} />;
-      },
-      advancedSearch: {
-        type: 'TIME_RANGE',
-      },
-    },
+      };
+    }
+    if (column.dataIndex === 'createdAt') {
+      return {
+        ...column,
+        render: (createdAt: string) => {
+          return <DateTimeFormat value={createdAt} />;
+        },
+      };
+    }
+    return column;
+  });
+  columns = [
+    ...columns,
     {
       title: '操作',
-      render: (text: string, record: any) => (
+      render: (_: string, record: any) => (
         <>
-          <Button type="link" onClick={() => handleView(record)}>
+          <AuthButton
+            type="link"
+            onClick={() => handleView(record)}
+            perms={['system:log:view']}
+          >
             详情
-          </Button>
-          <Button type="link" danger onClick={() => handleDelete(record)}>
+          </AuthButton>
+          <AuthButton
+            type="link"
+            danger
+            onClick={() => handleDelete(record)}
+            perms={['system:log:delete']}
+          >
             删除
-          </Button>
+          </AuthButton>
         </>
       ),
     },
@@ -176,32 +157,66 @@ const OperationLogPage: React.FC = () => {
 
   return (
     <PageContainer>
+      <Modal
+        open={detailOpen}
+        title="日志详情"
+        onCancel={() => {
+          closeDetail();
+        }}
+        footer={null}
+        width={640}
+      >
+        {detailLoading ? (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Spin />
+          </div>
+        ) : detail ? (
+          <Descriptions column={1} size="small" bordered>
+            <Descriptions.Item label="ID">{detail.id}</Descriptions.Item>
+            <Descriptions.Item label="用户">
+              {detail.username}
+            </Descriptions.Item>
+            <Descriptions.Item label="模块">{detail.module}</Descriptions.Item>
+            <Descriptions.Item label="操作">{detail.action}</Descriptions.Item>
+            <Descriptions.Item label="状态">
+              {detail.status === 1 ? '成功' : '失败'}
+            </Descriptions.Item>
+            <Descriptions.Item label="路径">{detail.path}</Descriptions.Item>
+            <Descriptions.Item label="方法">{detail.method}</Descriptions.Item>
+            <Descriptions.Item label="IP地址">
+              {detail.ipAddress}
+            </Descriptions.Item>
+            <Descriptions.Item label="地点">
+              {detail.location}
+            </Descriptions.Item>
+            <Descriptions.Item label="UA">{detail.userAgent}</Descriptions.Item>
+            <Descriptions.Item label="信息">{detail.message}</Descriptions.Item>
+            <Descriptions.Item label="时间">
+              <DateTimeFormat value={detail.createdAt} />
+            </Descriptions.Item>
+          </Descriptions>
+        ) : null}
+      </Modal>
       <TablePro
         toolbarRender={() => (
           <>
             <Button
               danger
-              disabled={!selectedRows.length}
+              disabled={!selectedRowKeys.length}
               onClick={handleBatchDelete}
             >
               删除
             </Button>
-            <Button danger onClick={handleCleanAll}>
+            <Button danger onClick={handleClean}>
               清空
             </Button>
           </>
         )}
         ref={tableProRef}
         columns={columns}
-        request={getOperationLogs}
+        request={getOperationLogData}
         rowKey="id"
-        rowSelection={{
-          selectedRowKeys,
-          onChange: (keys: React.Key[], rows: any[]) => {
-            setSelectedRowKeys(keys);
-            setSelectedRows(rows);
-          },
-        }}
+        onSelectionChange={onSelectionChange}
       />
     </PageContainer>
   );

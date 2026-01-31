@@ -10,7 +10,7 @@ import { useCallback, useState } from 'react';
  * 登录日志业务逻辑Hook
  */
 export const useLoginLog = () => {
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const [selectedRows, setSelectedRows] = useState<React.Key[]>([]);
   const [deleting, setDeleting] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [clearing, setClearing] = useState(false);
@@ -35,6 +35,7 @@ export const useLoginLog = () => {
     setDeleting(true);
     try {
       await deleteLoginLog(selectedRows);
+      setSelectedRows([]);
     } finally {
       setDeleting(false);
     }
@@ -51,7 +52,7 @@ export const useLoginLog = () => {
   }, []);
 
   // 处理选择变化
-  const selectionChange = useCallback((selectedRows: string[]) => {
+  const selectionChange = useCallback((selectedRows: React.Key[]) => {
     setSelectedRows(selectedRows);
   }, []);
 

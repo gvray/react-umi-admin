@@ -1,36 +1,99 @@
 import {
-  OperationLogListResponse,
-  OperationLogQueryParams,
+  cleanOperationLogs,
+  deleteOperationLog,
+  deleteOperationLogs,
+  getOperationLogDetail,
   getOperationLogs,
 } from '@/services/operationLog';
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
-export const useOperationLogs = (params?: OperationLogQueryParams) => {
-  const [data, setData] = useState<OperationLogListResponse | null>(null);
+export const useOperationLog = () => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [batchDeleting, setBatchDeleting] = useState(false);
+  const [cleaning, setCleaning] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [detail, setDetail] = useState<any | null>(null);
 
-  const fetchData = async () => {
+  const getOperationLogData = useCallback(async (params?: any) => {
+    setLoading(true);
     try {
-      setLoading(true);
-      setError(null);
-      const result = await getOperationLogs(params);
-      setData(result);
-    } catch (err) {
-      setError(err as Error);
+      const response = await getOperationLogs(params);
+      return response;
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  useEffect(() => {
-    fetchData();
-  }, [JSON.stringify(params)]);
+  const deleteLog = useCallback(async (id: number) => {
+    setDeleting(true);
+    try {
+      await deleteOperationLog(id);
+    } finally {
+      setDeleting(false);
+    }
+  }, []);
+
+  const batchDeleteLogs = useCallback(async (ids: number[]) => {
+    setBatchDeleting(true);
+    try {
+      await deleteOperationLogs(ids);
+    } finally {
+      setBatchDeleting(false);
+    }
+  }, []);
+
+  const cleanLogs = useCallback(async () => {
+    setCleaning(true);
+    try {
+      await cleanOperationLogs();
+    } finally {
+      setCleaning(false);
+    }
+  }, []);
+
+  const onSelectionChange = useCallback((keys: React.Key[]) => {
+    setSelectedRowKeys(keys);
+  }, []);
+
+  const clearSelection = useCallback(() => {
+    setSelectedRowKeys([]);
+  }, []);
+
+  const viewDetail = useCallback(async (id: number) => {
+    setDetailOpen(true);
+    setDetailLoading(true);
+    try {
+      const res: any = await getOperationLogDetail(String(id));
+      setDetail(res?.data ?? res);
+    } finally {
+      setDetailLoading(false);
+    }
+  }, []);
+
+  const closeDetail = useCallback(() => {
+    setDetailOpen(false);
+    setDetail(null);
+  }, []);
 
   return {
-    data,
     loading,
-    error,
-    refresh: fetchData,
+    deleting,
+    batchDeleting,
+    cleaning,
+    selectedRowKeys,
+    detailOpen,
+    detailLoading,
+    detail,
+    getOperationLogData,
+    deleteLog,
+    batchDeleteLogs,
+    cleanLogs,
+    onSelectionChange,
+    clearSelection,
+    viewDetail,
+    closeDetail,
   };
 };

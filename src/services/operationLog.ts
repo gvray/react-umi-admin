@@ -26,8 +26,8 @@ export interface OperationLogQueryParams {
   status?: number;
   path?: string;
   keyword?: string;
-  startTime?: string; // ISO 字符串
-  endTime?: string; // ISO 字符串
+  createdAtStart?: string; // ISO 字符串
+  createdAtEnd?: string; // ISO 字符串
 }
 
 export interface OperationLogListResponse {

@@ -180,7 +180,7 @@ const DictionaryPage = () => {
       width: 140,
       render: (time: string) => <DateTimeFormat value={time} />,
       advancedSearch: {
-        type: 'TIME_RANGE',
+        type: 'DATE_RANGE',
       },
     },
     {
