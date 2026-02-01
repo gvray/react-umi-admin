@@ -1,5 +1,6 @@
 import { EyeOutlined, SettingOutlined } from '@ant-design/icons';
-import { Button, Modal, Tag, Typography } from 'antd';
+import { Button, message, Modal, Space, Tag, Typography } from 'antd';
+import { CONFIG_GROUP_COLORS, CONFIG_GROUP_LABELS } from '../../constants';
 
 const { Text } = Typography;
 
@@ -35,32 +36,11 @@ const getTypeColor = (type: string) => {
   return colorMap[type] || 'default';
 };
 
-// 配置分组标签颜色映射
-const getGroupColor = (group: string) => {
-  const colorMap: { [key: string]: string } = {
-    system: 'red',
-    business: 'blue',
-    security: 'orange',
-    ui: 'green',
-    api: 'purple',
-  };
-  return colorMap[group] || 'default';
-};
-
-// 格式化配置值显示
-const formatConfigValue = (value: string, type: string) => {
-  switch (type) {
-    case 'boolean':
-      return value === 'true' ? '是' : '否';
-    case 'json':
-      try {
-        return JSON.stringify(JSON.parse(value), null, 2);
-      } catch {
-        return value;
-      }
-    default:
-      return value;
-  }
+const handleCopy = (text: string) => {
+  navigator.clipboard
+    .writeText(text)
+    .then(() => message.success('已复制原文'))
+    .catch(() => message.error('复制失败'));
 };
 
 const ConfigValueViewer: React.FC<ConfigValueViewerProps> = ({
@@ -158,12 +138,8 @@ const ConfigValueViewer: React.FC<ConfigValueViewerProps> = ({
                 配置分组：
               </Text>
               <div style={{ marginTop: '4px' }}>
-                <Tag color={getGroupColor(config.group)}>
-                  {config.group === 'system' && '系统'}
-                  {config.group === 'business' && '业务'}
-                  {config.group === 'security' && '安全'}
-                  {config.group === 'ui' && '界面'}
-                  {config.group === 'api' && '接口'}
+                <Tag color={CONFIG_GROUP_COLORS[config.group] || 'default'}>
+                  {CONFIG_GROUP_LABELS[config.group] || config.group}
                 </Tag>
               </div>
             </div>
@@ -182,10 +158,20 @@ const ConfigValueViewer: React.FC<ConfigValueViewerProps> = ({
 
         {/* 配置值展示 */}
         <div>
-          <div style={{ marginBottom: '12px' }}>
+          <div
+            style={{
+              marginBottom: '12px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
             <Text strong style={{ fontSize: '16px' }}>
               配置值：
             </Text>
+            <Space>
+              <Button onClick={() => handleCopy(config.value)}>复制原文</Button>
+            </Space>
           </div>
           <div
             style={{
@@ -193,9 +179,9 @@ const ConfigValueViewer: React.FC<ConfigValueViewerProps> = ({
               backgroundColor: '#f6f8fa',
               borderRadius: '8px',
               border: '1px solid #e1e4e8',
-              fontFamily: config.type === 'json' ? 'monospace' : 'inherit',
-              fontSize: config.type === 'json' ? '13px' : '14px',
-              whiteSpace: config.type === 'json' ? 'pre-wrap' : 'normal',
+              fontFamily: 'monospace',
+              fontSize: '13px',
+              whiteSpace: 'pre-wrap',
               wordBreak: 'break-all',
               maxHeight: '300px',
               overflow: 'auto',
@@ -203,7 +189,7 @@ const ConfigValueViewer: React.FC<ConfigValueViewerProps> = ({
               color: '#24292e',
             }}
           >
-            {formatConfigValue(config.value, config.type)}
+            {config.value}
           </div>
         </div>
 

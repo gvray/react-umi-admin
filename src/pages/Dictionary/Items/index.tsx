@@ -1,13 +1,7 @@
 import { DateTimeFormat, PageContainer, TablePro } from '@/components';
 import StatusTag from '@/components/StatusTag';
 import { TableProRef } from '@/components/TablePro';
-import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
-import {
-  deleteDictionaryItem,
-  getDictionaryItem,
-  getDictionaryType,
-  listDictionaryItem,
-} from '@/services/dictionary';
+
 import {
   ArrowLeftOutlined,
   BookOutlined,
@@ -27,10 +21,10 @@ import {
   Typography,
   message,
 } from 'antd';
-import { ColumnProps } from 'antd/es/table';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useParams } from 'umi';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
+import { useDictionaryItems } from './model';
 
 const { Title, Text, Paragraph } = Typography;
 interface DataType {
@@ -46,35 +40,24 @@ interface DataType {
   updatedAt: string;
 }
 
-interface DictionaryItemColumnProps<T, U> extends ColumnProps<T> {
-  advancedSearch?: AdvancedSearchItem<U>;
-}
-
 const DictionaryItemsPage = () => {
   const { typeId } = useParams();
-  const [dictionaryType, setDictionaryType] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
+  const {
+    typeDetail,
+    loading,
+    getTypeDetail,
+    getList,
+    deleteItem,
+    getItemDetail,
+  } = useDictionaryItems();
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
 
-  const fetchDictionaryType = async () => {
-    if (!typeId) return;
-    try {
-      setLoading(true);
-      const res: any = await getDictionaryType(typeId);
-      setDictionaryType(res.data);
-    } catch (error) {
-      message.error('获取字典类型信息失败');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (typeId) {
-      fetchDictionaryType();
+      getTypeDetail(typeId);
     }
-  }, [typeId]);
+  }, [typeId, getTypeDetail]);
 
   const tableReload = () => {
     tableProRef.current?.reload();
@@ -82,7 +65,7 @@ const DictionaryItemsPage = () => {
 
   const handleAdd = async () => {
     updateFormRef.current?.show('添加字典项', {
-      typeCode: dictionaryType.code,
+      typeCode: typeDetail?.code,
     });
   };
 
@@ -101,7 +84,7 @@ const DictionaryItemsPage = () => {
       cancelText: '取消',
       okType: 'danger',
       onOk() {
-        return deleteDictionaryItem(record.itemId)
+        return deleteItem(record.itemId)
           .then(() => {
             tableReload();
             message.success(`字典项"${record.label}"删除成功`);
@@ -114,9 +97,9 @@ const DictionaryItemsPage = () => {
   const handleUpdate = async (record: DataType) => {
     const itemId = record.itemId;
     try {
-      const msg: any = await getDictionaryItem(itemId);
+      const msg: any = await getItemDetail(itemId);
       updateFormRef.current?.show('修改字典项', {
-        ...msg.data,
+        ...msg,
         typeId,
       });
     } catch (error) {}
@@ -126,10 +109,7 @@ const DictionaryItemsPage = () => {
     tableReload();
   };
 
-  const columns: DictionaryItemColumnProps<
-    DataType,
-    Record<string, string | number>
-  >[] = [
+  const columns = [
     {
       title: '字典项ID',
       dataIndex: 'itemId',
@@ -202,7 +182,7 @@ const DictionaryItemsPage = () => {
       key: 'action',
       width: 150,
       fixed: 'right',
-      render: (record) => {
+      render: (record: any) => {
         return (
           <Space size="small">
             <Button
@@ -252,11 +232,11 @@ const DictionaryItemsPage = () => {
                 <BookOutlined
                   style={{ marginRight: '8px', color: '#1890ff' }}
                 />
-                {dictionaryType?.name || '字典项管理'}
+                {typeDetail?.name || '字典项管理'}
               </Title>
               <Text type="secondary">
-                编码：{dictionaryType?.code} | 描述：
-                {dictionaryType?.description || '暂无描述'}
+                编码：{typeDetail?.code} | 描述：
+                {typeDetail?.description || '暂无描述'}
               </Text>
             </div>
           </Col>
@@ -274,7 +254,7 @@ const DictionaryItemsPage = () => {
       </Card>
 
       <Card>
-        {dictionaryType?.code && (
+        {typeDetail?.code && (
           <TablePro
             toolbarRender={() => {
               return (
@@ -289,10 +269,8 @@ const DictionaryItemsPage = () => {
             }}
             rowKey={'itemId'}
             ref={tableProRef}
-            columns={columns}
-            request={(params) =>
-              listDictionaryItem(dictionaryType?.code, params)
-            }
+            columns={columns as any}
+            request={(params) => getList(typeDetail?.code, params)}
             loading={loading}
           />
         )}
@@ -302,7 +280,7 @@ const DictionaryItemsPage = () => {
       <UpdateForm
         ref={updateFormRef}
         onOk={handleOk}
-        typeCode={dictionaryType?.code}
+        typeCode={typeDetail?.code}
       />
     </PageContainer>
   );

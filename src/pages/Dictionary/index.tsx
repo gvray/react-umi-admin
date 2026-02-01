@@ -1,12 +1,7 @@
 import { DateTimeFormat, PageContainer, TablePro } from '@/components';
 import StatusTag from '@/components/StatusTag';
 import { TableProRef } from '@/components/TablePro';
-import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
-import {
-  deleteDictionaryType,
-  getDictionaryType,
-  listDictionaryType,
-} from '@/services/dictionary';
+
 import {
   BookOutlined,
   DeleteOutlined,
@@ -16,10 +11,11 @@ import {
   SettingOutlined,
 } from '@ant-design/icons';
 import { Button, Modal, Space, Tag, Typography, message } from 'antd';
-import { ColumnProps } from 'antd/es/table';
 import { useRef } from 'react';
 import { useNavigate } from 'umi';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
+import { getDictionaryColumns } from './columns';
+import { useDictionary } from './model';
 
 const { Text, Paragraph } = Typography;
 
@@ -36,14 +32,11 @@ interface DataType {
   updatedAt: string;
 }
 
-interface DictionaryColumnProps<T, U> extends ColumnProps<T> {
-  advancedSearch?: AdvancedSearchItem<U>;
-}
-
 const DictionaryPage = () => {
   const navigate = useNavigate();
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
+  const { getList, getDetail, deleteType } = useDictionary();
 
   const tableReload = () => {
     tableProRef.current?.reload();
@@ -71,7 +64,7 @@ const DictionaryPage = () => {
       cancelText: '取消',
       okType: 'danger',
       onOk() {
-        return deleteDictionaryType(record.typeId)
+        return deleteType(record.typeId)
           .then(() => {
             tableReload();
             message.success(`字典类型"${record.name}"删除成功`);
@@ -84,9 +77,9 @@ const DictionaryPage = () => {
   const handleUpdate = async (record: DataType) => {
     const typeId = record.typeId;
     try {
-      const msg: any = await getDictionaryType(typeId);
+      const msg: any = await getDetail(typeId);
       updateFormRef.current?.show('修改字典类型', {
-        ...msg.data,
+        ...msg,
       });
     } catch (error) {}
   };
@@ -99,10 +92,7 @@ const DictionaryPage = () => {
     tableReload();
   };
 
-  const columns: DictionaryColumnProps<
-    DataType,
-    Record<string, string | number>
-  >[] = [
+  let columns = [
     {
       title: '字典编号',
       dataIndex: 'typeId',
@@ -188,7 +178,112 @@ const DictionaryPage = () => {
       key: 'action',
       width: 200,
       fixed: 'right',
-      render: (record) => {
+      render: (record: any) => {
+        return (
+          <Space size="small">
+            <Button
+              type="link"
+              size="small"
+              icon={<EditOutlined />}
+              onClick={() => handleUpdate(record)}
+            >
+              编辑
+            </Button>
+            <Button
+              type="link"
+              size="small"
+              icon={<SettingOutlined />}
+              onClick={() => handleManageItems(record)}
+            >
+              管理字典项
+            </Button>
+            <Button
+              danger
+              type="link"
+              size="small"
+              icon={<DeleteOutlined />}
+              onClick={() => handleDelete(record)}
+            >
+              删除
+            </Button>
+          </Space>
+        );
+      },
+    },
+  ];
+  columns = getDictionaryColumns().map((column) => {
+    if (column.dataIndex === 'typeId') {
+      return {
+        ...column,
+        render: (typeId: string) => (
+          <Paragraph ellipsis copyable style={{ width: '80px' }}>
+            {typeId}
+          </Paragraph>
+        ),
+      };
+    }
+    if (column.dataIndex === 'name') {
+      return {
+        ...column,
+        render: (name: string, record: DataType) => (
+          <div>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '4px',
+              }}
+            >
+              <BookOutlined style={{ color: '#1890ff', marginRight: '8px' }} />
+              <Text strong>{name}</Text>
+            </div>
+            <div style={{ fontSize: '12px', color: '#666' }}>
+              {record.description || '暂无描述'}
+            </div>
+          </div>
+        ),
+      };
+    }
+    if (column.dataIndex === 'code') {
+      return {
+        ...column,
+        render: (code: string) => (
+          <Tag color="blue" style={{ fontFamily: 'monospace' }}>
+            {code}
+          </Tag>
+        ),
+      };
+    }
+    if (column.dataIndex === 'sort') {
+      return {
+        ...column,
+        render: (sort: number) => (
+          <Tag color={sort === 0 ? 'default' : 'green'}>{sort}</Tag>
+        ),
+      };
+    }
+    if (column.dataIndex === 'status') {
+      return {
+        ...column,
+        render: (status: number) => <StatusTag status={status} />,
+      };
+    }
+    if (column.dataIndex === 'createdAt') {
+      return {
+        ...column,
+        render: (time: string) => <DateTimeFormat value={time} />,
+      };
+    }
+    return column;
+  }) as any;
+  columns = [
+    ...columns,
+    {
+      title: '操作',
+      key: 'action',
+      width: 200,
+      fixed: 'right',
+      render: (record: any) => {
         return (
           <Space size="small">
             <Button
@@ -227,8 +322,8 @@ const DictionaryPage = () => {
       <TablePro
         rowKey={'typeId'}
         ref={tableProRef}
-        columns={columns}
-        request={listDictionaryType}
+        columns={columns as any}
+        request={getList}
         scroll={{ x: 1200 }}
         toolbarRender={() => {
           return (
