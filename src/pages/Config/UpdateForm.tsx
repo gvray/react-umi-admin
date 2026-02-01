@@ -104,7 +104,7 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
         onCancel={handleCancel}
         confirmLoading={loading}
         width={700}
-        destroyOnClose
+        destroyOnHidden
         okText="保存"
         cancelText="取消"
         style={{ top: 50 }}

@@ -64,7 +64,7 @@ const ConfigValueViewer: React.FC<ConfigValueViewerProps> = ({
         </Button>,
       ]}
       width={700}
-      destroyOnClose
+      destroyOnHidden
     >
       <div style={{ padding: '16px 0' }}>
         {/* 配置基本信息 */}

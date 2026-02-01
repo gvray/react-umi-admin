@@ -290,7 +290,7 @@ export default function AuthDataScopeModal({
           保存分配
         </Button>,
       ]}
-      destroyOnClose
+      destroyOnHidden
     >
       <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
         {loading ? (

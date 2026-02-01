@@ -72,7 +72,7 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>((props, ref) => {
       onCancel={handleCancel}
       confirmLoading={loading}
       width={600}
-      destroyOnClose
+      destroyOnHidden
     >
       <Form
         form={form}

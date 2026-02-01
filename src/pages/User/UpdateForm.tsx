@@ -119,7 +119,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
 
   return (
     <Modal
-      destroyOnClose
+      destroyOnHidden
       forceRender
       width={820}
       title={title}
