@@ -85,11 +85,16 @@ Node.js 20+ · pnpm · Cursor / VSCode · 现代主流浏览器
 
 后端 API 地址：[nest-admin](https://github.com/gvray/nest-admin)（开发中）
 
-当前项目支持**前端独立开发**，当后端数据尚未就绪时，可使用本地 Mock 数据：
+当前项目支持**前端独立开发**（Mock）与**后端联调**两种模式：
 
-- Mock 数据目录：`~/mock`，基于 Express 启动的本地 API 服务
-- 可灵活替换或扩展接口，实现前端与后端的独立开发
-- 目前仅提供 **登录模块** 和 **用户模块** 的 Mock 数据
+- Mock 数据目录：`~/mock`，基于 Express 的本地 API 服务
+- 通过环境变量切换数据源：
+  - APP_MOCK_ENABLED=true 启用本地 Mock
+  - APP_API_URL=/api 指向 Mock 接口前缀
+- 当需要全量真实数据，请启动后端 nest-admin，并设置：
+  - APP_MOCK_ENABLED=false 关闭 Mock
+  - APP_API_URL=http://localhost:8001 指向后端服务
+- 目前 Mock 仅覆盖登录与用户模块，其余模块需连接后端
 
 > 💡 Tip: 使用 Mock 数据可以在前端架构和功能开发阶段保持高效，同时未来可无缝对接真实后端服务。
 
@@ -102,15 +107,33 @@ pnpm install
 # 启动开发环境（默认 dev，端口 9527）
 pnpm start
 
-# 或者分别启动不同环境。 这里数据是mock，能看到的页面有限，推荐 pnpm start:staging。
-pnpm start:dev      # 开发环境，端口 9527
-APP_API_URL=/api
-
-pnpm start:staging  # 测试环境，端口 9528
-APP_API_URL=http://localhost:8001
+# 或者分别启动不同环境（建议在对应 .env 文件中配置变量）
+# 推荐：如需查看全量页面与数据，使用 staging 并先启动后端 nest-admin
+pnpm start:dev      # 开发环境，端口 9527（默认使用 Mock）
+pnpm start:staging  # 测试环境，端口 9528（连接后端）
 
 pnpm start:prod     # 生产环境，端口 9529
 APP_API_URL=https://api.dev.example.com
+
+### 环境变量示例
+
+在项目根目录创建以下文件：
+
+.env.dev
+APP_ENV=dev
+APP_API_URL=/api
+APP_API_TIMEOUT=15000
+APP_API_TOKEN_KEY=__APP_TOKEN__
+APP_MOCK_ENABLED=true
+
+.env.staging
+APP_ENV=staging
+APP_API_URL=http://localhost:8001
+APP_API_TIMEOUT=15000
+APP_API_TOKEN_KEY=__APP_TOKEN__
+APP_MOCK_ENABLED=false
+
+运行脚本会自动加载对应环境变量并打印检查信息；也可通过 scripts/dev.ts 的 --mode 与 --port 指定环境与端口。
 ```
 
 ## 🖥️ 页面展示

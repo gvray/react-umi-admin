@@ -39,7 +39,7 @@ const resourceHierarchy = [
   },
   {
     resourceId: 3,
-    name: '系统架构',
+    name: '数据文档',
     type: 'menu',
     path: '/docs',
     icon: 'VideoCameraOutlined',
@@ -49,7 +49,7 @@ const resourceHierarchy = [
     sort: 2,
     status: 'active',
     hidden: false,
-    description: '系统架构页面',
+    description: '数据文档页面',
   },
 ];
 
@@ -255,7 +255,7 @@ export default {
       data: {
         records: data,
         total,
-        current: Number(current),
+        page: Number(current),
         pageSize: Number(pageSize),
       },
     });

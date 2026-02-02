@@ -27,7 +27,7 @@ export interface Department {
 }
 
 export interface DepartmentListParams {
-  current?: number;
+  page?: number;
   pageSize?: number;
   name?: string;
   code?: string;

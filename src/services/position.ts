@@ -24,7 +24,7 @@ export interface Position {
 }
 
 export interface PositionListParams {
-  current?: number;
+  page?: number;
   pageSize?: number;
   name?: string;
   code?: string;

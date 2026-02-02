@@ -17,7 +17,7 @@ export interface Role {
 }
 
 export interface RoleListParams {
-  current?: number;
+  page?: number;
   pageSize?: number;
   name?: string;
   code?: string;

@@ -470,7 +470,7 @@ export default {
       data: {
         records: data,
         total,
-        current: Number(current),
+        page: Number(current),
         pageSize: Number(pageSize),
       },
     });

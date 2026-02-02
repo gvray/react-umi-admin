@@ -27,7 +27,7 @@ export interface Permission {
 }
 
 export interface PermissionListParams {
-  current?: number;
+  page?: number;
   pageSize?: number;
   name?: string;
   code?: string;

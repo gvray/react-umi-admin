@@ -35,7 +35,7 @@ export interface ResourceMeta {
 }
 
 export interface ResourceListParams {
-  current?: number;
+  page?: number;
   pageSize?: number;
   name?: string;
   type?: 'directory' | 'menu';

@@ -13,7 +13,7 @@ export interface LoginLogRecord {
 }
 
 export interface LoginLogQueryParams {
-  current?: number;
+  page?: number;
   pageSize?: number;
   username?: string;
   ip?: string;
@@ -24,7 +24,7 @@ export interface LoginLogListResponse {
   success: boolean;
   data: LoginLogRecord[];
   total: number;
-  current: number;
+  page: number;
   pageSize: number;
 }
 
