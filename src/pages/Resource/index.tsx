@@ -1,17 +1,15 @@
-import { AntIcon, DateTimeFormat, PageContainer } from '@/components';
+import { AntIcon, DateTimeFormat, PageContainer, TablePro } from '@/components';
 import StatusTag from '@/components/StatusTag';
-import AdvancedSearchForm from '@/components/TablePro/components/AdvancedSearchForm';
-import { deleteResource, getResource } from '@/services/resource';
+import { TableProRef } from '@/components/TablePro';
 import {
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
-  ReloadOutlined,
-  SearchOutlined,
 } from '@ant-design/icons';
-import { Button, Flex, Modal, Space, Table, Tag, Tooltip, message } from 'antd';
+import { Button, Modal, Space, Tag, message } from 'antd';
 import { useRef } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
+import { getResourceColumns } from './columns';
 import { useResourceModel } from './model';
 
 export interface ResourceMeta {
@@ -30,8 +28,8 @@ export interface ResourceMeta {
 }
 const ResourcePage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
-  const { data, loading, reload, showSearch, setShowSearch, paramsRef } =
-    useResourceModel();
+  const tableProRef = useRef<TableProRef>(null);
+  const { getTreeList, getDetail, deleteItem } = useResourceModel();
   // 高级搜索参数
   const handleAdd = async () => {
     updateFormRef.current?.show('添加资源');
@@ -45,9 +43,9 @@ const ResourcePage = () => {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        return deleteResource(record.resourceId)
+        return deleteItem(record.resourceId)
           .then(() => {
-            reload();
+            tableProRef.current?.reload();
             message.success(`删除成功`);
           })
           .catch(() => {});
@@ -58,96 +56,60 @@ const ResourcePage = () => {
   const handleUpdate = async (record: ResourceMeta) => {
     const resourceId = record.resourceId;
     try {
-      const msg = await getResource(resourceId);
+      const msg: any = await getDetail(resourceId);
       updateFormRef.current?.show('修改资源', {
-        ...msg.data,
+        ...msg,
       });
     } catch (error) {}
   };
   // 高级搜索
-  const handleAdvancedQuery = (values: Record<string, any>) => {
-    const newParams = { ...paramsRef.current, ...values };
-    paramsRef.current = newParams;
-    reload(newParams);
-  };
   const handleOk = () => {
-    reload();
+    tableProRef.current?.reload();
   };
-  const columns = [
-    {
-      title: '资源名称',
-      dataIndex: 'name',
-      key: 'name',
-      fixed: 'left',
-      advancedSearch: {
-        type: 'INPUT',
-      },
-    },
-    {
-      title: '图标',
-      dataIndex: 'icon',
-      key: 'icon',
-      render: (icon: string) => {
-        return icon ? <AntIcon icon={icon} /> : '-';
-      },
-    },
-    {
-      title: '排序',
-      dataIndex: 'sort',
-      key: 'sort',
-    },
-    {
-      title: '资源类型',
-      dataIndex: 'type',
-      key: 'type',
-      render: (resourceType: string) => {
-        switch (resourceType) {
-          case 'DIRECTORY':
-            return '目录';
-          case 'MENU':
-            return '菜单';
-          default:
-            return '未知';
-        }
-      },
-    },
-    {
-      title: '资源路径',
-      dataIndex: 'path',
-      key: 'path',
-    },
-    {
-      title: '资源权限',
-      dataIndex: 'code',
-      key: 'code',
-      render: (code: string) => {
-        return <Tag color="blue">{code}</Tag>;
-      },
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      key: 'status',
-      advancedSearch: {
-        type: 'SELECT',
-        value: [
-          { label: '停用', value: 0 },
-          { label: '正常', value: 1 },
-          { label: '审核中', value: 2 },
-        ],
-      },
-      render: (status: number) => {
-        return <StatusTag status={status} />;
-      },
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (time: string) => {
-        return <DateTimeFormat value={time} />;
-      },
-    },
+  let columns = getResourceColumns().map((column: any) => {
+    if (column.dataIndex === 'icon') {
+      return {
+        ...column,
+        render: (icon: string) => (icon ? <AntIcon icon={icon} /> : '-'),
+      };
+    }
+    if (column.dataIndex === 'type') {
+      return {
+        ...column,
+        render: (resourceType: string) => {
+          switch (resourceType) {
+            case 'DIRECTORY':
+              return '目录';
+            case 'MENU':
+              return '菜单';
+            default:
+              return '未知';
+          }
+        },
+      };
+    }
+    if (column.dataIndex === 'code') {
+      return {
+        ...column,
+        render: (code: string) => <Tag color="blue">{code}</Tag>,
+      };
+    }
+    if (column.dataIndex === 'status') {
+      return {
+        ...column,
+        render: (status: number) => <StatusTag status={status} />,
+      };
+    }
+    if (column.dataIndex === 'createdAt') {
+      return {
+        ...column,
+        render: (time: string) => <DateTimeFormat value={time} />,
+      };
+    }
+    return column;
+  });
+  columns = [
+    ...columns,
     {
       title: '操作',
       key: 'action',
@@ -176,50 +138,17 @@ const ResourcePage = () => {
   ];
   return (
     <PageContainer>
-      {showSearch && !!columns && (
-        <AdvancedSearchForm
-          searchFields={columns.filter(
-            (item: any) => item.advancedSearch !== undefined,
-          )}
-          onSearchFinish={handleAdvancedQuery}
-          resetSearch={() => {
-            // 重制高级搜索参数
-            paramsRef.current = {};
-            reload();
-          }}
-        ></AdvancedSearchForm>
-      )}
-      <Flex justify="space-between" align="center">
-        <Space style={{ marginBottom: 16 }}>
-          {' '}
+      <TablePro
+        ref={tableProRef}
+        rowKey={'resourceId'}
+        columns={columns as any}
+        request={getTreeList}
+        expandable={{ defaultExpandAllRows: true }}
+        toolbarRender={() => (
           <Button type="primary" onClick={handleAdd}>
             新增资源
           </Button>
-        </Space>
-        <Space>
-          <Tooltip title={showSearch ? '隐藏搜索' : '显示搜索'}>
-            <Button
-              shape="circle"
-              icon={<SearchOutlined />}
-              onClick={() => setShowSearch(!showSearch)}
-            />
-          </Tooltip>
-          <Tooltip title="刷新">
-            <Button
-              shape="circle"
-              onClick={() => reload()}
-              icon={<ReloadOutlined />}
-            />
-          </Tooltip>
-        </Space>
-      </Flex>
-      <Table
-        scroll={{ x: 'max-content' }}
-        rowKey={'resourceId'}
-        loading={loading}
-        columns={columns}
-        dataSource={data}
-        pagination={false}
+        )}
       />
       {/* 资源新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} onOk={handleOk} />

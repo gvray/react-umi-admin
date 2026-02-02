@@ -6,9 +6,7 @@ import {
 } from '@/components';
 import StatusTag from '@/components/StatusTag';
 import { TableProRef } from '@/components/TablePro';
-import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
 import useDict from '@/hooks/useDict';
-import { deleteUser, getUser, listUser } from '@/services/user';
 import { logger } from '@/utils';
 import {
   DeleteOutlined,
@@ -17,10 +15,11 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { Modal, Space, Typography, message } from 'antd';
-import { ColumnProps } from 'antd/es/table';
 import { useRef } from 'react';
 import { useNavigate } from 'umi';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
+import { getUserColumns } from './columns';
+import { useUserModel } from './model';
 
 const { Paragraph } = Typography;
 interface DataType {
@@ -39,10 +38,6 @@ interface DataType {
   delFlag: string;
 }
 
-interface UserColumnProps<T, U> extends ColumnProps<T> {
-  advancedSearch?: AdvancedSearchItem<U>;
-}
-
 const UserPage = () => {
   const navigate = useNavigate();
   const updateFormRef = useRef<UpdateFormRef>(null);
@@ -51,6 +46,7 @@ const UserPage = () => {
     user_status: any[];
     user_gender: any[];
   }>(['user_status', 'user_gender']);
+  const { getList, getDetail, deleteItem } = useUserModel();
 
   const tableReload = () => {
     tableProRef.current?.reload();
@@ -68,7 +64,7 @@ const UserPage = () => {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        return deleteUser(record.userId)
+        return deleteItem(record.userId)
           .then(() => {
             tableReload();
             message.success(`删除成功`);
@@ -81,12 +77,12 @@ const UserPage = () => {
   const handleUpdate = async (record: DataType) => {
     const userId = record.userId;
     try {
-      const res = await getUser(userId);
+      const res: any = await getDetail(userId);
       const data = {
-        ...res.data,
-        positionIds: res.data.positions?.map((item: any) => item.positionId),
-        roleIds: res.data.roles?.map((item: any) => item.roleId),
-        departmentId: res.data.department?.departmentId,
+        ...res,
+        positionIds: res.positions?.map((item: any) => item.positionId),
+        roleIds: res.roles?.map((item: any) => item.roleId),
+        departmentId: res.department?.departmentId,
       };
       updateFormRef.current?.show('修改用户', data);
     } catch (error) {
@@ -102,96 +98,73 @@ const UserPage = () => {
     navigate(`/system/user-auth/role/${userId}`);
   };
 
-  const columns: UserColumnProps<DataType, Record<string, string | number>>[] =
-    [
-      {
-        title: '用户编号',
-        dataIndex: 'userId',
-        key: 'userId',
-        render: (userId: string) => {
-          return (
-            <Paragraph ellipsis copyable style={{ width: '100px' }}>
-              {userId}
-            </Paragraph>
-          );
-        },
-      },
-      {
-        title: '登陆账号',
-        dataIndex: 'username',
-        key: 'username',
-        advancedSearch: { type: 'INPUT' },
-      },
-      {
-        title: '用户名称',
-        dataIndex: 'nickname',
-        key: 'nickname',
-      },
-      {
-        title: '手机号码',
-        key: 'phone',
-        dataIndex: 'phone',
-        advancedSearch: { type: 'INPUT' },
-      },
-      {
-        title: '状态',
-        dataIndex: 'status',
-        key: 'status',
+  let columns = getUserColumns().map((column: any) => {
+    if (column.dataIndex === 'userId') {
+      return {
+        ...column,
+        render: (userId: string) => (
+          <Paragraph ellipsis copyable style={{ width: '100px' }}>
+            {userId}
+          </Paragraph>
+        ),
+      };
+    }
+    if (column.dataIndex === 'status') {
+      return {
+        ...column,
         advancedSearch: {
           type: 'SELECT',
           value: dict['user_status'],
         },
-        render: (status: number) => {
-          return <StatusTag status={status} />;
-        },
+        render: (status: number) => <StatusTag status={status} />,
+      };
+    }
+    if (column.dataIndex === 'createdAt') {
+      return {
+        ...column,
+        render: (time: string) => <DateTimeFormat value={time} />,
+      };
+    }
+    return column;
+  });
+  columns = [
+    ...columns,
+    {
+      title: '操作',
+      key: 'action',
+      render: (record: any) => {
+        return (
+          <Space size={0}>
+            <AuthButton
+              type="link"
+              icon={<EditOutlined />}
+              onClick={() => handleUpdate(record)}
+              perms={['system:user:update']}
+            >
+              修改
+            </AuthButton>
+            <AuthButton
+              danger
+              type="link"
+              icon={<DeleteOutlined />}
+              onClick={() => handleDelete(record)}
+              perms={['system:user:delete']}
+            >
+              删除
+            </AuthButton>
+            <AuthButton
+              type="link"
+              icon={<UserOutlined />}
+              onClick={() => handleAuthRole(record.userId)}
+              perms={['system:user:update']}
+            >
+              分配角色
+            </AuthButton>
+          </Space>
+        );
       },
-      {
-        title: '创建时间',
-        key: 'createdAt',
-        dataIndex: 'createdAt',
-        render: (time: string) => {
-          return <DateTimeFormat value={time} />;
-        },
-        advancedSearch: {
-          type: 'DATE_RANGE',
-        },
-      },
-      {
-        title: '操作',
-        key: 'action',
-        render: (record) => {
-          return (
-            <Space size={0}>
-              <AuthButton
-                type="link"
-                icon={<EditOutlined />}
-                onClick={() => handleUpdate(record)}
-                perms={['system:user:update']}
-              >
-                修改
-              </AuthButton>
-              <AuthButton
-                danger
-                type="link"
-                icon={<DeleteOutlined />}
-                onClick={() => handleDelete(record)}
-                perms={['system:user:delete']}
-              >
-                删除
-              </AuthButton>
-              <AuthButton
-                type="link"
-                icon={<UserOutlined />}
-                onClick={() => handleAuthRole(record.userId)}
-                perms={['system:user:update']}
-              >
-                分配角色
-              </AuthButton>
-            </Space>
-          );
-        },
-      },
-    ];
+    },
+  ];
 
   return (
     <PageContainer>
@@ -209,8 +182,8 @@ const UserPage = () => {
           </>
         )}
         ref={tableProRef}
-        columns={columns}
-        request={listUser}
+        columns={columns as any}
+        request={getList}
       />
       {/* 用户新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} dict={dict} onOk={handleOk} />

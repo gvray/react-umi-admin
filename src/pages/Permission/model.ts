@@ -1,11 +1,15 @@
-import { getPermissionTree } from '@/services/permission';
+import {
+  deletePermission,
+  getPermission,
+  getPermissionTree,
+} from '@/services/permission';
 import { listResources } from '@/services/resource';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 export const useResourceModel = () => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showSearch, setShowSearch] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   // 高级搜索参数
   const paramsRef = useRef<Record<string, any>>({});
@@ -24,6 +28,29 @@ export const useResourceModel = () => {
       setLoading(false);
     }
   };
+  const getTreeList = useCallback(async (params?: any) => {
+    return getPermissionTree({
+      ...paramsRef.current,
+      ...params,
+    });
+  }, []);
+  const getDetail = useCallback(async (permissionId: string) => {
+    setLoading(true);
+    try {
+      const res: any = await getPermission(permissionId);
+      return res.data ?? res;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+  const deleteItem = useCallback(async (permissionId: string) => {
+    setSubmitting(true);
+    try {
+      await deletePermission(permissionId);
+    } finally {
+      setSubmitting(false);
+    }
+  }, []);
   useEffect(() => {
     getPermissionList({
       ...paramsRef.current,
@@ -32,23 +59,24 @@ export const useResourceModel = () => {
   return {
     data,
     loading,
+    submitting,
     reload: getPermissionList,
-    showSearch,
-    setShowSearch,
     paramsRef,
+    getTreeList,
+    getDetail,
+    deleteItem,
   };
 };
 
 export const useUpdataFormModel = (open: boolean) => {
-  console.log('open', open);
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const getResourceList = async () => {
     try {
       setLoading(true);
       const res = await listResources();
-      if (res.data) {
-        setData(res.data);
+      if (res.data && res.data.items && res.data.items.length > 0) {
+        setData(res.data.items);
       }
     } catch (error) {
     } finally {

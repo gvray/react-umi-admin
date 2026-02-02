@@ -14,7 +14,9 @@ export const useAuthPermission = () => {
   const fetchPermissions = useCallback(async () => {
     try {
       const res = await listPermission();
-      setPermissions(res.data);
+      if (res.data && res.data.items && res.data.items.length > 0) {
+        setPermissions(res.data.items);
+      }
     } catch (error) {
       message.error('获取权限列表失败');
     }

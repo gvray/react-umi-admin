@@ -1,17 +1,15 @@
-import { DateTimeFormat, PageContainer } from '@/components';
-import AdvancedSearchForm from '@/components/TablePro/components/AdvancedSearchForm';
-import { deletePermission, getPermission } from '@/services/permission';
+import { DateTimeFormat, PageContainer, TablePro } from '@/components';
+import { TableProRef } from '@/components/TablePro';
 import { ResourceMeta } from '@/services/resource';
 import {
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
-  ReloadOutlined,
-  SearchOutlined,
 } from '@ant-design/icons';
-import { Button, Flex, Modal, Space, Table, Tooltip, message } from 'antd';
+import { Button, Modal, Space, message } from 'antd';
 import { useRef } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
+import { getPermissionColumns } from './columns';
 import { useResourceModel } from './model';
 
 export interface PermissionMeta {
@@ -26,8 +24,8 @@ export interface PermissionMeta {
 }
 const ResourcePage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
-  const { data, loading, reload, showSearch, setShowSearch, paramsRef } =
-    useResourceModel();
+  const tableProRef = useRef<TableProRef>(null);
+  const { getTreeList, getDetail, deleteItem } = useResourceModel();
 
   const handleAdd = async () => {
     updateFormRef.current?.show('添加权限');
@@ -41,9 +39,9 @@ const ResourcePage = () => {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        return deletePermission(record.permissionId)
+        return deleteItem(record.permissionId as any)
           .then(() => {
-            reload();
+            tableProRef.current?.reload();
             message.success(`删除成功`);
           })
           .catch(() => {});
@@ -54,81 +52,67 @@ const ResourcePage = () => {
   const handleUpdate = async (record: PermissionMeta) => {
     const permissionId = record.permissionId;
     try {
-      const msg = await getPermission(permissionId);
+      const msg: any = await getDetail(permissionId);
       updateFormRef.current?.show('修改权限', {
-        ...msg.data,
+        ...msg,
       });
     } catch (error) {}
   };
-  // 高级搜索
-  const handleAdvancedQuery = (values: Record<string, any>) => {
-    const newParams = { ...paramsRef.current, ...values };
-    paramsRef.current = newParams;
-    reload(newParams);
-  };
   const handleOk = () => {
-    reload();
+    tableProRef.current?.reload();
   };
-  const columns = [
-    {
-      title: '权限名称',
-      dataIndex: 'name',
-      key: 'name',
-      fixed: 'left',
-      advancedSearch: {
-        type: 'INPUT',
-      },
-    },
-    {
-      title: '权限类型',
-      dataIndex: 'action',
-      key: 'action',
-      render: (action: string, record: ResourceMeta) => {
-        if (record.permissionId === undefined) {
-          return '-';
-        }
-        switch (action) {
-          case 'view':
-            return '查看';
-          case 'create':
-            return '新增';
-          case 'update':
-            return '修改';
-          case 'delete':
-            return '删除';
-          case 'export':
-            return '导出';
-          case 'import':
-            return '导入';
-          case 'approve':
-            return '审批';
-          case 'reject':
-            return '驳回';
-          default:
-            return '未知';
-        }
-      },
-    },
-    {
-      title: '权限点',
-      dataIndex: 'code',
-      key: 'code',
-      render: (code: string, record: ResourceMeta) => {
-        if (record.permissionId === undefined) {
-          return '-';
-        }
-        return code;
-      },
-      advancedSearch: {
-        type: 'INPUT',
-      },
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (time: string) => <DateTimeFormat value={time} />,
-    },
+  let columns = getPermissionColumns().map((column: any) => {
+    if (column.dataIndex === 'action') {
+      return {
+        ...column,
+        render: (action: string, record: ResourceMeta) => {
+          if (record.permissionId === undefined) {
+            return '-';
+          }
+          switch (action) {
+            case 'view':
+              return '查看';
+            case 'create':
+              return '新增';
+            case 'update':
+              return '修改';
+            case 'delete':
+              return '删除';
+            case 'export':
+              return '导出';
+            case 'import':
+              return '导入';
+            case 'approve':
+              return '审批';
+            case 'reject':
+              return '驳回';
+            default:
+              return '未知';
+          }
+        },
+      };
+    }
+    if (column.dataIndex === 'code') {
+      return {
+        ...column,
+        render: (code: string, record: ResourceMeta) => {
+          if (record.permissionId === undefined) {
+            return '-';
+          }
+          return code;
+        },
+      };
+    }
+    if (column.dataIndex === 'createdAt') {
+      return {
+        ...column,
+        render: (time: string) => <DateTimeFormat value={time} />,
+      };
+    }
+    return column;
+  });
+  columns = [
+    ...columns,
     {
       title: '操作',
       key: 'action',
@@ -141,7 +125,7 @@ const ResourcePage = () => {
             <Button
               type="link"
               icon={<EditOutlined />}
-              onClick={() => handleUpdate(record)}
+              onClick={() => handleUpdate(record as any)}
             >
               修改
             </Button>
@@ -149,7 +133,7 @@ const ResourcePage = () => {
               danger
               type="link"
               icon={<DeleteOutlined />}
-              onClick={() => handleDelete(record)}
+              onClick={() => handleDelete(record as any)}
             >
               删除
             </Button>
@@ -160,54 +144,21 @@ const ResourcePage = () => {
   ];
   return (
     <PageContainer>
-      {showSearch && !!columns && (
-        <AdvancedSearchForm
-          searchFields={columns.filter(
-            (item: any) => item.advancedSearch !== undefined,
-          )}
-          onSearchFinish={handleAdvancedQuery}
-          resetSearch={() => {
-            // 重制高级搜索参数
-            paramsRef.current = {};
-            reload();
-          }}
-        ></AdvancedSearchForm>
-      )}
-      <Flex justify="space-between" align="center">
-        <Space style={{ marginBottom: 16 }}>
-          {' '}
-          <Button type="primary" onClick={handleAdd}>
-            新增权限
-          </Button>
-        </Space>
-        <Space>
-          <Tooltip title={showSearch ? '隐藏搜索' : '显示搜索'}>
-            <Button
-              shape="circle"
-              icon={<SearchOutlined />}
-              onClick={() => setShowSearch(!showSearch)}
-            />
-          </Tooltip>
-          <Tooltip title="刷新">
-            <Button
-              shape="circle"
-              onClick={() => reload()}
-              icon={<ReloadOutlined />}
-            />
-          </Tooltip>
-        </Space>
-      </Flex>
-      <Table
-        scroll={{ x: 'max-content' }}
-        rowKey={(record) => record.permissionId || record.resourceId}
-        loading={loading}
-        columns={columns}
+      <TablePro
+        ref={tableProRef}
+        rowKey={(record) => record.permissionId || (record as any).resourceId}
+        columns={columns as any}
+        request={getTreeList}
         expandable={{
           rowExpandable: (record) =>
             record.children && record.children.length > 0,
+          defaultExpandAllRows: true,
         }}
-        dataSource={data}
-        pagination={false}
+        toolbarRender={() => (
+          <Button type="primary" onClick={handleAdd}>
+            新增权限
+          </Button>
+        )}
       />
       {/* 权限新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} onOk={handleOk} />

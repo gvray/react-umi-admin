@@ -14,7 +14,7 @@ import {
   message,
 } from 'antd';
 import React, { useImperativeHandle, useState } from 'react';
-import useUpdataFormModel from './model';
+import { useUpdataFormModel } from './model';
 
 interface UpdateFormProps {
   onCancel?: () => void;
@@ -185,6 +185,10 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           <Col span={24}>
             <Form.Item name="permissionIds" label="权限点分配">
               <PermissionTree
+                value={form.getFieldValue('permissionIds') || []}
+                onChange={(values: any[]) =>
+                  form.setFieldsValue({ permissionIds: values })
+                }
                 treeData={mapTree(data, (item: any) => ({
                   ...item,
                   key: item.permissionId ?? item.resourceId,

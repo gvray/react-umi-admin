@@ -1,7 +1,8 @@
 import { getDepartmentTree } from '@/services/department';
 import { listPosition } from '@/services/position';
 import { listRole } from '@/services/role';
-import { useEffect, useState } from 'react';
+import { deleteUser, getUser, listUser } from '@/services/user';
+import { useCallback, useEffect, useState } from 'react';
 
 const useUpdateForm = (open: boolean) => {
   const [deptTree, setDeptTree] = useState<any[]>([]);
@@ -56,3 +57,35 @@ const useUpdateForm = (open: boolean) => {
   };
 };
 export default useUpdateForm;
+
+export const useUserModel = () => {
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const getList = useCallback(async (params?: any) => {
+    return listUser(params);
+  }, []);
+  const getDetail = useCallback(async (userId: string) => {
+    setLoading(true);
+    try {
+      const res = (await getUser(userId)) as any;
+      return res?.data ?? res;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+  const deleteItem = useCallback(async (userId: string) => {
+    setSubmitting(true);
+    try {
+      await deleteUser(userId);
+    } finally {
+      setSubmitting(false);
+    }
+  }, []);
+  return {
+    loading,
+    submitting,
+    getList,
+    getDetail,
+    deleteItem,
+  };
+};

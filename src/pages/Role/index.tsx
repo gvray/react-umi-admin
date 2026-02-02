@@ -1,8 +1,6 @@
 import { DateTimeFormat, PageContainer, TablePro } from '@/components';
 import StatusTag from '@/components/StatusTag';
 import { TableProRef } from '@/components/TablePro';
-import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
-import { deleteRole, getRole, listRole } from '@/services/role';
 import {
   DatabaseOutlined,
   DeleteOutlined,
@@ -14,11 +12,12 @@ import {
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Button, Dropdown, Modal, Space, Typography, message } from 'antd';
-import { ColumnProps } from 'antd/es/table';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'umi';
 import AuthDataScopeModal from './AuthDataScopeModal';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
+import { getRoleColumns } from './columns';
+import { useRoleModel } from './model';
 
 const { Paragraph } = Typography;
 
@@ -35,14 +34,11 @@ interface DataType {
   status: string;
 }
 
-interface UserColumnProps<T, U> extends ColumnProps<T> {
-  advancedSearch?: AdvancedSearchItem<U>;
-}
-
 const UserPage = () => {
   const navigate = useNavigate();
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
+  const { getList, getDetail, deleteItem } = useRoleModel();
 
   // 数据权限弹窗状态
   const [dataPermissionVisible, setDataPermissionVisible] = useState(false);
@@ -64,7 +60,7 @@ const UserPage = () => {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        return deleteRole(record.roleId)
+        return deleteItem(record.roleId)
           .then(() => {
             tableReload();
             message.success(`删除成功`);
@@ -77,9 +73,9 @@ const UserPage = () => {
   const handleUpdate = async (record: DataType) => {
     const roleId = record.roleId;
     try {
-      const msg = await getRole(roleId as any);
+      const msg: any = await getDetail(roleId as any);
       updateFormRef.current?.show('修改角色', {
-        ...msg.data,
+        ...msg,
       });
     } catch (error) {}
   };
@@ -132,100 +128,69 @@ const UserPage = () => {
     },
   ];
 
-  const columns: UserColumnProps<DataType, Record<string, string | number>>[] =
-    [
-      {
-        title: '角色编号',
-        dataIndex: 'roleId',
-        key: 'roleId',
-        render: (roleId: string) => {
-          return (
-            <Paragraph ellipsis copyable style={{ width: '100px' }}>
-              {roleId}
-            </Paragraph>
-          );
-        },
-      },
-      {
-        title: '角色名称',
-        dataIndex: 'name',
-        key: 'name',
-        advancedSearch: { type: 'INPUT' },
-      },
-      {
-        title: '角色标识',
-        dataIndex: 'roleKey',
-        key: 'roleKey',
-      },
-      {
-        title: '显示顺序',
-        dataIndex: 'sort',
-        key: 'sort',
-      },
-      {
-        title: '状态',
-        dataIndex: 'status',
-        key: 'status',
-        advancedSearch: {
-          type: 'SELECT',
-          value: [
-            { label: '停用', value: 0 },
-            { label: '正常', value: 1 },
-            { label: '审核中', value: 2 },
-            { label: '封禁', value: 3 },
-          ],
-        },
-        render: (status: number) => {
-          return <StatusTag status={status} />;
-        },
-      },
-      {
-        title: '创建时间',
-        key: 'createdAt',
-        dataIndex: 'createdAt',
-        render: (time: string) => {
-          return <DateTimeFormat value={time} />;
-        },
-        advancedSearch: {
-          type: 'DATE_RANGE',
-        },
-      },
-      {
-        title: '操作',
-        key: 'action',
-        render: (record) => {
-          return (
-            <Space size={0}>
-              <Button
-                type="link"
-                icon={<EditOutlined />}
-                onClick={() => handleUpdate(record)}
-              >
-                修改
-              </Button>
+  let columns = getRoleColumns().map((column: any) => {
+    if (column.dataIndex === 'roleId') {
+      return {
+        ...column,
+        render: (roleId: string) => (
+          <Paragraph ellipsis copyable style={{ width: '100px' }}>
+            {roleId}
+          </Paragraph>
+        ),
+      };
+    }
+    if (column.dataIndex === 'status') {
+      return {
+        ...column,
+        render: (status: number) => <StatusTag status={status} />,
+      };
+    }
+    if (column.dataIndex === 'createdAt') {
+      return {
+        ...column,
+        render: (time: string) => <DateTimeFormat value={time} />,
+      };
+    }
+    return column;
+  });
+  columns = [
+    ...columns,
+    {
+      title: '操作',
+      key: 'action',
+      render: (record: any) => {
+        return (
+          <Space size={0}>
+            <Button
+              type="link"
+              icon={<EditOutlined />}
+              onClick={() => handleUpdate(record)}
+            >
+              修改
+            </Button>
 
-              <Button
-                danger
-                type="link"
-                icon={<DeleteOutlined />}
-                onClick={() => handleDelete(record)}
-              >
-                删除
+            <Button
+              danger
+              type="link"
+              icon={<DeleteOutlined />}
+              onClick={() => handleDelete(record)}
+            >
+              删除
+            </Button>
+            <Dropdown
+              menu={{ items: getMoreMenu(record) }}
+              placement="bottomRight"
+              trigger={['click']}
+            >
+              <Button type="link" icon={<MoreOutlined />}>
+                更多
               </Button>
-              <Dropdown
-                menu={{ items: getMoreMenu(record) }}
-                placement="bottomRight"
-                trigger={['click']}
-              >
-                <Button type="link" icon={<MoreOutlined />}>
-                  更多
-                </Button>
-              </Dropdown>
-            </Space>
-          );
-        },
+            </Dropdown>
+          </Space>
+        );
       },
-    ];
+    },
+  ];
 
   return (
     <PageContainer>
@@ -239,8 +204,8 @@ const UserPage = () => {
           </>
         )}
         ref={tableProRef}
-        columns={columns}
-        request={listRole}
+        columns={columns as any}
+        request={getList}
       />
       {/* 角色新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} onOk={handleOk} />

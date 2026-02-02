@@ -13,7 +13,9 @@ export const useAuthRole = (userId?: string) => {
   const fetchRoles = useCallback(async () => {
     try {
       const res = await listRole();
-      setRoles(res.data);
+      if (res.data && res.data.items && res.data.items.length > 0) {
+        setRoles(res.data.items);
+      }
     } catch (error) {}
   }, []);
 

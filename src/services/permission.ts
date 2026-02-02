@@ -156,7 +156,7 @@ export async function updatePermission(
  * @param options 请求选项
  */
 export async function deletePermission(
-  permissionId: number,
+  permissionId: string,
   options?: { [key: string]: any },
 ) {
   return request(`/system/permissions/${permissionId}`, {
