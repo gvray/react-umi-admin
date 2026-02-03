@@ -1,3 +1,4 @@
+import { ROOT_PARENT_ID } from '@/constants';
 import { sleep } from '@gvray/eskit';
 import dayjs from 'dayjs';
 import { Request, Response } from 'express';
@@ -20,7 +21,7 @@ const departmentHierarchy = [
     name: '总裁办',
     code: 'CEO',
     description: '公司最高管理机构',
-    parentId: null,
+    parentId: ROOT_PARENT_ID,
     level: 1,
     sort: 1,
     managerId: 1,

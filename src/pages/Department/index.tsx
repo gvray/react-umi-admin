@@ -30,7 +30,7 @@ export interface DepartmentMeta {
 }
 const DepartmentPage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
-  const { getDetail, deleteItem, getTreeList } = useDepartmentModel();
+  const { getDetail, deleteItem, getDepartments } = useDepartmentModel();
   const tableProRef = useRef<TableProRef>(null);
 
   const handleAdd = async () => {
@@ -113,10 +113,11 @@ const DepartmentPage = () => {
   return (
     <PageContainer>
       <TablePro
+        tree={true}
         ref={tableProRef}
         rowKey={'departmentId'}
         columns={columns as any}
-        request={getTreeList}
+        request={getDepartments}
         expandable={{ defaultExpandAllRows: true }}
         toolbarRender={() => (
           <Button type="primary" onClick={handleAdd}>

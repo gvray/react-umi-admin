@@ -1,7 +1,10 @@
 import { logger } from '@/utils';
 import { useEffect, useRef, useState } from 'react';
 
-export const useTablePro = (request: (params: any) => Promise<any>) => {
+export const useTablePro = (
+  request: (params: any) => Promise<any>,
+  isTree?: boolean,
+) => {
   const [loading, setLoading] = useState(false);
   const [listData, setListData] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
@@ -17,11 +20,12 @@ export const useTablePro = (request: (params: any) => Promise<any>) => {
       setLoading(true);
       const { data } = await request({
         ...paramsRef.current,
-        ...(paginationParams ?? pagination),
+        ...(isTree ? {} : paginationParams ?? pagination),
       });
-
       setListData([...(data.items ?? data)]);
-      setTotal(data.total ?? data.length);
+      if (data.total !== undefined) {
+        setTotal(data.total ?? data.length);
+      }
     } catch (error: any) {
       logger.error(error.info);
       setListData([]);

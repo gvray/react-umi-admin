@@ -1,3 +1,4 @@
+import { pruneEmptyChildren } from '@/utils';
 import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   Button,
@@ -17,7 +18,7 @@ interface TableProProps<T> extends TableProps<T> {
   request: (params: any, options?: { [key: string]: any }) => Promise<any>;
   toolbarRender?: () => React.ReactNode;
   onSelectionChange?: (keys: React.Key[], rows?: T[]) => void;
-  tree?: boolean | { id: string; parentId: string };
+  tree?: boolean;
 }
 
 export interface TableProRef {
@@ -63,7 +64,7 @@ const TableProFunction: React.ForwardRefRenderFunction<
     paramsRef,
     setPagination,
     setShowSearch,
-  } = useTablePro(request);
+  } = useTablePro(request, !!tree);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
@@ -111,57 +112,6 @@ const TableProFunction: React.ForwardRefRenderFunction<
         }
       : {}),
   };
-  const listToTree = (
-    list: any[],
-    idKey: string,
-    parentIdKey: string,
-  ): any[] => {
-    const nodeMap = new Map<any, any>();
-    const roots: any[] = [];
-    for (const item of list) {
-      const id = item?.[idKey];
-      if (id === undefined || id === null) continue;
-      nodeMap.set(id, { ...item });
-    }
-    for (const item of list) {
-      const id = item?.[idKey];
-      if (id === undefined || id === null) continue;
-      const pid = item?.[parentIdKey];
-      if (pid === undefined || pid === null || !nodeMap.has(pid)) {
-        roots.push(nodeMap.get(id));
-      } else {
-        const parent = nodeMap.get(pid);
-        if (!parent.children) parent.children = [];
-        parent.children.push(nodeMap.get(id));
-      }
-    }
-    return roots;
-  };
-
-  const isTree =
-    Array.isArray(listData) &&
-    listData.length > 0 &&
-    (tree ? true : listData.some((item: any) => item && 'children' in item));
-  const normalizeTree = (nodes: any[]): any[] =>
-    nodes.map((node: any) => {
-      const hasChildren = node && 'children' in node;
-      if (!hasChildren) return node;
-      const { children: kids, ...rest } = node;
-      const children =
-        Array.isArray(kids) && kids.length > 0
-          ? normalizeTree(kids)
-          : undefined;
-      return children ? { ...rest, children } : rest;
-    });
-  const renderData = (() => {
-    if (tree) {
-      const idKey = typeof tree === 'object' && tree?.id ? tree.id : 'id';
-      const parentIdKey =
-        typeof tree === 'object' && tree?.parentId ? tree.parentId : 'parentId';
-      return normalizeTree(listToTree(listData, idKey, parentIdKey));
-    }
-    return isTree ? normalizeTree(listData) : listData;
-  })();
   return (
     <TableWrap>
       {showSearch && !!columns && (
@@ -198,13 +148,13 @@ const TableProFunction: React.ForwardRefRenderFunction<
       </Flex>
       <Table
         columns={columns}
-        dataSource={renderData}
+        dataSource={pruneEmptyChildren(listData)}
         loading={loading}
         pagination={false}
         {...tableProps}
         scroll={{ x: 'max-content' }}
       />
-      {!isTree && total > 0 && total > pagination.pageSize && (
+      {!tree && total > 0 && total > pagination.pageSize && (
         <PaginationWrap>
           <Pagination
             total={total}

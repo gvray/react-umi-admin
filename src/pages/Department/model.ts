@@ -1,3 +1,4 @@
+import { ROOT_PARENT_ID } from '@/constants';
 import {
   deleteDepartment,
   getDepartment,
@@ -7,27 +8,13 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export const useDepartmentModel = () => {
-  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showSearch, setShowSearch] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   // 高级搜索参数
   const paramsRef = useRef<Record<string, any>>({});
   const getDepartments = async (params?: Record<string, any>) => {
-    try {
-      setLoading(true);
-      const res = await getDepartmentTree({
-        ...paramsRef.current,
-        ...params,
-      });
-      if (res.data) {
-        setData(res.data);
-      }
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
+    return getDepartmentTree(params);
   };
   const getDetail = useCallback(async (departmentId: string) => {
     setLoading(true);
@@ -46,28 +33,14 @@ export const useDepartmentModel = () => {
       setSubmitting(false);
     }
   }, []);
-  useEffect(() => {
-    getDepartments({
-      ...paramsRef.current,
-    });
-  }, []);
-  const getTreeList = useCallback(async (params?: any) => {
-    return getDepartmentTree({
-      ...paramsRef.current,
-      ...params,
-    });
-  }, []);
+
   return {
-    data,
     loading,
     submitting,
-    reload: getDepartments,
-    showSearch,
-    setShowSearch,
     paramsRef,
     getDetail,
     deleteItem,
-    getTreeList,
+    getDepartments,
   };
 };
 
@@ -79,7 +52,14 @@ export const useUpdataFormModel = (open: boolean) => {
       setLoading(true);
       const res = await listDepartment();
       if (res.data && res.data.items && res.data.items.length > 0) {
-        setData(res.data.items);
+        setData([
+          {
+            departmentId: ROOT_PARENT_ID,
+            name: '顶级部门',
+            description: '顶级部门',
+          },
+          ...res.data.items,
+        ]);
       }
     } catch (error) {
     } finally {

@@ -1,23 +1,24 @@
-import { getDepartmentTree } from '@/services/department';
+import { listDepartment } from '@/services/department';
 import { listPosition } from '@/services/position';
 import { listRole } from '@/services/role';
 import { deleteUser, getUser, listUser } from '@/services/user';
 import { useCallback, useEffect, useState } from 'react';
+interface ListResp<T> {
+  data?: {
+    items?: T[];
+  };
+}
 
 const useUpdateForm = (open: boolean) => {
-  const [deptTree, setDeptTree] = useState<any[]>([]);
   const [roleList, setRoleList] = useState<any[]>([]);
   const [positionList, setPositionList] = useState<any[]>([]);
+  const [departmentList, setDepartmentList] = useState<any[]>([]);
 
-  const getDepts = async () => {
+  const getDepartments = async () => {
     try {
-      const res = await getDepartmentTree();
-      if (res.data) {
-        // const data = mapTree(res.data, (node) => ({
-        //   value: node.departmentId,
-        //   label: node.name,
-        // }));
-        setDeptTree(res.data);
+      const res = await listDepartment();
+      if (res.data && res.data.items) {
+        setDepartmentList(res.data.items);
       }
     } catch (error) {
       console.log(error);
@@ -35,24 +36,24 @@ const useUpdateForm = (open: boolean) => {
 
   const getPositions = async () => {
     try {
-      const res = await listPosition();
-      if (res.data) {
-        setPositionList(res.data);
+      const res = (await listPosition()) as ListResp<any>;
+      if (res.data?.items) {
+        setPositionList(res.data.items);
       }
     } catch (error) {}
   };
 
   useEffect(() => {
     if (open) {
-      getDepts();
       getRoles();
+      getDepartments();
       getPositions();
     }
   }, [open]);
 
   return {
-    deptTree,
     roleList,
+    departmentList,
     positionList,
   };
 };

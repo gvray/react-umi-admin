@@ -25,7 +25,7 @@ export interface PermissionMeta {
 const ResourcePage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
-  const { getTreeList, getDetail, deleteItem } = useResourceModel();
+  const { getPermissions, getDetail, deleteItem } = useResourceModel();
 
   const handleAdd = async () => {
     updateFormRef.current?.show('添加权限');
@@ -145,10 +145,11 @@ const ResourcePage = () => {
   return (
     <PageContainer>
       <TablePro
+        tree={true}
         ref={tableProRef}
         rowKey={(record) => record.permissionId || (record as any).resourceId}
         columns={columns as any}
-        request={getTreeList}
+        request={getPermissions}
         expandable={{
           rowExpandable: (record) =>
             record.children && record.children.length > 0,

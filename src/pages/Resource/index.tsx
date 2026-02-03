@@ -29,7 +29,7 @@ export interface ResourceMeta {
 const ResourcePage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
-  const { getTreeList, getDetail, deleteItem } = useResourceModel();
+  const { getResources, getDetail, deleteItem } = useResourceModel();
   // 高级搜索参数
   const handleAdd = async () => {
     updateFormRef.current?.show('添加资源');
@@ -139,10 +139,11 @@ const ResourcePage = () => {
   return (
     <PageContainer>
       <TablePro
+        tree={true}
         ref={tableProRef}
         rowKey={'resourceId'}
         columns={columns as any}
-        request={getTreeList}
+        request={getResources}
         expandable={{ defaultExpandAllRows: true }}
         toolbarRender={() => (
           <Button type="primary" onClick={handleAdd}>

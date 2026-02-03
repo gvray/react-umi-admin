@@ -1,3 +1,4 @@
+import { ROOT_PARENT_ID } from '@/constants';
 import { sleep } from '@gvray/eskit';
 import { Request, Response } from 'express';
 
@@ -291,7 +292,7 @@ export default {
               name: '技术部',
               code: 'IT',
               description: '负责技术开发和维护',
-              parentId: null,
+              parentId: ROOT_PARENT_ID,
               isActive: true,
               sort: 1,
               createdAt: '2025-07-26T14:17:12.746Z',
@@ -370,7 +371,7 @@ export default {
               name: '产品部',
               code: 'PRODUCT',
               description: '负责产品设计和规划',
-              parentId: null,
+              parentId: ROOT_PARENT_ID,
               isActive: true,
               sort: 2,
               createdAt: '2025-07-26T14:17:12.747Z',

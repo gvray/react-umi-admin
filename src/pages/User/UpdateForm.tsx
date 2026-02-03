@@ -53,11 +53,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
   const [isEdit, setIsEdit] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
-  const {
-    deptTree,
-    // roleList,
-    positionList,
-  } = useUpdateForm(visible);
+  const { positionList, departmentList } = useUpdateForm(visible);
 
   // 重置弹出层表单
   const reset = () => {
@@ -215,7 +211,11 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           <Col span={12}>
             <Form.Item name="departmentId" label="部门">
               <TreeSelect
-                treeData={deptTree}
+                treeData={departmentList}
+                treeDataSimpleMode={{
+                  id: 'departmentId',
+                  pId: 'parentId',
+                }}
                 fieldNames={{ value: 'departmentId', label: 'name' }}
                 allowClear
               />

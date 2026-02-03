@@ -1,4 +1,5 @@
 import { IconSelector } from '@/components';
+import { ROOT_PARENT_ID } from '@/constants';
 import { createResource, updateResource } from '@/services/resource';
 import {
   Col,
@@ -141,7 +142,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
         name="form_in_modal"
         initialValues={{
           status: 1,
-          parentId: null,
+          parentId: ROOT_PARENT_ID,
           type: 'DIRECTORY',
           sort: 0,
         }}

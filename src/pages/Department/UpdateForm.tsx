@@ -1,3 +1,4 @@
+import { ROOT_PARENT_ID } from '@/constants';
 import { createDepartment, updateDepartment } from '@/services/department';
 import {
   Col,
@@ -137,7 +138,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
         name="form_in_modal"
         initialValues={{
           status: 1,
-          parentId: null,
+          parentId: ROOT_PARENT_ID,
           type: 'DIRECTORY',
           sort: 0,
         }}

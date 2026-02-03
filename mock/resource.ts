@@ -1,3 +1,4 @@
+import { ROOT_PARENT_ID } from '@/constants';
 import { sleep } from '@gvray/eskit';
 import dayjs from 'dayjs';
 import { Request, Response } from 'express';
@@ -15,7 +16,7 @@ const resourceHierarchy = [
     type: 'directory',
     path: '/system',
     icon: 'SettingOutlined',
-    parentId: null,
+    parentId: ROOT_PARENT_ID,
     level: 1,
     sort: 1,
     status: 'active',

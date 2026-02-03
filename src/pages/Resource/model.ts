@@ -1,3 +1,4 @@
+import { ROOT_PARENT_ID } from '@/constants';
 import {
   deleteResource,
   getResource,
@@ -7,32 +8,13 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export const useResourceModel = () => {
-  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showSearch, setShowSearch] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const paramsRef = useRef<Record<string, any>>({});
-  const getResourceList = async (params?: Record<string, any>) => {
-    try {
-      setLoading(true);
-      const res = await getResourceTree({
-        ...paramsRef.current,
-        ...params,
-      });
-      if (res.data) {
-        setData(res.data);
-      }
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
+  const getResources = async (params?: Record<string, any>) => {
+    return getResourceTree(params);
   };
-  const getTreeList = useCallback(async (params?: any) => {
-    return getResourceTree({
-      ...paramsRef.current,
-      ...params,
-    });
-  }, []);
   const getDetail = useCallback(async (resourceId: string) => {
     setLoading(true);
     try {
@@ -50,18 +32,14 @@ export const useResourceModel = () => {
       setSubmitting(false);
     }
   }, []);
-  useEffect(() => {
-    getResourceList({});
-  }, []);
+
   return {
-    data,
     loading,
     submitting,
-    reload: getResourceList,
     showSearch,
     setShowSearch,
     paramsRef,
-    getTreeList,
+    getResources,
     getDetail,
     deleteItem,
   };
@@ -72,12 +50,19 @@ export const useUpdataFormModel = (open: boolean) => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const getResourceList = async () => {
+  const getResources = async () => {
     try {
       setLoading(true);
       const res = await listResources();
       if (res.data && res.data.items && res.data.items.length > 0) {
-        setData(res.data.items);
+        setData([
+          {
+            resourceId: ROOT_PARENT_ID,
+            name: '顶级资源',
+            description: '顶级资源',
+          },
+          ...res.data.items,
+        ]);
       }
     } catch (error) {
     } finally {
@@ -86,12 +71,12 @@ export const useUpdataFormModel = (open: boolean) => {
   };
   useEffect(() => {
     if (open) {
-      getResourceList();
+      getResources();
     }
   }, [open]);
   return {
     data,
     loading,
-    reload: getResourceList,
+    reload: getResources,
   };
 };

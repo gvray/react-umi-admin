@@ -21,6 +21,7 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
     const [isEdit, setIsEdit] = useState(false);
+    const currentType = Form.useWatch('type', form);
 
     useImperativeHandle(ref, () => ({
       show: (title: string, data?: any) => {
@@ -29,9 +30,14 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
         setIsEdit(!!data);
 
         if (data) {
+          let parsedValue = data.value;
+          if (data.type === 'number') {
+            const n = Number(data.value);
+            parsedValue = Number.isNaN(n) ? undefined : n;
+          }
           form.setFieldsValue({
             ...data,
-            value: data.value,
+            value: parsedValue,
           });
         } else {
           form.resetFields();
@@ -53,6 +59,19 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
       try {
         const values = await form.validateFields();
         setLoading(true);
+
+        if (values.type === 'number') {
+          values.value =
+            values.value === undefined || values.value === null
+              ? ''
+              : String(values.value);
+        }
+        if (values.type === 'json' && typeof values.value === 'string') {
+          try {
+            const normalized = JSON.stringify(JSON.parse(values.value));
+            values.value = normalized;
+          } catch {}
+        }
 
         if (isEdit) {
           const { configId, ...rest } = values;
@@ -79,15 +98,38 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
     };
 
     const renderValueInput = () => {
-      return (
-        <TextArea
-          placeholder='请输入配置值，例如：1、"1"、true、{"key":"value"}'
-          rows={6}
-          showCount
-          maxLength={2000}
-          style={{ fontFamily: 'monospace', fontSize: '12px' }}
-        />
-      );
+      switch (currentType) {
+        case 'number':
+          return (
+            <InputNumber
+              placeholder="请输入数字"
+              style={{ width: '100%' }}
+              controls={false}
+            />
+          );
+        case 'boolean':
+          return (
+            <Select
+              placeholder="请选择布尔值"
+              options={[
+                { label: 'true', value: 'true' },
+                { label: 'false', value: 'false' },
+              ]}
+            />
+          );
+        case 'json':
+          return (
+            <TextArea
+              placeholder='请输入 JSON，如 {"key":"value"}'
+              rows={6}
+              showCount
+              maxLength={2000}
+              style={{ fontFamily: 'monospace', fontSize: '12px' }}
+            />
+          );
+        default:
+          return <Input placeholder="请输入配置值" maxLength={1000} />;
+      }
     };
 
     return (
@@ -205,7 +247,22 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
           <Form.Item
             label="配置值"
             name="value"
-            rules={[{ required: true, message: '请输入配置值' }]}
+            rules={[
+              { required: true, message: '请输入配置值' },
+              {
+                validator: (_, v) => {
+                  if (currentType === 'json') {
+                    try {
+                      JSON.parse(typeof v === 'string' ? v : '');
+                      return Promise.resolve();
+                    } catch {
+                      return Promise.reject(new Error('JSON 格式不合法'));
+                    }
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
           >
             {renderValueInput()}
           </Form.Item>
