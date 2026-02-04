@@ -24,3 +24,11 @@ export async function profile(options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
+
+// 获取菜单
+export async function getMenus(options?: { [key: string]: any }) {
+  return request('/auth/menus', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}

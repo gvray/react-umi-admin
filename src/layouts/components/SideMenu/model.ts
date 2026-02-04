@@ -1,4 +1,4 @@
-import { getMenus } from '@/services/resource';
+import { getMenus } from '@/services/auth';
 import { MenuProps } from 'antd';
 import { useEffect, useState } from 'react';
 

@@ -25,8 +25,8 @@ const SideMenu: React.FC<SideMenuProps> = ({ collapsed }) => {
   const transformMenuItems = (menuData: any[]): MenuProps['items'] => {
     return menuData?.map((item: any) => {
       const menuItem: any = {
-        key: item.path || item.key,
-        icon: item.icon ? <AntIcon icon={item.icon} /> : null,
+        key: item.meta?.path || item.key,
+        icon: item.meta?.icon ? <AntIcon icon={item.meta.icon} /> : null,
         label: item.name || item.label,
       };
 
