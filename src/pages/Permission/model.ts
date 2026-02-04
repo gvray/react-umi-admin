@@ -3,7 +3,7 @@ import {
   getPermission,
   getPermissionTree,
 } from '@/services/permission';
-import { listResources } from '@/services/resource';
+
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export const useResourceModel = () => {
@@ -46,12 +46,12 @@ export const useResourceModel = () => {
 export const useUpdataFormModel = (open: boolean) => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const getResourceList = async () => {
+  const getTree = async () => {
     try {
       setLoading(true);
-      const res = await listResources();
-      if (res.data && res.data.items && res.data.items.length > 0) {
-        setData([...res.data.items]);
+      const res = (await getPermissionTree()) as any;
+      if (res?.data) {
+        setData(res.data.tree || res.data);
       }
     } catch (error) {
     } finally {
@@ -60,12 +60,12 @@ export const useUpdataFormModel = (open: boolean) => {
   };
   useEffect(() => {
     if (open) {
-      getResourceList();
+      getTree();
     }
   }, [open]);
   return {
     data,
     loading,
-    reload: getResourceList,
+    reload: getTree,
   };
 };

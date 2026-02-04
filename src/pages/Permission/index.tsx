@@ -1,6 +1,5 @@
-import { DateTimeFormat, PageContainer, TablePro } from '@/components';
+import { AntIcon, DateTimeFormat, PageContainer, TablePro } from '@/components';
 import { TableProRef } from '@/components/TablePro';
-import { ResourceMeta } from '@/services/resource';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -16,11 +15,9 @@ export interface PermissionMeta {
   permissionId: string;
   name: string;
   action: string;
-  resourceId: string;
-  children?: PermissionMeta[]; // 用于前端展示 tree 结构
-  // 可选字段
-  code?: string; // 权限标识
-  [key: string]: any; // 允许扩展
+  code?: string;
+  children?: PermissionMeta[];
+  [key: string]: any;
 }
 const ResourcePage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
@@ -31,7 +28,7 @@ const ResourcePage = () => {
     updateFormRef.current?.show('添加权限');
   };
 
-  const handleDelete = async (record: ResourceMeta | PermissionMeta) => {
+  const handleDelete = async (record: PermissionMeta) => {
     Modal.confirm({
       title: `系统提示`,
       icon: <ExclamationCircleOutlined />,
@@ -39,7 +36,7 @@ const ResourcePage = () => {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        return deleteItem(record.permissionId as any)
+        return deleteItem(record.permissionId)
           .then(() => {
             tableProRef.current?.reload();
             message.success(`删除成功`);
@@ -62,13 +59,19 @@ const ResourcePage = () => {
     tableProRef.current?.reload();
   };
   let columns = getPermissionColumns().map((column: any) => {
+    if (column.dataIndex === 'icon') {
+      return {
+        ...column,
+        render: (_: any, record: any) => {
+          const icon = record?.menuMeta?.icon;
+          return icon ? <AntIcon icon={icon} /> : '-';
+        },
+      };
+    }
     if (column.dataIndex === 'action') {
       return {
         ...column,
-        render: (action: string, record: ResourceMeta) => {
-          if (record.permissionId === undefined) {
-            return '-';
-          }
+        render: (action: string) => {
           switch (action) {
             case 'view':
               return '查看';
@@ -82,10 +85,6 @@ const ResourcePage = () => {
               return '导出';
             case 'import':
               return '导入';
-            case 'approve':
-              return '审批';
-            case 'reject':
-              return '驳回';
             default:
               return '未知';
           }
@@ -95,12 +94,7 @@ const ResourcePage = () => {
     if (column.dataIndex === 'code') {
       return {
         ...column,
-        render: (code: string, record: ResourceMeta) => {
-          if (record.permissionId === undefined) {
-            return '-';
-          }
-          return code;
-        },
+        render: (code: string) => code || '-',
       };
     }
     if (column.dataIndex === 'createdAt') {
@@ -116,16 +110,13 @@ const ResourcePage = () => {
     {
       title: '操作',
       key: 'action',
-      render: (record: ResourceMeta) => {
-        if (record.permissionId === undefined) {
-          return '-';
-        }
+      render: (record: PermissionMeta) => {
         return (
           <Space size={0}>
             <Button
               type="link"
               icon={<EditOutlined />}
-              onClick={() => handleUpdate(record as any)}
+              onClick={() => handleUpdate(record)}
             >
               修改
             </Button>
@@ -133,7 +124,7 @@ const ResourcePage = () => {
               danger
               type="link"
               icon={<DeleteOutlined />}
-              onClick={() => handleDelete(record as any)}
+              onClick={() => handleDelete(record)}
             >
               删除
             </Button>
@@ -147,7 +138,7 @@ const ResourcePage = () => {
       <TablePro
         tree={true}
         ref={tableProRef}
-        rowKey={(record) => record.permissionId || (record as any).resourceId}
+        rowKey={'permissionId'}
         columns={columns as any}
         request={getPermissions}
         expandable={{

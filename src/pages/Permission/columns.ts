@@ -1,7 +1,7 @@
 export const getPermissionColumns = (): any[] => {
   return [
     {
-      title: '权限名称',
+      title: '名称',
       dataIndex: 'name',
       key: 'name',
       fixed: 'left',
@@ -10,7 +10,21 @@ export const getPermissionColumns = (): any[] => {
       },
     },
     {
-      title: '权限类型',
+      title: '图标',
+      dataIndex: 'icon',
+      key: 'icon',
+      width: 80,
+    },
+    {
+      title: '类型',
+      dataIndex: 'type',
+      key: 'type',
+      advancedSearch: {
+        type: 'INPUT',
+      },
+    },
+    {
+      title: '权限',
       dataIndex: 'action',
       key: 'action',
       width: 120,

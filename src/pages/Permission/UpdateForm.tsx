@@ -1,14 +1,17 @@
+import { IconSelector } from '@/components';
 import { createPermission, updatePermission } from '@/services/permission';
 import {
   Col,
   Form,
   FormInstance,
   Input,
+  InputNumber,
+  message,
   Modal,
   Row,
   Select,
+  Switch,
   TreeSelect,
-  message,
 } from 'antd';
 import React, { useImperativeHandle, useState } from 'react';
 import { useUpdataFormModel } from './model';
@@ -47,10 +50,10 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
 > = ({ onOk, onCancel }, ref) => {
   const [title, setTitle] = useState('未设置弹出层标题');
   const [visible, setVisible] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
-  const { data: resourceList } = useUpdataFormModel(visible);
+  const { data: permissionTree } = useUpdataFormModel(visible);
+  const typeValue = Form.useWatch('type', form);
 
   // 重置弹出层表单
   const reset = () => {
@@ -61,19 +64,12 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-      const { ...values } = await form.validateFields();
-      if (form.getFieldValue('permissionId') === undefined) {
-        await createPermission({
-          ...values,
-        });
+      const values = await form.validateFields();
+      if (!form.getFieldValue('permissionId')) {
+        await createPermission(values as any);
         message.success('新增成功');
       } else {
-        // 在编辑模式下，移除不可修改的字段
-        delete values.resourceId;
-        delete values.action;
-        await updatePermission({
-          ...values,
-        });
+        await updatePermission(values as any);
         message.success('修改成功');
       }
       setVisible(false);
@@ -104,10 +100,18 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           setVisible(true);
           reset();
           if (data) {
-            setIsEdit(true);
-            form.setFieldsValue(data);
+            form.setFieldsValue({
+              ...data,
+              parentPermissionId: data.parentPermissionId ?? null,
+              type: data.type ?? 'BUTTON',
+              menuMeta: data.menuMeta ?? {},
+            });
           } else {
-            setIsEdit(false);
+            form.setFieldsValue({
+              type: 'BUTTON',
+              action: 'view',
+              menuMeta: { hidden: false, sort: 0 },
+            });
           }
         },
         hide: () => {
@@ -139,41 +143,17 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
         form={form}
         layout="horizontal"
         name="form_in_modal"
-        initialValues={{}}
+        initialValues={{
+          type: 'BUTTON',
+          action: 'view',
+          menuMeta: { hidden: false, sort: 0 },
+        }}
         onValuesChange={handleValuesChange}
       >
         <Form.Item name="permissionId" label="权限Id" hidden>
           <Input />
         </Form.Item>
         <Row gutter={24}>
-          <Col span={24}>
-            <Form.Item
-              name="resourceId"
-              label="绑定资源"
-              rules={[{ required: true, message: '绑定资源不能为空' }]}
-            >
-              <TreeSelect
-                disabled={isEdit}
-                treeDefaultExpandAll
-                allowClear
-                fieldNames={{
-                  value: 'resourceId',
-                  label: 'name',
-                }}
-                treeDataSimpleMode={{
-                  id: 'resourceId',
-                  pId: 'parentResourceId',
-                }}
-                treeData={resourceList.map((item: any) => ({
-                  ...item,
-                  disabled: item.type !== 'MENU',
-                  // parentResourceId: item.parentResourceId || '0',
-                }))}
-                placeholder="请选择绑定资源"
-              />
-            </Form.Item>
-          </Col>
-
           <Col span={14}>
             <Form.Item
               name="name"
@@ -190,7 +170,6 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
               rules={[{ required: true, message: '权限动作不能为空' }]}
             >
               <Select
-                disabled={isEdit}
                 options={[
                   { value: 'view', label: '查看' },
                   { value: 'create', label: '新增' },
@@ -198,19 +177,46 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
                   { value: 'delete', label: '删除' },
                   { value: 'export', label: '导出' },
                   { value: 'import', label: '导入' },
-                  { value: 'print', label: '打印' },
-                  { value: 'download', label: '下载' },
-                  { value: 'upload', label: '上传' },
-                  { value: 'batch', label: '批量' },
-                  { value: 'batchDelete', label: '批量删除' },
-                  { value: 'batchUpdate', label: '批量修改' },
-                  { value: 'batchImport', label: '批量导入' },
-                  { value: 'batchExport', label: '批量导出' },
-                  { value: 'batchPrint', label: '批量打印' },
-                  { value: 'batchDownload', label: '批量下载' },
-                  { value: 'batchUpload', label: '批量上传' },
-                  { value: 'other', label: '其他' },
                 ]}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              name="code"
+              label="权限代码"
+              rules={[{ required: true, message: '权限代码不能为空' }]}
+            >
+              <Input placeholder="如 user:view" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              name="type"
+              label="权限类型"
+              rules={[{ required: true, message: '权限类型不能为空' }]}
+            >
+              <Select
+                options={[
+                  { value: 'MENU', label: '菜单' },
+                  { value: 'BUTTON', label: '按钮' },
+                  { value: 'API', label: '接口' },
+                ]}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item name="parentPermissionId" label="上级权限">
+              <TreeSelect
+                allowClear
+                treeDefaultExpandAll
+                fieldNames={{ value: 'permissionId', label: 'name' }}
+                treeDataSimpleMode={{
+                  id: 'permissionId',
+                  pId: 'parentPermissionId',
+                }}
+                treeData={permissionTree}
+                placeholder="不选表示顶级权限"
               />
             </Form.Item>
           </Col>
@@ -219,6 +225,39 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
               <Input.TextArea placeholder="请输入内容"></Input.TextArea>
             </Form.Item>
           </Col>
+          {typeValue === 'MENU' && (
+            <>
+              <Col span={12}>
+                <Form.Item name={['menuMeta', 'path']} label="菜单路径">
+                  <Input placeholder="/system/permission" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name={['menuMeta', 'icon']} label="菜单图标">
+                  <IconSelector />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name={['menuMeta', 'component']} label="菜单组件">
+                  <Input placeholder="如 Permission" />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item name={['menuMeta', 'sort']} label="排序">
+                  <InputNumber min={0} style={{ width: '100%' }} />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  name={['menuMeta', 'hidden']}
+                  label="隐藏菜单"
+                  valuePropName="checked"
+                >
+                  <Switch />
+                </Form.Item>
+              </Col>
+            </>
+          )}
         </Row>
       </Form>
     </Modal>
