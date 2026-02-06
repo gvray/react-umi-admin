@@ -1,4 +1,4 @@
-import { request } from 'umi';
+import { request } from '@gvray/request';
 
 /** 登录接口 POST /login */
 export async function login(body: any, options?: { [key: string]: any }) {

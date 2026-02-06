@@ -82,6 +82,8 @@ const ResourcePage = () => {
               return '目录';
             case 'MENU':
               return '菜单';
+            case 'BUTTON':
+              return '按钮';
             default:
               return '未知';
           }

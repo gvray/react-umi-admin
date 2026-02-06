@@ -64,7 +64,11 @@ const ResourcePage = () => {
         ...column,
         render: (_: any, record: any) => {
           const icon = record?.menuMeta?.icon;
-          return icon ? <AntIcon icon={icon} /> : '-';
+          if (icon) return <AntIcon icon={icon} />;
+          if (record?.type === 'API') return <AntIcon icon="ApiOutlined" />;
+          if (record?.type === 'BUTTON')
+            return <AntIcon icon="ControlOutlined" />;
+          return '-';
         },
       };
     }

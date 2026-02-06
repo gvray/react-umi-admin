@@ -70,6 +70,7 @@ const LoginPage: React.FC = () => {
       message.success(res.message);
       navigate('/');
     } catch (error) {
+      storetify(__APP_API_TOKEN_KEY__, undefined);
     } finally {
       setLogging(false);
     }

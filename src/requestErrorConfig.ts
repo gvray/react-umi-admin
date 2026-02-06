@@ -85,10 +85,10 @@ export const errorConfig: RequestConfig = {
         // 请求已经成功发起，但没有收到响应
         // \`error.request\` 在浏览器中是 XMLHttpRequest 的实例，
         // 而在node.js中是 http.ClientRequest 的实例
-        msg.error('None response! Please retry.');
+        msg.error('系统没有响应，请稍后重试');
       } else {
         // 发送请求时出了点问题
-        msg.error('Request error, please retry.');
+        msg.error('请求错误，请稍后重试');
       }
     },
   },

@@ -198,9 +198,9 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
             >
               <Select
                 options={[
+                  { value: 'DIRECTORY', label: '目录' },
                   { value: 'MENU', label: '菜单' },
                   { value: 'BUTTON', label: '按钮' },
-                  { value: 'API', label: '接口' },
                 ]}
               />
             </Form.Item>
