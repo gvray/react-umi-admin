@@ -13,8 +13,10 @@ export const useAuthUser = (roleId?: string) => {
   // 获取用户列表
   const fetchUsers = useCallback(async () => {
     try {
-      const res = await listUser();
-      setUsers(res.data);
+      const { data } = await listUser();
+      if (data && data.items) {
+        setUsers(data.items);
+      }
     } catch (error) {
       //   message.error('获取用户列表失败');
     }
