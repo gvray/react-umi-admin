@@ -11,15 +11,15 @@ export const useResourceModel = () => {
   const [loading, setLoading] = useState(true);
   const [showSearch, setShowSearch] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const paramsRef = useRef<Record<string, any>>({});
-  const getResources = async (params?: Record<string, any>) => {
+  const paramsRef = useRef<Record<string, unknown>>({});
+  const getResources = async (params?: Record<string, unknown>) => {
     return getResourceTree(params);
   };
   const getDetail = useCallback(async (resourceId: string) => {
     setLoading(true);
     try {
-      const res: any = await getResource(resourceId);
-      return res.data ?? res;
+      const { data } = await getResource(resourceId);
+      return data;
     } finally {
       setLoading(false);
     }
@@ -46,22 +46,21 @@ export const useResourceModel = () => {
 };
 
 export const useUpdataFormModel = (open: boolean) => {
-  console.log('open', open);
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(true);
 
   const getResources = async () => {
     try {
       setLoading(true);
       const res = await listResources();
-      if (res.data && res.data.items && res.data.items.length > 0) {
+      if (res.data && Array.isArray(res.data)) {
         setData([
           {
             resourceId: ROOT_PARENT_ID,
             name: '顶级资源',
             description: '顶级资源',
           },
-          ...res.data.items,
+          ...res.data,
         ]);
       }
     } catch (error) {

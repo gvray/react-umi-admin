@@ -1,16 +1,20 @@
-import { getDictionaryTypesBatch } from '@/services/dictionary';
+import { getDictionaryItemsByTypeCodes } from '@/services/dictionary';
 import { logger } from '@/utils';
 import { useEffect, useState } from 'react';
 
-const useDict = <T>(codes: string[]) => {
+const useDict = <T = Record<string, API.DictionaryItemResponseDto[]>>(
+  codes: string[],
+) => {
   const [dict, setDict] = useState<T>({} as T);
   const codeString = codes.join(',');
   useEffect(() => {
     const fetchDict = async () => {
       try {
-        const res: any = await getDictionaryTypesBatch(codeString);
+        const res = await getDictionaryItemsByTypeCodes({
+          typeCodes: codeString,
+        });
         if (res.data) {
-          setDict(res.data);
+          setDict(res.data as T);
         }
       } catch (error) {
         logger.error(

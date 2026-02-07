@@ -1,4 +1,4 @@
-import { addUser, updateUser } from '@/services/user';
+import { createUser, updateUser } from '@/services/user';
 import { logger } from '@/utils';
 import {
   Col,
@@ -18,11 +18,11 @@ import useUpdateForm from './model';
 interface UpdateFormProps {
   onCancel?: () => void;
   onOk?: () => void;
-  dict: any;
+  dict: Record<string, { label: string; value: string }[]>;
 }
 
 export interface UpdateFormRef {
-  show: (title: string, data?: Record<string, any>) => void;
+  show: (title: string, data?: Record<string, unknown>) => void;
   hide: () => void;
   form: FormInstance;
 }
@@ -66,7 +66,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       setConfirmLoading(true);
       const values = await form.validateFields();
       if (form.getFieldValue('userId') === undefined) {
-        await addUser(values);
+        await createUser(values);
         message.success('新增成功');
       } else {
         await updateUser(values);
@@ -253,11 +253,13 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
             <Form.Item name="status" label="用户状态">
               <Radio.Group
                 options={dict['user_status']
-                  ?.map((item: any) => ({
+                  ?.map((item: { label: string; value: string }) => ({
                     label: item.label,
                     value: Number(item.value),
                   }))
-                  .filter((item: any) => item.value < 3)}
+                  .filter(
+                    (item: { label: string; value: number }) => item.value < 3,
+                  )}
               ></Radio.Group>
             </Form.Item>
           </Col>

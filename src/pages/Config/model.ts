@@ -7,49 +7,33 @@ import {
 } from '@/services/config';
 import { useCallback, useState } from 'react';
 
-export interface ConfigData {
-  configId: string;
-  key: string;
-  value: string;
-  name: string;
-  description?: string;
-  type: string;
-  group: string;
-  status: number;
-  sort: number;
-  remark?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export const useConfig = () => {
-  const [configs, setConfigs] = useState<ConfigData[]>([]);
+  const [configs, setConfigs] = useState<API.ConfigResponseDto[]>([]);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [viewVisible, setViewVisible] = useState(false);
-  const [currentConfig, setCurrentConfig] = useState<ConfigData | null>(null);
+  const [currentConfig, setCurrentConfig] =
+    useState<API.ConfigResponseDto | null>(null);
 
-  const getConfigList = useCallback((params?: any) => {
+  const getConfigList = useCallback((params?: API.ConfigsFindAllParams) => {
     return listConfig(params);
   }, []);
 
-  // 获取配置详情
   const getConfigDetail = useCallback(async (configId: string) => {
     setLoading(true);
     try {
-      const response: any = await getConfig(configId);
-      return response.data;
+      const { data } = await getConfig(configId);
+      return data;
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // 创建配置
-  const createConfigItem = useCallback(async (data: Partial<ConfigData>) => {
+  const createConfigItem = useCallback(async (data: API.CreateConfigDto) => {
     setSubmitting(true);
     try {
-      const response: any = await createConfig(data);
-      const newConfig = response.data;
+      const res = await createConfig(data);
+      const newConfig = res.data;
       setConfigs((prev) => [...prev, newConfig]);
       return newConfig;
     } finally {
@@ -57,22 +41,23 @@ export const useConfig = () => {
     }
   }, []);
 
-  // 更新配置
   const updateConfigItem = useCallback(
-    async (configId: string, data: Partial<ConfigData>) => {
+    async (configId: string, data: API.UpdateConfigDto) => {
       setSubmitting(true);
-      await updateConfig(configId, data);
-      setConfigs((prev) =>
-        prev.map((config) =>
-          config.configId === configId ? { ...config, ...data } : config,
-        ),
-      );
-      setSubmitting(false);
+      try {
+        await updateConfig(configId, data);
+        setConfigs((prev) =>
+          prev.map((config) =>
+            config.configId === configId ? { ...config, ...data } : config,
+          ),
+        );
+      } finally {
+        setSubmitting(false);
+      }
     },
     [],
   );
 
-  // 删除配置
   const deleteConfigItem = useCallback(async (configId: string) => {
     setSubmitting(true);
     try {
@@ -85,7 +70,6 @@ export const useConfig = () => {
     }
   }, []);
 
-  // 根据键获取配置值
   const getConfigValue = useCallback(
     (key: string) => {
       const config = configs.find((c) => c.key === key);
@@ -94,7 +78,6 @@ export const useConfig = () => {
     [configs],
   );
 
-  // 根据分组获取配置
   const getConfigsByGroup = useCallback(
     (group: string) => {
       return configs.filter((config) => config.group === group);
@@ -102,7 +85,6 @@ export const useConfig = () => {
     [configs],
   );
 
-  // 根据类型获取配置
   const getConfigsByType = useCallback(
     (type: string) => {
       return configs.filter((config) => config.type === type);
@@ -110,7 +92,6 @@ export const useConfig = () => {
     [configs],
   );
 
-  // 获取启用的配置
   const getEnabledConfigs = useCallback(() => {
     return configs.filter((config) => config.status === 1);
   }, [configs]);
@@ -119,8 +100,8 @@ export const useConfig = () => {
     setViewVisible(true);
     setLoading(true);
     try {
-      const response: any = await getConfig(configId);
-      setCurrentConfig(response.data);
+      const { data } = await getConfig(configId);
+      setCurrentConfig(data);
     } finally {
       setLoading(false);
     }
@@ -132,14 +113,11 @@ export const useConfig = () => {
   }, []);
 
   return {
-    // 状态
     configs,
     loading,
     submitting,
     viewVisible,
     currentConfig,
-
-    // 操作方法
     getConfigList,
     getConfigDetail,
     createConfigItem,

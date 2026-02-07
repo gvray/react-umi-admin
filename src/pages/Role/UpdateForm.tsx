@@ -1,4 +1,4 @@
-import { addRole, updateRole } from '@/services/role';
+import { createRole, updateRole } from '@/services/role';
 import { createFormLayout, logger } from '@/utils';
 import {
   Form,
@@ -41,7 +41,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       setConfirmLoading(true);
       const values = await form.validateFields();
       if (form.getFieldValue('roleId') === undefined) {
-        await addRole(values);
+        await createRole(values);
         message.success('新增成功');
       } else {
         await updateRole(values);
@@ -50,9 +50,11 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       setVisible(false);
       onOk?.();
       reset();
-    } catch (errorInfo: any) {
+    } catch (errorInfo: unknown) {
       console.log(errorInfo);
-      logger.error(`更新角色失败：${errorInfo?.message}`);
+      const msg =
+        errorInfo instanceof Error ? errorInfo.message : String(errorInfo);
+      logger.error(`更新角色失败：${msg}`);
     } finally {
       setConfirmLoading(false);
     }

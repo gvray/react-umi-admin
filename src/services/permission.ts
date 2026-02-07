@@ -1,148 +1,72 @@
 import { request } from '@gvray/request';
 
-export type PermissionType = 'MENU' | 'BUTTON' | 'API';
-
-export interface MenuMeta {
-  path?: string;
-  icon?: string;
-  hidden?: boolean;
-  component?: string;
-  sort?: number;
-}
-
-export interface PermissionItem {
-  id?: number;
-  permissionId: string;
-  name: string;
-  code: string;
-  type: PermissionType;
-  action: string;
-  description?: string;
-  parentPermissionId?: string | null;
-  children?: PermissionItem[];
-  menuMeta?: MenuMeta | null;
-  createdAt?: string;
-  updatedAt?: string;
-  createdById?: string | null;
-  updatedById?: string | null;
-}
-
-export interface PermissionListParams {
-  page?: number;
-  pageSize?: number;
-  name?: string;
-  code?: string;
-  type?: PermissionType;
-  action?: string;
-  sortField?: string;
-  sortOrder?: 'ascend' | 'descend';
-}
-
-export interface PermissionCreateParams {
-  name: string;
-  code: string;
-  type: PermissionType;
-  action: string;
-  description?: string;
-  parentPermissionId?: string | null;
-  menuMeta?: MenuMeta;
-}
-
-export interface PermissionUpdateParams
-  extends Partial<PermissionCreateParams> {
-  permissionId: string;
-}
-
-/**
- * 获取权限列表
- * @param params 查询参数
- * @param options 请求选项
- */
-export async function listPermission(
-  params?: PermissionListParams,
-  options?: { [key: string]: any },
-) {
-  return request('/system/permissions', {
+/** 获取权限列表 */
+export function listPermission(params?: API.PermissionsFindAllParams) {
+  return request<
+    API.Response<API.PaginatedResponse<API.PermissionResponseDto>>
+  >('/system/permissions', {
     method: 'GET',
     params,
-    ...(options || {}),
   });
 }
 
-/**
- * 获取权限树
- * @param options 请求选项
- */
-export async function getPermissionTree(
-  params?: Record<string, any>,
-  options?: { [key: string]: any },
-) {
-  return request('/system/permissions/tree', {
-    method: 'GET',
-    params,
-    ...(options || {}),
-  });
+/** 获取权限树 */
+export function getPermissionTree(params?: API.PermissionsGetTreeParams) {
+  return request<API.Response<API.PermissionResponseDto[]>>(
+    '/system/permissions/tree',
+    {
+      method: 'GET',
+      params,
+    },
+  );
 }
 
-/**
- * 获取单个权限详情
- * @param permissionId 权限ID
- * @param options 请求选项
- */
-export async function getPermission(
+/** 获取权限详情 */
+export function getPermission(permissionId: string) {
+  return request<API.Response<API.PermissionResponseDto>>(
+    `/system/permissions/${permissionId}`,
+    {
+      method: 'GET',
+    },
+  );
+}
+
+/** 创建权限 */
+export function createPermission(data: API.CreatePermissionDto) {
+  return request<API.Response<API.PermissionResponseDto>>(
+    '/system/permissions',
+    {
+      method: 'POST',
+      data,
+    },
+  );
+}
+
+/** 更新权限 */
+export function updatePermission(
   permissionId: string,
-  options?: { [key: string]: any },
+  data: API.UpdatePermissionDto,
 ) {
-  return request(`/system/permissions/${permissionId}`, {
-    method: 'GET',
-    ...(options || {}),
-  });
+  return request<API.Response<API.PermissionResponseDto>>(
+    `/system/permissions/${permissionId}`,
+    {
+      method: 'PATCH',
+      data,
+    },
+  );
 }
 
-/**
- * 创建新权限
- * @param values 权限数据
- * @param options 请求选项
- */
-export async function createPermission(
-  values: PermissionCreateParams,
-  options?: { [key: string]: any },
-) {
-  return request('/system/permissions', {
-    method: 'POST',
-    data: values,
-    ...(options || {}),
-  });
-}
-
-/**
- * 更新权限
- * @param values 更新数据
- * @param options 请求选项
- */
-export async function updatePermission(
-  values: PermissionUpdateParams,
-  options?: { [key: string]: any },
-) {
-  const { permissionId, ...rest } = values;
-  return request(`/system/permissions/${permissionId}`, {
-    method: 'PATCH',
-    data: rest,
-    ...(options || {}),
-  });
-}
-
-/**
- * 删除权限
- * @param permissionId 权限ID
- * @param options 请求选项
- */
-export async function deletePermission(
-  permissionId: string,
-  options?: { [key: string]: any },
-) {
-  return request(`/system/permissions/${permissionId}`, {
+/** 删除权限 */
+export function deletePermission(permissionId: string) {
+  return request<API.Response<void>>(`/system/permissions/${permissionId}`, {
     method: 'DELETE',
-    ...(options || {}),
+  });
+}
+
+/** 批量删除权限 */
+export function batchDeletePermissions(data: API.BatchDeletePermissionsDto) {
+  return request<API.Response<void>>('/system/permissions/batch-delete', {
+    method: 'POST',
+    data,
   });
 }

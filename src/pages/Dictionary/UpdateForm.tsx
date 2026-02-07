@@ -8,7 +8,7 @@ import { forwardRef, useImperativeHandle, useState } from 'react';
 const { TextArea } = Input;
 
 export interface UpdateFormRef {
-  show: (title: string, data?: any) => void;
+  show: (title: string, data?: Record<string, unknown>) => void;
 }
 
 interface UpdateFormProps {
@@ -20,13 +20,16 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>((props, ref) => {
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-  const [initialData, setInitialData] = useState<any>(null);
+  const [initialData, setInitialData] = useState<Record<
+    string,
+    unknown
+  > | null>(null);
 
   useImperativeHandle(ref, () => ({
-    show: (title: string, data?: any) => {
+    show: (title: string, data?: Record<string, unknown>) => {
       setTitle(title);
       setVisible(true);
-      setInitialData(data);
+      setInitialData(data ?? null);
       if (data) {
         form.setFieldsValue(data);
       } else {
@@ -42,7 +45,7 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>((props, ref) => {
 
       if (initialData) {
         // 更新
-        await updateDictionaryType(initialData.typeId, values);
+        await updateDictionaryType(initialData.typeId as string, values);
         message.success('更新成功');
       } else {
         // 新增

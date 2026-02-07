@@ -6,7 +6,7 @@ import { CONFIG_GROUP_OPTIONS } from './constants';
 const { TextArea } = Input;
 
 export interface UpdateFormRef {
-  show: (title: string, data?: any) => void;
+  show: (title: string, data?: Record<string, unknown>) => void;
   hide: () => void;
 }
 
@@ -24,7 +24,7 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
     const currentType = Form.useWatch('type', form);
 
     useImperativeHandle(ref, () => ({
-      show: (title: string, data?: any) => {
+      show: (title: string, data?: Record<string, unknown>) => {
         setTitle(title);
         setVisible(true);
         setIsEdit(!!data);

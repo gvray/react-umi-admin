@@ -5,21 +5,21 @@ export const usePosition = () => {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  const getList = useCallback(async (params?: any) => {
+  const getList = useCallback(async (params?: API.PositionsFindAllParams) => {
     return listPosition(params);
   }, []);
 
-  const getDetail = useCallback(async (positionId: number) => {
+  const getDetail = useCallback(async (positionId: string) => {
     setLoading(true);
     try {
-      const res: any = await getPosition(positionId);
-      return res.data ?? res;
+      const { data } = await getPosition(positionId);
+      return data;
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const deleteItem = useCallback(async (positionId: number) => {
+  const deleteItem = useCallback(async (positionId: string) => {
     setSubmitting(true);
     try {
       await deletePosition(positionId);

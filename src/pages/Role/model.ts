@@ -3,7 +3,7 @@ import { deleteRole, getRole, listRole } from '@/services/role';
 import { useCallback, useEffect, useState } from 'react';
 
 export const useUpdataFormModel = (open: boolean) => {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<API.PermissionResponseDto[]>([]);
   const [loading, setLoading] = useState(true);
   const getPermissions = async () => {
     try {
@@ -31,14 +31,14 @@ export const useUpdataFormModel = (open: boolean) => {
 export const useRoleModel = () => {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const getList = useCallback(async (params?: any) => {
+  const getList = useCallback(async (params?: API.RolesFindAllParams) => {
     return listRole(params);
   }, []);
   const getDetail = useCallback(async (roleId: string) => {
     setLoading(true);
     try {
-      const res: any = await getRole(roleId as any);
-      return res.data ?? res;
+      const { data } = await getRole(roleId);
+      return data;
     } finally {
       setLoading(false);
     }
@@ -46,7 +46,7 @@ export const useRoleModel = () => {
   const deleteItem = useCallback(async (roleId: string) => {
     setSubmitting(true);
     try {
-      await deleteRole(roleId as any);
+      await deleteRole(roleId);
     } finally {
       setSubmitting(false);
     }

@@ -10,16 +10,15 @@ export const useResourceModel = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  // 高级搜索参数
-  const paramsRef = useRef<Record<string, any>>({});
-  const getPermissions = async (params?: Record<string, any>) => {
+  const paramsRef = useRef<Record<string, unknown>>({});
+  const getPermissions = async (params?: API.PermissionsGetTreeParams) => {
     return getPermissionTree(params);
   };
   const getDetail = useCallback(async (permissionId: string) => {
     setLoading(true);
     try {
-      const res: any = await getPermission(permissionId);
-      return res.data ?? res;
+      const { data } = await getPermission(permissionId);
+      return data;
     } finally {
       setLoading(false);
     }
@@ -44,14 +43,14 @@ export const useResourceModel = () => {
 };
 
 export const useUpdataFormModel = (open: boolean) => {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<API.PermissionResponseDto[]>([]);
   const [loading, setLoading] = useState(true);
   const getTree = async () => {
     try {
       setLoading(true);
-      const res = (await getPermissionTree()) as any;
-      if (res?.data) {
-        setData(res.data.tree || res.data);
+      const res = await getPermissionTree();
+      if (res.data) {
+        setData(res.data);
       }
     } catch (error) {
     } finally {

@@ -8,7 +8,7 @@ import { forwardRef, useImperativeHandle, useState } from 'react';
 const { TextArea } = Input;
 
 export interface UpdateFormRef {
-  show: (title: string, data?: any) => void;
+  show: (title: string, data?: Record<string, unknown>) => void;
 }
 
 interface UpdateFormProps {
@@ -23,7 +23,7 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>((props, ref) => {
   const [form] = Form.useForm();
 
   useImperativeHandle(ref, () => ({
-    show: (title: string, data?: any) => {
+    show: (title: string, data?: Record<string, unknown>) => {
       setTitle(title);
       setVisible(true);
       if (data) {

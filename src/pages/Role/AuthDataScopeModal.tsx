@@ -129,7 +129,7 @@ const PERMISSION_TYPES = [
 
 interface RoleState {
   roleId: string;
-  roleName: string;
+  name: string;
   roleKey: string;
 }
 
@@ -149,7 +149,9 @@ export default function AuthDataScopeModal({
   onSuccess,
 }: AuthDataScopeModalProps) {
   const [currentRole, setCurrentRole] = useState<RoleState | null>(null);
-  const [departments, setDepartments] = useState<any[]>([]);
+  const [departments, setDepartments] = useState<API.DepartmentResponseDto[]>(
+    [],
+  );
   const [dataScope, setDataScope] = useState<DataScope>(DataScope.SELF);
   const [selectedDeptIds, setSelectedDeptIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -172,11 +174,7 @@ export default function AuthDataScopeModal({
         console.log('数据权限配置:', dataScopesRes.data);
         setDataScope(dataScopesRes.data.dataScope);
         if (dataScopesRes.data.dataScope === DataScope.CUSTOM) {
-          setSelectedDeptIds(
-            dataScopesRes.data.departments?.map(
-              (item: any) => item.departmentId,
-            ) || [],
-          );
+          setSelectedDeptIds(dataScopesRes.data.departmentIds || []);
         }
       }
 
@@ -231,8 +229,9 @@ export default function AuthDataScopeModal({
       message.success('数据权限分配成功');
       onSuccess?.();
       onCancel?.();
-    } catch (error: any) {
-      logger.error(`数据权限分配失败：${error.message}`);
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : String(error);
+      logger.error(`数据权限分配失败：${msg}`);
     } finally {
       setSubmitting(false);
     }
@@ -245,7 +244,9 @@ export default function AuthDataScopeModal({
   };
 
   // 将部门数据转换为树形结构
-  const convertToTreeData = (deptList: any[]): any[] => {
+  const convertToTreeData = (
+    deptList: API.DepartmentResponseDto[],
+  ): Record<string, unknown>[] => {
     return deptList.map((dept) => ({
       title: (
         <Space>
@@ -254,7 +255,9 @@ export default function AuthDataScopeModal({
         </Space>
       ),
       key: dept.departmentId,
-      children: dept.children ? convertToTreeData(dept.children) : undefined,
+      children: dept.children?.length
+        ? convertToTreeData(dept.children.flat())
+        : undefined,
     }));
   };
 
@@ -263,7 +266,7 @@ export default function AuthDataScopeModal({
       title={
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <DatabaseOutlined style={{ marginRight: '8px', color: '#1890ff' }} />
-          数据权限分配 - {currentRole?.roleName || roleName}
+          数据权限分配 - {currentRole?.name || roleName}
           {currentRole?.roleKey && (
             <Tag color="blue" style={{ marginLeft: '8px' }}>
               {currentRole.roleKey}

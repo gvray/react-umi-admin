@@ -5,12 +5,7 @@ import {
   TablePro,
 } from '@/components';
 import { TableProRef } from '@/components/TablePro';
-import { type LoginLogRecord } from '@/services/loginLog';
-import {
-  DeleteOutlined,
-  DownloadOutlined,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons';
+import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { message, Modal, Space, Tag, Typography } from 'antd';
 import React, { useRef } from 'react';
 import { getLoginLogColumns } from './columns';
@@ -21,13 +16,11 @@ const { Paragraph } = Typography;
 const LoginLog: React.FC = () => {
   const tableProRef = useRef<TableProRef>(null);
   const {
-    exportLog,
     deleteLogs,
     clearLogs,
     getLoginLogData,
     selectionChange,
     deleting,
-    exporting,
     clearing,
     selectedRows,
   } = useLoginLog();
@@ -53,7 +46,7 @@ const LoginLog: React.FC = () => {
     if (column.dataIndex === 'status') {
       return {
         ...column,
-        render: (value: any, record: LoginLogRecord) => (
+        render: (_: unknown, record: API.LoginLogResponseDto) => (
           <Tag color={record.status === 1 ? 'success' : 'error'}>
             {record.status === 1 ? '成功' : '失败'}
           </Tag>
@@ -70,15 +63,6 @@ const LoginLog: React.FC = () => {
     }
     return column;
   });
-
-  const handleExport = async () => {
-    try {
-      await exportLog();
-      message.success('导出成功');
-    } catch (error) {
-      message.error('导出失败');
-    }
-  };
 
   const handleDelete = async () => {
     Modal.confirm({
@@ -145,15 +129,6 @@ const LoginLog: React.FC = () => {
             >
               清空
             </AuthButton>
-            <AuthButton
-              type="primary"
-              icon={<DownloadOutlined />}
-              onClick={handleExport}
-              loading={exporting}
-              perms={['system:log:export']}
-            >
-              导出日志
-            </AuthButton>
           </Space>
         )}
         ref={tableProRef}
@@ -162,7 +137,7 @@ const LoginLog: React.FC = () => {
         onSelectionChange={
           selectionChange as (
             keys: React.Key[],
-            rows?: LoginLogRecord[],
+            rows?: API.LoginLogResponseDto[],
           ) => void
         }
       />

@@ -1,78 +1,40 @@
 import { request } from '@gvray/request';
 
-export interface OperationLogRecord {
-  id: string;
-  username: string;
-  userId?: string;
-  module?: string;
-  action?: string;
-  status: number; // 0/1 或其他业务定义
-  path?: string;
-  method?: string;
-  ip?: string;
-  location?: string;
-  userAgent?: string;
-  message?: string;
-  createdAt?: string;
-}
-
-export interface OperationLogQueryParams {
-  page?: number;
-  pageSize?: number;
-  username?: string;
-  userId?: string;
-  module?: string;
-  action?: string;
-  status?: number;
-  path?: string;
-  keyword?: string;
-  createdAtStart?: string; // ISO 字符串
-  createdAtEnd?: string; // ISO 字符串
-}
-
-export interface OperationLogListResponse {
-  success: boolean;
-  data: OperationLogRecord[];
-  total: number;
-  page: number;
-  pageSize: number;
-}
-
-/** 分页查询操作日志 */
-export async function getOperationLogs(
-  params?: OperationLogQueryParams,
-): Promise<OperationLogListResponse> {
-  return request('/system/operation-logs', {
-    method: 'GET',
-    params,
-  }) as Promise<OperationLogListResponse>;
+/** 获取操作日志列表 */
+export function listOperationLog(params?: API.OperationLogsFindManyParams) {
+  return request<API.Response<API.PaginatedResponse<Record<string, unknown>>>>(
+    '/system/operation-logs',
+    {
+      method: 'GET',
+      params,
+    },
+  );
 }
 
 /** 获取操作日志详情 */
-export async function getOperationLogDetail(logId: string) {
-  return request(`/system/operation-logs/${logId}`, {
-    method: 'GET',
-  });
-}
-
-/** 删除单条操作日志 */
-export async function deleteOperationLog(id: number) {
-  return request(`/system/operation-logs/${id}`, {
-    method: 'DELETE',
-  });
+export function getOperationLog(logId: string) {
+  return request<API.Response<Record<string, unknown>>>(
+    `/system/operation-logs/${logId}`,
+    {
+      method: 'GET',
+    },
+  );
 }
 
 /** 批量删除操作日志 */
-export async function deleteOperationLogs(ids: number[]) {
-  return request('/system/operation-logs/batch-delete', {
+export function batchDeleteOperationLogs(
+  data: API.BatchDeleteOperationLogsDto,
+) {
+  return request<API.Response<void>>('/system/operation-logs/batch-delete', {
     method: 'POST',
-    data: { ids },
+    data,
   });
 }
 
 /** 清理操作日志 */
-export async function cleanOperationLogs() {
-  return request('/system/operation-logs/clear', {
+export function clearOperationLog(data?: API.CleanOperationLogsDto) {
+  return request<API.Response<void>>('/system/operation-logs/clear', {
     method: 'DELETE',
+    data,
   });
 }

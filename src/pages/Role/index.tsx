@@ -73,9 +73,9 @@ const UserPage = () => {
   const handleUpdate = async (record: DataType) => {
     const roleId = record.roleId;
     try {
-      const msg: any = await getDetail(roleId as any);
+      const data = await getDetail(roleId);
       updateFormRef.current?.show('修改角色', {
-        ...msg,
+        ...data,
       });
     } catch (error) {}
   };

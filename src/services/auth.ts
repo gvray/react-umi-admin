@@ -1,34 +1,31 @@
 import { request } from '@gvray/request';
 
-/** 登录接口 POST /login */
-export async function login(body: any, options?: { [key: string]: any }) {
-  return request('/auth/login', {
+/** 用户登录 */
+export function login(data: API.LoginDto) {
+  return request<API.Response<{ access_token: string }>>('/auth/login', {
     method: 'POST',
-    data: body,
-    ...(options || { skipAuthHandler: true }),
+    data,
+    skipAuth: true,
   });
 }
 
-/** 退出登录接口 POST /logout */
-export async function logout(options?: { [key: string]: any }) {
-  return request('/auth/logout', {
+/** 退出登录 */
+export function logout() {
+  return request<API.Response<void>>('/auth/logout', {
     method: 'POST',
-    ...(options || {}),
   });
 }
 
-/** 获取当前的用户 GET /currentUser */
-export async function profile(options?: { [key: string]: any }) {
-  return request('/auth/profile', {
+/** 获取当前用户信息 */
+export function profile() {
+  return request<API.Response<API.CurrentUserResponseDto>>('/auth/profile', {
     method: 'GET',
-    ...(options || {}),
   });
 }
 
-// 获取菜单
-export async function getMenus(options?: { [key: string]: any }) {
-  return request('/auth/menus', {
+/** 获取当前用户菜单树 */
+export function getMenus() {
+  return request<API.Response<API.MenuResponseDto[]>>('/auth/menus', {
     method: 'GET',
-    ...(options || {}),
   });
 }

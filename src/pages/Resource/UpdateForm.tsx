@@ -22,7 +22,7 @@ interface UpdateFormProps {
 }
 
 export interface UpdateFormRef {
-  show: (title: string, data?: Record<string, any>) => void;
+  show: (title: string, data?: Record<string, unknown>) => void;
   hide: () => void;
   form: FormInstance;
 }
@@ -71,8 +71,9 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
         });
         message.success('新增成功');
       } else {
-        await updateResource({
-          ...values,
+        const { resourceId, ...rest } = values;
+        await updateResource(resourceId, {
+          ...rest,
           parentId: parentId === '0' ? null : parentId,
         });
         message.success('修改成功');

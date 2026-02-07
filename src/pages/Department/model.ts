@@ -11,16 +11,15 @@ export const useDepartmentModel = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  // 高级搜索参数
-  const paramsRef = useRef<Record<string, any>>({});
-  const getDepartments = async (params?: Record<string, any>) => {
+  const paramsRef = useRef<Record<string, unknown>>({});
+  const getDepartments = async (params?: API.DepartmentsGetTreeParams) => {
     return getDepartmentTree(params);
   };
   const getDetail = useCallback(async (departmentId: string) => {
     setLoading(true);
     try {
-      const res: any = await getDepartment(departmentId);
-      return res.data ?? res;
+      const { data } = await getDepartment(departmentId);
+      return data;
     } finally {
       setLoading(false);
     }
@@ -45,19 +44,19 @@ export const useDepartmentModel = () => {
 };
 
 export const useUpdataFormModel = (open: boolean) => {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<API.DepartmentResponseDto[]>([]);
   const [loading, setLoading] = useState(true);
   const getDepartments = async () => {
     try {
       setLoading(true);
       const res = await listDepartment();
-      if (res.data && res.data.items && res.data.items.length > 0) {
+      if (res.data?.items?.length) {
         setData([
           {
             departmentId: ROOT_PARENT_ID,
             name: '顶级部门',
             description: '顶级部门',
-          },
+          } as API.DepartmentResponseDto,
           ...res.data.items,
         ]);
       }

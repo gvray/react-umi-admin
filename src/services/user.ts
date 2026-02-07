@@ -1,61 +1,62 @@
 import { request } from '@gvray/request';
 
-export async function listUser(params?: any, options?: { [key: string]: any }) {
-  return request('/system/users', {
+/** 获取用户列表 */
+export function listUser(params?: API.UsersFindAllParams) {
+  return request<API.Response<API.PaginatedResponse<API.UserResponseDto>>>(
+    '/system/users',
+    {
+      method: 'GET',
+      params,
+    },
+  );
+}
+
+/** 获取用户详情 */
+export function getUser(userId: string) {
+  return request<API.Response<API.UserResponseDto>>(`/system/users/${userId}`, {
     method: 'GET',
-    params,
-    ...(options || {}),
   });
 }
 
-export async function deleteUser(
-  userId: string,
-  options?: { [key: string]: any },
-) {
-  return request(`/system/users/${userId}`, {
-    method: 'DELETE',
-    ...(options || {}),
-  });
-}
-
-export async function addUser(values: any, options?: { [key: string]: any }) {
-  return request('/system/users', {
+/** 创建用户 */
+export function createUser(data: API.CreateUserDto) {
+  return request<API.Response<API.UserResponseDto>>('/system/users', {
     method: 'POST',
-    data: values,
-    ...(options || {}),
+    data,
   });
 }
 
-export async function updateUser(
-  values: any,
-  options?: { [key: string]: any },
-) {
-  const { userId, ...rest } = values;
-  return request(`/system/users/${userId}`, {
+/** 更新用户 */
+export function updateUser(data: API.UpdateUserDto & { userId: string }) {
+  const { userId, ...rest } = data;
+  return request<API.Response<API.UserResponseDto>>(`/system/users/${userId}`, {
     method: 'PATCH',
     data: rest,
-    ...(options || {}),
   });
 }
 
-export async function getUser(
-  userId: string,
-  options?: { [key: string]: any },
-) {
-  return request(`/system/users/${userId}`, {
-    method: 'GET',
-    ...(options || {}),
+/** 删除用户 */
+export function deleteUser(userId: string) {
+  return request<API.Response<void>>(`/system/users/${userId}`, {
+    method: 'DELETE',
   });
 }
 
-export async function updateUserRole(
-  userId: string,
-  data: any,
-  options?: { [key: string]: any },
-) {
-  return request(`/system/users/${userId}/roles`, {
-    method: 'PUT',
+/** 批量删除用户 */
+export function batchDeleteUsers(data: API.BatchDeleteUsersDto) {
+  return request<API.Response<void>>('/system/users/batch-delete', {
+    method: 'POST',
     data,
-    ...(options || {}),
   });
+}
+
+/** 为用户分配角色 */
+export function assignUserRoles(userId: string, data: API.AssignRolesDto) {
+  return request<API.Response<API.UserResponseDto>>(
+    `/system/users/${userId}/roles`,
+    {
+      method: 'PUT',
+      data,
+    },
+  );
 }

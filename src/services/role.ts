@@ -1,240 +1,131 @@
 import { request } from '@gvray/request';
 
-// 角色数据类型定义
-export interface Role {
-  roleId: number;
-  name: string;
-  code: string;
-  description?: string;
-  status: 'active' | 'inactive';
-  createdAt: string;
-  updatedAt: string;
-  createdBy?: string;
-  permissions?: string[];
-  userCount?: number;
+/** 获取角色列表 */
+export function listRole(params?: API.RolesFindAllParams) {
+  return request<API.Response<API.PaginatedResponse<API.RoleResponseDto>>>(
+    '/system/roles',
+    {
+      method: 'GET',
+      params,
+    },
+  );
 }
 
-export interface RoleListParams {
-  page?: number;
-  pageSize?: number;
-  name?: string;
-  code?: string;
-  status?: 'active' | 'inactive';
-  sortField?: string;
-  sortOrder?: 'ascend' | 'descend';
-}
-
-export interface RoleCreateParams {
-  name: string;
-  code: string;
-  description?: string;
-  status?: 'active' | 'inactive';
-  permissions?: string[];
-}
-
-export interface RoleUpdateParams extends Partial<RoleCreateParams> {
-  roleId: number;
-}
-
-// CRUD API 服务函数
-
-/**
- * 获取角色列表
- * @param params 查询参数
- * @param options 请求选项
- */
-export async function listRole(
-  params?: RoleListParams,
-  options?: { [key: string]: any },
-) {
-  return request('/system/roles', {
+/** 获取角色详情 */
+export function getRole(roleId: string) {
+  return request<API.Response<API.RoleResponseDto>>(`/system/roles/${roleId}`, {
     method: 'GET',
-    params,
-    ...(options || {}),
   });
 }
 
-/**
- * 获取单个角色详情
- * @param roleId 角色ID
- * @param options 请求选项
- */
-export async function getRole(
-  roleId: string,
-  options?: { [key: string]: any },
-) {
-  return request(`/system/roles/${roleId}`, {
-    method: 'GET',
-    ...(options || {}),
-  });
-}
-
-/**
- * 创建新角色
- * @param values 角色数据
- * @param options 请求选项
- */
-export async function addRole(
-  values: RoleCreateParams,
-  options?: { [key: string]: any },
-) {
-  return request('/system/roles', {
+/** 创建角色 */
+export function createRole(data: API.CreateRoleDto) {
+  return request<API.Response<API.RoleResponseDto>>('/system/roles', {
     method: 'POST',
-    data: values,
-    ...(options || {}),
+    data,
   });
 }
 
-/**
- * 更新角色
- * @param values 更新数据
- * @param options 请求选项
- */
-export async function updateRole(
-  values: RoleUpdateParams,
-  options?: { [key: string]: any },
-) {
-  const { roleId, ...rest } = values;
-  return request(`/system/roles/${roleId}`, {
+/** 更新角色 */
+export function updateRole(data: API.UpdateRoleDto & { roleId: string }) {
+  const { roleId, ...rest } = data;
+  return request<API.Response<API.RoleResponseDto>>(`/system/roles/${roleId}`, {
     method: 'PATCH',
     data: rest,
-    ...(options || {}),
   });
 }
 
-/**
- * 删除角色
- * @param roleId 角色ID
- * @param options 请求选项
- */
-export async function deleteRole(
-  roleId: string,
-  options?: { [key: string]: any },
-) {
-  return request(`/system/roles/${roleId}`, {
+/** 删除角色 */
+export function deleteRole(roleId: string) {
+  return request<API.Response<void>>(`/system/roles/${roleId}`, {
     method: 'DELETE',
-    ...(options || {}),
   });
 }
 
-/**
- * 批量删除角色
- * @param roleIds 角色ID数组
- * @param options 请求选项
- */
-export async function batchDeleteRoles(
-  roleIds: number[],
-  options?: { [key: string]: any },
-) {
-  return request('/system/roles/batch-delete', {
+/** 批量删除角色 */
+export function batchDeleteRoles(data: API.BatchDeleteRolesDto) {
+  return request<API.Response<void>>('/system/roles/batch-delete', {
     method: 'POST',
-    data: { ids: roleIds },
-    ...(options || {}),
-  });
-}
-
-/**
- * 更新角色状态
- * @param roleId 角色ID
- * @param status 新状态
- * @param options 请求选项
- */
-export async function updateRoleStatus(
-  roleId: number,
-  status: 'active' | 'inactive',
-  options?: { [key: string]: any },
-) {
-  return request(`/system/roles/${roleId}/status`, {
-    method: 'PATCH',
-    data: { status },
-    ...(options || {}),
-  });
-}
-
-/**
- * 分配角色权限
- * @param roleId 角色ID
- * @param permissions 权限ID数组
- * @param options 请求选项
- */
-export async function assignRolePermissions(
-  roleId: number,
-  permissionIds: string[],
-  options?: { [key: string]: any },
-) {
-  return request(`/system/roles/${roleId}/permissions`, {
-    method: 'PUT',
-    data: { permissionIds },
-    ...(options || {}),
-  });
-}
-
-/**
- * 获取角色权限
- * @param roleId 角色ID
- * @param options 请求选项
- */
-export async function getRolePermissions(
-  roleId: number,
-  options?: { [key: string]: any },
-) {
-  return request(`/system/roles/${roleId}/permissions`, {
-    method: 'GET',
-    ...(options || {}),
-  });
-}
-
-/**
- * 获取角色下的用户列表
- * @param roleId 角色ID
- * @param options 请求选项
- */
-export async function getRoleUsers(
-  roleId: number,
-  options?: { [key: string]: any },
-) {
-  return request(`/system/roles/${roleId}/users`, {
-    method: 'GET',
-    ...(options || {}),
-  });
-}
-
-// 分配用户
-export async function assignRoleUsers(
-  roleId: string,
-  users: string[],
-  options?: { [key: string]: any },
-) {
-  return request(`/system/roles/${roleId}/users`, {
-    method: 'Put',
-    data: { userIds: users },
-    ...(options || {}),
-  });
-}
-
-// 获取角色的数据权限
-export async function getRoleDataScopes(
-  roleId: string,
-  options?: { [key: string]: any },
-) {
-  return request(`/system/roles/${roleId}/data-scope`, {
-    method: 'GET',
-    ...(options || {}),
-  });
-}
-
-// 为角色分配数据权限（替换所有数据权限）
-export async function assignRoleDataScopes(
-  roleId: string,
-  data: {
-    dataScope: number;
-    departments?: string[];
-  },
-  options?: { [key: string]: any },
-) {
-  return request(`/system/roles/${roleId}/data-scope`, {
-    method: 'PUT',
     data,
-    ...(options || {}),
   });
+}
+
+/** 更新角色状态 */
+export function updateRoleStatus(roleId: string, status: number) {
+  return request<API.Response<API.RoleResponseDto>>(
+    `/system/roles/${roleId}/status`,
+    {
+      method: 'PATCH',
+      data: { status },
+    },
+  );
+}
+
+/** 分配角色权限 */
+export function assignRolePermissions(
+  roleId: string,
+  data: API.AssignPermissionsDto,
+) {
+  return request<API.Response<API.RoleResponseDto>>(
+    `/system/roles/${roleId}/permissions`,
+    {
+      method: 'PUT',
+      data,
+    },
+  );
+}
+
+/** 获取角色权限列表 */
+export function getRolePermissions(roleId: string) {
+  return request<API.Response<API.RolePermissionResponseDto[]>>(
+    `/system/roles/${roleId}/permissions`,
+    {
+      method: 'GET',
+    },
+  );
+}
+
+/** 获取角色下的用户列表 */
+export function getRoleUsers(roleId: string) {
+  return request<API.Response<API.RoleUserResponseDto[]>>(
+    `/system/roles/${roleId}/users`,
+    {
+      method: 'GET',
+    },
+  );
+}
+
+/** 为角色分配用户 */
+export function assignRoleUsers(roleId: string, data: API.AssignUsersDto) {
+  return request<API.Response<API.RoleResponseDto>>(
+    `/system/roles/${roleId}/users`,
+    {
+      method: 'PUT',
+      data,
+    },
+  );
+}
+
+/** 获取角色数据权限 */
+export function getRoleDataScopes(roleId: string) {
+  return request<API.Response<API.AssignDataScopeDto>>(
+    `/system/roles/${roleId}/data-scope`,
+    {
+      method: 'GET',
+    },
+  );
+}
+
+/** 分配角色数据权限 */
+export function assignRoleDataScopes(
+  roleId: string,
+  data: API.AssignDataScopeDto,
+) {
+  return request<API.Response<API.RoleResponseDto>>(
+    `/system/roles/${roleId}/data-scope`,
+    {
+      method: 'PUT',
+      data,
+    },
+  );
 }

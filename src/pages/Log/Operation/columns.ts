@@ -1,5 +1,4 @@
 import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
-import { type OperationLogRecord } from '@/services/operationLog';
 import { ColumnProps } from 'antd/es/table';
 
 interface OperationLogColumnProps<T, U> extends ColumnProps<T> {
@@ -7,7 +6,7 @@ interface OperationLogColumnProps<T, U> extends ColumnProps<T> {
 }
 
 export const getOperationLogColumns = (): OperationLogColumnProps<
-  OperationLogRecord,
+  Record<string, unknown>,
   Record<string, string | number>
 >[] => {
   return [

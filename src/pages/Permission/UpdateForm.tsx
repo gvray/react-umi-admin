@@ -22,7 +22,7 @@ interface UpdateFormProps {
 }
 
 export interface UpdateFormRef {
-  show: (title: string, data?: Record<string, any>) => void;
+  show: (title: string, data?: Record<string, unknown>) => void;
   hide: () => void;
   form: FormInstance;
 }
@@ -66,10 +66,11 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       setConfirmLoading(true);
       const values = await form.validateFields();
       if (!form.getFieldValue('permissionId')) {
-        await createPermission(values as any);
+        await createPermission(values);
         message.success('新增成功');
       } else {
-        await updatePermission(values as any);
+        const { permissionId, ...rest } = values;
+        await updatePermission(permissionId, rest);
         message.success('修改成功');
       }
       setVisible(false);

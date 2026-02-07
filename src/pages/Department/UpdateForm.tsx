@@ -21,7 +21,7 @@ interface UpdateFormProps {
 }
 
 export interface UpdateFormRef {
-  show: (title: string, data?: Record<string, any>) => void;
+  show: (title: string, data?: Record<string, unknown>) => void;
   hide: () => void;
   form: FormInstance;
 }
@@ -68,8 +68,9 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
         });
         message.success('新增成功');
       } else {
-        await updateDepartment({
-          ...values,
+        const { departmentId, ...rest } = values;
+        await updateDepartment(departmentId, {
+          ...rest,
           parentId: parentId === '0' ? null : parentId,
         });
         message.success('修改成功');

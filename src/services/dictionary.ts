@@ -1,132 +1,152 @@
 import { request } from '@gvray/request';
 
-// 字典类型相关接口
-export interface DictionaryType {
-  id: number;
-  typeId: string;
-  code: string;
-  name: string;
-  description?: string;
-  status: number;
-  sort: number;
-  remark?: string;
-  items?: DictionaryItem[];
-  createdById?: string;
-  updatedById?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+// ─── 字典类型 ───────────────────────────────────────────
 
-// 字典项相关接口
-export interface DictionaryItem {
-  id: number;
-  itemId: string;
-  typeId: string;
-  code: string;
-  name: string;
-  value: string;
-  label: string;
-  description?: string;
-  status: number;
-  sort: number;
-  remark?: string;
-  createdById?: string;
-  updatedById?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// 字典类型列表
-export const listDictionaryType = (params?: any) => {
-  return request('/system/dictionaries/types', {
+/** 获取字典类型列表 */
+export function listDictionaryType(
+  params?: API.DictionariesFindAllDictionaryTypesParams,
+) {
+  return request<
+    API.Response<API.PaginatedResponse<API.DictionaryTypeResponseDto>>
+  >('/system/dictionaries/types', {
     method: 'GET',
     params,
   });
-};
+}
 
-// 获取字典类型详情
-export const getDictionaryType = (typeId: string) => {
-  return request(`/system/dictionaries/types/${typeId}`, {
-    method: 'GET',
-  });
-};
+/** 获取字典类型详情 */
+export function getDictionaryType(typeId: string) {
+  return request<API.Response<API.DictionaryTypeResponseDto>>(
+    `/system/dictionaries/types/${typeId}`,
+    {
+      method: 'GET',
+    },
+  );
+}
 
-// 创建字典类型
-export const createDictionaryType = (data: Partial<DictionaryType>) => {
-  return request('/system/dictionaries/types', {
-    method: 'POST',
-    data,
-  });
-};
+/** 创建字典类型 */
+export function createDictionaryType(data: API.CreateDictionaryTypeDto) {
+  return request<API.Response<API.DictionaryTypeResponseDto>>(
+    '/system/dictionaries/types',
+    {
+      method: 'POST',
+      data,
+    },
+  );
+}
 
-// 更新字典类型
-export const updateDictionaryType = (
+/** 更新字典类型 */
+export function updateDictionaryType(
   typeId: string,
-  data: Partial<DictionaryType>,
-) => {
-  return request(`/system/dictionaries/types/${typeId}`, {
-    method: 'PATCH',
-    data,
-  });
-};
+  data: API.UpdateDictionaryTypeDto,
+) {
+  return request<API.Response<API.DictionaryTypeResponseDto>>(
+    `/system/dictionaries/types/${typeId}`,
+    {
+      method: 'PATCH',
+      data,
+    },
+  );
+}
 
-// 删除字典类型
-export const deleteDictionaryType = (typeId: string) => {
-  return request(`/system/dictionaries/types/${typeId}`, {
+/** 删除字典类型 */
+export function deleteDictionaryType(typeId: string) {
+  return request<API.Response<void>>(`/system/dictionaries/types/${typeId}`, {
     method: 'DELETE',
   });
-};
+}
 
-// 字典项列表
-export const listDictionaryItem = (typeCode: string, params?: any) => {
-  return request('/system/dictionaries/items', {
-    method: 'GET',
-    params: {
-      ...params,
-      typeCode,
+/** 批量删除字典类型 */
+export function batchDeleteDictionaryTypes(
+  data: API.BatchDeleteDictionaryTypesDto,
+) {
+  return request<API.Response<void>>(
+    '/system/dictionaries/types/batch-delete',
+    {
+      method: 'POST',
+      data,
     },
-  });
-};
+  );
+}
 
-// 获取字典项详情
-export const getDictionaryItem = (itemId: string) => {
-  return request(`/system/dictionaries/items/${itemId}`, {
+// ─── 字典项 ─────────────────────────────────────────────
+
+/** 获取字典项列表 */
+export function listDictionaryItem(
+  params?: API.DictionariesFindAllDictionaryItemsParams,
+) {
+  return request<
+    API.Response<API.PaginatedResponse<API.DictionaryItemResponseDto>>
+  >('/system/dictionaries/items', {
     method: 'GET',
+    params,
   });
-};
+}
 
-// 创建字典项
-export const createDictionaryItem = (data: Partial<DictionaryItem>) => {
-  return request('/system/dictionaries/items', {
-    method: 'POST',
-    data,
-  });
-};
+/** 获取字典项详情 */
+export function getDictionaryItem(itemId: string) {
+  return request<API.Response<API.DictionaryItemResponseDto>>(
+    `/system/dictionaries/items/${itemId}`,
+    {
+      method: 'GET',
+    },
+  );
+}
 
-// 更新字典项
-export const updateDictionaryItem = (
+/** 创建字典项 */
+export function createDictionaryItem(data: API.CreateDictionaryItemDto) {
+  return request<API.Response<API.DictionaryItemResponseDto>>(
+    '/system/dictionaries/items',
+    {
+      method: 'POST',
+      data,
+    },
+  );
+}
+
+/** 更新字典项 */
+export function updateDictionaryItem(
   itemId: string,
-  data: Partial<DictionaryItem>,
-) => {
-  return request(`/system/dictionaries/items/${itemId}`, {
-    method: 'PATCH',
-    data,
-  });
-};
+  data: API.UpdateDictionaryItemDto,
+) {
+  return request<API.Response<API.DictionaryItemResponseDto>>(
+    `/system/dictionaries/items/${itemId}`,
+    {
+      method: 'PATCH',
+      data,
+    },
+  );
+}
 
-// 删除字典项
-export const deleteDictionaryItem = (itemId: string) => {
-  return request(`/system/dictionaries/items/${itemId}`, {
+/** 删除字典项 */
+export function deleteDictionaryItem(itemId: string) {
+  return request<API.Response<void>>(`/system/dictionaries/items/${itemId}`, {
     method: 'DELETE',
   });
-};
+}
 
-// 批量获取字典项
-export const getDictionaryTypesBatch = (typeCodes: string) => {
-  return request(`/system/dictionaries/types/batch`, {
-    method: 'GET',
-    params: {
-      typeCodes,
+/** 批量删除字典项 */
+export function batchDeleteDictionaryItems(
+  data: API.BatchDeleteDictionaryItemsDto,
+) {
+  return request<API.Response<void>>(
+    '/system/dictionaries/items/batch-delete',
+    {
+      method: 'POST',
+      data,
     },
-  });
-};
+  );
+}
+
+/** 根据类型编码批量获取字典项 */
+export function getDictionaryItemsByTypeCodes(
+  params: API.DictionariesGetDictionaryItemsByTypeCodesParams,
+) {
+  return request<API.Response<Record<string, API.DictionaryItemResponseDto[]>>>(
+    '/system/dictionaries/types/batch',
+    {
+      method: 'GET',
+      params,
+    },
+  );
+}

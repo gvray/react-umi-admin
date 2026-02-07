@@ -6,12 +6,17 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 
 export const useDashboard = () => {
-  const [overview, setOverview] = useState<any>(null);
-  const [roleDistribution, setRoleDistribution] = useState<any>(null);
+  const [overview, setOverview] = useState<Record<string, unknown> | null>(
+    null,
+  );
+  const [roleDistribution, setRoleDistribution] = useState<Record<
+    string,
+    unknown
+  > | null>(null);
   const [loginData, setLoginData] = useState<{ date: string; value: number }[]>(
     [],
   );
-  const [logs, setLogs] = useState<any[]>([]);
+  const [logs, setLogs] = useState<Record<string, unknown>[]>([]);
   const fetchOverview = useCallback(async () => {
     try {
       const res = await getDashboardOverview();
@@ -38,7 +43,7 @@ export const useDashboard = () => {
     try {
       const res = await getLoginTrend();
       if (res.data) {
-        setLoginData(res.data);
+        setLoginData(res.data as unknown as { date: string; value: number }[]);
       }
     } catch (error) {
       console.log(error);

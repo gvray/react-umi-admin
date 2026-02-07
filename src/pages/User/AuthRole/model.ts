@@ -1,11 +1,13 @@
 import { listRole } from '@/services/role';
-import { getUser, updateUserRole } from '@/services/user';
+import { assignUserRoles, getUser } from '@/services/user';
 import { message } from 'antd';
 import { useCallback, useState } from 'react';
 
 export const useAuthRole = (userId?: string) => {
-  const [roles, setRoles] = useState<any[]>([]);
-  const [selectedUser, setSelectedUser] = useState<any>(null);
+  const [roles, setRoles] = useState<API.RoleResponseDto[]>([]);
+  const [selectedUser, setSelectedUser] = useState<API.UserResponseDto | null>(
+    null,
+  );
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -13,7 +15,7 @@ export const useAuthRole = (userId?: string) => {
   const fetchRoles = useCallback(async () => {
     try {
       const res = await listRole();
-      if (res.data && res.data.items && res.data.items.length > 0) {
+      if (res.data?.items?.length) {
         setRoles(res.data.items);
       }
     } catch (error) {}
@@ -37,7 +39,6 @@ export const useAuthRole = (userId?: string) => {
   const initializeData = useCallback(
     async (userId?: string) => {
       if (!userId) return;
-
       await Promise.all([fetchRoles(), fetchUserDetail(userId)]);
     },
     [fetchRoles, fetchUserDetail],
@@ -45,39 +46,28 @@ export const useAuthRole = (userId?: string) => {
 
   // 提交角色分配
   const submitRoleAssignment = useCallback(
-    async (values: any) => {
+    async (values: API.AssignRolesDto) => {
       if (!userId) return;
       try {
         setSubmitting(true);
-        await updateUserRole(userId, {
-          ...values,
-        });
+        await assignUserRoles(userId, values);
         message.success('角色分配成功');
-
-        // 刷新用户数据
-        if (values.userId) {
-          await fetchUserDetail(values.userId);
-        }
-
+        await fetchUserDetail(userId);
         return true;
       } catch (error) {
-        // message.error('角色分配失败');
         return false;
       } finally {
         setSubmitting(false);
       }
     },
-    [fetchUserDetail],
+    [userId, fetchUserDetail],
   );
 
   return {
-    // 状态
     roles,
     selectedUser,
     loading,
     submitting,
-
-    // 方法
     fetchRoles,
     fetchUserDetail,
     initializeData,

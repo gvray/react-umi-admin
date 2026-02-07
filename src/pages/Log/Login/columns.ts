@@ -1,5 +1,4 @@
 import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
-import { type LoginLogRecord } from '@/services/loginLog';
 import { ColumnProps } from 'antd/es/table';
 interface LoginLogColumnProps<T, U> extends ColumnProps<T> {
   advancedSearch?: AdvancedSearchItem<U>;
@@ -8,7 +7,7 @@ interface LoginLogColumnProps<T, U> extends ColumnProps<T> {
  * 登录日志表格列配置
  */
 export const getLoginLogColumns = (): LoginLogColumnProps<
-  LoginLogRecord,
+  API.LoginLogResponseDto,
   Record<string, string | number>
 >[] => {
   return [

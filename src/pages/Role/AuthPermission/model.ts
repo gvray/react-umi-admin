@@ -5,16 +5,19 @@ import { message } from 'antd';
 import { useCallback, useState } from 'react';
 
 export const useAuthPermission = () => {
-  const [permissions, setPermissions] = useState<any[]>([]);
-  const [selectedRole, setSelectedRole] = useState<any>(null);
+  const [permissions, setPermissions] = useState<API.PermissionResponseDto[]>(
+    [],
+  );
+  const [selectedRole, setSelectedRole] = useState<API.RoleResponseDto | null>(
+    null,
+  );
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  // 获取权限列表
   const fetchPermissions = useCallback(async () => {
     try {
       const res = await listPermission();
-      if (res.data && res.data.items && res.data.items.length > 0) {
+      if (res.data?.items?.length) {
         setPermissions(res.data.items);
       }
     } catch (error) {
@@ -22,7 +25,6 @@ export const useAuthPermission = () => {
     }
   }, []);
 
-  // 获取角色详情
   const fetchRoleDetail = useCallback(async (roleId: string) => {
     try {
       setLoading(true);
@@ -37,32 +39,29 @@ export const useAuthPermission = () => {
     }
   }, []);
 
-  // 初始化数据
   const initializeData = useCallback(
     async (roleId?: string) => {
       if (!roleId) return;
-
       await Promise.all([fetchPermissions(), fetchRoleDetail(roleId)]);
     },
     [fetchPermissions, fetchRoleDetail],
   );
 
-  // 提交权限分配
   const submitPermissionAssignment = useCallback(
-    async (values: any) => {
+    async (values: { roleId: string; permissionIds: string[] }) => {
       try {
         setSubmitting(true);
-        await assignRolePermissions(values.roleId, values.permissionIds);
+        await assignRolePermissions(values.roleId, {
+          permissionIds: values.permissionIds,
+        });
         message.success('权限分配成功');
-
-        // 刷新角色数据
         if (values.roleId) {
           await fetchRoleDetail(values.roleId);
         }
-
         return true;
-      } catch (error: any) {
-        logger.error(`权限分配失败：${error.message}`);
+      } catch (error: unknown) {
+        const msg = error instanceof Error ? error.message : String(error);
+        logger.error(`权限分配失败：${msg}`);
         return false;
       } finally {
         setSubmitting(false);
@@ -72,13 +71,10 @@ export const useAuthPermission = () => {
   );
 
   return {
-    // 状态
     permissions,
     selectedRole,
     loading,
     submitting,
-
-    // 方法
     fetchPermissions,
     fetchRoleDetail,
     initializeData,
