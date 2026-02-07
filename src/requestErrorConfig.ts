@@ -1,8 +1,7 @@
 ﻿import { logger } from '@/utils';
-import type { RequestOptions } from '@@/plugin-request/request';
+import type { RequestConfig, RequestOptions } from '@gvray/request';
 import { message as msg, notification } from 'antd';
 import storetify from 'storetify';
-import type { RequestConfig } from 'umi';
 // 这里 umi request插件的错误处理方案， 可以在这里做自己的改动，但我不打算使用 完将完全暴露request到utils中
 
 // 错误处理方案： 错误类型
@@ -22,13 +21,7 @@ interface ResponseStructure {
   showType?: ErrorShowType;
 }
 
-/**
- * @name 错误处理
- * pro 自带的错误处理， 可以在这里做自己的改动
- * @doc https://umijs.org/docs/max/request#配置
- */
 export const errorConfig: RequestConfig = {
-  // 错误处理： umi@3 的错误处理方案。
   errorConfig: {
     // 当响应的数据 success 是 false 的时候，抛出 error 以供 errorHandler 处理。
     errorThrower: (res) => {

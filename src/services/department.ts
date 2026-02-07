@@ -1,6 +1,4 @@
-// 部门管理
-
-import { request } from 'umi';
+import { request } from '@gvray/request';
 
 // 部门数据类型定义
 export interface Department {

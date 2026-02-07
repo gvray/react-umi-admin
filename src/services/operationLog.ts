@@ -1,4 +1,4 @@
-import { request } from '@/utils/request';
+import { request } from '@gvray/request';
 
 export interface OperationLogRecord {
   id: string;

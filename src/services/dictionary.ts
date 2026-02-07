@@ -1,4 +1,4 @@
-import { request } from '@/utils/request';
+import { request } from '@gvray/request';
 
 // 字典类型相关接口
 export interface DictionaryType {

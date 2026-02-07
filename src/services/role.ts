@@ -1,6 +1,4 @@
-// 角色管理
-
-import { request } from 'umi';
+import { request } from '@gvray/request';
 
 // 角色数据类型定义
 export interface Role {

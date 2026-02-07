@@ -1,4 +1,4 @@
-import { request } from 'umi';
+import { request } from '@gvray/request';
 
 // 资源数据类型定义
 export interface Resource {

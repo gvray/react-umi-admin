@@ -1,4 +1,4 @@
-import { request } from '@/utils/request';
+import { request } from '@gvray/request';
 
 export const getDashboardOverview = () => {
   return request('/dashboard/overview', {

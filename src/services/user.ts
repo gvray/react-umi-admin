@@ -1,4 +1,4 @@
-import { request } from 'umi';
+import { request } from '@gvray/request';
 
 export async function listUser(params?: any, options?: { [key: string]: any }) {
   return request('/system/users', {

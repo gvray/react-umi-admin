@@ -1,4 +1,4 @@
-import { request } from '@/utils/request';
+import { request } from '@gvray/request';
 
 // 配置接口
 export interface Config {
