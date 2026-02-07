@@ -314,6 +314,7 @@ async function generate() {
 
   lines.push('');
   lines.push('  interface Response<T = unknown> {');
+  lines.push('    success: boolean;');
   lines.push('    code: number;');
   lines.push('    message: string;');
   lines.push('    data: T;');
