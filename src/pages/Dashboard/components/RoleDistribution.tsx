@@ -2,31 +2,41 @@ import { Charts } from '@/components';
 import type { EChartsOption } from 'echarts';
 import React, { useMemo } from 'react';
 
+interface RoleDataItem {
+  name: string;
+  value: number;
+  itemStyle?: { color: string };
+}
+
 interface RoleDistributionProps {
   height?: number;
-  data: {
-    name: string;
-    value: number;
-    itemStyle?: {
-      color: string;
-    };
-  }[];
+  data: RoleDataItem[] | Record<string, unknown> | null;
 }
+
 const colorPalette = [
-  '#f5222d',
-  '#faad14',
-  '#1890ff',
-  '#52c41a',
-  '#13c2c2',
-  '#722ed1',
+  '#667eea',
+  '#f5576c',
+  '#4facfe',
+  '#43e97b',
+  '#fa709a',
+  '#764ba2',
+  '#f093fb',
+  '#38f9d7',
 ];
+
 const RoleDistribution: React.FC<RoleDistributionProps> = ({
-  height = 320,
+  height = 340,
   data,
 }) => {
+  const normalizedData: RoleDataItem[] = useMemo(() => {
+    if (!data) return [];
+    if (Array.isArray(data)) return data as RoleDataItem[];
+    return [];
+  }, [data]);
+
   const dataWithColor = useMemo(
     () =>
-      data?.map((item, index) => ({
+      normalizedData.map((item: RoleDataItem, index: number) => ({
         ...item,
         itemStyle: {
           color:
@@ -35,55 +45,76 @@ const RoleDistribution: React.FC<RoleDistributionProps> = ({
             '#ccc',
         },
       })),
-    [data],
+    [normalizedData],
   );
+
   const options: EChartsOption = {
-    title: {
-      text: '用户角色分布',
-      left: 'left',
-      top: 10,
-      textStyle: { fontSize: 12 },
-    },
     tooltip: {
       trigger: 'item',
-      formatter: '{a} <br/>{b}: {c} ({d}%)',
+      backgroundColor: 'rgba(255,255,255,0.96)',
+      borderColor: '#e5e7eb',
+      borderWidth: 1,
+      textStyle: { color: '#334155', fontSize: 13 },
+      formatter: (params: unknown) => {
+        const p = params as {
+          name: string;
+          value: number;
+          percent: number;
+          color: string;
+        };
+        return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+                  <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${p.color}"></span>
+                  <b>${p.name}</b>
+                </div>
+                <div>用户数: <b>${p.value}</b> (${p.percent}%)</div>`;
+      },
     },
     legend: {
-      orient: 'horizontal',
-      bottom: 10,
-      left: 'center',
-      itemWidth: 12,
-      itemHeight: 8,
-      textStyle: { fontSize: 12 },
+      orient: 'vertical',
+      right: 16,
+      top: 'center',
+      itemWidth: 10,
+      itemHeight: 10,
+      itemGap: 14,
+      icon: 'circle',
+      textStyle: {
+        fontSize: 12,
+        color: '#64748b',
+        rich: {
+          name: { fontSize: 12, color: '#334155', padding: [0, 0, 0, 4] },
+          value: {
+            fontSize: 12,
+            color: '#94a3b8',
+            padding: [0, 0, 0, 8],
+          },
+        },
+      },
+      formatter: (name: string) => {
+        const item = dataWithColor.find((d: RoleDataItem) => d.name === name);
+        return `{name|${name}}  {value|${item?.value ?? 0}}`;
+      },
     },
     series: [
       {
         name: '角色分布',
         type: 'pie',
-        radius: ['40%', '70%'],
-        center: ['50%', '50%'],
+        radius: ['48%', '72%'],
+        center: ['35%', '50%'],
         avoidLabelOverlap: false,
         itemStyle: {
-          borderRadius: 4,
+          borderRadius: 6,
           borderColor: '#fff',
-          borderWidth: 2,
+          borderWidth: 3,
         },
-        label: {
-          show: true,
-          position: 'outside',
-          formatter: '{b}\n{d}%',
-          fontSize: 11,
-        },
-        labelLine: {
-          show: true,
-          length: 8,
-          length2: 5,
-        },
+        label: { show: false },
+        labelLine: { show: false },
         emphasis: {
+          scale: true,
+          scaleSize: 6,
           itemStyle: {
-            shadowBlur: 10,
+            shadowBlur: 16,
             shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)',
+            shadowColor: 'rgba(0, 0, 0, 0.15)',
           },
         },
         data: dataWithColor,

@@ -7,47 +7,69 @@ interface LoginTrendProps {
   height?: number;
 }
 
-const LoginTrend: React.FC<LoginTrendProps> = ({ data, height = 320 }) => {
+const LoginTrend: React.FC<LoginTrendProps> = ({ data, height = 340 }) => {
   const options: EChartsOption = {
-    title: {
-      text: '最近7天登录趋势',
-      left: 'center',
-      top: 10,
-      textStyle: { fontSize: 14 },
-    },
     tooltip: {
       trigger: 'axis',
+      backgroundColor: 'rgba(255,255,255,0.96)',
+      borderColor: '#e5e7eb',
+      borderWidth: 1,
+      textStyle: { color: '#334155', fontSize: 13 },
       axisPointer: {
-        type: 'cross',
+        type: 'shadow',
+        shadowStyle: { color: 'rgba(102, 126, 234, 0.06)' },
+      },
+      formatter: (params: unknown) => {
+        const list = params as { name: string; value: number }[];
+        if (!Array.isArray(list) || list.length === 0) return '';
+        const item = list[0];
+        return `<div style="font-weight:600;margin-bottom:4px">${item.name}</div>
+                <div style="color:#667eea">登录次数: <b>${item.value}</b></div>`;
       },
     },
     grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
-      top: '15%',
+      left: 8,
+      right: 16,
+      bottom: 0,
+      top: 16,
       containLabel: true,
     },
     xAxis: {
       type: 'category',
-      data: [...data.map((item) => item.date)],
-      axisLine: { show: true, lineStyle: { color: '#e5e7eb' } },
-      axisTick: { show: true, lineStyle: { color: '#e5e7eb' } },
-      axisLabel: { color: '#94a3b8' },
+      data: data.map((item) => item.date),
+      axisLine: { show: false },
+      axisTick: { show: false },
+      axisLabel: {
+        color: '#94a3b8',
+        fontSize: 11,
+        margin: 12,
+      },
     },
     yAxis: {
       type: 'value',
-      axisLine: { show: true, lineStyle: { color: '#e5e7eb' } },
-      axisTick: { show: true, lineStyle: { color: '#e5e7eb' } },
-      axisLabel: { color: '#94a3b8' },
-      splitLine: { show: true, lineStyle: { color: '#f1f5f9' } },
+      axisLine: { show: false },
+      axisTick: { show: false },
+      axisLabel: { color: '#94a3b8', fontSize: 11 },
+      splitLine: {
+        lineStyle: { color: '#f1f5f9', type: 'dashed' },
+      },
     },
     series: [
       {
         name: '登录次数',
-        data: [...data.map((item) => item.value)],
+        data: data.map((item) => item.value),
         type: 'line',
         smooth: true,
+        showSymbol: false,
+        emphasis: {
+          focus: 'series',
+          itemStyle: {
+            borderColor: '#667eea',
+            borderWidth: 3,
+            shadowBlur: 8,
+            shadowColor: 'rgba(102, 126, 234, 0.4)',
+          },
+        },
         areaStyle: {
           color: {
             type: 'linear',
@@ -56,22 +78,32 @@ const LoginTrend: React.FC<LoginTrendProps> = ({ data, height = 320 }) => {
             x2: 0,
             y2: 1,
             colorStops: [
-              { offset: 0, color: 'rgba(24, 144, 255, 0.3)' },
-              { offset: 1, color: 'rgba(24, 144, 255, 0.05)' },
+              { offset: 0, color: 'rgba(102, 126, 234, 0.25)' },
+              { offset: 0.7, color: 'rgba(102, 126, 234, 0.05)' },
+              { offset: 1, color: 'rgba(102, 126, 234, 0)' },
             ],
           },
         },
-        symbol: 'circle',
-        symbolSize: 6,
         lineStyle: {
-          width: 3,
-          color: '#1890ff',
+          width: 2.5,
+          color: {
+            type: 'linear',
+            x: 0,
+            y: 0,
+            x2: 1,
+            y2: 0,
+            colorStops: [
+              { offset: 0, color: '#667eea' },
+              { offset: 1, color: '#764ba2' },
+            ],
+          },
         },
         itemStyle: {
-          color: '#1890ff',
+          color: '#667eea',
           borderColor: '#fff',
           borderWidth: 2,
         },
+        symbolSize: 8,
       },
     ],
   };

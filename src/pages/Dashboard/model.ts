@@ -5,6 +5,14 @@ import {
 } from '@/services/dashboard';
 import { useCallback, useEffect, useState } from 'react';
 
+export interface ActivityLog {
+  time: string;
+  user: string;
+  action: string;
+  status: string;
+  ip: string;
+}
+
 export const useDashboard = () => {
   const [overview, setOverview] = useState<Record<string, unknown> | null>(
     null,
@@ -16,7 +24,9 @@ export const useDashboard = () => {
   const [loginData, setLoginData] = useState<{ date: string; value: number }[]>(
     [],
   );
-  const [logs, setLogs] = useState<Record<string, unknown>[]>([]);
+  const [logs, setLogs] = useState<ActivityLog[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const fetchOverview = useCallback(async () => {
     try {
       const res = await getDashboardOverview();
@@ -51,12 +61,14 @@ export const useDashboard = () => {
   }, []);
 
   useEffect(() => {
-    fetchOverview();
-    fetchRoleDistribution();
-    fetchLoginTrend();
-  }, [fetchOverview, fetchRoleDistribution]);
+    setLoading(true);
+    Promise.all([
+      fetchOverview(),
+      fetchRoleDistribution(),
+      fetchLoginTrend(),
+    ]).finally(() => setLoading(false));
+  }, [fetchOverview, fetchRoleDistribution, fetchLoginTrend]);
 
-  // 模拟加载数据
   useEffect(() => {
     setLogs([
       {
@@ -69,16 +81,37 @@ export const useDashboard = () => {
       {
         time: '2025-10-13 09:20',
         user: 'user1',
-        action: '登录',
+        action: '登录系统',
         status: '成功',
         ip: '192.168.1.23',
       },
       {
+        time: '2025-10-13 09:18',
+        user: 'admin',
+        action: '新增用户 zhangsan',
+        status: '成功',
+        ip: '192.168.1.5',
+      },
+      {
         time: '2025-10-13 09:15',
         user: 'user2',
-        action: '修改权限',
+        action: '修改权限配置',
         status: '失败',
         ip: '192.168.1.8',
+      },
+      {
+        time: '2025-10-13 09:10',
+        user: 'admin',
+        action: '更新系统配置',
+        status: '成功',
+        ip: '192.168.1.5',
+      },
+      {
+        time: '2025-10-13 09:05',
+        user: 'user3',
+        action: '登录系统',
+        status: '成功',
+        ip: '10.0.0.12',
       },
     ]);
   }, []);
@@ -88,5 +121,6 @@ export const useDashboard = () => {
     roleDistribution,
     loginData,
     logs,
+    loading,
   };
 };
