@@ -1,7 +1,7 @@
-import { ROOT_PARENT_ID } from '@/constants';
 import { sleep } from '@gvray/eskit';
 import dayjs from 'dayjs';
 import { Request, Response } from 'express';
+import { ROOT_PARENT_ID } from '../src/constants';
 
 const uuid = () =>
   'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {

@@ -1,6 +1,6 @@
-import { ROOT_PARENT_ID } from '@/constants';
 import { sleep } from '@gvray/eskit';
 import { Request, Response } from 'express';
+import { ROOT_PARENT_ID } from '../src/constants';
 
 export default {
   'POST /api/auth/login': async (req: Request, res: Response) => {
@@ -401,6 +401,18 @@ export default {
       success: false,
       code: 401,
       message: '认证失败，无法访问系统资源',
+    });
+  },
+  'GET /api/auth/menus': async (_req: Request, res: Response) => {
+    await sleep(800);
+    res.json({
+      success: true,
+      code: 200,
+      message: '菜单获取成功',
+      data: [
+        { key: '/system/user', icon: 'UserOutlined', label: '用户管理' },
+        { key: '/docs', icon: 'VideoCameraOutlined', label: '架构设计' },
+      ],
     });
   },
 };

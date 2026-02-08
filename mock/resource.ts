@@ -1,7 +1,7 @@
-import { ROOT_PARENT_ID } from '@/constants';
 import { sleep } from '@gvray/eskit';
 import dayjs from 'dayjs';
 import { Request, Response } from 'express';
+import { ROOT_PARENT_ID } from '../src/constants';
 
 // 模拟资源数据（目录和菜单）
 const resourceData = new Map();
