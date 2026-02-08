@@ -147,20 +147,20 @@ APP_MOCK_ENABLED=false
 
 <table>
   <tr>
-    <td><img src="./src/assets/snapshoot/dashboard.png" alt="dashboard"></td>
-    <td><img src="./src/assets/snapshoot/dashboard2.png" alt="dashboard"></td>
+    <td><img src="./src/assets/snapshoot/2026-02-08/screencapture-localhost-9528-2026-02-08-11_07_48.png"></td>
+    <td><img src="./src/assets/snapshoot/2026-02-08/screencapture-localhost-9528-profile-2026-02-08-11_08_17.png"></td>
   </tr>
     <tr>
-    <td><img src="./src/assets/snapshoot/resource.png" alt="resource"></td>
-    <td><img src="./src/assets/snapshoot/dept.png" alt="dept"></td>
+    <td><img src="./src/assets/snapshoot/2026-02-08/screencapture-localhost-9528-profile-2026-02-08-11_08_36.png"></td>
+    <td><img src="./src/assets/snapshoot/2026-02-08/screencapture-localhost-9528-profile-2026-02-08-11_09_14.png"></td>
   </tr>
   <tr>
-    <td><img src="./src/assets/snapshoot/permisson.png" alt="permisson"></td>
-    <td><img src="./src/assets/snapshoot/role.png" alt="role"></td>
+    <td><img src="./src/assets/snapshoot/2026-02-08/screencapture-localhost-9528-system-role-auth-permission-4a6ce1a3-97a7-4d49-85eb-8180d64a630e-2026-02-08-11_11_32.png"></td>
+    <td><img src="./src/assets/snapshoot/2026-02-08/screencapture-localhost-9528-system-user-2026-02-08-11_09_57.png"></td>
   </tr>
   <tr>
-    <td><img src="./src/assets/snapshoot/profile.png" alt="profile"></td>
-    <td><img src="./src/assets/snapshoot/analyze.png" alt="analyze"></td>
+    <td><img src="./src/assets/snapshoot/2026-02-08/screencapture-localhost-9528-system-role-auth-user-4a6ce1a3-97a7-4d49-85eb-8180d64a630e-2026-02-08-11_11_59.png"></td>
+    <td><img src="./src/assets/snapshoot/2026-02-08/screencapture-localhost-9528-system-user-auth-role-2b3a2e31-61db-47fe-8be5-3c81acfeae94-2026-02-08-11_11_00.png"></td>
   </tr>
 </table>
 
