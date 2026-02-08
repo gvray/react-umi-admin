@@ -1,797 +1,334 @@
 import { PageContainer } from '@/components';
-
-import { useThemeMode } from '@/hooks';
-import useThemeColor from '@/hooks/useThemeColor';
-import { logger } from '@/utils';
 import {
   BellOutlined,
   CalendarOutlined,
   CameraOutlined,
-  CheckCircleOutlined,
+  CheckCircleFilled,
   ClockCircleOutlined,
-  EditOutlined,
-  EyeInvisibleOutlined,
-  EyeTwoTone,
-  GiftOutlined,
-  HeartOutlined,
+  ExclamationCircleFilled,
+  HistoryOutlined,
+  IdcardOutlined,
   LockOutlined,
   MailOutlined,
   PhoneOutlined,
   SafetyCertificateOutlined,
   SettingOutlined,
-  StarOutlined,
   TeamOutlined,
-  TrophyOutlined,
   UserOutlined,
-  WifiOutlined,
 } from '@ant-design/icons';
 import {
   Avatar,
-  Badge,
   Button,
   Card,
-  Col,
-  Descriptions,
-  Form,
-  Input,
-  List,
-  Menu,
   Progress,
-  Row,
-  Space,
-  Statistic,
-  Switch,
+  Tabs,
   Tag,
-  Timeline,
+  Tooltip,
   Typography,
   Upload,
   message,
 } from 'antd';
-import { useState } from 'react';
+import type { UploadChangeParam } from 'antd/es/upload';
+import dayjs from 'dayjs';
 import { styled, useModel } from 'umi';
-import SystemSettings from './SystemSettings';
 import styles from './index.less';
+import TabLoginLog from './TabLoginLog';
+import TabNotifications from './TabNotifications';
+import TabPermissions from './TabPermissions';
+import TabPreferences from './TabPreferences';
+import TabProfile from './TabProfile';
+import TabSecurity from './TabSecurity';
 
-const { Title, Text, Paragraph } = Typography;
+const { Title, Text } = Typography;
 
-interface PageWrapperProps {
-  $dark?: boolean;
-}
+// ─── Styled helpers ─────────────────────────────────────
 
-const PageWrapper = styled(PageContainer)<PageWrapperProps>`
-  background: linear-gradient(
-    135deg,
-    ${({ $dark }) => ($dark ? '#1f1f1f' : '#667eea')} 0%,
-    ${({ $dark }) => ($dark ? '#141414' : '#764ba2')} 100%
-  ) !important;
-  min-height: 100vh;
+const FlexLayout = styled.div`
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
 `;
-const BadgeBox = styled.div<{ $bgColor: string; $hoverColor: string }>`
-  text-align: center;
-  padding: 16px 8px;
-  border-radius: 8px;
-  background: ${({ $bgColor }) => $bgColor};
-  transition: all 0.3s ease;
 
-  &:hover {
-    background: ${({ $hoverColor }) => $hoverColor};
-    transform: scale(1.05);
-  }
-
-  .badgeIcon {
-    font-size: 24px;
-    display: block;
-    margin-bottom: 8px;
-  }
+const PanelCard = styled(Card)`
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
 `;
+
+// ─── Component ──────────────────────────────────────────
 
 export default function ProfilePage() {
   const { initialState } = useModel('@@initialState');
-  const themeMode = useThemeMode();
-  const themeColor = useThemeColor();
-  const [form] = Form.useForm();
-  const [editing, setEditing] = useState(false);
-  const [activeKey, setActiveKey] = useState('overview');
-
   const profile = initialState?.profile;
 
-  console.log(profile);
-
-  const handleSave = async (values: any) => {
-    try {
-      message.success('保存成功！');
-      logger.info('保存的信息:' + values);
-      setEditing(false);
-    } catch (error) {
-      message.error('保存失败，请重试');
-    }
-  };
-
-  const handleAvatarChange = (info: any) => {
+  const handleAvatarChange = (info: UploadChangeParam) => {
     if (info.file.status === 'done') {
       message.success('头像上传成功！');
     }
   };
 
-  // 个人信息概览组件
-  const ProfileOverview = () => (
-    <>
-      {/* 个人信息头部卡片 */}
-      <Card className={styles.profileHeader}>
-        <Row gutter={24} align="middle">
-          <Col>
-            <div className={styles.avatarContainer}>
-              <Badge
-                count={<CheckCircleOutlined style={{ color: '#52c41a' }} />}
-                offset={[-10, 10]}
-              >
-                <Avatar
-                  size={120}
-                  src={
-                    profile?.avatar ||
-                    'https://api.dicebear.com/9.x/bottts/svg?seed=GavinRay'
-                  }
-                  icon={<UserOutlined />}
-                  className={styles.userAvatar}
-                />
-              </Badge>
-              <Upload
-                showUploadList={false}
-                onChange={handleAvatarChange}
-                className={styles.avatarUpload}
-              >
-                <Button
-                  type="primary"
-                  shape="circle"
-                  icon={<CameraOutlined />}
-                  className={styles.avatarButton}
-                />
-              </Upload>
-            </div>
-          </Col>
-          <Col flex={1}>
-            <Space direction="vertical" size={12}>
-              <div>
-                <Title level={2} className={styles.username}>
-                  {profile?.nickname || profile?.username || '用户名'}
-                  <Tag color="blue" className={styles.userTag}>
-                    {profile?.roles
-                      ?.map((item: any) => item.description)
-                      .join(', ')}
-                  </Tag>
-                  <Tag color="gold" className={styles.levelTag}>
-                    <StarOutlined /> VIP会员
-                  </Tag>
-                </Title>
-                <Paragraph type="secondary" className={styles.userBio}>
-                  专注于系统管理和用户体验优化，致力于打造高效的管理平台。
-                </Paragraph>
-              </div>
-              <Row gutter={24}>
-                <Col>
-                  <Text type="secondary" className={styles.userDesc}>
-                    <MailOutlined /> {profile?.email || 'user@example.com'}
-                  </Text>
-                </Col>
-                <Col>
-                  <Text type="secondary" className={styles.userDesc}>
-                    <PhoneOutlined /> {profile?.phone || '未设置'}
-                  </Text>
-                </Col>
-              </Row>
-              <Row gutter={24}>
-                <Col>
-                  <Text type="secondary" className={styles.userDesc}>
-                    <CalendarOutlined /> 最后登录：
-                    {profile?.lastLoginTime
-                      ? new Date(profile.lastLoginTime).toLocaleDateString()
-                      : '未知'}
-                  </Text>
-                </Col>
-                <Col>
-                  <Text type="secondary" className={styles.userDesc}>
-                    <WifiOutlined /> 在线状态：
-                    <Tag color="green">在线</Tag>
-                  </Text>
-                </Col>
-              </Row>
-            </Space>
-          </Col>
-        </Row>
-      </Card>
-
-      {/* 统计数据卡片 */}
-      <Row gutter={16} className={styles.statsRow}>
-        <Col span={6}>
-          <Card className={styles.statCard}>
-            <Statistic
-              title="登录次数"
-              value={profile?.loginCount || 0}
-              prefix={<UserOutlined className={styles.statIcon} />}
-              valueStyle={{ color: '#1677ff' }}
-              suffix="次"
-            />
-            <Progress percent={85} size="small" showInfo={false} />
-          </Card>
-        </Col>
-        {profile?.roles?.[0]?.name === 'admin' ? (
-          <>
-            <Col span={6}>
-              <Card className={styles.statCard}>
-                <Statistic
-                  title="管理用户"
-                  value={profile?.statistics?.managedUsers || 0}
-                  prefix={<TeamOutlined className={styles.statIcon} />}
-                  valueStyle={{ color: '#52c41a' }}
-                  suffix="人"
-                />
-                <Progress
-                  percent={75}
-                  size="small"
-                  showInfo={false}
-                  strokeColor="#52c41a"
-                />
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card className={styles.statCard}>
-                <Statistic
-                  title="系统运行时间"
-                  value={profile?.statistics?.systemUptime || '0%'}
-                  prefix={<TrophyOutlined className={styles.statIcon} />}
-                  valueStyle={{ color: '#faad14' }}
-                />
-                <Progress
-                  percent={99.9}
-                  size="small"
-                  showInfo={false}
-                  strokeColor="#faad14"
-                />
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card className={styles.statCard}>
-                <Statistic
-                  title="今日登录"
-                  value={profile?.statistics?.todayLogins || 0}
-                  prefix={<HeartOutlined className={styles.statIcon} />}
-                  valueStyle={{ color: '#f5222d' }}
-                  suffix="人"
-                />
-                <Progress
-                  percent={60}
-                  size="small"
-                  showInfo={false}
-                  strokeColor="#f5222d"
-                />
-              </Card>
-            </Col>
-          </>
-        ) : (
-          <>
-            <Col span={6}>
-              <Card className={styles.statCard}>
-                <Statistic
-                  title="团队规模"
-                  value={profile?.statistics?.teamSize || 0}
-                  prefix={<TeamOutlined className={styles.statIcon} />}
-                  valueStyle={{ color: '#52c41a' }}
-                  suffix="人"
-                />
-                <Progress
-                  percent={80}
-                  size="small"
-                  showInfo={false}
-                  strokeColor="#52c41a"
-                />
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card className={styles.statCard}>
-                <Statistic
-                  title="参与项目"
-                  value={profile?.statistics?.projectsInvolved || 0}
-                  prefix={<TrophyOutlined className={styles.statIcon} />}
-                  valueStyle={{ color: '#faad14' }}
-                  suffix="个"
-                />
-                <Progress
-                  percent={65}
-                  size="small"
-                  showInfo={false}
-                  strokeColor="#faad14"
-                />
-              </Card>
-            </Col>
-            <Col span={6}>
-              <Card className={styles.statCard}>
-                <Statistic
-                  title="完成任务"
-                  value={profile?.statistics?.completedTasks || 0}
-                  prefix={<HeartOutlined className={styles.statIcon} />}
-                  valueStyle={{ color: '#f5222d' }}
-                  suffix="个"
-                />
-                <Progress
-                  percent={90}
-                  size="small"
-                  showInfo={false}
-                  strokeColor="#f5222d"
-                />
-              </Card>
-            </Col>
-          </>
-        )}
-      </Row>
-
-      {/* 最近活动和成就 */}
-      <Row gutter={16}>
-        <Col span={12}>
-          <Card
-            title={
-              <>
-                <ClockCircleOutlined /> 最近活动
-              </>
-            }
-            className={styles.activityCard}
-          >
-            <Timeline
-              items={[
-                {
-                  color: 'green',
-                  children: (
-                    <>
-                      <p>成功登录系统</p>
-                      <p className={styles.timeText}>2小时前</p>
-                    </>
-                  ),
-                },
-                {
-                  color: 'blue',
-                  children: (
-                    <>
-                      <p>更新了个人信息</p>
-                      <p className={styles.timeText}>1天前</p>
-                    </>
-                  ),
-                },
-                {
-                  color: 'red',
-                  children: (
-                    <>
-                      <p>修改了密码</p>
-                      <p className={styles.timeText}>3天前</p>
-                    </>
-                  ),
-                },
-                {
-                  children: (
-                    <>
-                      <p>完成了系统培训</p>
-                      <p className={styles.timeText}>1周前</p>
-                    </>
-                  ),
-                },
-              ]}
-            />
-          </Card>
-        </Col>
-        <Col span={12}>
-          <Card
-            title={
-              <>
-                <GiftOutlined /> 成就徽章
-              </>
-            }
-            className={styles.achievementCard}
-          >
-            <Row gutter={[16, 16]}>
-              <Col span={8}>
-                <BadgeBox
-                  $bgColor={themeColor.bgContainerColor}
-                  $hoverColor={themeColor.hoverColor}
-                >
-                  <TrophyOutlined
-                    className={'badgeIcon'}
-                    style={{ color: '#faad14' }}
-                  />
-                  <Text>登录达人</Text>
-                </BadgeBox>
-              </Col>
-              <Col span={8}>
-                <BadgeBox
-                  $bgColor={themeColor.bgContainerColor}
-                  $hoverColor={themeColor.hoverColor}
-                >
-                  <StarOutlined
-                    className={'badgeIcon'}
-                    style={{ color: '#1890ff' }}
-                  />
-                  <Text>活跃用户</Text>
-                </BadgeBox>
-              </Col>
-              <Col span={8}>
-                <BadgeBox
-                  $bgColor={themeColor.bgContainerColor}
-                  $hoverColor={themeColor.hoverColor}
-                >
-                  <SafetyCertificateOutlined
-                    className={'badgeIcon'}
-                    style={{ color: '#52c41a' }}
-                  />
-                  <Text>安全专家</Text>
-                </BadgeBox>
-              </Col>
-              <Col span={8}>
-                <BadgeBox
-                  $bgColor={themeColor.bgContainerColor}
-                  $hoverColor={themeColor.hoverColor}
-                >
-                  <TeamOutlined
-                    className={'badgeIcon'}
-                    style={{ color: '#722ed1' }}
-                  />
-                  <Text>团队协作</Text>
-                </BadgeBox>
-              </Col>
-              <Col span={8}>
-                <BadgeBox
-                  $bgColor={themeColor.bgContainerColor}
-                  $hoverColor={themeColor.hoverColor}
-                >
-                  <HeartOutlined
-                    className={'badgeIcon'}
-                    style={{ color: '#f5222d' }}
-                  />
-                  <Text>贡献者</Text>
-                </BadgeBox>
-              </Col>
-              <Col span={8}>
-                <BadgeBox
-                  $bgColor={themeColor.bgContainerColor}
-                  $hoverColor={themeColor.hoverColor}
-                >
-                  <CheckCircleOutlined
-                    className={'badgeIcon'}
-                    style={{ color: '#13c2c2' }}
-                  />
-                  <Text>完美主义</Text>
-                </BadgeBox>
-              </Col>
-            </Row>
-          </Card>
-        </Col>
-      </Row>
-    </>
+  // ─── Completeness ─────────────────────────────────────
+  const completenessChecks = [
+    { label: '设置头像', done: !!profile?.avatar, icon: <CameraOutlined /> },
+    { label: '绑定邮箱', done: !!profile?.email, icon: <MailOutlined /> },
+    { label: '绑定手机', done: !!profile?.phone, icon: <PhoneOutlined /> },
+    { label: '设置昵称', done: !!profile?.nickname, icon: <IdcardOutlined /> },
+    { label: '安全设置', done: true, icon: <SafetyCertificateOutlined /> },
+  ];
+  const doneCount = completenessChecks.filter((c) => c.done).length;
+  const completenessPercent = Math.round(
+    (doneCount / completenessChecks.length) * 100,
   );
 
-  // 个人信息编辑组件
-  const PersonalInfo = () => (
-    <Row gutter={16}>
-      <Col span={16}>
-        <Card
-          title="个人信息"
-          extra={
-            <Button
-              type="link"
-              icon={<EditOutlined />}
-              onClick={() => setEditing(!editing)}
-            >
-              {editing ? '取消编辑' : '编辑信息'}
-            </Button>
-          }
-          className={styles.infoCard}
-        >
-          {editing ? (
-            <Form
-              form={form}
-              layout="vertical"
-              onFinish={handleSave}
-              initialValues={{
-                nickname: profile?.nickname || profile?.username || '-',
-                email: profile?.email || '-',
-                phone: profile?.phone || '-',
-                department: profile?.department?.name || '-',
-                position: profile?.position?.name || '-',
-                bio: '专注于系统管理和用户体验优化',
-              }}
-            >
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Form.Item name="nickname" label="昵称">
-                    <Input placeholder="请输入昵称" />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item name="email" label="邮箱">
-                    <Input placeholder="请输入邮箱" />
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Form.Item name="phone" label="手机号">
-                    <Input placeholder="请输入手机号" />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item name="department" label="部门">
-                    <Input placeholder="请输入部门" />
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Form.Item name="position" label="职位">
-                <Input placeholder="请输入职位" />
-              </Form.Item>
-              <Form.Item name="bio" label="个人简介">
-                <Input.TextArea rows={3} placeholder="请输入个人简介" />
-              </Form.Item>
-              <Form.Item>
-                <Space>
-                  <Button type="primary" htmlType="submit">
-                    保存修改
-                  </Button>
-                  <Button onClick={() => setEditing(false)}>取消</Button>
-                </Space>
-              </Form.Item>
-            </Form>
-          ) : (
-            <Descriptions column={2} size="middle">
-              <Descriptions.Item label="昵称" span={1}>
-                {profile?.nickname || profile?.username || '未设置'}
-              </Descriptions.Item>
-              <Descriptions.Item label="邮箱" span={1}>
-                {profile?.email || '未设置'}
-              </Descriptions.Item>
-              <Descriptions.Item label="手机号" span={1}>
-                {profile?.phone || '未设置'}
-              </Descriptions.Item>
-              <Descriptions.Item label="部门" span={1}>
-                {profile?.department?.name || '未设置'}
-              </Descriptions.Item>
-              <Descriptions.Item label="职位" span={2}>
-                {profile?.position?.name || '未设置'}
-              </Descriptions.Item>
-              <Descriptions.Item label="用户状态" span={1}>
-                <Tag color={profile?.isActive ? 'green' : 'red'}>
-                  {profile?.isActive ? '活跃' : '非活跃'}
-                </Tag>
-              </Descriptions.Item>
-              <Descriptions.Item label="创建时间" span={1}>
-                {profile?.createdAt
-                  ? new Date(profile.createdAt).toLocaleDateString()
-                  : '未知'}
-              </Descriptions.Item>
-              <Descriptions.Item label="个人简介" span={2}>
-                专注于系统管理和用户体验优化，致力于打造高效的管理平台。
-              </Descriptions.Item>
-            </Descriptions>
-          )}
-        </Card>
-      </Col>
-      <Col span={8}>
-        <Card title="快速操作" className={styles.quickActions}>
-          <List
-            dataSource={[
-              {
-                icon: <EditOutlined />,
-                title: '编辑资料',
-                desc: '更新个人信息',
-              },
-              {
-                icon: <CameraOutlined />,
-                title: '更换头像',
-                desc: '上传新头像',
-              },
-              {
-                icon: <LockOutlined />,
-                title: '修改密码',
-                desc: '更新登录密码',
-              },
-              {
-                icon: <BellOutlined />,
-                title: '通知设置',
-                desc: '管理消息通知',
-              },
-            ]}
-            renderItem={(item) => (
-              <List.Item className={styles.quickActionItem}>
-                <List.Item.Meta
-                  avatar={<div className={styles.actionIcon}>{item.icon}</div>}
-                  title={item.title}
-                  description={item.desc}
-                />
-              </List.Item>
-            )}
-          />
-        </Card>
-      </Col>
-    </Row>
-  );
+  // ─── Stats ────────────────────────────────────────────
+  const roleCount = profile?.roles?.length ?? 0;
+  const daysSinceJoin = profile?.createdAt
+    ? dayjs().diff(dayjs(profile.createdAt), 'day')
+    : 0;
 
-  // 安全设置组件
-  const SecuritySettings = () => (
-    <Row gutter={16}>
-      <Col span={12}>
-        <Card title="密码设置" className={styles.securityCard}>
-          <Form
-            layout="vertical"
-            onFinish={(values) => {
-              message.success('密码修改成功！');
-              logger.info('修改的密码:' + values);
-            }}
-          >
-            <Form.Item
-              name="oldPassword"
-              label="原密码"
-              rules={[{ required: true, message: '请输入原密码' }]}
-            >
-              <Input.Password
-                placeholder="请输入原密码"
-                iconRender={(visible) =>
-                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                }
-              />
-            </Form.Item>
-            <Form.Item
-              name="newPassword"
-              label="新密码"
-              rules={[
-                { required: true, message: '请输入新密码' },
-                { min: 6, message: '密码长度至少6位' },
-              ]}
-            >
-              <Input.Password
-                placeholder="请输入新密码"
-                iconRender={(visible) =>
-                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                }
-              />
-            </Form.Item>
-            <Form.Item
-              name="confirmPassword"
-              label="确认密码"
-              dependencies={['newPassword']}
-              rules={[
-                { required: true, message: '请确认新密码' },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue('newPassword') === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(new Error('两次输入的密码不一致'));
-                  },
-                }),
-              ]}
-            >
-              <Input.Password
-                placeholder="请确认新密码"
-                iconRender={(visible) =>
-                  visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-                }
-              />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit" block>
-                修改密码
-              </Button>
-            </Form.Item>
-          </Form>
-        </Card>
-      </Col>
-      <Col span={12}>
-        <Card title="安全状态" className={styles.securityStatus}>
-          <List
-            dataSource={[
-              {
-                title: '密码强度',
-                status: 'success',
-                desc: '强',
-                extra: <Progress percent={85} size="small" />,
-              },
-              {
-                title: '两步验证',
-                status: 'warning',
-                desc: '未开启',
-                extra: <Switch />,
-              },
-              {
-                title: '登录保护',
-                status: 'success',
-                desc: '已开启',
-                extra: <Switch defaultChecked />,
-              },
-              {
-                title: '异地登录提醒',
-                status: 'success',
-                desc: '已开启',
-                extra: <Switch defaultChecked />,
-              },
-            ]}
-            renderItem={(item) => (
-              <List.Item>
-                <List.Item.Meta
-                  avatar={
-                    <SafetyCertificateOutlined
-                      style={{
-                        color:
-                          item.status === 'success' ? '#52c41a' : '#faad14',
-                      }}
-                    />
-                  }
-                  title={item.title}
-                  description={item.desc}
-                />
-                {item.extra}
-              </List.Item>
-            )}
-          />
-        </Card>
-      </Col>
-    </Row>
-  );
-
-  // Menu配置
-  const menuItems = [
+  // ─── Tab items ────────────────────────────────────────
+  const tabItems = [
     {
-      key: 'overview',
-      icon: <UserOutlined />,
-      label: '个人概览',
-    },
-    {
-      key: 'info',
-      icon: <EditOutlined />,
-      label: '个人信息',
+      key: 'profile',
+      label: (
+        <span>
+          <UserOutlined /> 基本信息
+        </span>
+      ),
+      children: <TabProfile profile={profile} />,
     },
     {
       key: 'security',
-      icon: <LockOutlined />,
-      label: '安全设置',
+      label: (
+        <span>
+          <LockOutlined /> 安全中心
+        </span>
+      ),
+      children: <TabSecurity />,
     },
     {
-      key: 'settings',
-      icon: <SettingOutlined />,
-      label: '系统设置',
+      key: 'permissions',
+      label: (
+        <span>
+          <SafetyCertificateOutlined /> 我的权限
+        </span>
+      ),
+      children: <TabPermissions profile={profile} />,
+    },
+    {
+      key: 'preferences',
+      label: (
+        <span>
+          <SettingOutlined /> 系统偏好
+        </span>
+      ),
+      children: <TabPreferences />,
+    },
+    {
+      key: 'loginLog',
+      label: (
+        <span>
+          <HistoryOutlined /> 登录记录
+        </span>
+      ),
+      children: <TabLoginLog />,
+    },
+    {
+      key: 'notifications',
+      label: (
+        <span>
+          <BellOutlined /> 消息通知
+        </span>
+      ),
+      children: <TabNotifications />,
     },
   ];
 
-  // 渲染内容的函数
-  const renderContent = () => {
-    switch (activeKey) {
-      case 'overview':
-        return <ProfileOverview />;
-      case 'info':
-        return <PersonalInfo />;
-      case 'security':
-        return <SecuritySettings />;
-      case 'settings':
-        return <SystemSettings />;
-      default:
-        return <ProfileOverview />;
-    }
-  };
+  const isOnline = profile?.status === 1;
 
   return (
-    <PageWrapper
-      className={styles.profileContainer}
-      $dark={themeMode === 'dark'}
-    >
-      <Row gutter={24}>
-        <Col span={6}>
-          <Card className={styles.menuCard}>
-            <Menu
-              mode="vertical"
-              selectedKeys={[activeKey]}
-              items={menuItems}
-              onClick={({ key }) => setActiveKey(key)}
-              className={styles.profileMenu}
+    <PageContainer className={styles.profilePage}>
+      <FlexLayout className="profile-flex">
+        {/* ════════════ Left Panel (single card) ════════════ */}
+        <PanelCard className={styles.leftPanel}>
+          {/* ── Avatar Hero ── */}
+          <div className={styles.avatarHero}>
+            <div className={styles.heroBg} />
+            <div className={styles.avatarWrap}>
+              <Avatar
+                size={96}
+                src={
+                  profile?.avatar ||
+                  'https://api.dicebear.com/9.x/bottts/svg?seed=GavinRay'
+                }
+                icon={<UserOutlined />}
+                className={styles.avatarRing}
+              />
+              <div
+                className={styles.onlineDot}
+                style={{ background: isOnline ? '#52c41a' : '#d9d9d9' }}
+              />
+              <div className={styles.avatarUploadBtn}>
+                <Upload showUploadList={false} onChange={handleAvatarChange}>
+                  <Button
+                    type="primary"
+                    shape="circle"
+                    icon={<CameraOutlined />}
+                  />
+                </Upload>
+              </div>
+            </div>
+            <div className={styles.nameRow}>
+              <Title level={4} className={styles.userName}>
+                {profile?.nickname || profile?.username || '用户名'}
+              </Title>
+              <Text className={styles.userBio}>
+                专注于系统管理和用户体验优化
+              </Text>
+              <div className={styles.roleTags}>
+                {profile?.roles?.map((r) => (
+                  <Tooltip key={r.roleId} title={r.description || r.name}>
+                    <Tag color="blue">{r.description || r.name}</Tag>
+                  </Tooltip>
+                ))}
+                <Tag color={isOnline ? 'green' : 'default'}>
+                  {isOnline ? '在线' : '离线'}
+                </Tag>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Stats Row ── */}
+          <div className={styles.statsRow}>
+            <div className={styles.statItem}>
+              <div className={styles.statValue}>{roleCount}</div>
+              <div className={styles.statLabel}>角色</div>
+            </div>
+            <div className={styles.statItem}>
+              <div className={styles.statValue}>{daysSinceJoin}</div>
+              <div className={styles.statLabel}>在职天数</div>
+            </div>
+            <div className={styles.statItem}>
+              <div className={styles.statValue}>{completenessPercent}%</div>
+              <div className={styles.statLabel}>完善度</div>
+            </div>
+          </div>
+
+          <div className={styles.sectionDivider} />
+
+          {/* ── Info Section ── */}
+          <div className={styles.infoSection}>
+            <div className={styles.infoSectionTitle}>联系信息</div>
+            <div className={styles.infoRow}>
+              <MailOutlined className={styles.infoIcon} />
+              <span className={styles.infoLabel}>邮箱</span>
+              <span className={styles.infoValue}>
+                {profile?.email || '未绑定'}
+                {profile?.email ? (
+                  <CheckCircleFilled
+                    style={{ color: '#52c41a', marginLeft: 6, fontSize: 12 }}
+                  />
+                ) : (
+                  <ExclamationCircleFilled
+                    style={{ color: '#faad14', marginLeft: 6, fontSize: 12 }}
+                  />
+                )}
+              </span>
+            </div>
+            <div className={styles.infoRow}>
+              <PhoneOutlined className={styles.infoIcon} />
+              <span className={styles.infoLabel}>手机</span>
+              <span className={styles.infoValue}>
+                {profile?.phone || '未绑定'}
+                {profile?.phone ? (
+                  <CheckCircleFilled
+                    style={{ color: '#52c41a', marginLeft: 6, fontSize: 12 }}
+                  />
+                ) : (
+                  <ExclamationCircleFilled
+                    style={{ color: '#faad14', marginLeft: 6, fontSize: 12 }}
+                  />
+                )}
+              </span>
+            </div>
+            <div className={styles.infoRow}>
+              <TeamOutlined className={styles.infoIcon} />
+              <span className={styles.infoLabel}>部门</span>
+              <span className={styles.infoValue}>
+                {profile?.department?.name || '未设置'}
+              </span>
+            </div>
+            <div className={styles.infoRow}>
+              <UserOutlined className={styles.infoIcon} />
+              <span className={styles.infoLabel}>岗位</span>
+              <span className={styles.infoValue}>
+                {profile?.positions?.[0]?.name || '未设置'}
+              </span>
+            </div>
+            <div className={styles.infoRow}>
+              <CalendarOutlined className={styles.infoIcon} />
+              <span className={styles.infoLabel}>注册</span>
+              <span className={styles.infoValue}>
+                {profile?.createdAt
+                  ? dayjs(profile.createdAt).format('YYYY-MM-DD')
+                  : '-'}
+              </span>
+            </div>
+            <div className={styles.infoRow}>
+              <ClockCircleOutlined className={styles.infoIcon} />
+              <span className={styles.infoLabel}>最近登录</span>
+              <span className={styles.infoValue}>
+                {profile?.updatedAt
+                  ? dayjs(profile.updatedAt).format('YYYY-MM-DD')
+                  : '-'}
+              </span>
+            </div>
+          </div>
+
+          <div className={styles.sectionDivider} />
+
+          {/* ── Completeness ── */}
+          <div className={styles.completenessSection}>
+            <div className={styles.completenessHeader}>
+              <span>资料完善度</span>
+              <Text type="secondary" style={{ fontSize: 12 }}>
+                {doneCount}/{completenessChecks.length}
+              </Text>
+            </div>
+            <Progress
+              percent={completenessPercent}
+              strokeColor={{ from: '#667eea', to: '#764ba2' }}
             />
-          </Card>
-        </Col>
-        <Col span={18}>
-          <div className={styles.contentArea}>{renderContent()}</div>
-        </Col>
-      </Row>
-    </PageWrapper>
+            <div className={styles.completenessItems}>
+              {completenessChecks.map((item) => (
+                <div key={item.label} className={styles.completenessItem}>
+                  <span
+                    className={styles.itemIcon}
+                    style={{
+                      color: item.done ? '#52c41a' : 'rgba(0,0,0,0.25)',
+                    }}
+                  >
+                    {item.done ? <CheckCircleFilled /> : item.icon}
+                  </span>
+                  <span className={styles.itemLabel}>{item.label}</span>
+                  {item.done ? (
+                    <Tag color="green" style={{ margin: 0, fontSize: 11 }}>
+                      已完成
+                    </Tag>
+                  ) : (
+                    <Tag style={{ margin: 0, fontSize: 11 }}>待完善</Tag>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </PanelCard>
+
+        {/* ════════════ Right Panel ════════════ */}
+        <PanelCard className={styles.rightPanel}>
+          <Tabs defaultActiveKey="profile" items={tabItems} />
+        </PanelCard>
+      </FlexLayout>
+    </PageContainer>
   );
 }

@@ -23,6 +23,8 @@ const PageContainerWrapper = styled.div<PageContainerWrapperProps>`
 `;
 interface PageContainerProps {
   children?: React.ReactNode;
+  style?: React.CSSProperties;
+  className?: string;
 }
 
 const PageContainer: React.FC<PropsWithChildren<PageContainerProps>> = ({
