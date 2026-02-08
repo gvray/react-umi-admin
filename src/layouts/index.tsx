@@ -1,3 +1,4 @@
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { useAppTheme } from '@/hooks';
 import useDict from '@/hooks/useDict';
 import useThemeColor from '@/hooks/useThemeColor';
@@ -151,7 +152,9 @@ export default function BaseLayout() {
               </HeaderBox>
             </Header>
             <Content style={{ height: 'calc(100vh - 64px)', overflow: 'auto' }}>
-              <Outlet />
+              <ErrorBoundary>
+                <Outlet />
+              </ErrorBoundary>
             </Content>
           </Layout>
         </Layout>

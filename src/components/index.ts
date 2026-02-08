@@ -3,6 +3,7 @@ import AntIcon from './AntIcon';
 import AuthButton from './AuthButton';
 import Charts from './Charts';
 import DateTimeFormat from './DateTimeFormat';
+import ErrorBoundary from './ErrorBoundary';
 import IconSelector from './IconSelector';
 import NavigationProgress from './NavigationProgress';
 import PageContainer from './PageContainer';
@@ -16,6 +17,7 @@ export {
   AuthButton,
   Charts,
   DateTimeFormat,
+  ErrorBoundary,
   IconSelector,
   NavigationProgress,
   PageContainer,
