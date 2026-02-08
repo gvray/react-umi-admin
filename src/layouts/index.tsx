@@ -16,6 +16,7 @@ import {
 } from 'antd';
 import { useState } from 'react';
 import { flushSync } from 'react-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import storetify from 'storetify';
 import { Outlet, SelectLang, history, styled, useModel } from 'umi';
 import SideMenu from './components/SideMenu';
@@ -96,59 +97,65 @@ export default function BaseLayout() {
   ];
 
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: themeAlgorithm,
-        token: themeToken,
-      }}
-    >
-      <Layout>
-        <SideMenu collapsed={collapsed} />
+    <HelmetProvider>
+      <ConfigProvider
+        theme={{
+          algorithm: themeAlgorithm,
+          token: themeToken,
+        }}
+      >
         <Layout>
-          <Header style={{ padding: 0, background: themeColor.bgColor }}>
-            <HeaderBox>
-              <Button
-                type="text"
-                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                onClick={() => setCollapsed(!collapsed)}
-                style={{
-                  fontSize: '16px',
-                  width: 64,
-                  height: 64,
-                }}
-              />
-              <HeaderRight>
-                <Space size={2} wrap>
-                  <ThemeSetting />
-                  <SelectLang />
-                  <Dropdown menu={{ items, onClick: handleDropdownMenuClick }}>
-                    <HeaderAction>
-                      <Avatar
-                        src={
-                          <img
-                            src={
-                              initialState?.profile?.avatar ||
-                              'https://api.dicebear.com/9.x/bottts/svg?seed=GavinRay'
-                            }
-                            alt="avatar"
-                          />
-                        }
-                      />
-                      <span style={{ marginLeft: 8 }}>
-                        {initialState?.profile?.nickname ||
-                          initialState?.profile?.username}
-                      </span>
-                    </HeaderAction>
-                  </Dropdown>
-                </Space>
-              </HeaderRight>
-            </HeaderBox>
-          </Header>
-          <Content style={{ height: 'calc(100vh - 64px)', overflow: 'auto' }}>
-            <Outlet />
-          </Content>
+          <SideMenu collapsed={collapsed} />
+          <Layout>
+            <Header style={{ padding: 0, background: themeColor.bgColor }}>
+              <HeaderBox>
+                <Button
+                  type="text"
+                  icon={
+                    collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />
+                  }
+                  onClick={() => setCollapsed(!collapsed)}
+                  style={{
+                    fontSize: '16px',
+                    width: 64,
+                    height: 64,
+                  }}
+                />
+                <HeaderRight>
+                  <Space size={2} wrap>
+                    <ThemeSetting />
+                    <SelectLang />
+                    <Dropdown
+                      menu={{ items, onClick: handleDropdownMenuClick }}
+                    >
+                      <HeaderAction>
+                        <Avatar
+                          src={
+                            <img
+                              src={
+                                initialState?.profile?.avatar ||
+                                'https://api.dicebear.com/9.x/bottts/svg?seed=GavinRay'
+                              }
+                              alt="avatar"
+                            />
+                          }
+                        />
+                        <span style={{ marginLeft: 8 }}>
+                          {initialState?.profile?.nickname ||
+                            initialState?.profile?.username}
+                        </span>
+                      </HeaderAction>
+                    </Dropdown>
+                  </Space>
+                </HeaderRight>
+              </HeaderBox>
+            </Header>
+            <Content style={{ height: 'calc(100vh - 64px)', overflow: 'auto' }}>
+              <Outlet />
+            </Content>
+          </Layout>
         </Layout>
-      </Layout>
-    </ConfigProvider>
+      </ConfigProvider>
+    </HelmetProvider>
   );
 }

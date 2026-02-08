@@ -47,6 +47,9 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
+      react-helmet-async:
+        specifier: ^2.0.5
+        version: 2.0.5(react@18.3.1)
       umi:
         specifier: ^4.1.1
         version: 4.6.23(@babel/core@7.28.6)(@types/node@25.2.1)(@types/react@18.3.27)(eslint@8.57.1)(less-loader@12.3.0(less@4.5.1)(webpack@5.104.1))(less@4.5.1)(lightningcss@1.22.1)(prettier@2.8.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(resolve-url-loader@5.0.0)(rollup@3.29.5)(sass-loader@16.0.6(sass@1.54.0)(webpack@5.104.1))(sass@1.54.0)(stylelint@14.16.1)(terser@5.46.0)(type-fest@4.41.0)(typescript@5.9.3)(webpack@5.104.1)
@@ -5502,6 +5505,11 @@ packages:
     peerDependencies:
       react: ^16.6.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.6.0 || ^17.0.0 || ^18.0.0
+
+  react-helmet-async@2.0.5:
+    resolution: {integrity: sha512-rYUYHeus+i27MvFE+Jaa4WsyBKGkL6qVgbJvSBoX8mbsWoABJXdEO0bZyi0F6i+4f0NuIb8AvqPMj3iXFHkMwg==, tarball: https://registry.npmjs.org/react-helmet-async/-/react-helmet-async-2.0.5.tgz}
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0 || ^18.0.0
 
   react-intl@3.12.1:
     resolution: {integrity: sha512-cgumW29mwROIqyp8NXStYsoIm27+8FqnxykiLSawWjOxGIBeLuN/+p2srei5SRIumcJefOkOIHP+NDck05RgHg==, tarball: https://registry.npmjs.org/react-intl/-/react-intl-3.12.1.tgz}
@@ -13055,6 +13063,13 @@ snapshots:
       prop-types: 15.8.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
+      react-fast-compare: 3.2.2
+      shallowequal: 1.1.0
+
+  react-helmet-async@2.0.5(react@18.3.1):
+    dependencies:
+      invariant: 2.2.4
+      react: 18.3.1
       react-fast-compare: 3.2.2
       shallowequal: 1.1.0
 

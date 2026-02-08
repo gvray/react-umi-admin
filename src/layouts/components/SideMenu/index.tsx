@@ -12,11 +12,10 @@ interface SideMenuProps {
 }
 
 const SideMenu: React.FC<SideMenuProps> = ({ collapsed }) => {
-  const [current, setCurrent] = useState('');
-
   const { loading, menus } = useMenuModel();
 
   const location = useLocation();
+  const [openKeys, setOpenKeys] = useState<string[]>([]);
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     history.push(e.key);
@@ -43,8 +42,20 @@ const SideMenu: React.FC<SideMenuProps> = ({ collapsed }) => {
     return transformMenuItems(menus || []);
   }, [menus]);
 
+  // Compute openKeys from current pathname, e.g. /system/user -> ['/system']
   useEffect(() => {
-    setCurrent(location.pathname.split('/')[1]);
+    const segments = location.pathname.split('/').filter(Boolean);
+    const keys: string[] = [];
+    let path = '';
+    // Build all ancestor paths except the leaf
+    for (let i = 0; i < segments.length - 1; i++) {
+      path += '/' + segments[i];
+      keys.push(path);
+    }
+    setOpenKeys((prev) => {
+      const merged = new Set([...prev, ...keys]);
+      return Array.from(merged);
+    });
   }, [location.pathname]);
 
   return (
@@ -58,11 +69,12 @@ const SideMenu: React.FC<SideMenuProps> = ({ collapsed }) => {
       <Skeleton loading={loading} active round style={{ padding: '15px' }}>
         <Menu
           inlineIndent={10}
-          defaultOpenKeys={['/system']}
+          openKeys={openKeys}
+          onOpenChange={(keys) => setOpenKeys(keys as string[])}
           theme={loading ? 'light' : 'dark'}
           mode="inline"
           onClick={handleMenuClick}
-          selectedKeys={[current]}
+          selectedKeys={[location.pathname]}
           items={items}
         />
       </Skeleton>

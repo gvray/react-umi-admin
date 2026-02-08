@@ -1,7 +1,8 @@
 import { withAuth } from '@/hocs';
-import { useRoutePermissions } from '@/hooks';
+import { useRoutePermissions, useRouteTitle } from '@/hooks';
 import { theme } from 'antd';
 import { PropsWithChildren, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { styled } from 'umi';
 
 type PageContainerWrapperProps = {
@@ -41,6 +42,9 @@ const PageContainer: React.FC<PropsWithChildren<PageContainerProps>> = ({
     setIsVisible(true); // 组件挂载时设置为可见，触发进场动画
   }, []);
 
+  const routeTitle = useRouteTitle();
+  const documentTitle = routeTitle ? `${routeTitle} - G-ADMIN` : 'G-ADMIN';
+
   return (
     <PageContainerWrapper
       $isVisible={isVisible}
@@ -48,6 +52,9 @@ const PageContainer: React.FC<PropsWithChildren<PageContainerProps>> = ({
       $borderRadiusLG={borderRadiusLG}
       {...rest}
     >
+      <Helmet>
+        <title>{documentTitle}</title>
+      </Helmet>
       {children}
     </PageContainerWrapper>
   );

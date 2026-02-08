@@ -52,6 +52,7 @@
     "echarts": "^5.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-helmet-async": "^2.0.5",
     "storetify": "^1.0.0",
     "umi": "^4.1.1",
     "use-compare": "^1.0.0",
