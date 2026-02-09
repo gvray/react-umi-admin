@@ -8,7 +8,7 @@
 
 我是多年一线前端架构师，希望通过本项目把个人经验沉淀为企业级中后台前端标准样板。它不仅实现完整 RBAC 权限管理，也融合现代前端最佳实践，追求极致可维护性、可扩展性与复用性。这是一个可复用的前端架构，让复杂业务在稳定、高性能基础上持续演进。前后端同步开发，部分数据仍在持续更新。  
 未来规划：全面迁移至 Vite，性能与体验全面升级。  
-⭐ 觉得这个项目有价值？点个 Star，支持高可维护、高可复用的前端实践！
+⭐⭐⭐⭐⭐ 觉得这个项目有价值？点个 Star，支持高可维护、高可复用的前端实践！
 
 ## 🔥 项目展示
 
@@ -16,23 +16,7 @@
 
 核心页面一览：
 
-![登陆](docs/screenshots/login.png)
-
----
-
-![Dashboard](docs/screenshots/2026-02-08/dashboard.png)
-
----
-
-![用户管理](docs/screenshots/2026-02-08/user.png)
-
----
-
-![权限管理](docs/screenshots/2026-02-08/role-permission.png)
-
----
-
-![个人中心](docs/screenshots/2026-02-08/profile2.png)
+![登陆](docs/screenshots/login.png) ![Dashboard](docs/screenshots/2026-02-08/dashboard.png) ![用户管理](docs/screenshots/2026-02-08/user.png) ![权限管理](docs/screenshots/2026-02-08/role-permission.png) ![个人中心](docs/screenshots/2026-02-08/profile2.png)
 
 <details>
 
