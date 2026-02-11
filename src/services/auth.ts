@@ -16,15 +16,8 @@ export function logout() {
   });
 }
 
-/** 获取当前用户信息 */
-export function profile() {
-  return request<API.Response<API.CurrentUserResponseDto>>('/auth/profile', {
-    method: 'GET',
-  });
-}
-
 /** 获取当前用户菜单树 */
-export function getMenus() {
+export function queryMenus() {
   return request<API.Response<API.MenuResponseDto[]>>('/auth/menus', {
     method: 'GET',
   });

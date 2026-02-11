@@ -1,7 +1,7 @@
 import { request } from '@gvray/request';
 
 /** 获取配置列表 */
-export function listConfig(params?: API.ConfigsFindAllParams) {
+export function queryConfigList(params?: API.ConfigsFindAllParams) {
   return request<API.Response<API.PaginatedResponse<API.ConfigResponseDto>>>(
     '/system/configs',
     {
@@ -12,7 +12,7 @@ export function listConfig(params?: API.ConfigsFindAllParams) {
 }
 
 /** 获取配置详情 */
-export function getConfig(configId: string) {
+export function getConfigById(configId: string) {
   return request<API.Response<API.ConfigResponseDto>>(
     `/system/configs/${configId}`,
     {

@@ -1,7 +1,7 @@
 import { request } from '@gvray/request';
 
 /** 获取登录日志列表 */
-export function listLoginLog(params?: API.LoginLogsFindAllParams) {
+export function queryLoginLogList(params?: API.LoginLogsFindAllParams) {
   return request<API.Response<API.PaginatedResponse<API.LoginLogResponseDto>>>(
     '/system/login-logs',
     {
@@ -12,7 +12,7 @@ export function listLoginLog(params?: API.LoginLogsFindAllParams) {
 }
 
 /** 获取登录日志统计 */
-export function getLoginLogStats(params?: API.LoginLogsGetStatsParams) {
+export function queryLoginLogStats(params?: API.LoginLogsGetStatsParams) {
   return request<API.Response<Record<string, unknown>>>(
     '/system/login-logs/stats',
     {

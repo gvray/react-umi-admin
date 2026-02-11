@@ -1,5 +1,5 @@
-import { listPermission } from '@/services/permission';
-import { assignRolePermissions, getRole } from '@/services/role';
+import { queryPermissionList } from '@/services/permission';
+import { assignRolePermissions, getRoleById } from '@/services/role';
 import { logger } from '@/utils';
 import { message } from 'antd';
 import { useCallback, useState } from 'react';
@@ -16,7 +16,7 @@ export const useAuthPermission = () => {
 
   const fetchPermissions = useCallback(async () => {
     try {
-      const res = await listPermission();
+      const res = await queryPermissionList();
       if (res.data?.items?.length) {
         setPermissions(res.data.items);
       }
@@ -28,7 +28,7 @@ export const useAuthPermission = () => {
   const fetchRoleDetail = useCallback(async (roleId: string) => {
     try {
       setLoading(true);
-      const res = await getRole(roleId);
+      const res = await getRoleById(roleId);
       setSelectedRole(res.data);
       return res.data;
     } catch (error) {

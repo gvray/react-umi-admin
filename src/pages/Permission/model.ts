@@ -1,7 +1,7 @@
 import {
   deletePermission,
-  getPermission,
-  getPermissionTree,
+  getPermissionById,
+  queryPermissionTree,
 } from '@/services/permission';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -12,12 +12,12 @@ export const useResourceModel = () => {
 
   const paramsRef = useRef<Record<string, unknown>>({});
   const getPermissions = async (params?: API.PermissionsGetTreeParams) => {
-    return getPermissionTree(params);
+    return queryPermissionTree(params);
   };
   const getDetail = useCallback(async (permissionId: string) => {
     setLoading(true);
     try {
-      const { data } = await getPermission(permissionId);
+      const { data } = await getPermissionById(permissionId);
       return data;
     } finally {
       setLoading(false);
@@ -48,7 +48,7 @@ export const useUpdataFormModel = (open: boolean) => {
   const getTree = async () => {
     try {
       setLoading(true);
-      const res = await getPermissionTree();
+      const res = await queryPermissionTree();
       if (res.data) {
         setData(res.data);
       }

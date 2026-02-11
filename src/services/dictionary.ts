@@ -3,7 +3,7 @@ import { request } from '@gvray/request';
 // ─── 字典类型 ───────────────────────────────────────────
 
 /** 获取字典类型列表 */
-export function listDictionaryType(
+export function queryDictionaryTypeList(
   params?: API.DictionariesFindAllDictionaryTypesParams,
 ) {
   return request<
@@ -15,7 +15,7 @@ export function listDictionaryType(
 }
 
 /** 获取字典类型详情 */
-export function getDictionaryType(typeId: string) {
+export function getDictionaryTypeById(typeId: string) {
   return request<API.Response<API.DictionaryTypeResponseDto>>(
     `/system/dictionaries/types/${typeId}`,
     {
@@ -72,7 +72,7 @@ export function batchDeleteDictionaryTypes(
 // ─── 字典项 ─────────────────────────────────────────────
 
 /** 获取字典项列表 */
-export function listDictionaryItem(
+export function queryDictionaryItemList(
   params?: API.DictionariesFindAllDictionaryItemsParams,
 ) {
   return request<
@@ -84,7 +84,7 @@ export function listDictionaryItem(
 }
 
 /** 获取字典项详情 */
-export function getDictionaryItem(itemId: string) {
+export function getDictionaryItemById(itemId: string) {
   return request<API.Response<API.DictionaryItemResponseDto>>(
     `/system/dictionaries/items/${itemId}`,
     {

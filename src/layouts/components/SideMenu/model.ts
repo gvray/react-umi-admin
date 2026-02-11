@@ -1,4 +1,4 @@
-import { getMenus } from '@/services/auth';
+import { queryMenus } from '@/services/auth';
 import { MenuProps } from 'antd';
 import { useEffect, useState } from 'react';
 
@@ -8,7 +8,7 @@ export const useMenuModel = () => {
   const getMenuList = async () => {
     try {
       setLoading(true);
-      const res = await getMenus();
+      const res = await queryMenus();
       if (res.data) {
         setMenus(res.data);
       }

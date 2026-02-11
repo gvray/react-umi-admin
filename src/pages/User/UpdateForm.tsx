@@ -18,7 +18,7 @@ import useUpdateForm from './model';
 interface UpdateFormProps {
   onCancel?: () => void;
   onOk?: () => void;
-  dict: Record<string, { label: string; value: string }[]>;
+  dict: Record<string, { label: string; value: string | number }[]>;
 }
 
 export interface UpdateFormRef {

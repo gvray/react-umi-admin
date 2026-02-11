@@ -1,7 +1,7 @@
 import { request } from '@gvray/request';
 
 /** 获取角色列表 */
-export function listRole(params?: API.RolesFindAllParams) {
+export function queryRoleList(params?: API.RolesFindAllParams) {
   return request<API.Response<API.PaginatedResponse<API.RoleResponseDto>>>(
     '/system/roles',
     {
@@ -12,7 +12,7 @@ export function listRole(params?: API.RolesFindAllParams) {
 }
 
 /** 获取角色详情 */
-export function getRole(roleId: string) {
+export function getRoleById(roleId: string) {
   return request<API.Response<API.RoleResponseDto>>(`/system/roles/${roleId}`, {
     method: 'GET',
   });
@@ -76,7 +76,7 @@ export function assignRolePermissions(
 }
 
 /** 获取角色权限列表 */
-export function getRolePermissions(roleId: string) {
+export function getRolePermissionsById(roleId: string) {
   return request<API.Response<API.RolePermissionResponseDto[]>>(
     `/system/roles/${roleId}/permissions`,
     {
@@ -86,7 +86,7 @@ export function getRolePermissions(roleId: string) {
 }
 
 /** 获取角色下的用户列表 */
-export function getRoleUsers(roleId: string) {
+export function getRoleUsersById(roleId: string) {
   return request<API.Response<API.RoleUserResponseDto[]>>(
     `/system/roles/${roleId}/users`,
     {
@@ -107,7 +107,7 @@ export function assignRoleUsers(roleId: string, data: API.AssignUsersDto) {
 }
 
 /** 获取角色数据权限 */
-export function getRoleDataScopes(roleId: string) {
+export function getRoleDataScopesById(roleId: string) {
   return request<API.Response<API.AssignDataScopeDto>>(
     `/system/roles/${roleId}/data-scope`,
     {

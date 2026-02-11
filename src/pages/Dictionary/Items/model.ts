@@ -1,8 +1,8 @@
 import {
   deleteDictionaryItem,
-  getDictionaryItem,
-  getDictionaryType,
-  listDictionaryItem,
+  getDictionaryItemById,
+  getDictionaryTypeById,
+  queryDictionaryItemList,
 } from '@/services/dictionary';
 import { useCallback, useState } from 'react';
 
@@ -15,7 +15,7 @@ export const useDictionaryItems = () => {
   const getTypeDetail = useCallback(async (typeId: string) => {
     setLoading(true);
     try {
-      const { data } = await getDictionaryType(typeId);
+      const { data } = await getDictionaryTypeById(typeId);
       setTypeDetail(data);
       return data;
     } finally {
@@ -28,7 +28,7 @@ export const useDictionaryItems = () => {
       typeCode: string,
       params?: API.DictionariesFindAllDictionaryItemsParams,
     ) => {
-      return listDictionaryItem({ ...params, typeCode });
+      return queryDictionaryItemList({ ...params, typeCode });
     },
     [],
   );
@@ -36,7 +36,7 @@ export const useDictionaryItems = () => {
   const getItemDetail = useCallback(async (itemId: string) => {
     setLoading(true);
     try {
-      const { data } = await getDictionaryItem(itemId);
+      const { data } = await getDictionaryItemById(itemId);
       return data;
     } finally {
       setLoading(false);

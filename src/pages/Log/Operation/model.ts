@@ -1,8 +1,8 @@
 import {
   batchDeleteOperationLogs,
   clearOperationLog,
-  getOperationLog,
-  listOperationLog,
+  getOperationLogById,
+  queryOperationLogList,
 } from '@/services/operationLog';
 import { useCallback, useState } from 'react';
 
@@ -19,7 +19,7 @@ export const useOperationLog = () => {
     async (params?: API.OperationLogsFindManyParams) => {
       setLoading(true);
       try {
-        return await listOperationLog(params);
+        return await queryOperationLogList(params);
       } finally {
         setLoading(false);
       }
@@ -54,7 +54,7 @@ export const useOperationLog = () => {
     setDetailOpen(true);
     setDetailLoading(true);
     try {
-      const { data } = await getOperationLog(String(id));
+      const { data } = await getOperationLogById(String(id));
       setDetail(data);
     } finally {
       setDetailLoading(false);

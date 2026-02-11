@@ -1,7 +1,7 @@
 import { request } from '@gvray/request';
 
 /** 获取用户列表 */
-export function listUser(params?: API.UsersFindAllParams) {
+export function queryUserList(params?: API.UsersFindAllParams) {
   return request<API.Response<API.PaginatedResponse<API.UserResponseDto>>>(
     '/system/users',
     {
@@ -12,7 +12,7 @@ export function listUser(params?: API.UsersFindAllParams) {
 }
 
 /** 获取用户详情 */
-export function getUser(userId: string) {
+export function getUserById(userId: string) {
   return request<API.Response<API.UserResponseDto>>(`/system/users/${userId}`, {
     method: 'GET',
   });

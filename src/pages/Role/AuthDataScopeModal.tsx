@@ -1,8 +1,8 @@
-import { getDepartmentTree } from '@/services/department';
+import { queryDepartmentTree } from '@/services/department';
 import {
   assignRoleDataScopes,
-  getRole,
-  getRoleDataScopes,
+  getRoleById,
+  getRoleDataScopesById,
 } from '@/services/role';
 import { logger } from '@/utils';
 import { DatabaseOutlined, EyeOutlined, TeamOutlined } from '@ant-design/icons';
@@ -161,9 +161,9 @@ export default function AuthDataScopeModal({
     setLoading(true);
     try {
       const [roleRes, dataScopesRes, departmentsRes] = await Promise.all([
-        getRole(roleId),
-        getRoleDataScopes(roleId),
-        getDepartmentTree(),
+        getRoleById(roleId),
+        getRoleDataScopesById(roleId),
+        queryDepartmentTree(),
       ]);
       setCurrentRole({
         ...roleRes.data,

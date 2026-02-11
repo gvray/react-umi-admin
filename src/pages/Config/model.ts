@@ -1,8 +1,8 @@
 import {
   createConfig,
   deleteConfig,
-  getConfig,
-  listConfig,
+  getConfigById,
+  queryConfigList,
   updateConfig,
 } from '@/services/config';
 import { useCallback, useState } from 'react';
@@ -16,13 +16,13 @@ export const useConfig = () => {
     useState<API.ConfigResponseDto | null>(null);
 
   const getConfigList = useCallback((params?: API.ConfigsFindAllParams) => {
-    return listConfig(params);
+    return queryConfigList(params);
   }, []);
 
   const getConfigDetail = useCallback(async (configId: string) => {
     setLoading(true);
     try {
-      const { data } = await getConfig(configId);
+      const { data } = await getConfigById(configId);
       return data;
     } finally {
       setLoading(false);
@@ -100,7 +100,7 @@ export const useConfig = () => {
     setViewVisible(true);
     setLoading(true);
     try {
-      const { data } = await getConfig(configId);
+      const { data } = await getConfigById(configId);
       setCurrentConfig(data);
     } finally {
       setLoading(false);

@@ -1,4 +1,4 @@
-import { profile } from '@/services/auth';
+import { queryProfile } from '@/services/profile';
 import storetify from 'storetify';
 import { history } from 'umi';
 import { logger } from './utils';
@@ -13,7 +13,7 @@ export async function getInitialState() {
   const fetchProfile = async () => {
     try {
       // skipErrorHandler 跳过信息提示
-      const msg = await profile({ skipErrorHandler: true });
+      const msg = await queryProfile({ skipErrorHandler: true });
       return msg.data;
     } catch (error) {
       // 清除登录状态并跳转登录页

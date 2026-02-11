@@ -1,7 +1,7 @@
 import { request } from '@gvray/request';
 
 /** 获取部门列表 */
-export function listDepartment(params?: API.DepartmentsFindAllParams) {
+export function queryDepartmentList(params?: API.DepartmentsFindAllParams) {
   return request<
     API.Response<API.PaginatedResponse<API.DepartmentResponseDto>>
   >('/system/departments', {
@@ -11,7 +11,7 @@ export function listDepartment(params?: API.DepartmentsFindAllParams) {
 }
 
 /** 获取部门详情 */
-export function getDepartment(departmentId: string) {
+export function getDepartmentById(departmentId: string) {
   return request<API.Response<API.DepartmentResponseDto>>(
     `/system/departments/${departmentId}`,
     {
@@ -61,7 +61,7 @@ export function batchDeleteDepartments(data: API.BatchDeleteDepartmentsDto) {
 }
 
 /** 获取部门树结构 */
-export function getDepartmentTree(params?: API.DepartmentsGetTreeParams) {
+export function queryDepartmentTree(params?: API.DepartmentsGetTreeParams) {
   return request<API.Response<API.DepartmentResponseDto[]>>(
     '/system/departments/tree',
     {

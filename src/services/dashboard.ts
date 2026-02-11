@@ -1,28 +1,24 @@
 import { request } from '@gvray/request';
 
-/** 获取仪表盘概览数据 */
-export function getDashboardOverview() {
+/** 查询仪表盘概览数据 */
+export function queryDashboardOverview() {
   return request<API.Response<Record<string, unknown>>>('/dashboard/overview', {
     method: 'GET',
   });
 }
 
-/** 获取角色分布统计 */
-export function getRoleDistribution() {
+/** 查询角色分布统计 */
+export function queryRoleDistribution() {
   return request<API.Response<Record<string, unknown>>>(
     '/dashboard/role-distribution',
-    {
-      method: 'GET',
-    },
+    { method: 'GET' },
   );
 }
 
-/** 获取登录趋势数据 */
-export function getLoginTrend() {
+/** 查询登录趋势数据 */
+export function queryLoginTrend() {
   return request<API.Response<Record<string, unknown>>>(
     '/dashboard/login-trend',
-    {
-      method: 'GET',
-    },
+    { method: 'GET' },
   );
 }

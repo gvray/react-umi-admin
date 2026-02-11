@@ -1,7 +1,7 @@
-import { listDepartment } from '@/services/department';
-import { listPosition } from '@/services/position';
-import { listRole } from '@/services/role';
-import { deleteUser, getUser, listUser } from '@/services/user';
+import { queryDepartmentList } from '@/services/department';
+import { queryPositionList } from '@/services/position';
+import { queryRoleList } from '@/services/role';
+import { deleteUser, getUserById, queryUserList } from '@/services/user';
 import { useCallback, useEffect, useState } from 'react';
 
 const useUpdateForm = (open: boolean) => {
@@ -15,7 +15,7 @@ const useUpdateForm = (open: boolean) => {
 
   const getDepartments = async () => {
     try {
-      const res = await listDepartment();
+      const res = await queryDepartmentList();
       if (res.data?.items) {
         setDepartmentList(res.data.items);
       }
@@ -26,7 +26,7 @@ const useUpdateForm = (open: boolean) => {
 
   const getRoles = async () => {
     try {
-      const res = await listRole();
+      const res = await queryRoleList();
       if (res.data?.items) {
         setRoleList(res.data.items);
       }
@@ -35,7 +35,7 @@ const useUpdateForm = (open: boolean) => {
 
   const getPositions = async () => {
     try {
-      const res = await listPosition();
+      const res = await queryPositionList();
       if (res.data?.items) {
         setPositionList(res.data.items);
       }
@@ -62,12 +62,12 @@ export const useUserModel = () => {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const getList = useCallback(async (params?: API.UsersFindAllParams) => {
-    return listUser(params);
+    return queryUserList(params);
   }, []);
   const getDetail = useCallback(async (userId: string) => {
     setLoading(true);
     try {
-      const { data } = await getUser(userId);
+      const { data } = await getUserById(userId);
       return data;
     } finally {
       setLoading(false);

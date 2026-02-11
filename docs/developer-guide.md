@@ -422,3 +422,19 @@ export default MyPage;
 - **路由 `meta` 是自定义扩展**：Umi 原生不支持 `meta`，通过 `useRouteMeta` Hook 解析
 - **pnpm 严格模式**：项目使用 pnpm，不要混用 npm/yarn 安装依赖
 - **Node.js 版本**：确保使用 Node.js 20+，低版本可能导致构建脚本异常
+
+## 16.命名规范
+
+| 层 | 作用 | 命名关注点 |
+| --- | --- | --- |
+| **Service** | 调用后端 API，REST 风格 | 用后端 API 风格：`createUser` / `updateUser` / `deleteUser` / `queryUsersList` |
+| **Model / Store** | 管理前端状态、业务逻辑 | 用业务动作语义：`addUser` / `editUser` / `removeUser` / `fetchUsersList` |
+| **UI / Component** | 页面事件触发、Prop 绑定 | handle + Model 方法：`handleAddUser` / `handleUpdateUser` / `handleDeleteUser` |
+
+## 17.分支管理
+
+- feature/\* → 每个新功能或 bug 修复
+- develop → 测试环境，集成所有 feature
+- release/\* → 准备发版，冻结功能，做最终测试
+- main → 生产环境，始终稳定
+- hotfix/\* → 紧急修复生产环境 bug

@@ -1,9 +1,9 @@
 import { ROOT_PARENT_ID } from '@/constants';
 import {
   deleteDepartment,
-  getDepartment,
-  getDepartmentTree,
-  listDepartment,
+  getDepartmentById,
+  queryDepartmentList,
+  queryDepartmentTree,
 } from '@/services/department';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -13,12 +13,12 @@ export const useDepartmentModel = () => {
 
   const paramsRef = useRef<Record<string, unknown>>({});
   const getDepartments = async (params?: API.DepartmentsGetTreeParams) => {
-    return getDepartmentTree(params);
+    return queryDepartmentTree(params);
   };
   const getDetail = useCallback(async (departmentId: string) => {
     setLoading(true);
     try {
-      const { data } = await getDepartment(departmentId);
+      const { data } = await getDepartmentById(departmentId);
       return data;
     } finally {
       setLoading(false);
@@ -49,7 +49,7 @@ export const useUpdataFormModel = (open: boolean) => {
   const getDepartments = async () => {
     try {
       setLoading(true);
-      const res = await listDepartment();
+      const res = await queryDepartmentList();
       if (res.data?.items?.length) {
         setData([
           {

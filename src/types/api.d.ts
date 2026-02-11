@@ -1,6 +1,6 @@
 /**
  * 此文件由 scripts/gen-api-types.ts 自动生成
- * 生成时间: 2026-02-07T12:39:53.516Z
+ * 生成时间: 2026-02-10T15:02:56.194Z
  * 数据来源: http://localhost:8001/api-json
  * 请勿手动修改此文件
  */
@@ -22,107 +22,6 @@ declare namespace API {
     account: string;
     /** 密码 */
     password: string;
-  }
-
-  interface PermissionResponseDto {
-    /** 权限ID */
-    id: number;
-    /**
-     * 权限唯一标识符（UUID）
-     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
-     */
-    permissionId: string;
-    /** 权限名称 */
-    name: string;
-    /** 权限代码 */
-    code: string;
-    /** 权限描述 */
-    description?: string;
-  }
-
-  interface CurrentUserRoleResponseDto {
-    /** 角色ID */
-    id: number;
-    /**
-     * 角色唯一标识符（UUID）
-     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
-     */
-    roleId: string;
-    /** 角色名称 */
-    name: string;
-    /** 角色标识（用于判断是否超管） */
-    roleKey?: string;
-    /** 角色描述 */
-    description?: string;
-    /** 角色权限列表 */
-    permissions?: PermissionResponseDto[];
-  }
-
-  interface CurrentUserDepartmentResponseDto {
-    /** 部门ID */
-    id: number;
-    /**
-     * 部门唯一标识符（UUID）
-     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
-     */
-    departmentId: string;
-    /** 部门名称 */
-    name: string;
-    /** 部门描述 */
-    description?: string;
-  }
-
-  interface CurrentUserPositionResponseDto {
-    /** 岗位ID */
-    id: number;
-    /**
-     * 岗位唯一标识符（UUID）
-     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
-     */
-    positionId: string;
-    /** 岗位名称 */
-    name: string;
-    /** 岗位描述 */
-    description?: string;
-  }
-
-  interface CurrentUserResponseDto {
-    /** 用户数据库ID */
-    id: number;
-    /**
-     * 用户唯一标识符（UUID）
-     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
-     */
-    userId: string;
-    /** 用户名 */
-    username: string;
-    /** 昵称 */
-    nickname: string;
-    /** 头像 */
-    avatar?: string;
-    /** 邮箱 */
-    email?: string;
-    /** 手机号码 */
-    phone?: string;
-    /**
-     * 用户状态
-     * @example 1
-     */
-    status: 0 | 1 | 2 | 3;
-    /** 创建时间 */
-    createdAt: string;
-    /** 更新时间 */
-    updatedAt: string;
-    /** 是否为超级管理员 */
-    isSuperAdmin?: boolean;
-    /** 权限代码聚合（超管返回 ["*:*:*"]） */
-    permissionCodes?: string[];
-    /** 用户角色列表（包含权限信息） */
-    roles?: CurrentUserRoleResponseDto[];
-    /** 所属部门 */
-    department?: CurrentUserDepartmentResponseDto;
-    /** 所属岗位 */
-    positions?: CurrentUserPositionResponseDto[];
   }
 
   interface MenuMetaDto {
@@ -1016,6 +915,131 @@ declare namespace API {
   interface BatchDeleteConfigsDto {
     /** 待删除配置ID列表 */
     ids: string[];
+  }
+
+  interface PermissionResponseDto {
+    /** 权限ID */
+    id: number;
+    /**
+     * 权限唯一标识符（UUID）
+     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
+     */
+    permissionId: string;
+    /** 权限名称 */
+    name: string;
+    /** 权限代码 */
+    code: string;
+    /** 权限描述 */
+    description?: string;
+  }
+
+  interface CurrentUserRoleResponseDto {
+    /** 角色ID */
+    id: number;
+    /**
+     * 角色唯一标识符（UUID）
+     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
+     */
+    roleId: string;
+    /** 角色名称 */
+    name: string;
+    /** 角色标识（用于判断是否超管） */
+    roleKey?: string;
+    /** 角色描述 */
+    description?: string;
+    /** 角色权限列表 */
+    permissions?: PermissionResponseDto[];
+  }
+
+  interface CurrentUserDepartmentResponseDto {
+    /** 部门ID */
+    id: number;
+    /**
+     * 部门唯一标识符（UUID）
+     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
+     */
+    departmentId: string;
+    /** 部门名称 */
+    name: string;
+    /** 部门描述 */
+    description?: string;
+  }
+
+  interface CurrentUserPositionResponseDto {
+    /** 岗位ID */
+    id: number;
+    /**
+     * 岗位唯一标识符（UUID）
+     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
+     */
+    positionId: string;
+    /** 岗位名称 */
+    name: string;
+    /** 岗位描述 */
+    description?: string;
+  }
+
+  interface CurrentUserResponseDto {
+    /** 用户数据库ID */
+    id: number;
+    /**
+     * 用户唯一标识符（UUID）
+     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
+     */
+    userId: string;
+    /** 用户名 */
+    username: string;
+    /** 昵称 */
+    nickname: string;
+    /** 头像 */
+    avatar?: string;
+    /** 邮箱 */
+    email?: string;
+    /** 手机号码 */
+    phone?: string;
+    /**
+     * 用户状态
+     * @example 1
+     */
+    status: 0 | 1 | 2 | 3;
+    /** 创建时间 */
+    createdAt: string;
+    /** 更新时间 */
+    updatedAt: string;
+    /** 是否为超级管理员 */
+    isSuperAdmin?: boolean;
+    /** 权限代码聚合（超管返回 ["*:*:*"]） */
+    permissionCodes?: string[];
+    /** 用户角色列表（包含权限信息） */
+    roles?: CurrentUserRoleResponseDto[];
+    /** 所属部门 */
+    department?: CurrentUserDepartmentResponseDto;
+    /** 所属岗位 */
+    positions?: CurrentUserPositionResponseDto[];
+  }
+
+  interface UpdateProfileDto {
+    /**
+     * 昵称
+     * @example 小明
+     */
+    nickname?: string;
+    /** 头像URL */
+    avatar?: string;
+    /**
+     * 手机号码
+     * @example 13800138000
+     */
+    phone?: string;
+    /** 性别：0-未知, 1-男, 2-女, 3-其他 */
+    gender?: 0 | 1 | 2 | 3;
+  }
+
+  interface ChangePasswordDto {
+    /** 当前密码 */
+    oldPassword: string;
+    /** 新密码 */
+    newPassword: string;
   }
 
   interface BatchDeleteOperationLogsDto {

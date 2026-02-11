@@ -1,4 +1,8 @@
-import { deletePosition, getPosition, listPosition } from '@/services/position';
+import {
+  deletePosition,
+  getPositionById,
+  queryPositionList,
+} from '@/services/position';
 import { useCallback, useState } from 'react';
 
 export const usePosition = () => {
@@ -6,13 +10,13 @@ export const usePosition = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const getList = useCallback(async (params?: API.PositionsFindAllParams) => {
-    return listPosition(params);
+    return queryPositionList(params);
   }, []);
 
   const getDetail = useCallback(async (positionId: string) => {
     setLoading(true);
     try {
-      const { data } = await getPosition(positionId);
+      const { data } = await getPositionById(positionId);
       return data;
     } finally {
       setLoading(false);

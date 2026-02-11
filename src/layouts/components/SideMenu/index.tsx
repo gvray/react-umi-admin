@@ -1,4 +1,5 @@
 import AntIcon from '@/components/AntIcon';
+import type { SiderTheme } from '@/stores/useSettingsStore';
 import { Layout, Menu, MenuProps, Skeleton } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import { history, useLocation } from 'umi';
@@ -9,9 +10,19 @@ const { Sider } = Layout;
 
 interface SideMenuProps {
   collapsed: boolean;
+  theme?: SiderTheme;
+  width?: number;
+  collapsedWidth?: number;
+  showLogo?: boolean;
 }
 
-const SideMenu: React.FC<SideMenuProps> = ({ collapsed }) => {
+const SideMenu: React.FC<SideMenuProps> = ({
+  collapsed,
+  theme = 'dark',
+  width = 220,
+  collapsedWidth = 64,
+  showLogo = true,
+}) => {
   const { loading, menus } = useMenuModel();
 
   const location = useLocation();
@@ -58,20 +69,24 @@ const SideMenu: React.FC<SideMenuProps> = ({ collapsed }) => {
     });
   }, [location.pathname]);
 
+  const siderTheme = loading ? 'light' : theme;
+
   return (
     <Sider
       trigger={null}
       collapsible
       collapsed={collapsed}
-      theme={loading ? 'light' : 'dark'}
+      width={width}
+      collapsedWidth={collapsedWidth}
+      theme={siderTheme}
     >
-      <Logo theme={loading ? 'light' : 'dark'} collapsed={collapsed} />
+      {showLogo && <Logo theme={siderTheme} collapsed={collapsed} />}
       <Skeleton loading={loading} active round style={{ padding: '15px' }}>
         <Menu
           inlineIndent={10}
           openKeys={openKeys}
           onOpenChange={(keys) => setOpenKeys(keys as string[])}
-          theme={loading ? 'light' : 'dark'}
+          theme={siderTheme}
           mode="inline"
           onClick={handleMenuClick}
           selectedKeys={[location.pathname]}

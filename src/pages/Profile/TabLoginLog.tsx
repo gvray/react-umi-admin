@@ -1,4 +1,4 @@
-import { listLoginLog } from '@/services/loginLog';
+import { queryLoginLogList } from '@/services/loginLog';
 import { SearchOutlined } from '@ant-design/icons';
 import {
   Button,
@@ -35,7 +35,7 @@ const TabLoginLog: React.FC = () => {
       };
       if (statusFilter !== undefined) params.status = statusFilter;
       if (keyword) params.account = keyword;
-      const res = await listLoginLog(params as API.LoginLogsFindAllParams);
+      const res = await queryLoginLogList(params as API.LoginLogsFindAllParams);
       if (res?.data) {
         setData(res.data.items || []);
         setTotal(res.data.total || 0);

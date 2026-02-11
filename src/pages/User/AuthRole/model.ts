@@ -1,5 +1,5 @@
-import { listRole } from '@/services/role';
-import { assignUserRoles, getUser } from '@/services/user';
+import { queryRoleList } from '@/services/role';
+import { assignUserRoles, getUserById } from '@/services/user';
 import { message } from 'antd';
 import { useCallback, useState } from 'react';
 
@@ -14,7 +14,7 @@ export const useAuthRole = (userId?: string) => {
   // 获取角色列表
   const fetchRoles = useCallback(async () => {
     try {
-      const res = await listRole();
+      const res = await queryRoleList();
       if (res.data?.items?.length) {
         setRoles(res.data.items);
       }
@@ -25,7 +25,7 @@ export const useAuthRole = (userId?: string) => {
   const fetchUserDetail = useCallback(async (userId: string) => {
     try {
       setLoading(true);
-      const res = await getUser(userId);
+      const res = await getUserById(userId);
       setSelectedUser(res.data);
       return res.data;
     } catch (error) {

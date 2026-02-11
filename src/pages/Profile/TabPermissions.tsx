@@ -1,4 +1,4 @@
-import { getMenus } from '@/services/auth';
+import { queryMenus } from '@/services/auth';
 import {
   ApartmentOutlined,
   ApiOutlined,
@@ -81,7 +81,7 @@ const TabPermissions: React.FC<TabPermissionsProps> = ({ profile }) => {
 
   const fetchMenus = useCallback(async () => {
     try {
-      const res = await getMenus();
+      const res = await queryMenus();
       if (res?.data) {
         setMenuTree(res.data);
         setExpandedKeys(collectTreeKeys(res.data));

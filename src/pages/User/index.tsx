@@ -43,8 +43,8 @@ const UserPage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
   const dict = useDict<{
-    user_status: any[];
-    user_gender: any[];
+    user_status: { label: string; value: number }[];
+    user_gender: { label: string; value: number }[];
   }>(['user_status', 'user_gender']);
   const { getList, getDetail, deleteItem } = useUserModel();
 

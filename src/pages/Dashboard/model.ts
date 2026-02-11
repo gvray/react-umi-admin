@@ -1,7 +1,7 @@
 import {
-  getDashboardOverview,
-  getLoginTrend,
-  getRoleDistribution,
+  queryDashboardOverview,
+  queryLoginTrend,
+  queryRoleDistribution,
 } from '@/services/dashboard';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -29,7 +29,7 @@ export const useDashboard = () => {
 
   const fetchOverview = useCallback(async () => {
     try {
-      const res = await getDashboardOverview();
+      const res = await queryDashboardOverview();
       if (res.data) {
         setOverview(res.data);
       }
@@ -40,7 +40,7 @@ export const useDashboard = () => {
 
   const fetchRoleDistribution = useCallback(async () => {
     try {
-      const res = await getRoleDistribution();
+      const res = await queryRoleDistribution();
       if (res.data) {
         setRoleDistribution(res.data);
       }
@@ -51,7 +51,7 @@ export const useDashboard = () => {
 
   const fetchLoginTrend = useCallback(async () => {
     try {
-      const res = await getLoginTrend();
+      const res = await queryLoginTrend();
       if (res.data) {
         setLoginData(res.data as unknown as { date: string; value: number }[]);
       }

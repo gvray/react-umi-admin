@@ -1,7 +1,9 @@
 import { request } from '@gvray/request';
 
 /** 获取操作日志列表 */
-export function listOperationLog(params?: API.OperationLogsFindManyParams) {
+export function queryOperationLogList(
+  params?: API.OperationLogsFindManyParams,
+) {
   return request<API.Response<API.PaginatedResponse<Record<string, unknown>>>>(
     '/system/operation-logs',
     {
@@ -12,7 +14,7 @@ export function listOperationLog(params?: API.OperationLogsFindManyParams) {
 }
 
 /** 获取操作日志详情 */
-export function getOperationLog(logId: string) {
+export function getOperationLogById(logId: string) {
   return request<API.Response<Record<string, unknown>>>(
     `/system/operation-logs/${logId}`,
     {

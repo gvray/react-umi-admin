@@ -1,7 +1,7 @@
 import {
   deleteDictionaryType,
-  getDictionaryType,
-  listDictionaryType,
+  getDictionaryTypeById,
+  queryDictionaryTypeList,
 } from '@/services/dictionary';
 import { useCallback, useState } from 'react';
 
@@ -11,7 +11,7 @@ export const useDictionary = () => {
 
   const getList = useCallback(
     async (params?: API.DictionariesFindAllDictionaryTypesParams) => {
-      return listDictionaryType(params);
+      return queryDictionaryTypeList(params);
     },
     [],
   );
@@ -19,7 +19,7 @@ export const useDictionary = () => {
   const getDetail = useCallback(async (typeId: string) => {
     setLoading(true);
     try {
-      const { data } = await getDictionaryType(typeId);
+      const { data } = await getDictionaryTypeById(typeId);
       return data;
     } finally {
       setLoading(false);

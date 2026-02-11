@@ -43,14 +43,6 @@ const routes = [
         },
       },
       {
-        path: '/system/resource',
-        component: 'Resource',
-        meta: {
-          title: '资源管理',
-          permissions: ['system:resource:view'],
-        },
-      },
-      {
         path: '/system/role',
         component: 'Role',
         meta: {

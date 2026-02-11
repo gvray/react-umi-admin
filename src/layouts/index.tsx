@@ -3,7 +3,7 @@ import { useAppTheme } from '@/hooks';
 import useDict from '@/hooks/useDict';
 import useThemeColor from '@/hooks/useThemeColor';
 import { logout } from '@/services/auth';
-import { useThemeStore } from '@/stores';
+import { useSettingsStore, useThemeStore } from '@/stores';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import {
   Avatar,
@@ -15,7 +15,6 @@ import {
   Space,
   message,
 } from 'antd';
-import { useState } from 'react';
 import { flushSync } from 'react-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import storetify from 'storetify';
@@ -47,7 +46,8 @@ const HeaderAction = styled.div`
 
 export default function BaseLayout() {
   const { initialState, setInitialState } = useModel('@@initialState');
-  const [collapsed, setCollapsed] = useState(false);
+  const { sider, header, content, accessibility, toggleCollapsed } =
+    useSettingsStore();
 
   const themeColor = useThemeColor();
   const { token: themeToken } = useThemeStore();
@@ -105,17 +105,42 @@ export default function BaseLayout() {
           token: themeToken,
         }}
       >
-        <Layout>
-          <SideMenu collapsed={collapsed} />
+        <Layout
+          className={[
+            accessibility.colorWeak ? 'color-weak' : '',
+            accessibility.grayMode ? 'gray-mode' : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
+        >
+          <SideMenu
+            collapsed={sider.collapsed}
+            theme={sider.theme}
+            width={sider.width}
+            collapsedWidth={sider.collapsedWidth}
+            showLogo={sider.showLogo}
+          />
           <Layout>
-            <Header style={{ padding: 0, background: themeColor.bgColor }}>
+            <Header
+              style={{
+                padding: 0,
+                background: themeColor.bgColor,
+                position: header.fixed ? 'sticky' : 'relative',
+                top: 0,
+                zIndex: 100,
+              }}
+            >
               <HeaderBox>
                 <Button
                   type="text"
                   icon={
-                    collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />
+                    sider.collapsed ? (
+                      <MenuUnfoldOutlined />
+                    ) : (
+                      <MenuFoldOutlined />
+                    )
                   }
-                  onClick={() => setCollapsed(!collapsed)}
+                  onClick={toggleCollapsed}
                   style={{
                     fontSize: '16px',
                     width: 64,
@@ -151,10 +176,28 @@ export default function BaseLayout() {
                 </HeaderRight>
               </HeaderBox>
             </Header>
-            <Content style={{ height: 'calc(100vh - 64px)', overflow: 'auto' }}>
+            <Content
+              style={{
+                height: header.fixed ? 'calc(100vh - 64px)' : 'auto',
+                minHeight: header.fixed ? undefined : 'calc(100vh - 64px)',
+                overflow: 'auto',
+              }}
+            >
               <ErrorBoundary>
                 <Outlet />
               </ErrorBoundary>
+              {content.showFooter && (
+                <div
+                  style={{
+                    textAlign: 'center',
+                    padding: '16px 0',
+                    color: 'rgba(0, 0, 0, 0.45)',
+                    fontSize: 14,
+                  }}
+                >
+                  {content.footerText}
+                </div>
+              )}
             </Content>
           </Layout>
         </Layout>

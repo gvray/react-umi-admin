@@ -1,7 +1,7 @@
 import {
   batchDeleteLoginLogs,
   clearLoginLog,
-  listLoginLog,
+  queryLoginLogList,
 } from '@/services/loginLog';
 import { useCallback, useState } from 'react';
 
@@ -11,7 +11,7 @@ export const useLoginLog = () => {
   const [clearing, setClearing] = useState(false);
 
   const getLoginLogData = useCallback((params?: API.LoginLogsFindAllParams) => {
-    return listLoginLog(params);
+    return queryLoginLogList(params);
   }, []);
 
   const deleteLogs = useCallback(async () => {

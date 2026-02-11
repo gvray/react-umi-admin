@@ -1,5 +1,5 @@
-import { assignRoleUsers, getRole } from '@/services/role';
-import { listUser } from '@/services/user';
+import { assignRoleUsers, getRoleById } from '@/services/role';
+import { queryUserList } from '@/services/user';
 import { logger } from '@/utils';
 import { message } from 'antd';
 import { useCallback, useState } from 'react';
@@ -14,7 +14,7 @@ export const useAuthUser = (roleId?: string) => {
 
   const fetchUsers = useCallback(async () => {
     try {
-      const { data } = await listUser();
+      const { data } = await queryUserList();
       if (data?.items) {
         setUsers(data.items);
       }
@@ -24,7 +24,7 @@ export const useAuthUser = (roleId?: string) => {
   const fetchRoleDetail = useCallback(async (roleId: string) => {
     try {
       setLoading(true);
-      const res = await getRole(roleId);
+      const res = await getRoleById(roleId);
       setSelectedRole(res.data);
       return res.data;
     } catch (error) {

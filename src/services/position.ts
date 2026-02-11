@@ -1,7 +1,7 @@
 import { request } from '@gvray/request';
 
 /** 获取岗位列表 */
-export function listPosition(params?: API.PositionsFindAllParams) {
+export function queryPositionList(params?: API.PositionsFindAllParams) {
   return request<API.Response<API.PaginatedResponse<API.PositionResponseDto>>>(
     '/system/positions',
     {
@@ -12,7 +12,7 @@ export function listPosition(params?: API.PositionsFindAllParams) {
 }
 
 /** 获取岗位详情 */
-export function getPosition(positionId: string) {
+export function getPositionById(positionId: string) {
   return request<API.Response<API.PositionResponseDto>>(
     `/system/positions/${positionId}`,
     {
