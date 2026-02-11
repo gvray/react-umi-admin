@@ -1,7 +1,5 @@
 import { queryPermissionList } from '@/services/permission';
 import { assignRolePermissions, getRoleById } from '@/services/role';
-import { logger } from '@/utils';
-import { message } from 'antd';
 import { useCallback, useState } from 'react';
 
 export const useAuthPermission = () => {
@@ -11,61 +9,37 @@ export const useAuthPermission = () => {
   const [selectedRole, setSelectedRole] = useState<API.RoleResponseDto | null>(
     null,
   );
-  const [loading, setLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
 
-  const fetchPermissions = useCallback(async () => {
-    try {
-      const res = await queryPermissionList();
-      if (res.data?.items?.length) {
-        setPermissions(res.data.items);
-      }
-    } catch (error) {
-      message.error('获取权限列表失败');
+  const fetchPermissionList = useCallback(async () => {
+    const res = await queryPermissionList();
+    if (res.data?.items?.length) {
+      setPermissions(res.data.items);
     }
   }, []);
 
   const fetchRoleDetail = useCallback(async (roleId: string) => {
-    try {
-      setLoading(true);
-      const res = await getRoleById(roleId);
-      setSelectedRole(res.data);
-      return res.data;
-    } catch (error) {
-      message.error('获取角色详情失败');
-      return null;
-    } finally {
-      setLoading(false);
-    }
+    const res = await getRoleById(roleId);
+    setSelectedRole(res.data);
+    return res.data;
   }, []);
 
   const initializeData = useCallback(
     async (roleId?: string) => {
       if (!roleId) return;
-      await Promise.all([fetchPermissions(), fetchRoleDetail(roleId)]);
+      await Promise.all([fetchPermissionList(), fetchRoleDetail(roleId)]);
     },
-    [fetchPermissions, fetchRoleDetail],
+    [fetchPermissionList, fetchRoleDetail],
   );
 
-  const submitPermissionAssignment = useCallback(
+  const submitRolePermissions = useCallback(
     async (values: { roleId: string; permissionIds: string[] }) => {
-      try {
-        setSubmitting(true);
-        await assignRolePermissions(values.roleId, {
-          permissionIds: values.permissionIds,
-        });
-        message.success('权限分配成功');
-        if (values.roleId) {
-          await fetchRoleDetail(values.roleId);
-        }
-        return true;
-      } catch (error: unknown) {
-        const msg = error instanceof Error ? error.message : String(error);
-        logger.error(`权限分配失败：${msg}`);
-        return false;
-      } finally {
-        setSubmitting(false);
+      await assignRolePermissions(values.roleId, {
+        permissionIds: values.permissionIds,
+      });
+      if (values.roleId) {
+        await fetchRoleDetail(values.roleId);
       }
+      return true;
     },
     [fetchRoleDetail],
   );
@@ -73,11 +47,9 @@ export const useAuthPermission = () => {
   return {
     permissions,
     selectedRole,
-    loading,
-    submitting,
-    fetchPermissions,
+    fetchPermissionList,
     fetchRoleDetail,
     initializeData,
-    submitPermissionAssignment,
+    submitRolePermissions,
   };
 };

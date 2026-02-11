@@ -8,7 +8,16 @@ import {
   UndoOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Button, Card, Input, Space, Spin, Tag, Typography } from 'antd';
+import {
+  Button,
+  Card,
+  Input,
+  Space,
+  Spin,
+  Tag,
+  Typography,
+  message,
+} from 'antd';
 import { useEffect, useState } from 'react';
 import { styled, useNavigate, useParams } from 'umi';
 import { useAuthUser } from './model';
@@ -344,18 +353,15 @@ export default function AuthUserPage() {
   const navigate = useNavigate();
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>('');
-  const {
-    users,
-    selectedRole,
-    loading,
-    submitting,
-    initializeData,
-    submitUserAssignment,
-  } = useAuthUser(roleId);
+  const { users, selectedRole, initializeData, submitRoleUsers } =
+    useAuthUser(roleId);
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (roleId) {
-      initializeData(roleId);
+      setLoading(true);
+      initializeData(roleId).finally(() => setLoading(false));
     }
   }, [initializeData, roleId]);
 
@@ -385,13 +391,19 @@ export default function AuthUserPage() {
   const handleSubmit = async () => {
     if (!selectedRole) return;
 
-    const success = await submitUserAssignment({
-      roleId: selectedRole.roleId,
-      userIds: selectedUserIds,
-    });
-
-    if (success) {
-      await initializeData(roleId);
+    setSubmitting(true);
+    try {
+      const success = await submitRoleUsers({
+        userIds: selectedUserIds,
+      });
+      if (success) {
+        message.success('用户分配成功');
+        await initializeData(roleId);
+      }
+    } catch (error) {
+      // error handled by request interceptor
+    } finally {
+      setSubmitting(false);
     }
   };
 

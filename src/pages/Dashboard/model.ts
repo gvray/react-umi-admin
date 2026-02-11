@@ -25,48 +25,34 @@ export const useDashboard = () => {
     [],
   );
   const [logs, setLogs] = useState<ActivityLog[]>([]);
-  const [loading, setLoading] = useState(true);
 
   const fetchOverview = useCallback(async () => {
-    try {
-      const res = await queryDashboardOverview();
-      if (res.data) {
-        setOverview(res.data);
-      }
-    } catch (error) {
-      console.log(error);
+    const res = await queryDashboardOverview();
+    if (res.data) {
+      setOverview(res.data);
     }
   }, []);
 
   const fetchRoleDistribution = useCallback(async () => {
-    try {
-      const res = await queryRoleDistribution();
-      if (res.data) {
-        setRoleDistribution(res.data);
-      }
-    } catch (error) {
-      console.log(error);
+    const res = await queryRoleDistribution();
+    if (res.data) {
+      setRoleDistribution(res.data);
     }
   }, []);
 
   const fetchLoginTrend = useCallback(async () => {
-    try {
-      const res = await queryLoginTrend();
-      if (res.data) {
-        setLoginData(res.data as unknown as { date: string; value: number }[]);
-      }
-    } catch (error) {
-      console.log(error);
+    const res = await queryLoginTrend();
+    if (res.data) {
+      setLoginData(res.data as unknown as { date: string; value: number }[]);
     }
   }, []);
 
-  useEffect(() => {
-    setLoading(true);
-    Promise.all([
+  const fetchDashboardData = useCallback(async () => {
+    await Promise.all([
       fetchOverview(),
       fetchRoleDistribution(),
       fetchLoginTrend(),
-    ]).finally(() => setLoading(false));
+    ]);
   }, [fetchOverview, fetchRoleDistribution, fetchLoginTrend]);
 
   useEffect(() => {
@@ -121,6 +107,6 @@ export const useDashboard = () => {
     roleDistribution,
     loginData,
     logs,
-    loading,
+    fetchDashboardData,
   };
 };

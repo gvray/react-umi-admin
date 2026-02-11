@@ -30,7 +30,8 @@ export interface DepartmentMeta {
 }
 const DepartmentPage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
-  const { getDetail, deleteItem, getDepartments } = useDepartmentModel();
+  const { fetchDepartmentDetail, removeDepartment, fetchDepartmentTree } =
+    useDepartmentModel();
   const tableProRef = useRef<TableProRef>(null);
 
   const handleAdd = async () => {
@@ -45,7 +46,7 @@ const DepartmentPage = () => {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        return deleteItem(record.departmentId)
+        return removeDepartment(record.departmentId)
           .then(() => {
             tableProRef.current?.reload();
             message.success(`删除成功`);
@@ -58,7 +59,7 @@ const DepartmentPage = () => {
   const handleUpdate = async (record: DepartmentMeta) => {
     const departmentId = record.departmentId;
     try {
-      const msg: any = await getDetail(departmentId);
+      const msg: any = await fetchDepartmentDetail(departmentId);
       updateFormRef.current?.show('修改部门', {
         ...msg,
       });
@@ -117,7 +118,7 @@ const DepartmentPage = () => {
         ref={tableProRef}
         rowKey={'departmentId'}
         columns={columns as any}
-        request={getDepartments}
+        request={fetchDepartmentTree}
         expandable={{ defaultExpandAllRows: true }}
         toolbarRender={() => (
           <Button type="primary" onClick={handleAdd}>

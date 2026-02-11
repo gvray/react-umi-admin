@@ -3,43 +3,28 @@ import {
   getDictionaryTypeById,
   queryDictionaryTypeList,
 } from '@/services/dictionary';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 export const useDictionary = () => {
-  const [loading, setLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-
-  const getList = useCallback(
+  const fetchDictionaryTypeList = useCallback(
     async (params?: API.DictionariesFindAllDictionaryTypesParams) => {
       return queryDictionaryTypeList(params);
     },
     [],
   );
 
-  const getDetail = useCallback(async (typeId: string) => {
-    setLoading(true);
-    try {
-      const { data } = await getDictionaryTypeById(typeId);
-      return data;
-    } finally {
-      setLoading(false);
-    }
+  const fetchDictionaryTypeDetail = useCallback(async (typeId: string) => {
+    const { data } = await getDictionaryTypeById(typeId);
+    return data;
   }, []);
 
-  const deleteType = useCallback(async (typeId: string) => {
-    setSubmitting(true);
-    try {
-      await deleteDictionaryType(typeId);
-    } finally {
-      setSubmitting(false);
-    }
+  const removeDictionaryType = useCallback(async (typeId: string) => {
+    await deleteDictionaryType(typeId);
   }, []);
 
   return {
-    loading,
-    submitting,
-    getList,
-    getDetail,
-    deleteType,
+    fetchDictionaryTypeList,
+    fetchDictionaryTypeDetail,
+    removeDictionaryType,
   };
 };

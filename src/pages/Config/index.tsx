@@ -13,7 +13,7 @@ import {
   SettingOutlined,
 } from '@ant-design/icons';
 import { Button, Modal, Space, Tag, Typography, message } from 'antd';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 import { getConfigColumns } from './columns';
 import ConfigValueViewer from './components/ConfigValueViewer';
@@ -31,15 +31,10 @@ type DataType = ConfigData;
 const ConfigPage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<any>(null);
-  const {
-    getConfigList,
-    getConfigDetail,
-    deleteConfigItem,
-    viewVisible,
-    currentConfig,
-    viewDetail,
-    closeDetail,
-  } = useConfig();
+  const { fetchConfigList, fetchConfigDetail, removeConfig } = useConfig();
+  const [viewVisible, setViewVisible] = useState(false);
+  const [currentConfig, setCurrentConfig] =
+    useState<API.ConfigResponseDto | null>(null);
 
   const tableReload = () => {
     tableProRef.current?.reload();
@@ -67,7 +62,7 @@ const ConfigPage = () => {
       cancelText: '取消',
       okType: 'danger',
       onOk() {
-        return deleteConfigItem(record.configId)
+        return removeConfig(record.configId)
           .then(() => {
             tableReload();
             message.success(`配置"${record.name}"删除成功`);
@@ -80,7 +75,7 @@ const ConfigPage = () => {
   const handleUpdate = async (record: DataType) => {
     const configId = record.configId;
     try {
-      const data: any = await getConfigDetail(configId);
+      const data: any = await fetchConfigDetail(configId);
       updateFormRef.current?.show('修改配置', {
         ...data,
       });
@@ -89,7 +84,18 @@ const ConfigPage = () => {
 
   // 查看配置值
   const handleViewValue = async (record: DataType) => {
-    await viewDetail(record.configId);
+    setViewVisible(true);
+    try {
+      const data = await fetchConfigDetail(record.configId);
+      setCurrentConfig(data);
+    } catch (error) {
+      setViewVisible(false);
+    }
+  };
+
+  const handleCloseDetail = () => {
+    setViewVisible(false);
+    setCurrentConfig(null);
   };
 
   const handleOk = () => {
@@ -270,7 +276,7 @@ const ConfigPage = () => {
         rowKey={'configId'}
         ref={tableProRef}
         columns={columns as any}
-        request={getConfigList}
+        request={fetchConfigList}
       />
       {/* 配置新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} onOk={handleOk} />
@@ -280,7 +286,7 @@ const ConfigPage = () => {
         <ConfigValueViewer
           config={currentConfig}
           visible={viewVisible}
-          onClose={() => closeDetail()}
+          onClose={() => handleCloseDetail()}
         />
       )}
     </PageContainer>

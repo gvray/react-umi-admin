@@ -1,6 +1,5 @@
 import { queryRoleList } from '@/services/role';
 import { assignUserRoles, getUserById } from '@/services/user';
-import { message } from 'antd';
 import { useCallback, useState } from 'react';
 
 export const useAuthRole = (userId?: string) => {
@@ -8,57 +7,38 @@ export const useAuthRole = (userId?: string) => {
   const [selectedUser, setSelectedUser] = useState<API.UserResponseDto | null>(
     null,
   );
-  const [loading, setLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
 
   // 获取角色列表
-  const fetchRoles = useCallback(async () => {
-    try {
-      const res = await queryRoleList();
-      if (res.data?.items?.length) {
-        setRoles(res.data.items);
-      }
-    } catch (error) {}
+  const fetchRoleList = useCallback(async () => {
+    const res = await queryRoleList();
+    if (res.data?.items?.length) {
+      setRoles(res.data.items);
+    }
   }, []);
 
   // 获取用户详情
   const fetchUserDetail = useCallback(async (userId: string) => {
-    try {
-      setLoading(true);
-      const res = await getUserById(userId);
-      setSelectedUser(res.data);
-      return res.data;
-    } catch (error) {
-      return null;
-    } finally {
-      setLoading(false);
-    }
+    const res = await getUserById(userId);
+    setSelectedUser(res.data);
+    return res.data;
   }, []);
 
   // 初始化数据
   const initializeData = useCallback(
     async (userId?: string) => {
       if (!userId) return;
-      await Promise.all([fetchRoles(), fetchUserDetail(userId)]);
+      await Promise.all([fetchRoleList(), fetchUserDetail(userId)]);
     },
-    [fetchRoles, fetchUserDetail],
+    [fetchRoleList, fetchUserDetail],
   );
 
   // 提交角色分配
-  const submitRoleAssignment = useCallback(
+  const submitUserRoles = useCallback(
     async (values: API.AssignRolesDto) => {
-      if (!userId) return;
-      try {
-        setSubmitting(true);
-        await assignUserRoles(userId, values);
-        message.success('角色分配成功');
-        await fetchUserDetail(userId);
-        return true;
-      } catch (error) {
-        return false;
-      } finally {
-        setSubmitting(false);
-      }
+      if (!userId) return false;
+      await assignUserRoles(userId, values);
+      await fetchUserDetail(userId);
+      return true;
     },
     [userId, fetchUserDetail],
   );
@@ -66,11 +46,9 @@ export const useAuthRole = (userId?: string) => {
   return {
     roles,
     selectedUser,
-    loading,
-    submitting,
-    fetchRoles,
+    fetchRoleList,
     fetchUserDetail,
     initializeData,
-    submitRoleAssignment,
+    submitUserRoles,
   };
 };

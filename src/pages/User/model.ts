@@ -13,7 +13,7 @@ const useUpdateForm = (open: boolean) => {
     API.DepartmentResponseDto[]
   >([]);
 
-  const getDepartments = async () => {
+  const fetchDepartmentList = async () => {
     try {
       const res = await queryDepartmentList();
       if (res.data?.items) {
@@ -24,7 +24,7 @@ const useUpdateForm = (open: boolean) => {
     }
   };
 
-  const getRoles = async () => {
+  const fetchRoleList = async () => {
     try {
       const res = await queryRoleList();
       if (res.data?.items) {
@@ -33,7 +33,7 @@ const useUpdateForm = (open: boolean) => {
     } catch (error) {}
   };
 
-  const getPositions = async () => {
+  const fetchPositionList = async () => {
     try {
       const res = await queryPositionList();
       if (res.data?.items) {
@@ -44,9 +44,9 @@ const useUpdateForm = (open: boolean) => {
 
   useEffect(() => {
     if (open) {
-      getRoles();
-      getDepartments();
-      getPositions();
+      fetchRoleList();
+      fetchDepartmentList();
+      fetchPositionList();
     }
   }, [open]);
 
@@ -59,33 +59,19 @@ const useUpdateForm = (open: boolean) => {
 export default useUpdateForm;
 
 export const useUserModel = () => {
-  const [loading, setLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const getList = useCallback(async (params?: API.UsersFindAllParams) => {
+  const fetchUserList = useCallback(async (params?: API.UsersFindAllParams) => {
     return queryUserList(params);
   }, []);
-  const getDetail = useCallback(async (userId: string) => {
-    setLoading(true);
-    try {
-      const { data } = await getUserById(userId);
-      return data;
-    } finally {
-      setLoading(false);
-    }
+  const fetchUserDetail = useCallback(async (userId: string) => {
+    const { data } = await getUserById(userId);
+    return data;
   }, []);
-  const deleteItem = useCallback(async (userId: string) => {
-    setSubmitting(true);
-    try {
-      await deleteUser(userId);
-    } finally {
-      setSubmitting(false);
-    }
+  const removeUser = useCallback(async (userId: string) => {
+    await deleteUser(userId);
   }, []);
   return {
-    loading,
-    submitting,
-    getList,
-    getDetail,
-    deleteItem,
+    fetchUserList,
+    fetchUserDetail,
+    removeUser,
   };
 };

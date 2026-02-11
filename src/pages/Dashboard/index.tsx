@@ -173,9 +173,15 @@ const STAT_CONFIG: StatItem[] = [
 // ─── Component ──────────────────────────────────────────
 
 const Dashboard: React.FC = () => {
-  const { overview, roleDistribution, loginData, logs, loading } =
+  const { overview, roleDistribution, loginData, logs, fetchDashboardData } =
     useDashboard();
+  const [loading, setLoading] = useState(true);
   const [now, setNow] = useState(dayjs());
+
+  useEffect(() => {
+    setLoading(true);
+    fetchDashboardData().finally(() => setLoading(false));
+  }, [fetchDashboardData]);
 
   useEffect(() => {
     const timer = setInterval(() => setNow(dayjs()), 60_000);

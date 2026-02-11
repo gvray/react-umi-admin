@@ -9,7 +9,7 @@ import { Button, Modal, Space, message } from 'antd';
 import { useRef } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 import { getPermissionColumns } from './columns';
-import { useResourceModel } from './model';
+import { usePermissionModel } from './model';
 
 export interface PermissionMeta {
   permissionId: string;
@@ -22,7 +22,8 @@ export interface PermissionMeta {
 const ResourcePage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
-  const { getPermissions, getDetail, deleteItem } = useResourceModel();
+  const { fetchPermissionTree, fetchPermissionDetail, removePermission } =
+    usePermissionModel();
 
   const handleAdd = async () => {
     updateFormRef.current?.show('添加权限');
@@ -36,7 +37,7 @@ const ResourcePage = () => {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        return deleteItem(record.permissionId)
+        return removePermission(record.permissionId)
           .then(() => {
             tableProRef.current?.reload();
             message.success(`删除成功`);
@@ -49,7 +50,7 @@ const ResourcePage = () => {
   const handleUpdate = async (record: PermissionMeta) => {
     const permissionId = record.permissionId;
     try {
-      const msg: any = await getDetail(permissionId);
+      const msg: any = await fetchPermissionDetail(permissionId);
       updateFormRef.current?.show('修改权限', {
         ...msg,
       });
@@ -144,7 +145,7 @@ const ResourcePage = () => {
         ref={tableProRef}
         rowKey={'permissionId'}
         columns={columns as any}
-        request={getPermissions}
+        request={fetchPermissionTree}
         expandable={{
           rowExpandable: (record) =>
             record.children && record.children.length > 0,

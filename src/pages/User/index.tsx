@@ -46,7 +46,7 @@ const UserPage = () => {
     user_status: { label: string; value: number }[];
     user_gender: { label: string; value: number }[];
   }>(['user_status', 'user_gender']);
-  const { getList, getDetail, deleteItem } = useUserModel();
+  const { fetchUserList, fetchUserDetail, removeUser } = useUserModel();
 
   const tableReload = () => {
     tableProRef.current?.reload();
@@ -64,7 +64,7 @@ const UserPage = () => {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        return deleteItem(record.userId)
+        return removeUser(record.userId)
           .then(() => {
             tableReload();
             message.success(`删除成功`);
@@ -77,7 +77,7 @@ const UserPage = () => {
   const handleUpdate = async (record: DataType) => {
     const userId = record.userId;
     try {
-      const res: any = await getDetail(userId);
+      const res: any = await fetchUserDetail(userId);
       const data = {
         ...res,
         positionIds: res.positions?.map((item: any) => item.positionId),
@@ -183,7 +183,7 @@ const UserPage = () => {
         )}
         ref={tableProRef}
         columns={columns as any}
-        request={getList}
+        request={fetchUserList}
       />
       {/* 用户新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} dict={dict} onOk={handleOk} />

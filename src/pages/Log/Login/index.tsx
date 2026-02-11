@@ -15,18 +15,18 @@ const { Paragraph } = Typography;
 
 const LoginLog: React.FC = () => {
   const tableProRef = useRef<TableProRef>(null);
-  const {
-    deleteLogs,
-    clearLogs,
-    getLoginLogData,
-    selectionChange,
-    deleting,
-    clearing,
-    selectedRows,
-  } = useLoginLog();
+  const { fetchLoginLogList, batchRemoveLoginLogs, clearLoginLogs } =
+    useLoginLog();
+  const [selectedRows, setSelectedRows] = React.useState<React.Key[]>([]);
+  const [deleting, setDeleting] = React.useState(false);
+  const [clearing, setClearing] = React.useState(false);
 
   const tableReload = () => {
     tableProRef.current?.reload();
+  };
+
+  const handleSelectionChange = (keys: React.Key[]) => {
+    setSelectedRows(keys);
   };
 
   // 获取表格列配置并添加渲染函数
@@ -72,14 +72,17 @@ const LoginLog: React.FC = () => {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        return deleteLogs()
+        setDeleting(true);
+        return batchRemoveLoginLogs(selectedRows as number[])
           .then(() => {
+            setSelectedRows([]);
             message.success('删除成功');
             tableReload();
           })
           .catch(() => {
             message.error('删除失败');
-          });
+          })
+          .finally(() => setDeleting(false));
       },
     });
   };
@@ -92,14 +95,16 @@ const LoginLog: React.FC = () => {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        return clearLogs()
+        setClearing(true);
+        return clearLoginLogs()
           .then(() => {
             message.success('清理成功');
             tableReload();
           })
           .catch(() => {
             message.error('清理失败');
-          });
+          })
+          .finally(() => setClearing(false));
       },
     });
   };
@@ -133,9 +138,9 @@ const LoginLog: React.FC = () => {
         )}
         ref={tableProRef}
         columns={columns}
-        request={getLoginLogData}
+        request={fetchLoginLogList}
         onSelectionChange={
-          selectionChange as (
+          handleSelectionChange as (
             keys: React.Key[],
             rows?: API.LoginLogResponseDto[],
           ) => void

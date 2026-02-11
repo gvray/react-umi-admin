@@ -3,40 +3,28 @@ import {
   getPositionById,
   queryPositionList,
 } from '@/services/position';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 export const usePosition = () => {
-  const [loading, setLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const fetchPositionList = useCallback(
+    async (params?: API.PositionsFindAllParams) => {
+      return queryPositionList(params);
+    },
+    [],
+  );
 
-  const getList = useCallback(async (params?: API.PositionsFindAllParams) => {
-    return queryPositionList(params);
+  const fetchPositionDetail = useCallback(async (positionId: string) => {
+    const { data } = await getPositionById(positionId);
+    return data;
   }, []);
 
-  const getDetail = useCallback(async (positionId: string) => {
-    setLoading(true);
-    try {
-      const { data } = await getPositionById(positionId);
-      return data;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const deleteItem = useCallback(async (positionId: string) => {
-    setSubmitting(true);
-    try {
-      await deletePosition(positionId);
-    } finally {
-      setSubmitting(false);
-    }
+  const removePosition = useCallback(async (positionId: string) => {
+    await deletePosition(positionId);
   }, []);
 
   return {
-    loading,
-    submitting,
-    getList,
-    getDetail,
-    deleteItem,
+    fetchPositionList,
+    fetchPositionDetail,
+    removePosition,
   };
 };

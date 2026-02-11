@@ -5,129 +5,54 @@ import {
   queryConfigList,
   updateConfig,
 } from '@/services/config';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
+
+export interface ConfigData {
+  configId: string;
+  key: string;
+  value: string;
+  name: string;
+  description?: string;
+  type: string;
+  group: string;
+  sort: number;
+  status: number;
+  remark?: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export const useConfig = () => {
-  const [configs, setConfigs] = useState<API.ConfigResponseDto[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [viewVisible, setViewVisible] = useState(false);
-  const [currentConfig, setCurrentConfig] =
-    useState<API.ConfigResponseDto | null>(null);
-
-  const getConfigList = useCallback((params?: API.ConfigsFindAllParams) => {
+  const fetchConfigList = useCallback((params?: API.ConfigsFindAllParams) => {
     return queryConfigList(params);
   }, []);
 
-  const getConfigDetail = useCallback(async (configId: string) => {
-    setLoading(true);
-    try {
-      const { data } = await getConfigById(configId);
-      return data;
-    } finally {
-      setLoading(false);
-    }
+  const fetchConfigDetail = useCallback(async (configId: string) => {
+    const { data } = await getConfigById(configId);
+    return data;
   }, []);
 
-  const createConfigItem = useCallback(async (data: API.CreateConfigDto) => {
-    setSubmitting(true);
-    try {
-      const res = await createConfig(data);
-      const newConfig = res.data;
-      setConfigs((prev) => [...prev, newConfig]);
-      return newConfig;
-    } finally {
-      setSubmitting(false);
-    }
+  const submitConfig = useCallback(async (data: API.CreateConfigDto) => {
+    const res = await createConfig(data);
+    return res.data;
   }, []);
 
-  const updateConfigItem = useCallback(
+  const editConfig = useCallback(
     async (configId: string, data: API.UpdateConfigDto) => {
-      setSubmitting(true);
-      try {
-        await updateConfig(configId, data);
-        setConfigs((prev) =>
-          prev.map((config) =>
-            config.configId === configId ? { ...config, ...data } : config,
-          ),
-        );
-      } finally {
-        setSubmitting(false);
-      }
+      await updateConfig(configId, data);
     },
     [],
   );
 
-  const deleteConfigItem = useCallback(async (configId: string) => {
-    setSubmitting(true);
-    try {
-      await deleteConfig(configId);
-      setConfigs((prev) =>
-        prev.filter((config) => config.configId !== configId),
-      );
-    } finally {
-      setSubmitting(false);
-    }
-  }, []);
-
-  const getConfigValue = useCallback(
-    (key: string) => {
-      const config = configs.find((c) => c.key === key);
-      return config?.value;
-    },
-    [configs],
-  );
-
-  const getConfigsByGroup = useCallback(
-    (group: string) => {
-      return configs.filter((config) => config.group === group);
-    },
-    [configs],
-  );
-
-  const getConfigsByType = useCallback(
-    (type: string) => {
-      return configs.filter((config) => config.type === type);
-    },
-    [configs],
-  );
-
-  const getEnabledConfigs = useCallback(() => {
-    return configs.filter((config) => config.status === 1);
-  }, [configs]);
-
-  const viewDetail = useCallback(async (configId: string) => {
-    setViewVisible(true);
-    setLoading(true);
-    try {
-      const { data } = await getConfigById(configId);
-      setCurrentConfig(data);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const closeDetail = useCallback(() => {
-    setViewVisible(false);
-    setCurrentConfig(null);
+  const removeConfig = useCallback(async (configId: string) => {
+    await deleteConfig(configId);
   }, []);
 
   return {
-    configs,
-    loading,
-    submitting,
-    viewVisible,
-    currentConfig,
-    getConfigList,
-    getConfigDetail,
-    createConfigItem,
-    updateConfigItem,
-    deleteConfigItem,
-    getConfigValue,
-    getConfigsByGroup,
-    getConfigsByType,
-    getEnabledConfigs,
-    viewDetail,
-    closeDetail,
+    fetchConfigList,
+    fetchConfigDetail,
+    submitConfig,
+    editConfig,
+    removeConfig,
   };
 };

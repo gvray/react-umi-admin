@@ -36,7 +36,11 @@ const DictionaryPage = () => {
   const navigate = useNavigate();
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
-  const { getList, getDetail, deleteType } = useDictionary();
+  const {
+    fetchDictionaryTypeList,
+    fetchDictionaryTypeDetail,
+    removeDictionaryType,
+  } = useDictionary();
 
   const tableReload = () => {
     tableProRef.current?.reload();
@@ -64,7 +68,7 @@ const DictionaryPage = () => {
       cancelText: '取消',
       okType: 'danger',
       onOk() {
-        return deleteType(record.typeId)
+        return removeDictionaryType(record.typeId)
           .then(() => {
             tableReload();
             message.success(`字典类型"${record.name}"删除成功`);
@@ -77,7 +81,7 @@ const DictionaryPage = () => {
   const handleUpdate = async (record: DataType) => {
     const typeId = record.typeId;
     try {
-      const msg: any = await getDetail(typeId);
+      const msg: any = await fetchDictionaryTypeDetail(typeId);
       updateFormRef.current?.show('修改字典类型', {
         ...msg,
       });
@@ -323,7 +327,7 @@ const DictionaryPage = () => {
         rowKey={'typeId'}
         ref={tableProRef}
         columns={columns as any}
-        request={getList}
+        request={fetchDictionaryTypeList}
         scroll={{ x: 1200 }}
         toolbarRender={() => {
           return (

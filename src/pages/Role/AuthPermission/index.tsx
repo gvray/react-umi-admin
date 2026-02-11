@@ -25,6 +25,7 @@ import {
   Tooltip,
   Tree,
   Typography,
+  message,
 } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { styled, useNavigate, useParams } from 'umi';
@@ -504,18 +505,15 @@ export default function AuthPermissionPage() {
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
   const [checkedKeys, setCheckedKeys] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<string>('func');
-  const {
-    permissions,
-    selectedRole,
-    loading,
-    submitting,
-    initializeData,
-    submitPermissionAssignment,
-  } = useAuthPermission();
+  const { permissions, selectedRole, initializeData, submitRolePermissions } =
+    useAuthPermission();
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (roleId) {
-      initializeData(roleId);
+      setLoading(true);
+      initializeData(roleId).finally(() => setLoading(false));
     }
   }, [initializeData, roleId]);
 
@@ -711,12 +709,20 @@ export default function AuthPermissionPage() {
   // 提交权限分配
   const handleSubmit = async () => {
     if (!selectedRole) return;
-    const success = await submitPermissionAssignment({
-      roleId: selectedRole.roleId,
-      permissionIds: selectedPermissionIds,
-    });
-    if (success) {
-      await initializeData(roleId);
+    setSubmitting(true);
+    try {
+      const success = await submitRolePermissions({
+        roleId: selectedRole.roleId,
+        permissionIds: selectedPermissionIds,
+      });
+      if (success) {
+        message.success('权限分配成功');
+        await initializeData(roleId);
+      }
+    } catch (error) {
+      // error handled by request interceptor
+    } finally {
+      setSubmitting(false);
     }
   };
 

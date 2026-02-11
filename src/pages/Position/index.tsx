@@ -30,7 +30,8 @@ const PositionPage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
 
   const tableProRef = useRef<TableProRef>(null);
-  const { getList, getDetail, deleteItem } = usePosition();
+  const { fetchPositionList, fetchPositionDetail, removePosition } =
+    usePosition();
 
   const tableReload = () => {
     tableProRef.current?.reload();
@@ -48,7 +49,7 @@ const PositionPage = () => {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        return deleteItem(record.positionId)
+        return removePosition(record.positionId)
           .then(() => {
             tableReload();
             message.success(`删除成功`);
@@ -61,7 +62,7 @@ const PositionPage = () => {
   const handleUpdate = async (record: DataType) => {
     const positionId = record.positionId;
     try {
-      const msg = await getDetail(positionId);
+      const msg = await fetchPositionDetail(positionId);
       updateFormRef.current?.show('修改岗位', {
         ...msg,
       });
@@ -139,7 +140,7 @@ const PositionPage = () => {
         )}
         ref={tableProRef}
         columns={columns as any}
-        request={getList}
+        request={fetchPositionList}
       />
       {/* 岗位新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} onOk={handleOk} />

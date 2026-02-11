@@ -13,20 +13,40 @@ import { useOperationLog } from './model';
 const OperationLogPage: React.FC = () => {
   const tableProRef = React.useRef<TableProRef>(null);
   const {
-    getOperationLogData,
-    batchDeleteLogs,
-    cleanLogs,
-    selectedRowKeys,
-    selectionChange,
-    detailOpen,
-    detailLoading,
-    detail,
-    viewDetail,
-    closeDetail,
+    fetchOperationLogList,
+    fetchOperationLogDetail,
+    batchRemoveOperationLogs,
+    clearOperationLogs,
   } = useOperationLog();
+  const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
+  const [detailOpen, setDetailOpen] = React.useState(false);
+  const [detailLoading, setDetailLoading] = React.useState(false);
+  const [detail, setDetail] = React.useState<Record<string, unknown> | null>(
+    null,
+  );
 
   const tableReload = () => {
     tableProRef.current?.reload();
+  };
+
+  const handleSelectionChange = (keys: React.Key[]) => {
+    setSelectedRowKeys(keys);
+  };
+
+  const handleViewDetail = async (record: any) => {
+    setDetailOpen(true);
+    setDetailLoading(true);
+    try {
+      const data = await fetchOperationLogDetail(record.id);
+      setDetail(data);
+    } finally {
+      setDetailLoading(false);
+    }
+  };
+
+  const handleCloseDetail = () => {
+    setDetailOpen(false);
+    setDetail(null);
   };
 
   const handleBatchDelete = () => {
@@ -57,8 +77,9 @@ const OperationLogPage: React.FC = () => {
       okButtonProps: { danger: true },
       cancelText: '取消',
       onOk: async () => {
-        const ids = selectedRowKeys.map((k) => Number(k));
-        return batchDeleteLogs(ids).then(() => {
+        const ids = selectedRowKeys.map((k) => String(k));
+        return batchRemoveOperationLogs(ids).then(() => {
+          setSelectedRowKeys([]);
           message.success('选中的操作日志已删除');
           tableReload();
         });
@@ -74,15 +95,12 @@ const OperationLogPage: React.FC = () => {
       okButtonProps: { danger: true },
       cancelText: '取消',
       onOk: async () => {
-        return cleanLogs().then(() => {
+        return clearOperationLogs().then(() => {
           message.success('操作日志已清空');
           tableReload();
         });
       },
     });
-  };
-  const handleView = async (record: any) => {
-    await viewDetail(record.id);
   };
   let columns = getOperationLogColumns().map((column) => {
     if (column.dataIndex === 'status') {
@@ -125,7 +143,7 @@ const OperationLogPage: React.FC = () => {
         <>
           <AuthButton
             type="link"
-            onClick={() => handleView(record)}
+            onClick={() => handleViewDetail(record)}
             perms={['system:log:view']}
           >
             详情
@@ -141,7 +159,7 @@ const OperationLogPage: React.FC = () => {
         open={detailOpen}
         title="日志详情"
         onCancel={() => {
-          closeDetail();
+          handleCloseDetail();
         }}
         footer={null}
         width={640}
@@ -152,27 +170,41 @@ const OperationLogPage: React.FC = () => {
           </div>
         ) : detail ? (
           <Descriptions column={1} size="small" bordered>
-            <Descriptions.Item label="ID">{detail.id}</Descriptions.Item>
-            <Descriptions.Item label="用户">
-              {detail.username}
+            <Descriptions.Item label="ID">
+              {String(detail.id ?? '')}
             </Descriptions.Item>
-            <Descriptions.Item label="模块">{detail.module}</Descriptions.Item>
-            <Descriptions.Item label="操作">{detail.action}</Descriptions.Item>
+            <Descriptions.Item label="用户">
+              {String(detail.username ?? '')}
+            </Descriptions.Item>
+            <Descriptions.Item label="模块">
+              {String(detail.module ?? '')}
+            </Descriptions.Item>
+            <Descriptions.Item label="操作">
+              {String(detail.action ?? '')}
+            </Descriptions.Item>
             <Descriptions.Item label="状态">
               {detail.status === 1 ? '成功' : '失败'}
             </Descriptions.Item>
-            <Descriptions.Item label="路径">{detail.path}</Descriptions.Item>
-            <Descriptions.Item label="方法">{detail.method}</Descriptions.Item>
+            <Descriptions.Item label="路径">
+              {String(detail.path ?? '')}
+            </Descriptions.Item>
+            <Descriptions.Item label="方法">
+              {String(detail.method ?? '')}
+            </Descriptions.Item>
             <Descriptions.Item label="IP地址">
-              {detail.ipAddress}
+              {String(detail.ipAddress ?? '')}
             </Descriptions.Item>
             <Descriptions.Item label="地点">
-              {detail.location}
+              {String(detail.location ?? '')}
             </Descriptions.Item>
-            <Descriptions.Item label="UA">{detail.userAgent}</Descriptions.Item>
-            <Descriptions.Item label="信息">{detail.message}</Descriptions.Item>
+            <Descriptions.Item label="UA">
+              {String(detail.userAgent ?? '')}
+            </Descriptions.Item>
+            <Descriptions.Item label="信息">
+              {String(detail.message ?? '')}
+            </Descriptions.Item>
             <Descriptions.Item label="时间">
-              <DateTimeFormat value={detail.createdAt} />
+              <DateTimeFormat value={detail.createdAt as string} />
             </Descriptions.Item>
           </Descriptions>
         ) : null}
@@ -199,9 +231,9 @@ const OperationLogPage: React.FC = () => {
         )}
         ref={tableProRef}
         columns={columns}
-        request={getOperationLogData}
+        request={fetchOperationLogList}
         rowKey="id"
-        onSelectionChange={selectionChange}
+        onSelectionChange={handleSelectionChange}
       />
     </PageContainer>
   );

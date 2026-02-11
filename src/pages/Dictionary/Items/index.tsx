@@ -44,20 +44,19 @@ const DictionaryItemsPage = () => {
   const { typeId } = useParams();
   const {
     typeDetail,
-    loading,
-    getTypeDetail,
-    getList,
-    deleteItem,
-    getItemDetail,
+    fetchDictionaryTypeDetail,
+    fetchDictionaryItemList,
+    removeDictionaryItem,
+    fetchDictionaryItemDetail,
   } = useDictionaryItems();
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
 
   useEffect(() => {
     if (typeId) {
-      getTypeDetail(typeId);
+      fetchDictionaryTypeDetail(typeId);
     }
-  }, [typeId, getTypeDetail]);
+  }, [typeId, fetchDictionaryTypeDetail]);
 
   const tableReload = () => {
     tableProRef.current?.reload();
@@ -84,7 +83,7 @@ const DictionaryItemsPage = () => {
       cancelText: '取消',
       okType: 'danger',
       onOk() {
-        return deleteItem(record.itemId)
+        return removeDictionaryItem(record.itemId)
           .then(() => {
             tableReload();
             message.success(`字典项"${record.label}"删除成功`);
@@ -97,7 +96,7 @@ const DictionaryItemsPage = () => {
   const handleUpdate = async (record: DataType) => {
     const itemId = record.itemId;
     try {
-      const msg: any = await getItemDetail(itemId);
+      const msg: any = await fetchDictionaryItemDetail(itemId);
       updateFormRef.current?.show('修改字典项', {
         ...msg,
         typeId,
@@ -270,8 +269,9 @@ const DictionaryItemsPage = () => {
             rowKey={'itemId'}
             ref={tableProRef}
             columns={columns as any}
-            request={(params) => getList(typeDetail?.code, params)}
-            loading={loading}
+            request={(params) =>
+              fetchDictionaryItemList(typeDetail?.code, params)
+            }
           />
         )}
       </Card>

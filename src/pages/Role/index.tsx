@@ -38,7 +38,7 @@ const UserPage = () => {
   const navigate = useNavigate();
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
-  const { getList, getDetail, deleteItem } = useRoleModel();
+  const { fetchRoleList, fetchRoleDetail, removeRole } = useRoleModel();
 
   // 数据权限弹窗状态
   const [dataPermissionVisible, setDataPermissionVisible] = useState(false);
@@ -60,7 +60,7 @@ const UserPage = () => {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        return deleteItem(record.roleId)
+        return removeRole(record.roleId)
           .then(() => {
             tableReload();
             message.success(`删除成功`);
@@ -73,7 +73,7 @@ const UserPage = () => {
   const handleUpdate = async (record: DataType) => {
     const roleId = record.roleId;
     try {
-      const data = await getDetail(roleId);
+      const data = await fetchRoleDetail(roleId);
       updateFormRef.current?.show('修改角色', {
         ...data,
       });
@@ -205,7 +205,7 @@ const UserPage = () => {
         )}
         ref={tableProRef}
         columns={columns as any}
-        request={getList}
+        request={fetchRoleList}
       />
       {/* 角色新增修改弹出层 */}
       <UpdateForm ref={updateFormRef} onOk={handleOk} />

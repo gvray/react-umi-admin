@@ -8,47 +8,33 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export const useDepartmentModel = () => {
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-
   const paramsRef = useRef<Record<string, unknown>>({});
-  const getDepartments = async (params?: API.DepartmentsGetTreeParams) => {
-    return queryDepartmentTree(params);
-  };
-  const getDetail = useCallback(async (departmentId: string) => {
-    setLoading(true);
-    try {
-      const { data } = await getDepartmentById(departmentId);
-      return data;
-    } finally {
-      setLoading(false);
-    }
+  const fetchDepartmentTree = useCallback(
+    async (params?: API.DepartmentsGetTreeParams) => {
+      return queryDepartmentTree(params);
+    },
+    [],
+  );
+  const fetchDepartmentDetail = useCallback(async (departmentId: string) => {
+    const { data } = await getDepartmentById(departmentId);
+    return data;
   }, []);
-  const deleteItem = useCallback(async (departmentId: string) => {
-    setSubmitting(true);
-    try {
-      await deleteDepartment(departmentId);
-    } finally {
-      setSubmitting(false);
-    }
+  const removeDepartment = useCallback(async (departmentId: string) => {
+    await deleteDepartment(departmentId);
   }, []);
 
   return {
-    loading,
-    submitting,
     paramsRef,
-    getDetail,
-    deleteItem,
-    getDepartments,
+    fetchDepartmentDetail,
+    removeDepartment,
+    fetchDepartmentTree,
   };
 };
 
 export const useUpdataFormModel = (open: boolean) => {
   const [data, setData] = useState<API.DepartmentResponseDto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const getDepartments = async () => {
+  const fetchDepartmentList = async () => {
     try {
-      setLoading(true);
       const res = await queryDepartmentList();
       if (res.data?.items?.length) {
         setData([
@@ -60,19 +46,15 @@ export const useUpdataFormModel = (open: boolean) => {
           ...res.data.items,
         ]);
       }
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
+    } catch (error) {}
   };
   useEffect(() => {
     if (open) {
-      getDepartments();
+      fetchDepartmentList();
     }
   }, [open]);
   return {
     data,
-    loading,
-    reload: getDepartments,
+    reload: fetchDepartmentList,
   };
 };

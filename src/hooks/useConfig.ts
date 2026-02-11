@@ -1,56 +1,63 @@
-import { useConfig } from '@/pages/Config/model';
+import { queryConfigList } from '@/services/config';
 import { useCallback, useEffect, useState } from 'react';
 
-// 配置管理hooks（已移除自动加载逻辑，保留其余工具hooks）
+// 配置管理hooks
 
 // 根据键获取配置值的hook
 export const useConfigValue = (key: string) => {
-  const { configs, getConfigValue } = useConfig();
   const [value, setValue] = useState<string | undefined>();
 
   useEffect(() => {
-    const configValue = getConfigValue(key);
-    setValue(configValue);
-  }, [key, configs, getConfigValue]);
+    queryConfigList({ key } as any).then((res: any) => {
+      const items = res?.data?.items ?? res?.data ?? [];
+      const config = Array.isArray(items)
+        ? items.find((c: any) => c.key === key)
+        : undefined;
+      setValue(config?.value);
+    });
+  }, [key]);
 
   return value;
 };
 
 // 根据分组获取配置的hook
 export const useConfigsByGroup = (group: string) => {
-  const { configs, getConfigsByGroup } = useConfig();
   const [groupConfigs, setGroupConfigs] = useState<any[]>([]);
 
   useEffect(() => {
-    const configs = getConfigsByGroup(group);
-    setGroupConfigs(configs);
-  }, [group, configs, getConfigsByGroup]);
+    queryConfigList({ group } as any).then((res: any) => {
+      const items = res?.data?.items ?? res?.data ?? [];
+      setGroupConfigs(Array.isArray(items) ? items : []);
+    });
+  }, [group]);
 
   return groupConfigs;
 };
 
 // 根据类型获取配置的hook
 export const useConfigsByType = (type: string) => {
-  const { configs, getConfigsByType } = useConfig();
   const [typeConfigs, setTypeConfigs] = useState<any[]>([]);
 
   useEffect(() => {
-    const configs = getConfigsByType(type);
-    setTypeConfigs(configs);
-  }, [type, configs, getConfigsByType]);
+    queryConfigList({ type } as any).then((res: any) => {
+      const items = res?.data?.items ?? res?.data ?? [];
+      setTypeConfigs(Array.isArray(items) ? items : []);
+    });
+  }, [type]);
 
   return typeConfigs;
 };
 
 // 获取启用配置的hook
 export const useEnabledConfigs = () => {
-  const { configs, getEnabledConfigs } = useConfig();
   const [enabledConfigs, setEnabledConfigs] = useState<any[]>([]);
 
   useEffect(() => {
-    const configs = getEnabledConfigs();
-    setEnabledConfigs(configs);
-  }, [configs, getEnabledConfigs]);
+    queryConfigList({ status: 1 } as any).then((res: any) => {
+      const items = res?.data?.items ?? res?.data ?? [];
+      setEnabledConfigs(Array.isArray(items) ? items : []);
+    });
+  }, []);
 
   return enabledConfigs;
 };
