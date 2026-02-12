@@ -1,5 +1,7 @@
+import { mergeSettings } from '@/constants/settings';
 import { login } from '@/services/auth';
-import { decrypt, encrypt } from '@/utils';
+import { getRuntimeConfig } from '@/services/config';
+import { decrypt, encrypt, logger } from '@/utils';
 import {
   AlipayCircleFilled,
   GithubFilled,
@@ -32,15 +34,28 @@ const LoginPage: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const fetchProfile = async () => {
-    const profile = await initialState?.fetchProfile?.();
+  const loadInitData = async () => {
+    let runtimeConfig: Record<string, unknown> | undefined;
+    try {
+      const res = await getRuntimeConfig();
+      runtimeConfig = res.data;
+    } catch (error) {
+      logger.error(error);
+    }
+    const [profile, menus] = await Promise.all([
+      initialState?.fetchProfile?.(),
+      initialState?.fetchMenus?.(),
+    ]);
     if (profile) {
+      const settings = mergeSettings(runtimeConfig, profile.preferences);
       flushSync(() => {
         setInitialState(
           (s) =>
             ({
               ...s,
-              profile: profile,
+              profile,
+              menus,
+              settings,
             } as any),
         );
       });
@@ -66,7 +81,7 @@ const LoginPage: React.FC = () => {
     try {
       const res = await login({ ...values, rememberMe: undefined });
       storetify(__APP_API_TOKEN_KEY__, res.data.access_token);
-      await fetchProfile();
+      await loadInitData();
       message.success(res.message);
       navigate('/');
     } catch (error) {
@@ -75,7 +90,7 @@ const LoginPage: React.FC = () => {
       setLogging(false);
     }
   };
-  const getRemember = () => {
+  const loadRemember = () => {
     const { account, password, rememberMe } =
       (storetify('rememberMe') as any) || {};
     const values = form.getFieldsValue(['account', 'password', 'rememberMe']);
@@ -88,12 +103,12 @@ const LoginPage: React.FC = () => {
     form.setFieldsValue(loginForm);
   };
   useEffect(() => {
-    getRemember();
+    loadRemember();
   }, []);
 
   return (
     <div className={styles.page}>
-      <LoginBg>
+      <LoginBg title={initialState?.settings?.siteName}>
         <div className={styles.content}>
           <div className={styles.title}>欢迎开启新世界</div>
           <Form

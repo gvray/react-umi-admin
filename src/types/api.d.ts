@@ -1,6 +1,6 @@
 /**
  * 此文件由 scripts/gen-api-types.ts 自动生成
- * 生成时间: 2026-02-10T15:02:56.194Z
+ * 生成时间: 2026-02-12T01:13:58.156Z
  * 数据来源: http://localhost:8001/api-json
  * 请勿手动修改此文件
  */
@@ -1016,6 +1016,8 @@ declare namespace API {
     department?: CurrentUserDepartmentResponseDto;
     /** 所属岗位 */
     positions?: CurrentUserPositionResponseDto[];
+    /** 用户偏好设置 */
+    preferences?: Record<string, unknown>;
   }
 
   interface UpdateProfileDto {

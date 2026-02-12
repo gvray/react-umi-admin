@@ -2,9 +2,8 @@ import AntIcon from '@/components/AntIcon';
 import type { SiderTheme } from '@/stores/useSettingsStore';
 import { Layout, Menu, MenuProps, Skeleton } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
-import { history, useLocation } from 'umi';
+import { history, useLocation, useModel } from 'umi';
 import Logo from '../Logo';
-import { useMenuModel } from './model';
 
 const { Sider } = Layout;
 
@@ -23,7 +22,10 @@ const SideMenu: React.FC<SideMenuProps> = ({
   collapsedWidth = 64,
   showLogo = true,
 }) => {
-  const { loading, menus } = useMenuModel();
+  const { initialState } = useModel('@@initialState');
+  const menus = initialState?.menus;
+  const siteName = initialState?.settings?.siteName;
+  const loading = !menus;
 
   const location = useLocation();
   const [openKeys, setOpenKeys] = useState<string[]>([]);
@@ -80,7 +82,9 @@ const SideMenu: React.FC<SideMenuProps> = ({
       collapsedWidth={collapsedWidth}
       theme={siderTheme}
     >
-      {showLogo && <Logo theme={siderTheme} collapsed={collapsed} />}
+      {showLogo && (
+        <Logo theme={siderTheme} title={siteName} collapsed={collapsed} />
+      )}
       <Skeleton loading={loading} active round style={{ padding: '15px' }}>
         <Menu
           inlineIndent={10}

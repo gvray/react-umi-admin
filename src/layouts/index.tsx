@@ -1,6 +1,5 @@
 import ErrorBoundary from '@/components/ErrorBoundary';
-import { useAppTheme } from '@/hooks';
-import useDict from '@/hooks/useDict';
+import { useAppTheme, useRouteTitle } from '@/hooks';
 import useThemeColor from '@/hooks/useThemeColor';
 import { logout } from '@/services/auth';
 import { useSettingsStore, useThemeStore } from '@/stores';
@@ -16,7 +15,7 @@ import {
   message,
 } from 'antd';
 import { flushSync } from 'react-dom';
-import { HelmetProvider } from 'react-helmet-async';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import storetify from 'storetify';
 import { Outlet, SelectLang, history, styled, useModel } from 'umi';
 import SideMenu from './components/SideMenu';
@@ -51,9 +50,10 @@ export default function BaseLayout() {
 
   const themeColor = useThemeColor();
   const { token: themeToken } = useThemeStore();
+  const routeTitle = useRouteTitle();
+  const siteName = initialState?.settings?.siteName;
+  const documentTitle = routeTitle ? `${routeTitle} - ${siteName}` : siteName;
 
-  const dict = useDict(['user_status', 'user_sex']);
-  console.log(dict);
   const handleLogout = async () => {
     try {
       const msg = await logout();
@@ -66,6 +66,7 @@ export default function BaseLayout() {
             ({
               ...s,
               profile: undefined,
+              menus: undefined,
             } as any),
         );
       });
@@ -99,6 +100,9 @@ export default function BaseLayout() {
 
   return (
     <HelmetProvider>
+      <Helmet>
+        <title>{documentTitle}</title>
+      </Helmet>
       <ConfigProvider
         theme={{
           algorithm: themeAlgorithm,

@@ -4,12 +4,13 @@ import { styled, useNavigate } from 'umi';
 interface LogoProps {
   theme?: 'light' | 'dark'; // 定义主题属性
   collapsed?: boolean;
+  title?: string;
 }
 
 const LogoWrapper = styled.div.withConfig({
   shouldForwardProp: (prop) => !['theme', 'collapsed'].includes(prop),
 })<LogoProps>`
-  margin: 16px;
+  margin: ${(props) => (props.collapsed ? '12px 8px' : '12px 10px 2px 10px')};
   background: rgba(255, 255, 255, 0.2);
   border-radius: ${(props) => (props.collapsed ? '24px' : '8px')};
   color: ${(props) => (props.theme === 'light' ? '#000' : '#fff')};
@@ -23,14 +24,21 @@ const LogoWrapper = styled.div.withConfig({
   justify-content: ${(props) => (props.collapsed ? 'center' : 'flex-start')};
   gap: 8px;
   height: 48px;
+  min-width: 48px;
   padding-left: ${(props) => (props.collapsed ? '0' : '8px')};
   .logo-img {
     width: 1.8em;
     height: 1.8em;
   }
+  .logo-title {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 `;
 
-const Logo: React.FC<LogoProps> = ({ theme = 'light', collapsed }) => {
+const Logo: React.FC<LogoProps> = ({ theme = 'light', collapsed, title }) => {
   const navigate = useNavigate();
   return (
     <LogoWrapper
@@ -41,7 +49,7 @@ const Logo: React.FC<LogoProps> = ({ theme = 'light', collapsed }) => {
       }}
     >
       <img className="logo-img" src="/logo.svg" alt="Logo" />
-      {!collapsed && <strong>G-ADMIN</strong>}
+      {!collapsed && <strong className="logo-title">{title}</strong>}
     </LogoWrapper>
   );
 };

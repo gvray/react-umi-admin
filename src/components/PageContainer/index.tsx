@@ -1,5 +1,5 @@
 import { withAuth } from '@/hocs';
-import { useRoutePermissions, useRouteTitle } from '@/hooks';
+import { useRoutePermissions } from '@/hooks';
 import { theme } from 'antd';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -26,10 +26,13 @@ interface PageContainerProps {
   children?: React.ReactNode;
   style?: React.CSSProperties;
   className?: string;
+  /** 覆盖 Layout 默认的 document title */
+  title?: string;
 }
 
 const PageContainer: React.FC<PropsWithChildren<PageContainerProps>> = ({
   children,
+  title,
   ...rest
 }) => {
   // 使用状态来控制进场和出场动画
@@ -42,9 +45,6 @@ const PageContainer: React.FC<PropsWithChildren<PageContainerProps>> = ({
     setIsVisible(true); // 组件挂载时设置为可见，触发进场动画
   }, []);
 
-  const routeTitle = useRouteTitle();
-  const documentTitle = routeTitle ? `${routeTitle} - G-ADMIN` : 'G-ADMIN';
-
   return (
     <PageContainerWrapper
       $isVisible={isVisible}
@@ -52,9 +52,11 @@ const PageContainer: React.FC<PropsWithChildren<PageContainerProps>> = ({
       $borderRadiusLG={borderRadiusLG}
       {...rest}
     >
-      <Helmet>
-        <title>{documentTitle}</title>
-      </Helmet>
+      {title && (
+        <Helmet>
+          <title>{title}</title>
+        </Helmet>
+      )}
       {children}
     </PageContainerWrapper>
   );

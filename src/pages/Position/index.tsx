@@ -139,7 +139,7 @@ const PositionPage = () => {
           </>
         )}
         ref={tableProRef}
-        columns={columns as any}
+        columns={columns}
         request={fetchPositionList}
       />
       {/* 岗位新增修改弹出层 */}
