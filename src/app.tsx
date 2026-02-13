@@ -1,7 +1,8 @@
-import { mergeSettings } from '@/constants/settings';
+import { resolveServerConfig } from '@/constants/settings';
 import { queryMenus } from '@/services/auth';
 import { getRuntimeConfig } from '@/services/config';
 import { queryProfile } from '@/services/profile';
+import { useAppStore, useAuthStore } from '@/stores';
 import storetify from 'storetify';
 import { history } from 'umi';
 import { logger } from './utils';
@@ -10,8 +11,11 @@ import { logger } from './utils';
 const loginPath = '/login';
 
 /**
+ * 应用启动时的数据获取入口，获取完后分发到各 Store。
+ * UI 层不直接消费 initialState，统一通过 Store 读取。
+ *
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
- * */
+ */
 export async function getInitialState() {
   let runtimeConfig: Record<string, unknown> | undefined;
   let profile: API.CurrentUserResponseDto | undefined;
@@ -25,39 +29,29 @@ export async function getInitialState() {
     logger.error(error);
   }
 
-  const fetchProfile = async () => {
+  // 已登录时并行获取用户信息和菜单
+  if (storetify.has(__APP_API_TOKEN_KEY__)) {
     try {
-      const res = await queryProfile({ skipErrorHandler: true });
-      return res.data;
+      const [profileRes, menusRes] = await Promise.all([
+        queryProfile({ skipErrorHandler: true }),
+        queryMenus(),
+      ]);
+      profile = profileRes.data;
+      menus = menusRes.data;
     } catch (error) {
       storetify.remove(__APP_API_TOKEN_KEY__);
       history.push(loginPath);
     }
-  };
-
-  const fetchMenus = async () => {
-    try {
-      const res = await queryMenus();
-      return res.data;
-    } catch (error) {
-      logger.error(error);
-    }
-  };
-
-  // 已登录时并行获取用户信息和菜单
-  if (storetify.has(__APP_API_TOKEN_KEY__)) {
-    [profile, menus] = await Promise.all([fetchProfile(), fetchMenus()]);
   }
 
-  // 合并设置：常量 < runtimeConfig < profile.preferences
-  const settings = mergeSettings(runtimeConfig, profile?.preferences);
+  // 服务端配置 → AppStore
+  useAppStore.getState().setServerConfig(resolveServerConfig(runtimeConfig));
+
+  // 认证数据 → 分发到 AuthStore
+  if (profile) {
+    useAuthStore.getState().setAuth(profile, menus);
+  }
 
   logger.info('App 初始化完成');
-  return {
-    fetchProfile,
-    fetchMenus,
-    settings,
-    profile,
-    menus,
-  };
+  return {};
 }

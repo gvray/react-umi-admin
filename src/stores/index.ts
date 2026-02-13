@@ -1,3 +1,3 @@
-export { useSettingsStore } from './useSettingsStore';
+export { useAppStore } from './useAppStore';
+export { useAuthStore } from './useAuthStore';
 export { useTabsStore } from './useTabsStore';
-export { useThemeStore } from './useThemeStore';

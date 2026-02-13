@@ -1,5 +1,5 @@
-import { PRIMARY_COLOR_LABELS } from '@/constants';
-import { useThemeStore } from '@/stores';
+import { PRIMARY_COLOR_LABELS, PrimaryColor } from '@/constants';
+import { useAppStore } from '@/stores';
 import { logger } from '@/utils';
 import React, { useState } from 'react';
 import { styled } from 'umi';
@@ -34,12 +34,12 @@ const ThemeSettingWrapper = styled.div`
   }
 `;
 const ThemeSetting: React.FC<ThemeSettingProps> = ({ onChange }) => {
-  const { token, setToken } = useThemeStore();
+  const { colorPrimary, setColorPrimary } = useAppStore();
   const [isVisible, setIsVisible] = useState(false);
-  const themeSelectHandle = (theme: { label: string; color: string }) => {
-    logger.info(`主题切换为：${theme.label} ${theme.color}`);
-    setToken({ colorPrimary: theme.color });
-    onChange?.(theme);
+  const themeSelectHandle = (selected: { label: string; color: string }) => {
+    logger.info(`主题切换为：${selected.label} ${selected.color}`);
+    setColorPrimary(selected.color as PrimaryColor);
+    onChange?.(selected);
   };
 
   return (
@@ -55,7 +55,7 @@ const ThemeSetting: React.FC<ThemeSettingProps> = ({ onChange }) => {
       {isVisible && (
         <div className="box">
           <ThemeColor
-            value={token.colorPrimary}
+            value={colorPrimary}
             colorList={Object.entries(PRIMARY_COLOR_LABELS).map(
               ([color, label]) => {
                 return {

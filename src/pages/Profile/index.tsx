@@ -1,4 +1,5 @@
 import { PageContainer } from '@/components';
+import { useAuthStore } from '@/stores';
 import {
   BellOutlined,
   CalendarOutlined,
@@ -30,7 +31,7 @@ import {
 } from 'antd';
 import type { UploadChangeParam } from 'antd/es/upload';
 import dayjs from 'dayjs';
-import { styled, useModel } from 'umi';
+import { styled } from 'umi';
 import styles from './index.less';
 import TabLoginLog from './TabLoginLog';
 import TabNotifications from './TabNotifications';
@@ -58,8 +59,7 @@ const PanelCard = styled(Card)`
 // ─── Component ──────────────────────────────────────────
 
 export default function ProfilePage() {
-  const { initialState } = useModel('@@initialState');
-  const profile = initialState?.profile;
+  const profile = useAuthStore((s) => s.profile);
 
   const handleAvatarChange = (info: UploadChangeParam) => {
     if (info.file.status === 'done') {

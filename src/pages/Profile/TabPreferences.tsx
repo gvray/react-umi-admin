@@ -1,5 +1,5 @@
 import { THEME_MODE_LABELS, ThemeModeWithoutSystem } from '@/constants';
-import { useThemeStore } from '@/stores';
+import { useAppStore } from '@/stores';
 import {
   BellOutlined,
   LayoutOutlined,
@@ -13,7 +13,8 @@ import styles from './index.less';
 const { Text } = Typography;
 
 const TabPreferences: React.FC = () => {
-  const { themeMode, setThemeMode } = useThemeStore();
+  const themeMode = useAppStore((s) => s.themeMode);
+  const setThemeMode = useAppStore((s) => s.setThemeMode);
   const [prefs, setPrefs] = useState({
     breadcrumb: true,
     tableDense: false,

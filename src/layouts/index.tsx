@@ -1,8 +1,10 @@
+import AppBreadcrumb from '@/components/AppBreadcrumb';
+import AppWatermark from '@/components/AppWatermark';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useAppTheme, useRouteTitle } from '@/hooks';
 import useThemeColor from '@/hooks/useThemeColor';
 import { logout } from '@/services/auth';
-import { useSettingsStore, useThemeStore } from '@/stores';
+import { useAppStore, useAuthStore } from '@/stores';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import {
   Avatar,
@@ -14,10 +16,9 @@ import {
   Space,
   message,
 } from 'antd';
-import { flushSync } from 'react-dom';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import storetify from 'storetify';
-import { Outlet, SelectLang, history, styled, useModel } from 'umi';
+import { Outlet, SelectLang, history, styled } from 'umi';
 import SideMenu from './components/SideMenu';
 import ThemeSetting from './components/ThemeSetting';
 
@@ -44,32 +45,29 @@ const HeaderAction = styled.div`
 `;
 
 export default function BaseLayout() {
-  const { initialState, setInitialState } = useModel('@@initialState');
-  const { sider, header, content, accessibility, toggleCollapsed } =
-    useSettingsStore();
+  const { profile, clearAuth } = useAuthStore();
+  const {
+    serverConfig,
+    colorPrimary,
+    sider,
+    header,
+    content,
+    accessibility,
+    toggleCollapsed,
+  } = useAppStore();
 
   const themeColor = useThemeColor();
-  const { token: themeToken } = useThemeStore();
   const routeTitle = useRouteTitle();
-  const siteName = initialState?.settings?.siteName;
-  const documentTitle = routeTitle ? `${routeTitle} - ${siteName}` : siteName;
+  const documentTitle = routeTitle
+    ? `${routeTitle} - ${serverConfig.siteName}`
+    : serverConfig.siteName;
 
   const handleLogout = async () => {
     try {
       const msg = await logout();
       message.success(msg.message);
-      // 退出登陆 清空状态
       storetify.remove(__APP_API_TOKEN_KEY__);
-      flushSync(() => {
-        setInitialState(
-          (s) =>
-            ({
-              ...s,
-              profile: undefined,
-              menus: undefined,
-            } as any),
-        );
-      });
+      clearAuth();
       history.push('/login');
     } catch (error) {}
   };
@@ -106,7 +104,7 @@ export default function BaseLayout() {
       <ConfigProvider
         theme={{
           algorithm: themeAlgorithm,
-          token: themeToken,
+          token: { colorPrimary },
         }}
       >
         <Layout
@@ -163,7 +161,7 @@ export default function BaseLayout() {
                           src={
                             <img
                               src={
-                                initialState?.profile?.avatar ||
+                                profile?.avatar ||
                                 'https://api.dicebear.com/9.x/bottts/svg?seed=GavinRay'
                               }
                               alt="avatar"
@@ -171,8 +169,7 @@ export default function BaseLayout() {
                           }
                         />
                         <span style={{ marginLeft: 8 }}>
-                          {initialState?.profile?.nickname ||
-                            initialState?.profile?.username}
+                          {profile?.nickname || profile?.username}
                         </span>
                       </HeaderAction>
                     </Dropdown>
@@ -187,9 +184,12 @@ export default function BaseLayout() {
                 overflow: 'auto',
               }}
             >
-              <ErrorBoundary>
-                <Outlet />
-              </ErrorBoundary>
+              <AppBreadcrumb />
+              <AppWatermark>
+                <ErrorBoundary>
+                  <Outlet />
+                </ErrorBoundary>
+              </AppWatermark>
               {content.showFooter && (
                 <div
                   style={{

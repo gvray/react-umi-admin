@@ -1,10 +1,10 @@
-import { useThemeStore } from '@/stores';
+import { useAppStore } from '@/stores';
 import { startSystemThemeWatcher, stopSystemThemeWatcher } from '@/utils/theme';
 import { theme } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 
 const useAppTheme = () => {
-  const { themeMode } = useThemeStore();
+  const themeMode = useAppStore((s) => s.themeMode);
   const [systemTheme, setSystemTheme] = useState(() => {
     return window.matchMedia('(prefers-color-scheme: dark)').matches
       ? 'dark'

@@ -1,6 +1,8 @@
-import { mergeSettings } from '@/constants/settings';
-import { login } from '@/services/auth';
+import { resolveServerConfig } from '@/constants/settings';
+import { login, queryMenus } from '@/services/auth';
 import { getRuntimeConfig } from '@/services/config';
+import { queryProfile } from '@/services/profile';
+import { useAppStore, useAuthStore } from '@/stores';
 import { decrypt, encrypt, logger } from '@/utils';
 import {
   AlipayCircleFilled,
@@ -11,9 +13,8 @@ import {
 } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input, Space, message } from 'antd';
 import { useEffect, useState } from 'react';
-import { flushSync } from 'react-dom';
 import storetify from 'storetify';
-import { FormattedMessage, useModel, useNavigate } from 'umi';
+import { FormattedMessage, useNavigate } from 'umi';
 import LoginBg from './components/LoginBg';
 import styles from './index.less';
 
@@ -27,7 +28,7 @@ const formItemLayout = {
 };
 
 const LoginPage: React.FC = () => {
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const siteName = useAppStore((s) => s.serverConfig.siteName);
   const [isLogging, setLogging] = useState(false);
 
   const [form] = Form.useForm();
@@ -42,24 +43,16 @@ const LoginPage: React.FC = () => {
     } catch (error) {
       logger.error(error);
     }
-    const [profile, menus] = await Promise.all([
-      initialState?.fetchProfile?.(),
-      initialState?.fetchMenus?.(),
+    const [profileRes, menusRes] = await Promise.all([
+      queryProfile({ skipErrorHandler: true }).catch(() => undefined),
+      queryMenus().catch(() => undefined),
     ]);
+    const profile = profileRes?.data;
+    const menus = menusRes?.data;
     if (profile) {
-      const settings = mergeSettings(runtimeConfig, profile.preferences);
-      flushSync(() => {
-        setInitialState(
-          (s) =>
-            ({
-              ...s,
-              profile,
-              menus,
-              settings,
-            } as any),
-        );
-      });
+      useAuthStore.getState().setAuth(profile, menus);
     }
+    useAppStore.getState().setServerConfig(resolveServerConfig(runtimeConfig));
   };
 
   const handleSubmit = async (values: any) => {
@@ -108,7 +101,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className={styles.page}>
-      <LoginBg title={initialState?.settings?.siteName}>
+      <LoginBg title={siteName}>
         <div className={styles.content}>
           <div className={styles.title}>欢迎开启新世界</div>
           <Form

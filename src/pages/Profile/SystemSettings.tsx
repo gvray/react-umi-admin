@@ -1,5 +1,5 @@
 import { THEME_MODE_LABELS, ThemeModeWithoutSystem } from '@/constants';
-import { useThemeStore } from '@/stores';
+import { useAppStore } from '@/stores';
 import { BellOutlined, SettingOutlined } from '@ant-design/icons';
 import { Card, Col, List, Row, Select, Switch } from 'antd';
 import { useState } from 'react';
@@ -12,7 +12,8 @@ const SystemSettings = () => {
     push: true,
   });
 
-  const { themeMode, setThemeMode } = useThemeStore();
+  const themeMode = useAppStore((s) => s.themeMode);
+  const setThemeMode = useAppStore((s) => s.setThemeMode);
   const handleThemeModeChange = (value: string) => {
     setThemeMode(value as ThemeModeWithoutSystem);
   };
