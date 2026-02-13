@@ -1,29 +1,19 @@
-import { AdvancedSearchItem } from '@/components/TablePro/components/AdvancedSearchForm';
-import { ColumnProps } from 'antd/es/table';
-import { CONFIG_GROUP_OPTIONS } from './constants';
-import type { ConfigData } from './model';
+import { CONFIG_STATUS_OPTIONS, CONFIG_TYPE_OPTIONS } from './constants';
 
-interface ConfigColumnProps<T, U> extends ColumnProps<T> {
-  advancedSearch?: AdvancedSearchItem<U>;
-}
-
-export const getConfigColumns = (): ConfigColumnProps<
-  ConfigData,
-  Record<string, string | number>
->[] => {
+export const getConfigColumns = (): any[] => {
   return [
     {
       title: '配置名称',
       dataIndex: 'name',
       key: 'name',
-      width: 220,
+      width: 240,
       advancedSearch: { type: 'INPUT' },
     },
     {
       title: '配置键',
       dataIndex: 'key',
       key: 'key',
-      width: 160,
+      width: 180,
       advancedSearch: { type: 'INPUT' },
     },
     {
@@ -33,22 +23,16 @@ export const getConfigColumns = (): ConfigColumnProps<
       width: 100,
       advancedSearch: {
         type: 'SELECT',
-        value: [
-          { label: '字符串', value: 'string' },
-          { label: '数字', value: 'number' },
-          { label: '布尔值', value: 'boolean' },
-          { label: 'JSON', value: 'json' },
-        ],
+        value: CONFIG_TYPE_OPTIONS,
       },
     },
     {
       title: '分组',
       dataIndex: 'group',
       key: 'group',
-      width: 100,
+      width: 120,
       advancedSearch: {
         type: 'SELECT',
-        value: CONFIG_GROUP_OPTIONS,
       },
     },
     {
@@ -64,17 +48,14 @@ export const getConfigColumns = (): ConfigColumnProps<
       width: 100,
       advancedSearch: {
         type: 'SELECT',
-        value: [
-          { label: '禁用', value: 0 },
-          { label: '启用', value: 1 },
-        ],
+        value: CONFIG_STATUS_OPTIONS,
       },
     },
     {
       title: '创建时间',
       key: 'createdAt',
       dataIndex: 'createdAt',
-      width: 140,
+      width: 160,
       advancedSearch: {
         type: 'DATE_RANGE',
       },
