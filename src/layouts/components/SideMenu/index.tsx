@@ -1,12 +1,51 @@
 import AntIcon from '@/components/AntIcon';
 import { useAppStore, useAuthStore } from '@/stores';
 import type { SiderTheme } from '@/stores/useAppStore';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { Layout, Menu, MenuProps, Skeleton } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
-import { history, useLocation } from 'umi';
+import { history, styled, useLocation } from 'umi';
 import Logo from '../Logo';
 
 const { Sider } = Layout;
+
+const SiderWrapper = styled.div`
+  position: relative;
+  height: 100vh;
+
+  .collapse-trigger-wrap {
+    position: absolute;
+    top: 108px;
+    right: 0;
+    z-index: 101;
+    transform: translateX(50%);
+  }
+
+  .collapse-trigger {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.45);
+    background: #002140;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    overflow: visible;
+
+    &:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      transform: scale(1.15);
+    }
+  }
+`;
 
 interface SideMenuProps {
   collapsed: boolean;
@@ -24,7 +63,8 @@ const SideMenu: React.FC<SideMenuProps> = ({
   showLogo = true,
 }) => {
   const menus = useAuthStore((s) => s.menus);
-  const siteName = useAppStore((s) => s.serverConfig.siteName);
+  const siteName = useAppStore((s) => s.serverConfig.system.name);
+  const toggleCollapsed = useAppStore((s) => s.toggleCollapsed);
   const loading = !menus;
 
   const location = useLocation();
@@ -74,30 +114,38 @@ const SideMenu: React.FC<SideMenuProps> = ({
   const siderTheme = loading ? 'light' : theme;
 
   return (
-    <Sider
-      trigger={null}
-      collapsible
-      collapsed={collapsed}
-      width={width}
-      collapsedWidth={collapsedWidth}
-      theme={siderTheme}
-    >
-      {showLogo && (
-        <Logo theme={siderTheme} title={siteName} collapsed={collapsed} />
-      )}
-      <Skeleton loading={loading} active round style={{ padding: '15px' }}>
-        <Menu
-          inlineIndent={10}
-          openKeys={openKeys}
-          onOpenChange={(keys) => setOpenKeys(keys as string[])}
-          theme={siderTheme}
-          mode="inline"
-          onClick={handleMenuClick}
-          selectedKeys={[location.pathname]}
-          items={items}
-        />
-      </Skeleton>
-    </Sider>
+    <SiderWrapper>
+      <Sider
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+        width={width}
+        collapsedWidth={collapsedWidth}
+        theme={siderTheme}
+        style={{ height: '100%' }}
+      >
+        {showLogo && (
+          <Logo theme={siderTheme} title={siteName} collapsed={collapsed} />
+        )}
+        <Skeleton loading={loading} active round style={{ padding: '15px' }}>
+          <Menu
+            inlineIndent={10}
+            openKeys={openKeys}
+            onOpenChange={(keys) => setOpenKeys(keys as string[])}
+            theme={siderTheme}
+            mode="inline"
+            onClick={handleMenuClick}
+            selectedKeys={[location.pathname]}
+            items={items}
+          />
+        </Skeleton>
+      </Sider>
+      <div className="collapse-trigger-wrap">
+        <div className="collapse-trigger" onClick={toggleCollapsed}>
+          {collapsed ? <RightOutlined /> : <LeftOutlined />}
+        </div>
+      </div>
+    </SiderWrapper>
   );
 };
 

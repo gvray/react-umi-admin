@@ -28,7 +28,7 @@ const formItemLayout = {
 };
 
 const LoginPage: React.FC = () => {
-  const siteName = useAppStore((s) => s.serverConfig.siteName);
+  const siteName = useAppStore((s) => s.serverConfig.system.name);
   const [isLogging, setLogging] = useState(false);
 
   const [form] = Form.useForm();

@@ -1,4 +1,5 @@
 import routes from '@/../config/routes';
+import { useAppStore } from '@/stores';
 import { HomeOutlined } from '@ant-design/icons';
 import { Breadcrumb } from 'antd';
 import React, { useMemo } from 'react';
@@ -13,6 +14,7 @@ interface RouteItem {
 
 interface BreadcrumbItem {
   title: React.ReactNode;
+  /** 仅当路由有 component 时才设置，避免点击目录路由跳到空白页 */
   path?: string;
 }
 
@@ -40,7 +42,8 @@ function buildBreadcrumbs(
         if (route.meta?.title) {
           segments.push({
             title: route.meta.title,
-            path: isExact ? undefined : route.path,
+            // 只有有 component 的中间节点才可点击，目录节点不可点击
+            path: !isExact && route.component ? route.path : undefined,
           });
         }
 
@@ -67,6 +70,7 @@ function buildBreadcrumbs(
 }
 
 const AppBreadcrumb: React.FC = () => {
+  const showBreadcrumb = useAppStore((s) => s.showBreadcrumb);
   const location = useLocation();
 
   const breadcrumbs = useMemo(
@@ -74,7 +78,7 @@ const AppBreadcrumb: React.FC = () => {
     [location.pathname],
   );
 
-  if (breadcrumbs.length === 0) return null;
+  if (!showBreadcrumb || breadcrumbs.length === 0) return null;
 
   const items = [
     {

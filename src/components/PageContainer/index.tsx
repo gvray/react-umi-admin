@@ -1,5 +1,6 @@
 import { withAuth } from '@/hocs';
 import { useRoutePermissions } from '@/hooks';
+import { useAppStore } from '@/stores';
 import { theme } from 'antd';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -9,10 +10,12 @@ type PageContainerWrapperProps = {
   $isVisible?: boolean;
   $colorBgContainer?: string;
   $borderRadiusLG?: number;
+  $hasBreadcrumb?: boolean;
 };
 
 const PageContainerWrapper = styled.div<PageContainerWrapperProps>`
-  margin: 24px 16px;
+  margin: ${({ $hasBreadcrumb }) =>
+    $hasBreadcrumb ? '0 16px 24px' : '24px 16px'};
   padding: 24px;
   min-height: 280px;
   transition: transform 0.1s ease-in-out, opacity 0.3s ease-in-out; /* 添加过渡效果 */
@@ -37,6 +40,7 @@ const PageContainer: React.FC<PropsWithChildren<PageContainerProps>> = ({
 }) => {
   // 使用状态来控制进场和出场动画
   const [isVisible, setIsVisible] = useState(false);
+  const showBreadcrumb = useAppStore((s) => s.showBreadcrumb);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -50,6 +54,7 @@ const PageContainer: React.FC<PropsWithChildren<PageContainerProps>> = ({
       $isVisible={isVisible}
       $colorBgContainer={colorBgContainer}
       $borderRadiusLG={borderRadiusLG}
+      $hasBreadcrumb={showBreadcrumb}
       {...rest}
     >
       {title && (

@@ -1,37 +1,85 @@
-import { THEME_MODE_LABELS, ThemeModeWithoutSystem } from '@/constants';
+import {
+  THEME_MODE_LABELS,
+  ThemeMode,
+  ThemeModeWithoutSystem,
+} from '@/constants';
 import { useAppStore } from '@/stores';
 import {
   BellOutlined,
   LayoutOutlined,
+  ReloadOutlined,
   SettingOutlined,
   SkinOutlined,
 } from '@ant-design/icons';
-import { Card, Col, List, Row, Select, Switch, Typography } from 'antd';
+import {
+  Button,
+  Card,
+  Col,
+  List,
+  Popconfirm,
+  Row,
+  Select,
+  Switch,
+  Tag,
+  Typography,
+} from 'antd';
 import { useState } from 'react';
 import styles from './index.less';
 
 const { Text } = Typography;
 
+const LANGUAGE_OPTIONS = [
+  { value: 'zh-CN', label: '简体中文' },
+  { value: 'en-US', label: 'English' },
+];
+
+const PAGE_SIZE_OPTIONS = [
+  { value: 10, label: '10 条/页' },
+  { value: 20, label: '20 条/页' },
+  { value: 50, label: '50 条/页' },
+];
+
 const TabPreferences: React.FC = () => {
-  const themeMode = useAppStore((s) => s.themeMode);
-  const setThemeMode = useAppStore((s) => s.setThemeMode);
-  const [prefs, setPrefs] = useState({
-    breadcrumb: true,
-    tableDense: false,
-    autoSave: true,
-    shortcuts: true,
+  const {
+    serverConfig,
+    themeMode,
+    setThemeMode,
+    language,
+    setLanguage,
+    pageSize,
+    setPageSize,
+    showBreadcrumb,
+    setShowBreadcrumb,
+    sider,
+    setSider,
+    header,
+    setHeader,
+    content,
+    setContent,
+    accessibility,
+    setAccessibility,
+    resetPreferences,
+  } = useAppStore();
+
+  const uiDefaults = serverConfig.uiDefaults;
+
+  // 本地临时偏好（暂无后端持久化）
+  const [localPrefs, setLocalPrefs] = useState({
     emailNotif: true,
     smsNotif: false,
     pushNotif: true,
   });
 
-  const handleThemeModeChange = (value: string) => {
-    setThemeMode(value as ThemeModeWithoutSystem);
+  const toggleLocal = (key: keyof typeof localPrefs) => {
+    setLocalPrefs((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const toggle = (key: keyof typeof prefs) => {
-    setPrefs((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
+  /** 服务端默认值标签 */
+  const ServerDefault: React.FC<{ label: string }> = ({ label }) => (
+    <Tag color="blue" style={{ fontSize: 11, marginLeft: 6 }}>
+      默认: {label}
+    </Tag>
+  );
 
   return (
     <Row gutter={[16, 16]}>
@@ -50,11 +98,21 @@ const TabPreferences: React.FC = () => {
             dataSource={[
               {
                 title: '主题模式',
-                desc: '切换浅色 / 深色主题',
+                desc: (
+                  <>
+                    切换浅色 / 深色主题
+                    <ServerDefault
+                      label={
+                        THEME_MODE_LABELS[uiDefaults.theme as ThemeMode] ||
+                        uiDefaults.theme
+                      }
+                    />
+                  </>
+                ),
                 extra: (
                   <Select
                     value={themeMode}
-                    onChange={handleThemeModeChange}
+                    onChange={(v) => setThemeMode(v as ThemeModeWithoutSystem)}
                     style={{ width: 110 }}
                     options={Object.entries(THEME_MODE_LABELS).map(
                       ([value, label]) => ({ value, label }),
@@ -63,40 +121,79 @@ const TabPreferences: React.FC = () => {
                 ),
               },
               {
-                title: '布局模式',
-                desc: '侧边栏 / 顶部导航',
+                title: '语言',
+                desc: (
+                  <>
+                    界面显示语言
+                    <ServerDefault
+                      label={
+                        LANGUAGE_OPTIONS.find(
+                          (o) => o.value === uiDefaults.language,
+                        )?.label || uiDefaults.language
+                      }
+                    />
+                  </>
+                ),
                 extra: (
                   <Select
-                    defaultValue="side"
+                    value={language}
+                    onChange={setLanguage}
                     style={{ width: 110 }}
-                    options={[
-                      { value: 'side', label: '侧边栏' },
-                      { value: 'top', label: '顶部导航' },
-                    ]}
+                    options={LANGUAGE_OPTIONS}
                   />
                 ),
               },
               {
-                title: '语言',
-                desc: '界面显示语言',
+                title: '侧边栏折叠',
+                desc: (
+                  <>
+                    默认折叠侧边导航
+                    <ServerDefault
+                      label={uiDefaults.sidebarCollapsed ? '折叠' : '展开'}
+                    />
+                  </>
+                ),
                 extra: (
-                  <Select
-                    defaultValue="zh-CN"
-                    style={{ width: 110 }}
-                    options={[
-                      { value: 'zh-CN', label: '简体中文' },
-                      { value: 'en-US', label: 'English' },
-                    ]}
+                  <Switch
+                    checked={sider.collapsed}
+                    onChange={(v) => setSider({ collapsed: v })}
+                  />
+                ),
+              },
+              {
+                title: '固定顶栏',
+                desc: '页面滚动时固定头部',
+                extra: (
+                  <Switch
+                    checked={header.fixed}
+                    onChange={(v) => setHeader({ fixed: v })}
+                  />
+                ),
+              },
+              {
+                title: '显示 Logo',
+                desc: '侧边栏顶部显示 Logo',
+                extra: (
+                  <Switch
+                    checked={sider.showLogo}
+                    onChange={(v) => setSider({ showLogo: v })}
                   />
                 ),
               },
               {
                 title: '显示面包屑',
-                desc: '页面顶部导航路径',
+                desc: (
+                  <>
+                    页面顶部导航路径
+                    <ServerDefault
+                      label={uiDefaults.showBreadcrumb ? '显示' : '隐藏'}
+                    />
+                  </>
+                ),
                 extra: (
                   <Switch
-                    checked={prefs.breadcrumb}
-                    onChange={() => toggle('breadcrumb')}
+                    checked={showBreadcrumb}
+                    onChange={setShowBreadcrumb}
                   />
                 ),
               },
@@ -119,12 +216,12 @@ const TabPreferences: React.FC = () => {
         </Card>
       </Col>
 
-      {/* 数据与表格 */}
+      {/* 数据与功能 */}
       <Col span={12}>
         <Card
           title={
             <>
-              <SettingOutlined /> 数据与表格
+              <SettingOutlined /> 数据与功能
             </>
           }
           size="small"
@@ -133,66 +230,49 @@ const TabPreferences: React.FC = () => {
           <List
             dataSource={[
               {
-                title: '默认首页',
-                desc: '登录后跳转的页面',
-                extra: (
-                  <Select
-                    defaultValue="/dashboard"
-                    style={{ width: 130 }}
-                    options={[
-                      { value: '/dashboard', label: '仪表盘' },
-                      { value: '/profile', label: '个人中心' },
-                    ]}
-                  />
-                ),
-              },
-              {
-                title: '表格密度',
-                desc: '数据表格行间距',
-                extra: (
-                  <Select
-                    defaultValue="default"
-                    style={{ width: 110 }}
-                    options={[
-                      { value: 'default', label: '默认' },
-                      { value: 'middle', label: '中等' },
-                      { value: 'small', label: '紧凑' },
-                    ]}
-                  />
-                ),
-              },
-              {
                 title: '默认分页数',
-                desc: '每页显示条数',
+                desc: (
+                  <>
+                    每页显示条数
+                    <ServerDefault label={`${uiDefaults.pageSize} 条/页`} />
+                  </>
+                ),
                 extra: (
                   <Select
-                    defaultValue="10"
+                    value={pageSize}
+                    onChange={setPageSize}
                     style={{ width: 110 }}
-                    options={[
-                      { value: '10', label: '10 条/页' },
-                      { value: '20', label: '20 条/页' },
-                      { value: '50', label: '50 条/页' },
-                    ]}
+                    options={PAGE_SIZE_OPTIONS}
                   />
                 ),
               },
               {
-                title: '自动保存',
-                desc: '自动保存表单草稿',
+                title: '显示页脚',
+                desc: '页面底部版权信息',
                 extra: (
                   <Switch
-                    checked={prefs.autoSave}
-                    onChange={() => toggle('autoSave')}
+                    checked={content.showFooter}
+                    onChange={(v) => setContent({ showFooter: v })}
                   />
                 ),
               },
               {
-                title: '快捷键',
-                desc: '启用键盘快捷操作',
+                title: '色弱模式',
+                desc: '适配色弱用户的配色方案',
                 extra: (
                   <Switch
-                    checked={prefs.shortcuts}
-                    onChange={() => toggle('shortcuts')}
+                    checked={accessibility.colorWeak}
+                    onChange={(v) => setAccessibility({ colorWeak: v })}
+                  />
+                ),
+              },
+              {
+                title: '灰色模式',
+                desc: '全站灰色（特殊纪念日）',
+                extra: (
+                  <Switch
+                    checked={accessibility.grayMode}
+                    onChange={(v) => setAccessibility({ grayMode: v })}
                   />
                 ),
               },
@@ -216,7 +296,7 @@ const TabPreferences: React.FC = () => {
       </Col>
 
       {/* 消息提醒 */}
-      <Col span={24}>
+      <Col span={12}>
         <Card
           title={
             <>
@@ -226,46 +306,83 @@ const TabPreferences: React.FC = () => {
           size="small"
           className={styles.prefCard}
         >
-          <Row gutter={16}>
-            <Col span={8}>
-              <List
-                dataSource={[
-                  {
-                    title: '邮件通知',
-                    desc: '接收系统邮件',
-                    key: 'emailNotif' as const,
-                  },
-                  {
-                    title: '短信通知',
-                    desc: '接收重要短信',
-                    key: 'smsNotif' as const,
-                  },
-                  {
-                    title: '推送通知',
-                    desc: '浏览器推送',
-                    key: 'pushNotif' as const,
-                  },
-                ]}
-                renderItem={(item) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      avatar={<BellOutlined style={{ color: '#8c8c8c' }} />}
-                      title={<Text style={{ fontSize: 13 }}>{item.title}</Text>}
-                      description={
-                        <Text type="secondary" style={{ fontSize: 12 }}>
-                          {item.desc}
-                        </Text>
-                      }
-                    />
-                    <Switch
-                      checked={prefs[item.key]}
-                      onChange={() => toggle(item.key)}
-                    />
-                  </List.Item>
-                )}
-              />
-            </Col>
-          </Row>
+          <List
+            dataSource={[
+              {
+                title: '邮件通知',
+                desc: '接收系统邮件',
+                key: 'emailNotif' as const,
+              },
+              {
+                title: '短信通知',
+                desc: '接收重要短信',
+                key: 'smsNotif' as const,
+              },
+              {
+                title: '推送通知',
+                desc: '浏览器推送',
+                key: 'pushNotif' as const,
+              },
+            ]}
+            renderItem={(item) => (
+              <List.Item>
+                <List.Item.Meta
+                  avatar={<BellOutlined style={{ color: '#8c8c8c' }} />}
+                  title={<Text style={{ fontSize: 13 }}>{item.title}</Text>}
+                  description={
+                    <Text type="secondary" style={{ fontSize: 12 }}>
+                      {item.desc}
+                    </Text>
+                  }
+                />
+                <Switch
+                  checked={localPrefs[item.key]}
+                  onChange={() => toggleLocal(item.key)}
+                />
+              </List.Item>
+            )}
+          />
+        </Card>
+      </Col>
+
+      {/* 重置 */}
+      <Col span={12}>
+        <Card
+          title={
+            <>
+              <ReloadOutlined /> 恢复默认
+            </>
+          }
+          size="small"
+          className={styles.prefCard}
+        >
+          <div style={{ padding: '12px 0' }}>
+            <Text
+              type="secondary"
+              style={{ display: 'block', marginBottom: 12 }}
+            >
+              将所有偏好设置恢复为服务端下发的默认值（{serverConfig.system.name}
+              ）。 此操作不可撤销。
+            </Text>
+            {uiDefaults.welcomeMessage && (
+              <Text
+                type="secondary"
+                italic
+                style={{ display: 'block', marginBottom: 16, fontSize: 12 }}
+              >
+                {uiDefaults.welcomeMessage}
+              </Text>
+            )}
+            <Popconfirm
+              title="确认恢复默认设置？"
+              description="所有偏好将重置为服务端默认值"
+              onConfirm={resetPreferences}
+              okText="确认"
+              cancelText="取消"
+            >
+              <Button icon={<ReloadOutlined />}>恢复默认设置</Button>
+            </Popconfirm>
+          </div>
         </Card>
       </Col>
     </Row>

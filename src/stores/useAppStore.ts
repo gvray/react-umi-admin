@@ -39,6 +39,9 @@ interface AppState {
   /** 客户端 UI 偏好（持久化到 localStorage） */
   themeMode: ThemeMode;
   colorPrimary: PrimaryColor;
+  language: string;
+  pageSize: number;
+  showBreadcrumb: boolean;
   sider: SiderPrefs;
   header: HeaderPrefs;
   content: ContentPrefs;
@@ -51,6 +54,9 @@ interface AppActions {
 
   setThemeMode: (mode: ThemeMode) => void;
   setColorPrimary: (color: PrimaryColor) => void;
+  setLanguage: (lang: string) => void;
+  setPageSize: (size: number) => void;
+  setShowBreadcrumb: (show: boolean) => void;
   setSider: (patch: Partial<SiderPrefs>) => void;
   setHeader: (patch: Partial<HeaderPrefs>) => void;
   setContent: (patch: Partial<ContentPrefs>) => void;
@@ -94,6 +100,9 @@ export const useAppStore = create<AppState & AppActions>()(
       // ── 客户端偏好 ──
       themeMode: 'light' as ThemeMode,
       colorPrimary: '#1677ff' as PrimaryColor,
+      language: 'zh-CN',
+      pageSize: 10,
+      showBreadcrumb: true,
       sider: { ...defaultSider },
       header: { ...defaultHeader },
       content: { ...defaultContent },
@@ -114,6 +123,21 @@ export const useAppStore = create<AppState & AppActions>()(
       setColorPrimary: (color) =>
         set((s) => {
           s.colorPrimary = color;
+        }),
+
+      setLanguage: (lang) =>
+        set((s) => {
+          s.language = lang;
+        }),
+
+      setPageSize: (size) =>
+        set((s) => {
+          s.pageSize = size;
+        }),
+
+      setShowBreadcrumb: (show) =>
+        set((s) => {
+          s.showBreadcrumb = show;
         }),
 
       setSider: (patch) =>
@@ -143,9 +167,13 @@ export const useAppStore = create<AppState & AppActions>()(
 
       resetPreferences: () =>
         set((s) => {
-          s.themeMode = 'light';
+          const ui = s.serverConfig.uiDefaults;
+          s.themeMode = (ui.theme || 'light') as ThemeMode;
           s.colorPrimary = '#1677ff';
-          s.sider = { ...defaultSider };
+          s.language = ui.language || 'zh-CN';
+          s.pageSize = ui.pageSize || 10;
+          s.showBreadcrumb = ui.showBreadcrumb !== false;
+          s.sider = { ...defaultSider, collapsed: ui.sidebarCollapsed };
           s.header = { ...defaultHeader };
           s.content = { ...defaultContent };
           s.accessibility = { ...defaultAccessibility };
@@ -157,6 +185,9 @@ export const useAppStore = create<AppState & AppActions>()(
       partialize: (state) => ({
         themeMode: state.themeMode,
         colorPrimary: state.colorPrimary,
+        language: state.language,
+        pageSize: state.pageSize,
+        showBreadcrumb: state.showBreadcrumb,
         sider: state.sider,
         header: state.header,
         content: state.content,

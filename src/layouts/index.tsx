@@ -5,10 +5,8 @@ import { useAppTheme, useRouteTitle } from '@/hooks';
 import useThemeColor from '@/hooks/useThemeColor';
 import { logout } from '@/services/auth';
 import { useAppStore, useAuthStore } from '@/stores';
-import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import {
   Avatar,
-  Button,
   ConfigProvider,
   Dropdown,
   Layout,
@@ -46,21 +44,14 @@ const HeaderAction = styled.div`
 
 export default function BaseLayout() {
   const { profile, clearAuth } = useAuthStore();
-  const {
-    serverConfig,
-    colorPrimary,
-    sider,
-    header,
-    content,
-    accessibility,
-    toggleCollapsed,
-  } = useAppStore();
+  const { serverConfig, colorPrimary, sider, header, content, accessibility } =
+    useAppStore();
 
   const themeColor = useThemeColor();
   const routeTitle = useRouteTitle();
   const documentTitle = routeTitle
-    ? `${routeTitle} - ${serverConfig.siteName}`
-    : serverConfig.siteName;
+    ? `${routeTitle} - ${serverConfig.system.name}`
+    : serverConfig.system.name;
 
   const handleLogout = async () => {
     try {
@@ -133,22 +124,6 @@ export default function BaseLayout() {
               }}
             >
               <HeaderBox>
-                <Button
-                  type="text"
-                  icon={
-                    sider.collapsed ? (
-                      <MenuUnfoldOutlined />
-                    ) : (
-                      <MenuFoldOutlined />
-                    )
-                  }
-                  onClick={toggleCollapsed}
-                  style={{
-                    fontSize: '16px',
-                    width: 64,
-                    height: 64,
-                  }}
-                />
                 <HeaderRight>
                   <Space size={2} wrap>
                     <ThemeSetting />
