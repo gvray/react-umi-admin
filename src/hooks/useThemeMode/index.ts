@@ -1,8 +1,8 @@
-import { useAppStore } from '@/stores';
+import { usePreferences } from '@/stores';
 import { useMemo } from 'react';
 
 const useThemeMode = () => {
-  const themeMode = useAppStore((s) => s.themeMode);
+  const { themeMode } = usePreferences();
   const mode = useMemo(() => {
     if (themeMode === 'system') {
       return window.matchMedia('(prefers-color-scheme: dark)').matches

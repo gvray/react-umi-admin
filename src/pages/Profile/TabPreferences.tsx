@@ -3,7 +3,7 @@ import {
   ThemeMode,
   ThemeModeWithoutSystem,
 } from '@/constants';
-import { useAppStore } from '@/stores';
+import { useAppStore, usePreferences } from '@/stores';
 import {
   BellOutlined,
   LayoutOutlined,
@@ -42,26 +42,41 @@ const PAGE_SIZE_OPTIONS = [
 const TabPreferences: React.FC = () => {
   const {
     serverConfig,
-    themeMode,
+    userSettings,
     setThemeMode,
-    language,
     setLanguage,
-    pageSize,
     setPageSize,
-    showBreadcrumb,
     setShowBreadcrumb,
-    sider,
     setSider,
-    header,
     setHeader,
-    content,
     setContent,
-    accessibility,
     setAccessibility,
     resetPreferences,
   } = useAppStore();
 
+  const {
+    themeMode,
+    language,
+    pageSize,
+    showBreadcrumb,
+    sider,
+    header,
+    content,
+    accessibility,
+  } = usePreferences();
+
   const uiDefaults = serverConfig.uiDefaults;
+
+  /** 判断某个偏好字段是否被用户修改过 */
+  const isModified = (key: string): boolean => {
+    const parts = key.split('.');
+    let val: any = userSettings;
+    for (const p of parts) {
+      if (val === null) return false;
+      val = val[p];
+    }
+    return val !== undefined;
+  };
 
   // 本地临时偏好（暂无后端持久化）
   const [localPrefs, setLocalPrefs] = useState({
@@ -78,6 +93,13 @@ const TabPreferences: React.FC = () => {
   const ServerDefault: React.FC<{ label: string }> = ({ label }) => (
     <Tag color="blue" style={{ fontSize: 11, marginLeft: 6 }}>
       默认: {label}
+    </Tag>
+  );
+
+  /** 用户已修改标签 */
+  const ModifiedTag: React.FC = () => (
+    <Tag color="orange" style={{ fontSize: 11, marginLeft: 6 }}>
+      已修改
     </Tag>
   );
 
@@ -107,6 +129,7 @@ const TabPreferences: React.FC = () => {
                         uiDefaults.theme
                       }
                     />
+                    {isModified('themeMode') && <ModifiedTag />}
                   </>
                 ),
                 extra: (
@@ -132,6 +155,7 @@ const TabPreferences: React.FC = () => {
                         )?.label || uiDefaults.language
                       }
                     />
+                    {isModified('language') && <ModifiedTag />}
                   </>
                 ),
                 extra: (
@@ -151,6 +175,7 @@ const TabPreferences: React.FC = () => {
                     <ServerDefault
                       label={uiDefaults.sidebarCollapsed ? '折叠' : '展开'}
                     />
+                    {isModified('sider.collapsed') && <ModifiedTag />}
                   </>
                 ),
                 extra: (
@@ -162,7 +187,12 @@ const TabPreferences: React.FC = () => {
               },
               {
                 title: '固定顶栏',
-                desc: '页面滚动时固定头部',
+                desc: (
+                  <>
+                    页面滚动时固定头部
+                    {isModified('header.fixed') && <ModifiedTag />}
+                  </>
+                ),
                 extra: (
                   <Switch
                     checked={header.fixed}
@@ -172,7 +202,12 @@ const TabPreferences: React.FC = () => {
               },
               {
                 title: '显示 Logo',
-                desc: '侧边栏顶部显示 Logo',
+                desc: (
+                  <>
+                    侧边栏顶部显示 Logo
+                    {isModified('sider.showLogo') && <ModifiedTag />}
+                  </>
+                ),
                 extra: (
                   <Switch
                     checked={sider.showLogo}
@@ -188,6 +223,7 @@ const TabPreferences: React.FC = () => {
                     <ServerDefault
                       label={uiDefaults.showBreadcrumb ? '显示' : '隐藏'}
                     />
+                    {isModified('showBreadcrumb') && <ModifiedTag />}
                   </>
                 ),
                 extra: (
@@ -235,6 +271,7 @@ const TabPreferences: React.FC = () => {
                   <>
                     每页显示条数
                     <ServerDefault label={`${uiDefaults.pageSize} 条/页`} />
+                    {isModified('pageSize') && <ModifiedTag />}
                   </>
                 ),
                 extra: (
@@ -248,7 +285,12 @@ const TabPreferences: React.FC = () => {
               },
               {
                 title: '显示页脚',
-                desc: '页面底部版权信息',
+                desc: (
+                  <>
+                    页面底部版权信息
+                    {isModified('content.showFooter') && <ModifiedTag />}
+                  </>
+                ),
                 extra: (
                   <Switch
                     checked={content.showFooter}
@@ -258,7 +300,12 @@ const TabPreferences: React.FC = () => {
               },
               {
                 title: '色弱模式',
-                desc: '适配色弱用户的配色方案',
+                desc: (
+                  <>
+                    适配色弱用户的配色方案
+                    {isModified('accessibility.colorWeak') && <ModifiedTag />}
+                  </>
+                ),
                 extra: (
                   <Switch
                     checked={accessibility.colorWeak}
@@ -268,7 +315,12 @@ const TabPreferences: React.FC = () => {
               },
               {
                 title: '灰色模式',
-                desc: '全站灰色（特殊纪念日）',
+                desc: (
+                  <>
+                    全站灰色（特殊纪念日）
+                    {isModified('accessibility.grayMode') && <ModifiedTag />}
+                  </>
+                ),
                 extra: (
                   <Switch
                     checked={accessibility.grayMode}

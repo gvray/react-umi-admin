@@ -4,7 +4,7 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 import { useAppTheme, useRouteTitle } from '@/hooks';
 import useThemeColor from '@/hooks/useThemeColor';
 import { logout } from '@/services/auth';
-import { useAppStore, useAuthStore } from '@/stores';
+import { useAppStore, useAuthStore, usePreferences } from '@/stores';
 import {
   Avatar,
   ConfigProvider,
@@ -44,11 +44,13 @@ const HeaderAction = styled.div`
 
 export default function BaseLayout() {
   const { profile, clearAuth } = useAuthStore();
-  const { serverConfig, colorPrimary, sider, header, content, accessibility } =
-    useAppStore();
-
+  const serverConfig = useAppStore((s) => s.serverConfig);
+  const { colorPrimary, sider, header, content, accessibility } =
+    usePreferences();
   const themeColor = useThemeColor();
   const routeTitle = useRouteTitle();
+  const { themeAlgorithm } = useAppTheme();
+
   const documentTitle = routeTitle
     ? `${routeTitle} - ${serverConfig.system.name}`
     : serverConfig.system.name;
@@ -73,8 +75,6 @@ export default function BaseLayout() {
         break;
     }
   };
-
-  const { themeAlgorithm } = useAppTheme();
 
   const items: MenuProps['items'] = [
     {

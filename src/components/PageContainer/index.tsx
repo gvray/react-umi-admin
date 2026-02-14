@@ -1,6 +1,6 @@
 import { withAuth } from '@/hocs';
 import { useRoutePermissions } from '@/hooks';
-import { useAppStore } from '@/stores';
+import { usePreferences } from '@/stores';
 import { theme } from 'antd';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -40,7 +40,7 @@ const PageContainer: React.FC<PropsWithChildren<PageContainerProps>> = ({
 }) => {
   // 使用状态来控制进场和出场动画
   const [isVisible, setIsVisible] = useState(false);
-  const showBreadcrumb = useAppStore((s) => s.showBreadcrumb);
+  const { showBreadcrumb } = usePreferences();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();

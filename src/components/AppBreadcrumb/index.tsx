@@ -1,5 +1,5 @@
 import routes from '@/../config/routes';
-import { useAppStore } from '@/stores';
+import { usePreferences } from '@/stores';
 import { HomeOutlined } from '@ant-design/icons';
 import { Breadcrumb } from 'antd';
 import React, { useMemo } from 'react';
@@ -70,7 +70,7 @@ function buildBreadcrumbs(
 }
 
 const AppBreadcrumb: React.FC = () => {
-  const showBreadcrumb = useAppStore((s) => s.showBreadcrumb);
+  const { showBreadcrumb } = usePreferences();
   const location = useLocation();
 
   const breadcrumbs = useMemo(

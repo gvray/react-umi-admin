@@ -29,19 +29,12 @@ const SiderWrapper = styled.div`
     width: 24px;
     height: 24px;
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.45);
-    background: #002140;
-    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     overflow: visible;
 
     &:hover {
-      color: #fff;
-      border-color: rgba(255, 255, 255, 0.25);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
       transform: scale(1.15);
     }
   }
@@ -141,7 +134,25 @@ const SideMenu: React.FC<SideMenuProps> = ({
         </Skeleton>
       </Sider>
       <div className="collapse-trigger-wrap">
-        <div className="collapse-trigger" onClick={toggleCollapsed}>
+        <div
+          className="collapse-trigger"
+          onClick={toggleCollapsed}
+          style={
+            siderTheme === 'dark'
+              ? {
+                  color: 'rgba(255,255,255,0.45)',
+                  background: '#002140',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  boxShadow: '0 1px 4px rgba(0,0,0,0.2)',
+                }
+              : {
+                  color: 'rgba(0,0,0,0.2)',
+                  background: '#f0f0f0',
+                  border: '1px solid rgba(0,0,0,0.06)',
+                  boxShadow: '0 1px 4px rgba(0,0,0,0.05)',
+                }
+          }
+        >
           {collapsed ? <RightOutlined /> : <LeftOutlined />}
         </div>
       </div>

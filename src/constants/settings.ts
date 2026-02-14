@@ -120,72 +120,90 @@ const num = (v: unknown, fallback: number): number =>
 export function resolveServerConfig(raw?: Record<string, any>): ServerConfig {
   if (!raw) return { ...DEFAULT_SERVER_CONFIG };
 
-  const d = DEFAULT_SERVER_CONFIG;
-  const s = raw.system ?? {};
-  const e = raw.env ?? {};
-  const u = raw.uiDefaults ?? {};
-  const sp = raw.securityPolicy ?? {};
-  const f = raw.features ?? {};
-  const c = raw.capabilities ?? {};
+  const defaults = DEFAULT_SERVER_CONFIG;
+  const system = raw.system ?? {};
+  const env = raw.env ?? {};
+  const uiDefaults = raw.uiDefaults ?? {};
+  const securityPolicy = raw.securityPolicy ?? {};
+  const features = raw.features ?? {};
+  const capabilities = raw.capabilities ?? {};
 
   return {
     system: {
-      name: str(s.name, d.system.name),
-      description: str(s.description, d.system.description),
-      logo: str(s.logo, d.system.logo),
-      favicon: str(s.favicon, d.system.favicon),
-      defaultAvatar: str(s.defaultAvatar, d.system.defaultAvatar),
+      name: str(system.name, defaults.system.name),
+      description: str(system.description, defaults.system.description),
+      logo: str(system.logo, defaults.system.logo),
+      favicon: str(system.favicon, defaults.system.favicon),
+      defaultAvatar: str(system.defaultAvatar, defaults.system.defaultAvatar),
     },
     env: {
-      mode: str(e.mode, d.env.mode),
-      apiPrefix: str(e.apiPrefix, d.env.apiPrefix),
+      mode: str(env.mode, defaults.env.mode),
+      apiPrefix: str(env.apiPrefix, defaults.env.apiPrefix),
     },
     uiDefaults: {
-      theme: str(u.theme, d.uiDefaults.theme),
-      language: str(u.language, d.uiDefaults.language),
-      timezone: str(u.timezone, d.uiDefaults.timezone),
-      sidebarCollapsed: bool(u.sidebarCollapsed, d.uiDefaults.sidebarCollapsed),
-      pageSize: num(u.pageSize, d.uiDefaults.pageSize),
-      welcomeMessage: str(u.welcomeMessage, d.uiDefaults.welcomeMessage),
-      showBreadcrumb: bool(u.showBreadcrumb, d.uiDefaults.showBreadcrumb),
+      theme: str(uiDefaults.theme, defaults.uiDefaults.theme),
+      language: str(uiDefaults.language, defaults.uiDefaults.language),
+      timezone: str(uiDefaults.timezone, defaults.uiDefaults.timezone),
+      sidebarCollapsed: bool(
+        uiDefaults.sidebarCollapsed,
+        defaults.uiDefaults.sidebarCollapsed,
+      ),
+      pageSize: num(uiDefaults.pageSize, defaults.uiDefaults.pageSize),
+      welcomeMessage: str(
+        uiDefaults.welcomeMessage,
+        defaults.uiDefaults.welcomeMessage,
+      ),
+      showBreadcrumb: bool(
+        uiDefaults.showBreadcrumb,
+        defaults.uiDefaults.showBreadcrumb,
+      ),
     },
     securityPolicy: {
       watermarkEnabled: bool(
-        sp.watermarkEnabled,
-        d.securityPolicy.watermarkEnabled,
+        securityPolicy.watermarkEnabled,
+        defaults.securityPolicy.watermarkEnabled,
       ),
       passwordMinLength: num(
-        sp.passwordMinLength,
-        d.securityPolicy.passwordMinLength,
+        securityPolicy.passwordMinLength,
+        defaults.securityPolicy.passwordMinLength,
       ),
       passwordRequireComplexity: bool(
-        sp.passwordRequireComplexity,
-        d.securityPolicy.passwordRequireComplexity,
+        securityPolicy.passwordRequireComplexity,
+        defaults.securityPolicy.passwordRequireComplexity,
       ),
       loginFailureLockCount: num(
-        sp.loginFailureLockCount,
-        d.securityPolicy.loginFailureLockCount,
+        securityPolicy.loginFailureLockCount,
+        defaults.securityPolicy.loginFailureLockCount,
       ),
     },
     features: {
-      fileUploadMaxSize: num(f.fileUploadMaxSize, d.features.fileUploadMaxSize),
-      fileUploadAllowedTypes: str(
-        f.fileUploadAllowedTypes,
-        d.features.fileUploadAllowedTypes,
+      fileUploadMaxSize: num(
+        features.fileUploadMaxSize,
+        defaults.features.fileUploadMaxSize,
       ),
-      ossEnabled: bool(f.ossEnabled, d.features.ossEnabled),
-      emailEnabled: bool(f.emailEnabled, d.features.emailEnabled),
+      fileUploadAllowedTypes: str(
+        features.fileUploadAllowedTypes,
+        defaults.features.fileUploadAllowedTypes,
+      ),
+      ossEnabled: bool(features.ossEnabled, defaults.features.ossEnabled),
+      emailEnabled: bool(features.emailEnabled, defaults.features.emailEnabled),
       oauthGithubEnabled: bool(
-        f.oauthGithubEnabled,
-        d.features.oauthGithubEnabled,
+        features.oauthGithubEnabled,
+        defaults.features.oauthGithubEnabled,
       ),
     },
     capabilities: {
-      totalUsers: num(c.totalUsers, d.capabilities.totalUsers),
-      totalRoles: num(c.totalRoles, d.capabilities.totalRoles),
+      totalUsers: num(
+        capabilities.totalUsers,
+        defaults.capabilities.totalUsers,
+      ),
+      totalRoles: num(
+        capabilities.totalRoles,
+        defaults.capabilities.totalRoles,
+      ),
       totalPermissions: num(
-        c.totalPermissions,
-        d.capabilities.totalPermissions,
+        capabilities.totalPermissions,
+        defaults.capabilities.totalPermissions,
       ),
     },
   };
