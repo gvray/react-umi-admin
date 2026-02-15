@@ -3,6 +3,7 @@ import AppWatermark from '@/components/AppWatermark';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useAppTheme, useRouteTitle } from '@/hooks';
 import useThemeColor from '@/hooks/useThemeColor';
+import useThemeMode from '@/hooks/useThemeMode';
 import { logout } from '@/services/auth';
 import { useAppStore, useAuthStore, usePreferences } from '@/stores';
 import {
@@ -50,6 +51,11 @@ export default function BaseLayout() {
   const themeColor = useThemeColor();
   const routeTitle = useRouteTitle();
   const { themeAlgorithm } = useAppTheme();
+  const effectiveThemeMode = useThemeMode();
+
+  // 暗色模式下强制 sidebar dark，浅色模式下尊重用户偏好
+  const effectiveSiderTheme =
+    effectiveThemeMode === 'dark' ? 'dark' : sider.theme;
 
   const documentTitle = routeTitle
     ? `${routeTitle} - ${serverConfig.system.name}`
@@ -108,7 +114,7 @@ export default function BaseLayout() {
         >
           <SideMenu
             collapsed={sider.collapsed}
-            theme={sider.theme}
+            theme={effectiveSiderTheme}
             width={sider.width}
             collapsedWidth={sider.collapsedWidth}
             showLogo={sider.showLogo}

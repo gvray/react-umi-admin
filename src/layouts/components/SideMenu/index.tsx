@@ -2,7 +2,7 @@ import AntIcon from '@/components/AntIcon';
 import { useAppStore, useAuthStore } from '@/stores';
 import type { SiderTheme } from '@/stores/useAppStore';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
-import { Layout, Menu, MenuProps, Skeleton } from 'antd';
+import { ConfigProvider, Layout, Menu, MenuProps, Skeleton } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
 import { history, styled, useLocation } from 'umi';
 import Logo from '../Logo';
@@ -104,35 +104,57 @@ const SideMenu: React.FC<SideMenuProps> = ({
     });
   }, [location.pathname]);
 
-  const siderTheme = loading ? 'light' : theme;
+  const siderTheme = theme;
+
+  // 暗色 sidebar 的 token 覆盖，防止全局 darkAlgorithm 冲掉经典深蓝配色
+  const darkSiderTokens =
+    siderTheme === 'dark'
+      ? {
+          components: {
+            Menu: {
+              darkItemBg: '#001529',
+              darkSubMenuItemBg: '#000c17',
+              darkItemSelectedBg: '#1677ff',
+            },
+          },
+        }
+      : {};
+
+  const siderContent = (
+    <Sider
+      trigger={null}
+      collapsible
+      collapsed={collapsed}
+      width={width}
+      collapsedWidth={collapsedWidth}
+      theme={siderTheme}
+      style={{ height: '100%' }}
+    >
+      {showLogo && (
+        <Logo theme={siderTheme} title={siteName} collapsed={collapsed} />
+      )}
+      <Skeleton loading={loading} active round style={{ padding: '15px' }}>
+        <Menu
+          inlineIndent={10}
+          openKeys={openKeys}
+          onOpenChange={(keys) => setOpenKeys(keys as string[])}
+          theme={siderTheme}
+          mode="inline"
+          onClick={handleMenuClick}
+          selectedKeys={[location.pathname]}
+          items={items}
+        />
+      </Skeleton>
+    </Sider>
+  );
 
   return (
     <SiderWrapper>
-      <Sider
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
-        width={width}
-        collapsedWidth={collapsedWidth}
-        theme={siderTheme}
-        style={{ height: '100%' }}
-      >
-        {showLogo && (
-          <Logo theme={siderTheme} title={siteName} collapsed={collapsed} />
-        )}
-        <Skeleton loading={loading} active round style={{ padding: '15px' }}>
-          <Menu
-            inlineIndent={10}
-            openKeys={openKeys}
-            onOpenChange={(keys) => setOpenKeys(keys as string[])}
-            theme={siderTheme}
-            mode="inline"
-            onClick={handleMenuClick}
-            selectedKeys={[location.pathname]}
-            items={items}
-          />
-        </Skeleton>
-      </Sider>
+      {siderTheme === 'dark' ? (
+        <ConfigProvider theme={darkSiderTokens}>{siderContent}</ConfigProvider>
+      ) : (
+        siderContent
+      )}
       <div className="collapse-trigger-wrap">
         <div
           className="collapse-trigger"

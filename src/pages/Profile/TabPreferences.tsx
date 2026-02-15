@@ -72,7 +72,7 @@ const TabPreferences: React.FC = () => {
     const parts = key.split('.');
     let val: any = userSettings;
     for (const p of parts) {
-      if (val === null) return false;
+      if (val === null || val === undefined) return false;
       val = val[p];
     }
     return val !== undefined;
@@ -212,6 +212,21 @@ const TabPreferences: React.FC = () => {
                   <Switch
                     checked={sider.showLogo}
                     onChange={(v) => setSider({ showLogo: v })}
+                  />
+                ),
+              },
+              {
+                title: '侧边栏深色',
+                desc: (
+                  <>
+                    侧边导航栏深浅主题
+                    {isModified('sider.theme') && <ModifiedTag />}
+                  </>
+                ),
+                extra: (
+                  <Switch
+                    checked={sider.theme === 'dark'}
+                    onChange={(v) => setSider({ theme: v ? 'dark' : 'light' })}
                   />
                 ),
               },
