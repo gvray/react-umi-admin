@@ -1,9 +1,5 @@
 ﻿import { logger } from '@/utils';
-import type {
-  ErrorShowType,
-  HttpConfig,
-  HttpRequestOptions,
-} from '@gvray/request';
+import { ErrorShowType, HttpConfig, HttpRequestOptions } from '@gvray/request';
 import { message as msg, notification } from 'antd';
 import storetify from 'storetify';
 
