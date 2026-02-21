@@ -38,6 +38,10 @@ export async function getInitialState() {
       ]);
       profile = profileRes.data;
       menus = menusRes.data;
+      // 在login页面刷新 这里应该跳转到首页
+      if (history.location.pathname === loginPath) {
+        history.push('/');
+      }
     } catch (error) {
       storetify.remove(__APP_API_TOKEN_KEY__);
       history.push(loginPath);

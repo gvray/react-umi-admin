@@ -1,17 +1,12 @@
 ﻿import { logger } from '@/utils';
-import type { RequestConfig, RequestOptions } from '@gvray/request';
+import type {
+  ErrorShowType,
+  HttpConfig,
+  HttpRequestOptions,
+} from '@gvray/request';
 import { message as msg, notification } from 'antd';
 import storetify from 'storetify';
-// 这里 umi request插件的错误处理方案， 可以在这里做自己的改动，但我不打算使用 完将完全暴露request到utils中
 
-// 错误处理方案： 错误类型
-enum ErrorShowType {
-  SILENT = 0,
-  WARN_MESSAGE = 1,
-  ERROR_MESSAGE = 2,
-  NOTIFICATION = 3,
-  REDIRECT = 9,
-}
 // 与后端约定的响应数据格式
 interface ResponseStructure {
   success: boolean;
@@ -21,7 +16,7 @@ interface ResponseStructure {
   showType?: ErrorShowType;
 }
 
-export const errorConfig: RequestConfig = {
+export const httpConfig: HttpConfig = {
   errorConfig: {
     // 当响应的数据 success 是 false 的时候，抛出 error 以供 errorHandler 处理。
     errorThrower: (res) => {
@@ -88,7 +83,7 @@ export const errorConfig: RequestConfig = {
 
   // 请求拦截器
   requestInterceptors: [
-    (config: RequestOptions) => {
+    (config: HttpRequestOptions) => {
       const { headers = {}, url, skipAuth, ...restConfig } = config;
       logger.info(`API请求路径：${url}`);
       if (!skipAuth) {

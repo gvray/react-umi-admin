@@ -24,8 +24,8 @@ importers:
         specifier: ^1.0.3
         version: 1.0.5
       '@gvray/request':
-        specifier: 1.0.0-alpha.1
-        version: 1.0.0-alpha.1
+        specifier: 1.0.0-alpha.3
+        version: 1.0.0-alpha.3
       antd:
         specifier: ^5.14.1
         version: 5.29.3(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1116,8 +1116,8 @@ packages:
   '@gvray/pathkit@1.0.5':
     resolution: {integrity: sha512-60vomvgm5XXpZoyRNxsn75EwMK0d7YcM5FaECIckR8Ap+oeAQzCsCCnA9tiC9F9hQ/Zb3sPUsV8YOvsYMJwiMw==, tarball: https://registry.npmjs.org/@gvray/pathkit/-/pathkit-1.0.5.tgz}
 
-  '@gvray/request@1.0.0-alpha.1':
-    resolution: {integrity: sha512-SKXL9Aos8WzIQhZkEy/mPfMI0Uij4KTEGsqvMJABk5Pj4PYruUBsVZD7sRzrG+7tOSfaPmtPzZ1XUKIeqLBGmQ==, tarball: https://registry.npmjs.org/@gvray/request/-/request-1.0.0-alpha.1.tgz}
+  '@gvray/request@1.0.0-alpha.3':
+    resolution: {integrity: sha512-xf75WwMYGFyJFY/PW0xrtliAZiVZhby/+FWGCbMKcMTGcoh2JYzKtN/KaFer5boX8R5RFySoaEwUbbLZ+cji6w==, tarball: https://registry.npmjs.org/@gvray/request/-/request-1.0.0-alpha.3.tgz}
 
   '@humanwhocodes/config-array@0.13.0':
     resolution: {integrity: sha512-DZLEEqFWQFiyK6h5YIeynKx7JlvCYWL0cImfSRXZ9l4Sg2efkFGTuFf6vzXjK1cq6IYkU+Eg/JizXw+TD2vRNw==, tarball: https://registry.npmjs.org/@humanwhocodes/config-array/-/config-array-0.13.0.tgz}
@@ -7690,7 +7690,7 @@ snapshots:
     dependencies:
       '@gvray/eskit': 1.2.0
 
-  '@gvray/request@1.0.0-alpha.1':
+  '@gvray/request@1.0.0-alpha.3':
     dependencies:
       axios: 1.13.2
     transitivePeerDependencies:
