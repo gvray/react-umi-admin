@@ -57,27 +57,8 @@ export const useRouteMeta = (): RouteMeta => {
     routes as RouteWithMeta[],
     location.pathname,
   );
-  console.log('当前路径:', location.pathname);
-  console.log('匹配到的路由:', matchedRoute);
-  console.log('路由meta:', matchedRoute?.meta);
 
   return matchedRoute?.meta || {};
-};
-
-/**
- * 获取当前路由的权限要求
- */
-export const useRoutePermissions = (): string[] => {
-  const meta = useRouteMeta();
-  return meta.permissions || [];
-};
-
-/**
- * 获取当前路由的标题
- */
-export const useRouteTitle = (): string => {
-  const meta = useRouteMeta();
-  return meta.title || '';
 };
 
 export default useRouteMeta;

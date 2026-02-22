@@ -165,7 +165,15 @@ const DictionaryPage = () => {
           { label: '启用', value: 1 },
         ],
       },
-      render: (status: number) => <StatusTag status={status} />,
+      render: (status: string | number) => (
+        <StatusTag
+          value={status}
+          options={[
+            { label: '禁用', value: 0 },
+            { label: '启用', value: 1 },
+          ]}
+        />
+      ),
     },
     {
       title: '创建时间',
@@ -269,7 +277,15 @@ const DictionaryPage = () => {
     if (column.dataIndex === 'status') {
       return {
         ...column,
-        render: (status: number) => <StatusTag status={status} />,
+        render: (status: string | number) => (
+          <StatusTag
+            value={status}
+            options={[
+              { label: '禁用', value: 0 },
+              { label: '启用', value: 1 },
+            ]}
+          />
+        ),
       };
     }
     if (column.dataIndex === 'createdAt') {

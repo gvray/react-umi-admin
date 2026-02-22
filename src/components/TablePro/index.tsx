@@ -9,12 +9,50 @@ import {
   TableProps,
   Tooltip,
 } from 'antd';
+import type { ColumnGroupType, ColumnType, ColumnsType } from 'antd/es/table';
 import { forwardRef, useCallback, useImperativeHandle, useState } from 'react';
 import { styled } from 'umi';
+import type { AdvancedSearchItem } from './components/AdvancedSearchForm';
 import AdvancedSearchForm from './components/AdvancedSearchForm';
 import { useTablePro } from './useTablePro';
 
-interface TableProProps<T> extends TableProps<T> {
+export type TableProColumnType<RecordType> = (ColumnType<RecordType> & {
+  advancedSearch?: AdvancedSearchItem<Record<string, any>>;
+}) & {
+  children?: TableProColumnsType<RecordType>;
+};
+
+export type TableProColumnGroupType<RecordType> =
+  (ColumnGroupType<RecordType> & {
+    advancedSearch?: AdvancedSearchItem<Record<string, any>>;
+  }) & {
+    children: TableProColumnsType<RecordType>;
+  };
+
+export type TableProColumnsType<RecordType> = Array<
+  TableProColumnType<RecordType> | TableProColumnGroupType<RecordType>
+>;
+
+const stripAdvancedSearch = <T,>(
+  cols?: TableProColumnsType<T>,
+): ColumnsType<T> | undefined => {
+  if (!cols) return cols;
+
+  return cols.map((col) => {
+    const rest: any = { ...(col as any) };
+    delete rest.advancedSearch;
+    if (rest.children) {
+      return {
+        ...rest,
+        children: stripAdvancedSearch(rest.children) as any,
+      };
+    }
+    return rest;
+  }) as any;
+};
+
+interface TableProProps<T> extends Omit<TableProps<T>, 'columns'> {
+  columns?: TableProColumnsType<T>;
   request: (params: any, options?: { [key: string]: any }) => Promise<any>;
   toolbarRender?: () => React.ReactNode;
   onSelectionChange?: (keys: React.Key[], rows?: T[]) => void;
@@ -77,6 +115,14 @@ const TableProFunction: React.ForwardRefRenderFunction<
     () => selectedRowKeys,
     [selectedRowKeys],
   );
+
+  const searchFields = (columns || [])
+    .filter((item) => item.advancedSearch !== undefined)
+    .map((item) => ({
+      title: (item as any).title,
+      dataIndex: (item as any).dataIndex,
+      advancedSearch: (item as any).advancedSearch,
+    }));
   const getSelectedRows = useCallback(() => selectedRows, [selectedRows]);
   const clearSelection = useCallback(() => {
     setSelectedRowKeys([]);
@@ -116,9 +162,7 @@ const TableProFunction: React.ForwardRefRenderFunction<
     <TableWrap>
       {showSearch && !!columns && (
         <AdvancedSearchForm
-          searchFields={columns.filter(
-            (item: any) => item.advancedSearch !== undefined,
-          )}
+          searchFields={searchFields}
           onSearchFinish={handleAdvancedQuery}
           resetSearch={() => {
             // 重制高级搜索参数
@@ -147,7 +191,7 @@ const TableProFunction: React.ForwardRefRenderFunction<
         </Space>
       </Flex>
       <Table
-        columns={columns}
+        columns={stripAdvancedSearch(columns)}
         dataSource={pruneEmptyChildren(listData)}
         loading={loading}
         pagination={false}

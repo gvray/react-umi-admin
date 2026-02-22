@@ -7,7 +7,8 @@ import {
 import StatusTag from '@/components/StatusTag';
 import { TableProRef } from '@/components/TablePro';
 import useDict from '@/hooks/useDict';
-import { logger } from '@/utils';
+import type { DictOption } from '@/types/dict';
+import { callRef, logger } from '@/utils';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -22,41 +23,28 @@ import { getUserColumns } from './columns';
 import { useUserModel } from './model';
 
 const { Paragraph } = Typography;
-interface DataType {
-  createBy: string;
-  createdAt: string;
-  updateBy?: string;
-  updatedAt?: string;
-  remark: string;
-  userId: string;
-  username: string;
-  nickname: string;
-  email: string;
-  phone: string;
-  sex: string;
-  status: string;
-  delFlag: string;
-}
+
+type UserDict = {
+  user_status: DictOption[];
+  user_gender: DictOption[];
+};
 
 const UserPage = () => {
   const navigate = useNavigate();
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
-  const dict = useDict<{
-    user_status: { label: string; value: number }[];
-    user_gender: { label: string; value: number }[];
-  }>(['user_status', 'user_gender']);
+  const dict = useDict<UserDict>(['user_status', 'user_gender']);
   const { fetchUserList, fetchUserDetail, removeUser } = useUserModel();
 
   const tableReload = () => {
-    tableProRef.current?.reload();
+    callRef(tableProRef, (t) => t.reload());
   };
 
-  const handleAdd = async () => {
-    updateFormRef.current?.show('添加用户');
+  const handleAdd = () => {
+    callRef(updateFormRef, (t) => t.show('添加用户'));
   };
 
-  const handleDelete = async (record: DataType) => {
+  const handleDelete = async (record: API.UserResponseDto) => {
     Modal.confirm({
       title: `系统提示`,
       icon: <ExclamationCircleOutlined />,
@@ -74,8 +62,11 @@ const UserPage = () => {
     });
   };
 
-  const handleUpdate = async (record: DataType) => {
+  const handleUpdate = async (record: API.UpdateUserDto) => {
     const userId = record.userId;
+    if (!userId) {
+      return;
+    }
     try {
       const res: any = await fetchUserDetail(userId);
       const data = {
@@ -84,7 +75,7 @@ const UserPage = () => {
         roleIds: res.roles?.map((item: any) => item.roleId),
         departmentId: res.department?.departmentId,
       };
-      updateFormRef.current?.show('修改用户', data);
+      callRef(updateFormRef, (t) => t.show('修改用户', data));
     } catch (error) {
       logger.error(error as string);
     }
@@ -116,7 +107,9 @@ const UserPage = () => {
           type: 'SELECT',
           value: dict['user_status'],
         },
-        render: (status: number) => <StatusTag status={status} />,
+        render: (status: string) => (
+          <StatusTag value={status} options={dict['user_status']} />
+        ),
       };
     }
     if (column.dataIndex === 'createdAt') {
@@ -132,7 +125,7 @@ const UserPage = () => {
     {
       title: '操作',
       key: 'action',
-      render: (record: any) => {
+      render: (record: API.UserResponseDto) => {
         return (
           <Space size={0}>
             <AuthButton
@@ -182,7 +175,7 @@ const UserPage = () => {
           </>
         )}
         ref={tableProRef}
-        columns={columns as any}
+        columns={columns}
         request={fetchUserList}
       />
       {/* 用户新增修改弹出层 */}

@@ -1,19 +1,21 @@
 import AppBreadcrumb from '@/components/AppBreadcrumb';
 import AppWatermark from '@/components/AppWatermark';
 import ErrorBoundary from '@/components/ErrorBoundary';
-import { useAppTheme, useRouteTitle } from '@/hooks';
+import { RouteMetaProvider } from '@/contexts/routeMeta';
+import { useAppTheme, useFeedback, useRouteMeta } from '@/hooks';
 import useThemeColor from '@/hooks/useThemeColor';
 import useThemeMode from '@/hooks/useThemeMode';
 import { logout } from '@/services/auth';
 import { useAppStore, useAuthStore, usePreferences } from '@/stores';
+import { logger } from '@/utils';
 import {
+  App,
   Avatar,
   ConfigProvider,
   Dropdown,
   Layout,
   MenuProps,
   Space,
-  message,
 } from 'antd';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import storetify from 'storetify';
@@ -49,7 +51,9 @@ export default function BaseLayout() {
   const { colorPrimary, sider, header, content, accessibility } =
     usePreferences();
   const themeColor = useThemeColor();
-  const routeTitle = useRouteTitle();
+  const meta = useRouteMeta();
+  const routeTitle = meta.title ?? '';
+  const { message } = useFeedback();
   const { themeAlgorithm } = useAppTheme();
   const effectiveThemeMode = useThemeMode();
 
@@ -68,7 +72,9 @@ export default function BaseLayout() {
       storetify.remove(__APP_API_TOKEN_KEY__);
       clearAuth();
       history.push('/login');
-    } catch (error) {}
+    } catch (error) {
+      logger.error(error);
+    }
   };
 
   const handleDropdownMenuClick: MenuProps['onClick'] = async ({ key }) => {
@@ -94,99 +100,103 @@ export default function BaseLayout() {
   ];
 
   return (
-    <HelmetProvider>
-      <Helmet>
-        <title>{documentTitle}</title>
-      </Helmet>
-      <ConfigProvider
-        theme={{
-          algorithm: themeAlgorithm,
-          token: { colorPrimary },
-        }}
-      >
-        <Layout
-          className={[
-            accessibility.colorWeak ? 'color-weak' : '',
-            accessibility.grayMode ? 'gray-mode' : '',
-          ]
-            .filter(Boolean)
-            .join(' ')}
+    <RouteMetaProvider meta={meta}>
+      <HelmetProvider>
+        <Helmet>
+          <title>{documentTitle}</title>
+        </Helmet>
+        <ConfigProvider
+          theme={{
+            algorithm: themeAlgorithm,
+            token: { colorPrimary },
+          }}
         >
-          <SideMenu
-            collapsed={sider.collapsed}
-            theme={effectiveSiderTheme}
-            width={sider.width}
-            collapsedWidth={sider.collapsedWidth}
-            showLogo={sider.showLogo}
-          />
-          <Layout>
-            <Header
-              style={{
-                padding: 0,
-                background: themeColor.bgColor,
-                position: header.fixed ? 'sticky' : 'relative',
-                top: 0,
-                zIndex: 100,
-              }}
+          <App>
+            <Layout
+              className={[
+                accessibility.colorWeak ? 'color-weak' : '',
+                accessibility.grayMode ? 'gray-mode' : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
             >
-              <HeaderBox>
-                <HeaderRight>
-                  <Space size={2} wrap>
-                    <ThemeSetting />
-                    <SelectLang />
-                    <Dropdown
-                      menu={{ items, onClick: handleDropdownMenuClick }}
-                    >
-                      <HeaderAction>
-                        <Avatar
-                          src={
-                            <img
-                              src={
-                                profile?.avatar ||
-                                'https://api.dicebear.com/9.x/bottts/svg?seed=GavinRay'
-                              }
-                              alt="avatar"
-                            />
-                          }
-                        />
-                        <span style={{ marginLeft: 8 }}>
-                          {profile?.nickname || profile?.username}
-                        </span>
-                      </HeaderAction>
-                    </Dropdown>
-                  </Space>
-                </HeaderRight>
-              </HeaderBox>
-            </Header>
-            <Content
-              style={{
-                height: header.fixed ? 'calc(100vh - 64px)' : 'auto',
-                minHeight: header.fixed ? undefined : 'calc(100vh - 64px)',
-                overflow: 'auto',
-              }}
-            >
-              <AppBreadcrumb />
-              <AppWatermark>
-                <ErrorBoundary>
-                  <Outlet />
-                </ErrorBoundary>
-              </AppWatermark>
-              {content.showFooter && (
-                <div
+              <SideMenu
+                collapsed={sider.collapsed}
+                theme={effectiveSiderTheme}
+                width={sider.width}
+                collapsedWidth={sider.collapsedWidth}
+                showLogo={sider.showLogo}
+              />
+              <Layout>
+                <Header
                   style={{
-                    textAlign: 'center',
-                    padding: '16px 0',
-                    color: 'rgba(0, 0, 0, 0.45)',
-                    fontSize: 14,
+                    padding: 0,
+                    background: themeColor.bgColor,
+                    position: header.fixed ? 'sticky' : 'relative',
+                    top: 0,
+                    zIndex: 100,
                   }}
                 >
-                  {content.footerText}
-                </div>
-              )}
-            </Content>
-          </Layout>
-        </Layout>
-      </ConfigProvider>
-    </HelmetProvider>
+                  <HeaderBox>
+                    <HeaderRight>
+                      <Space size={2} wrap>
+                        <ThemeSetting />
+                        <SelectLang />
+                        <Dropdown
+                          menu={{ items, onClick: handleDropdownMenuClick }}
+                        >
+                          <HeaderAction>
+                            <Avatar
+                              src={
+                                <img
+                                  src={
+                                    profile?.avatar ||
+                                    'https://api.dicebear.com/9.x/bottts/svg?seed=GavinRay'
+                                  }
+                                  alt="avatar"
+                                />
+                              }
+                            />
+                            <span style={{ marginLeft: 8 }}>
+                              {profile?.nickname || profile?.username}
+                            </span>
+                          </HeaderAction>
+                        </Dropdown>
+                      </Space>
+                    </HeaderRight>
+                  </HeaderBox>
+                </Header>
+                <Content
+                  style={{
+                    height: header.fixed ? 'calc(100vh - 64px)' : 'auto',
+                    minHeight: header.fixed ? undefined : 'calc(100vh - 64px)',
+                    overflow: 'auto',
+                  }}
+                >
+                  <AppBreadcrumb />
+                  <AppWatermark>
+                    <ErrorBoundary>
+                      <Outlet />
+                    </ErrorBoundary>
+                  </AppWatermark>
+                  {content.showFooter && (
+                    <div
+                      style={{
+                        textAlign: 'center',
+                        padding: '16px 0',
+                        color: 'rgba(0, 0, 0, 0.45)',
+                        fontSize: 14,
+                      }}
+                    >
+                      {content.footerText}
+                    </div>
+                  )}
+                </Content>
+              </Layout>
+            </Layout>
+          </App>
+        </ConfigProvider>
+      </HelmetProvider>
+    </RouteMetaProvider>
   );
 }

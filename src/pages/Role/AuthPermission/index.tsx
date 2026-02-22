@@ -838,7 +838,13 @@ export default function AuthPermissionPage() {
 
             <InfoItem>
               <span className="label">状态</span>
-              <StatusTag status={selectedRole.status} />
+              <StatusTag
+                value={selectedRole.status}
+                options={[
+                  { label: '禁用', value: 0 },
+                  { label: '启用', value: 1 },
+                ]}
+              />
             </InfoItem>
             {selectedRole.remark && (
               <InfoItem>

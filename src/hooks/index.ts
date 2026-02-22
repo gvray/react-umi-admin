@@ -7,11 +7,8 @@ import {
   useConfigsByType,
   useEnabledConfigs,
 } from './useConfig';
-import {
-  useRouteMeta,
-  useRoutePermissions,
-  useRouteTitle,
-} from './useRouteMeta';
+import { useFeedback } from './useFeedback';
+import { useRouteMeta } from './useRouteMeta';
 import useAppTheme from './useTheme';
 import useThemeMode from './useThemeMode';
 
@@ -24,8 +21,7 @@ export {
   useConfigsByGroup,
   useConfigsByType,
   useEnabledConfigs,
+  useFeedback,
   useRouteMeta,
-  useRoutePermissions,
-  useRouteTitle,
   useThemeMode,
 };

@@ -2,12 +2,6 @@ import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { Button, Col, DatePicker, Form, Input, Row, Select, Space } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 
-interface AdvancedSearchFormProps {
-  searchFields: any[];
-  onSearchFinish: (params: FinishedParams) => void;
-  resetSearch?: () => void;
-}
-
 export interface AdvancedSearchItem<T> {
   type: 'INPUT' | 'SELECT' | 'DATE_RANGE';
   value?: T[];
@@ -15,6 +9,20 @@ export interface AdvancedSearchItem<T> {
     value: string | number;
     label: string;
   };
+}
+
+export type AdvancedSearchField<
+  TOption extends Record<string, any> = Record<string, any>,
+> = {
+  title?: any;
+  dataIndex?: any;
+  advancedSearch: AdvancedSearchItem<TOption>;
+};
+
+interface AdvancedSearchFormProps {
+  searchFields: AdvancedSearchField[];
+  onSearchFinish: (params: FinishedParams) => void;
+  resetSearch?: () => void;
 }
 
 type FinishedParams = {
@@ -31,7 +39,7 @@ const AdvancedSearchForm = forwardRef(
     const [expand, setExpand] = useState(false);
     const [form] = Form.useForm();
 
-    const updateFieldsValue = (row: any) => {
+    const updateFieldsValue = (row: Record<string, any>) => {
       form.setFieldsValue(row);
     };
 
@@ -40,7 +48,7 @@ const AdvancedSearchForm = forwardRef(
       updateFieldsValue,
     }));
 
-    const getFieldElement = (item: any) => {
+    const getFieldElement = (item: AdvancedSearchField) => {
       const value = item.advancedSearch?.optionMeta?.value || 'value';
       const label = item.advancedSearch?.optionMeta?.label || 'label';
       switch (item.advancedSearch.type) {
@@ -49,9 +57,9 @@ const AdvancedSearchForm = forwardRef(
         case 'SELECT':
           return (
             <Select allowClear>
-              {item.advancedSearch.value?.map((item: any) => (
-                <Option key={item[value]} value={item[value]}>
-                  {item[label]}
+              {item.advancedSearch.value?.map((opt: Record<string, any>) => (
+                <Option key={opt[value]} value={opt[value]}>
+                  {opt[label]}
                 </Option>
               ))}
             </Select>

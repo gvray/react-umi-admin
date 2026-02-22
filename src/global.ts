@@ -1,5 +1,4 @@
-// 全局脚本
 import '@/request';
 import { logger } from '@/utils';
 
-logger.info('项目初始化的地方');
+logger.info('全局脚本完成加载');

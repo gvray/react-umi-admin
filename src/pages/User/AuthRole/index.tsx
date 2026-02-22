@@ -455,7 +455,13 @@ export default function AuthRolePage() {
             </InfoItem>
             <InfoItem>
               <span className="label">状态</span>
-              <StatusTag status={selectedUser.status} />
+              <StatusTag
+                value={selectedUser.status}
+                options={[
+                  { label: '禁用', value: 0 },
+                  { label: '启用', value: 1 },
+                ]}
+              />
             </InfoItem>
           </UserCard>
 

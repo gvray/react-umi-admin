@@ -1,3 +1,4 @@
+import { useFeedback } from '@/hooks';
 import { createUser, updateUser } from '@/services/user';
 import { logger } from '@/utils';
 import {
@@ -10,8 +11,8 @@ import {
   Row,
   Select,
   TreeSelect,
-  message,
 } from 'antd';
+import type { ForwardRefRenderFunction } from 'react';
 import React, { useImperativeHandle, useState } from 'react';
 import useUpdateForm from './model';
 
@@ -44,12 +45,13 @@ const formItemFullLayout = {
   },
 };
 
-const UpdateFormFunction: React.ForwardRefRenderFunction<
+const UpdateFormFunction: ForwardRefRenderFunction<
   UpdateFormRef,
   UpdateFormProps
-> = ({ onOk, onCancel, dict }, ref) => {
-  const [title, setTitle] = useState('未设置弹出层标题');
+> = ({ onCancel, onOk, dict }, ref) => {
+  const { message } = useFeedback();
   const [visible, setVisible] = useState(false);
+  const [title, setTitle] = useState('');
   const [isEdit, setIsEdit] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
@@ -92,7 +94,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
     ref,
     () => {
       return {
-        show: (title, data) => {
+        show: (title: string, data?: Record<string, unknown>) => {
           setTitle(title);
           setVisible(true);
           reset();
@@ -132,7 +134,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
         layout="horizontal"
         name="form_in_modal"
         initialValues={{
-          status: 1,
+          status: 'enabled',
           password: '123456',
           postIds: [],
           roleIds: [],
@@ -252,14 +254,9 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           <Col span={12}>
             <Form.Item name="status" label="用户状态">
               <Radio.Group
-                options={dict['user_status']
-                  ?.map((item: { label: string; value: string }) => ({
-                    label: item.label,
-                    value: Number(item.value),
-                  }))
-                  .filter(
-                    (item: { label: string; value: number }) => item.value < 3,
-                  )}
+                options={dict['user_status']?.filter(
+                  (item) => item.value !== 'banned' && item.value !== 'pending',
+                )}
               ></Radio.Group>
             </Form.Item>
           </Col>

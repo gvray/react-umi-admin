@@ -1,3 +1,4 @@
+import { usePreferences } from '@/stores';
 import { logger } from '@/utils';
 import { useEffect, useRef, useState } from 'react';
 
@@ -5,16 +6,30 @@ export const useTablePro = (
   request: (params: any) => Promise<any>,
   isTree?: boolean,
 ) => {
+  const { pageSize: defaultPageSize } = usePreferences();
   const [loading, setLoading] = useState(false);
   const [listData, setListData] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
-  const [pagination, setPagination] = useState({ page: 1, pageSize: 10 });
+  const [pagination, setPagination] = useState(() => ({
+    page: 1,
+    pageSize: defaultPageSize || 10,
+  }));
   const [etag, setEtag] = useState(Date.now());
 
   // 高级搜索
   const [showSearch, setShowSearch] = useState(true);
   // 高级搜索参数
   const paramsRef = useRef<Record<string, any>>({});
+
+  useEffect(() => {
+    if (!defaultPageSize) return;
+    setPagination((prev) => {
+      if (prev.pageSize === defaultPageSize) return prev;
+      return { ...prev, page: 1, pageSize: defaultPageSize };
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaultPageSize]);
+
   const handleList = async (paginationParams?: Record<string, any>) => {
     try {
       setLoading(true);

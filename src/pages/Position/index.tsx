@@ -49,7 +49,7 @@ const PositionPage = () => {
       okText: '确认',
       cancelText: '取消',
       onOk() {
-        return removePosition(record.positionId)
+        return removePosition(String(record.positionId))
           .then(() => {
             tableReload();
             message.success(`删除成功`);
@@ -62,7 +62,7 @@ const PositionPage = () => {
   const handleUpdate = async (record: DataType) => {
     const positionId = record.positionId;
     try {
-      const msg = await fetchPositionDetail(positionId);
+      const msg = await fetchPositionDetail(String(positionId));
       updateFormRef.current?.show('修改岗位', {
         ...msg,
       });
@@ -87,7 +87,15 @@ const PositionPage = () => {
     if (column.dataIndex === 'status') {
       return {
         ...column,
-        render: (status: number) => <StatusTag status={status} />,
+        render: (status: string | number) => (
+          <StatusTag
+            value={status}
+            options={[
+              { label: '禁用', value: 0 },
+              { label: '启用', value: 1 },
+            ]}
+          />
+        ),
       };
     }
     if (column.dataIndex === 'createdAt') {

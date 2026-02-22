@@ -1,4 +1,6 @@
-export const getUserColumns = (): any[] => {
+import type { TableProColumnsType } from '@/components/TablePro';
+
+export const getUserColumns = (): TableProColumnsType<API.UserResponseDto> => {
   return [
     {
       title: '用户编号',
