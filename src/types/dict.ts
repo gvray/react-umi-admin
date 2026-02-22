@@ -1,4 +1,4 @@
 export type DictOption = {
   label: string;
-  value: string | number;
+  value: string;
 };

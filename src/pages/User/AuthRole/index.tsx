@@ -25,9 +25,7 @@ export default function AuthRolePage() {
   const { userId = '' } = useParams<{ userId: string }>();
   const navigate = useNavigate();
   const { message } = useFeedback();
-  const dict = useDict<{
-    user_status: { label: string; value: string | number }[];
-  }>(['user_status']);
+  const dict = useDict(['user_status']);
   const { roles, selectedUser, initializeData, submitUserRoles } =
     useAuthRole(userId);
   const [loading, setLoading] = useState(false);
@@ -44,7 +42,7 @@ export default function AuthRolePage() {
   // 当用户数据加载完成后，设置初始选中的角色
   useEffect(() => {
     if (selectedUser?.roles) {
-      setSelectedRoleIds(selectedUser.roles.map((role: any) => role.roleId));
+      setSelectedRoleIds(selectedUser.roles.map((role) => role.roleId));
     }
   }, [selectedUser]);
 
@@ -76,13 +74,13 @@ export default function AuthRolePage() {
   // 重置选择
   const handleReset = () => {
     if (selectedUser?.roles) {
-      setSelectedRoleIds(selectedUser.roles.map((role: any) => role.roleId));
+      setSelectedRoleIds(selectedUser.roles.map((role) => role.roleId));
     }
   };
 
   // 全选
   const handleSelectAll = () => {
-    const allRoleIds = roles.map((role: any) => role.roleId);
+    const allRoleIds = roles.map((role) => role.roleId);
     setSelectedRoleIds(allRoleIds);
   };
 
@@ -102,9 +100,9 @@ export default function AuthRolePage() {
 
   // 判断是否有变更
   const hasChanges = () => {
-    const originalIds = selectedUser?.roles?.map((r: any) => r.roleId) || [];
+    const originalIds = selectedUser?.roles?.map((r) => r.roleId) || [];
     if (originalIds.length !== selectedRoleIds.length) return true;
-    return !originalIds.every((id: string) => selectedRoleIds.includes(id));
+    return !originalIds.every((id) => selectedRoleIds.includes(id));
   };
 
   let body: React.ReactNode;
@@ -173,7 +171,7 @@ export default function AuthRolePage() {
           <Card size="small" title="当前已分配">
             {user.roles && user.roles.length > 0 ? (
               <Space wrap size={[4, 8]}>
-                {user.roles.map((role: any) => (
+                {user.roles.map((role) => (
                   <Tag key={role.roleId} color="blue">
                     {role.name}
                   </Tag>
@@ -222,7 +220,7 @@ export default function AuthRolePage() {
           {/* 角色卡片网格 */}
           <div className={styles.roleGrid}>
             {roles.length > 0 ? (
-              roles.map((role: any) => {
+              roles.map((role) => {
                 const isSelected = selectedRoleIds.includes(role.roleId);
                 return (
                   <div
