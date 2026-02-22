@@ -1,5 +1,6 @@
 import { queryPermissionTree } from '@/services/permission';
 import { deleteRole, getRoleById, queryRoleList } from '@/services/role';
+import { logger } from '@/utils';
 import { useCallback, useEffect, useState } from 'react';
 
 export const useUpdataFormModel = (open: boolean) => {
@@ -11,7 +12,7 @@ export const useUpdataFormModel = (open: boolean) => {
         setData(res.data);
       }
     } catch (error) {
-      console.log(error);
+      logger.error(error);
     }
   };
   useEffect(() => {

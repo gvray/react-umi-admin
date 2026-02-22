@@ -1,4 +1,13 @@
-import { PageContainer, StatusTag } from '@/components';
+import {
+  AuthButton,
+  PageContainer,
+  PageLoading,
+  PagePlaceholder,
+  StatusTag,
+} from '@/components';
+import { useFeedback } from '@/hooks';
+import useDict from '@/hooks/useDict';
+import type { DictOption } from '@/types/dict';
 import {
   ArrowLeftOutlined,
   CheckOutlined,
@@ -8,349 +17,23 @@ import {
   UndoOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import {
-  Button,
-  Card,
-  Input,
-  Space,
-  Spin,
-  Tag,
-  Typography,
-  message,
-} from 'antd';
+import { Button, Card, Input, Space, Tag, Typography } from 'antd';
 import { useEffect, useState } from 'react';
-import { styled, useNavigate, useParams } from 'umi';
+import { useNavigate, useParams } from 'umi';
+import styles from './index.less';
 import { useAuthUser } from './model';
 
 const { Text } = Typography;
 
-// 页面容器 - 左右分栏布局
-const PageWrapper = styled.div`
-  display: flex;
-  gap: 16px;
-  height: calc(100vh - 120px);
-  min-height: 500px;
-`;
-
-// 返回按钮栏
-const BackBar = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #f0f0f0;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    border-color: #1890ff;
-    color: #1890ff;
-  }
-
-  .back-icon {
-    font-size: 14px;
-  }
-
-  .back-text {
-    font-size: 14px;
-    font-weight: 500;
-  }
-`;
-
-// 左侧角色信息栏
-const Sidebar = styled.div`
-  width: 280px;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-`;
-
-// 角色卡片
-const RoleCard = styled(Card)`
-  .ant-card-body {
-    padding: 20px;
-  }
-`;
-
-const RoleHeader = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-`;
-
-const RoleAvatar = styled.div`
-  width: 48px;
-  height: 48px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #52c41a 0%, #1890ff 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 20px;
-  font-weight: 600;
-  flex-shrink: 0;
-`;
-
-const RoleInfo = styled.div`
-  flex: 1;
-  min-width: 0;
-
-  .name {
-    font-size: 16px;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin-bottom: 2px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .role-key {
-    font-size: 12px;
-    color: #1890ff;
-    background: #f0f5ff;
-    padding: 2px 8px;
-    border-radius: 4px;
-    display: inline-block;
-    font-family: 'SF Mono', Monaco, monospace;
-  }
-`;
-
-const InfoItem = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  font-size: 13px;
-
-  .label {
-    color: #666;
-  }
-
-  .value {
-    color: #1a1a1a;
-    font-weight: 500;
-  }
-`;
-
-// 统计卡片
-const StatsBox = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-`;
-
-const StatItem = styled.div<{ $highlight?: boolean }>`
-  background: ${(props) => (props.$highlight ? '#f6ffed' : '#fafafa')};
-  border: 1px solid ${(props) => (props.$highlight ? '#b7eb8f' : '#f0f0f0')};
-  border-radius: 8px;
-  padding: 12px;
-  text-align: center;
-
-  .number {
-    font-size: 24px;
-    font-weight: 600;
-    color: ${(props) => (props.$highlight ? '#52c41a' : '#1a1a1a')};
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
-  .label {
-    font-size: 12px;
-    color: #666;
-  }
-`;
-
-// 右侧主内容区
-const MainContent = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-`;
-
-// 顶部操作栏
-const ActionBar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  padding: 12px 16px;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #f0f0f0;
-`;
-
-const ActionLeft = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  .title-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #52c41a 0%, #1890ff 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 16px;
-  }
-
-  .title-content {
-    .title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #1a1a1a;
-      line-height: 1.2;
-    }
-
-    .subtitle {
-      font-size: 12px;
-      color: #999;
-      margin-top: 2px;
-    }
-  }
-`;
-
-// 用户网格
-const UserGrid = styled.div`
-  flex: 1;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 12px;
-  padding: 16px;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #f0f0f0;
-  overflow-y: auto;
-  align-content: start;
-`;
-
-// 用户卡片
-const UserItem = styled.div<{ $selected: boolean }>`
-  position: relative;
-  padding: 16px;
-  border-radius: 8px;
-  border: 2px solid ${(props) => (props.$selected ? '#52c41a' : '#e8e8e8')};
-  background: ${(props) => (props.$selected ? '#f6ffed' : '#fff')};
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    border-color: ${(props) => (props.$selected ? '#52c41a' : '#b7eb8f')};
-    box-shadow: 0 2px 8px rgba(82, 196, 26, 0.15);
-  }
-
-  .check-icon {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: ${(props) => (props.$selected ? '#52c41a' : '#e8e8e8')};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 12px;
-  }
-
-  .user-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
-  }
-
-  .user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #1890ff 0%, #722ed1 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
-    flex-shrink: 0;
-
-    img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-  }
-
-  .user-info {
-    flex: 1;
-    min-width: 0;
-    padding-right: 20px;
-
-    .username {
-      font-size: 14px;
-      font-weight: 600;
-      color: #1a1a1a;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .nickname {
-      font-size: 12px;
-      color: #666;
-    }
-  }
-
-  .user-email {
-    font-size: 12px;
-    color: #999;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-`;
-
-const SearchBox = styled.div`
-  margin-bottom: 12px;
-  padding: 12px 16px;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #f0f0f0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  .search-result {
-    font-size: 12px;
-    color: #999;
-  }
-`;
-
-const EmptyState = styled.div`
-  text-align: center;
-  color: #999;
-  padding: 60px 20px;
-  grid-column: 1 / -1;
-
-  .icon {
-    font-size: 48px;
-    color: #d9d9d9;
-    margin-bottom: 16px;
-  }
-`;
+type RoleDict = {
+  role_status: DictOption[];
+};
 
 export default function AuthUserPage() {
-  const { roleId } = useParams();
+  const { roleId = '' } = useParams<{ roleId: string }>();
   const navigate = useNavigate();
+  const dict = useDict<RoleDict>(['role_status']);
+  const { message } = useFeedback();
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [searchText, setSearchText] = useState<string>('');
   const { users, selectedRole, initializeData, submitRoleUsers } =
@@ -441,81 +124,63 @@ export default function AuthUserPage() {
     return !originalIds.every((id: string) => selectedUserIds.includes(id));
   };
 
-  if (!roleId) {
+  if (loading) {
     return (
-      <PageContainer>
-        <EmptyState>
-          <TeamOutlined className="icon" />
-          <div>请提供角色ID来分配用户</div>
-        </EmptyState>
+      <PageContainer className={styles.pageContainer}>
+        <PageLoading />
       </PageContainer>
     );
   }
 
-  if (loading) {
+  if (!roleId) {
     return (
-      <PageContainer>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: 'calc(100vh - 120px)',
-          }}
-        >
-          <Spin size="large" />
-        </div>
+      <PageContainer className={styles.pageContainer}>
+        <PagePlaceholder icon={<TeamOutlined />}>
+          请提供角色ID来分配用户
+        </PagePlaceholder>
       </PageContainer>
     );
   }
 
   if (!selectedRole) {
     return (
-      <PageContainer>
-        <EmptyState>
-          <TeamOutlined className="icon" />
-          <div>未找到角色信息</div>
-        </EmptyState>
-      </PageContainer>
+      <PagePlaceholder icon={<TeamOutlined />}>未找到角色信息</PagePlaceholder>
     );
   }
 
   return (
-    <PageContainer>
-      <PageWrapper>
+    <PageContainer className={styles.pageContainer}>
+      <div className={styles.pageWrapper}>
         {/* 左侧边栏 - 角色信息 */}
-        <Sidebar>
+        <div className={styles.sidebar}>
           {/* 返回按钮 */}
-          <BackBar onClick={handleBackToRoles}>
-            <ArrowLeftOutlined className="back-icon" />
-            <span className="back-text">返回角色列表</span>
-          </BackBar>
+          <div className={styles.backBar} onClick={handleBackToRoles}>
+            <ArrowLeftOutlined className={styles.backIcon} />
+            <span className={styles.backText}>返回角色列表</span>
+          </div>
 
-          <RoleCard>
-            <RoleHeader>
-              <RoleAvatar>
-                {selectedRole.roleName?.charAt(0)?.toUpperCase() || 'R'}
-              </RoleAvatar>
-              <RoleInfo>
-                <div className="name">{selectedRole.roleName}</div>
-                <span className="role-key">{selectedRole.roleKey}</span>
-              </RoleInfo>
-            </RoleHeader>
+          <Card>
+            <div className={styles.roleHeader}>
+              <div className={styles.roleAvatar}>
+                {selectedRole.name?.charAt(0)?.toUpperCase() || 'R'}
+              </div>
+              <div className={styles.roleInfo}>
+                <div className="name">{selectedRole.name}</div>
+                <span className={styles.roleKey}>{selectedRole.roleKey}</span>
+              </div>
+            </div>
 
             <div style={{ borderTop: '1px solid #f0f0f0', margin: '16px 0' }} />
 
-            <InfoItem>
+            <div className={styles.infoItem}>
               <span className="label">状态</span>
               <StatusTag
                 value={selectedRole.status}
-                options={[
-                  { label: '禁用', value: 0 },
-                  { label: '启用', value: 1 },
-                ]}
+                options={dict.role_status}
               />
-            </InfoItem>
+            </div>
             {selectedRole.remark && (
-              <InfoItem>
+              <div className={styles.infoItem}>
                 <span className="label">描述</span>
                 <span
                   className="value"
@@ -528,21 +193,21 @@ export default function AuthUserPage() {
                 >
                   {selectedRole.remark}
                 </span>
-              </InfoItem>
+              </div>
             )}
-          </RoleCard>
+          </Card>
 
           <Card size="small" title="分配统计">
-            <StatsBox>
-              <StatItem $highlight>
+            <div className={styles.statsBox}>
+              <div className={`${styles.statItem} ${styles.highlight}`}>
                 <div className="number">{selectedUserIds.length}</div>
                 <div className="label">已选择</div>
-              </StatItem>
-              <StatItem>
+              </div>
+              <div className={styles.statItem}>
                 <div className="number">{users.length}</div>
                 <div className="label">总用户</div>
-              </StatItem>
-            </StatsBox>
+              </div>
+            </div>
           </Card>
 
           <Card size="small" title="当前已分配">
@@ -558,100 +223,98 @@ export default function AuthUserPage() {
               <Text type="secondary">暂无用户</Text>
             )}
           </Card>
-        </Sidebar>
+        </div>
 
         {/* 右侧主内容区 */}
-        <MainContent>
+        <div className={styles.mainContent}>
           {/* 顶部操作栏 */}
-          <ActionBar>
-            <ActionLeft>
-              <div className="title-icon">
+          <div className={styles.actionBar}>
+            <div className={styles.actionLeft}>
+              <div className={styles.titleIcon}>
                 <UserOutlined />
               </div>
-              <div className="title-content">
+              <div className={styles.titleContent}>
                 <div className="title">选择用户</div>
                 <div className="subtitle">
-                  已选 {selectedUserIds.length} / {users.length} 个
+                  当前角色拥有 {selectedRole?.users?.length || 0} 个用户
                 </div>
               </div>
-            </ActionLeft>
-            <Space>
+            </div>
+            <Space wrap>
+              <Input
+                placeholder="搜索用户名、昵称或邮箱"
+                prefix={<SearchOutlined />}
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                allowClear
+                style={{ width: 200 }}
+              />
               <Button onClick={handleSelectAll}>全选</Button>
               <Button onClick={handleClearAll}>清空</Button>
               <Button icon={<UndoOutlined />} onClick={handleReset}>
                 重置
               </Button>
-              <Button
+              <AuthButton
                 type="primary"
                 icon={<SaveOutlined />}
                 onClick={handleSubmit}
                 loading={submitting}
                 disabled={!hasChanges()}
+                requirePermissions={['role:user:update']}
               >
                 保存分配
-              </Button>
+              </AuthButton>
             </Space>
-          </ActionBar>
-
-          {/* 搜索框 */}
-          <SearchBox>
-            <Input
-              placeholder="搜索用户名、昵称或邮箱"
-              prefix={<SearchOutlined />}
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              allowClear
-              style={{ width: 280 }}
-            />
-            {searchText && (
-              <span className="search-result">
-                找到 {filteredUsers.length} 个用户
-              </span>
-            )}
-          </SearchBox>
+          </div>
 
           {/* 用户卡片网格 */}
-          <UserGrid>
-            {filteredUsers.length > 0 ? (
-              filteredUsers.map((user: any) => {
+          {filteredUsers.length > 0 ? (
+            <div className={styles.userGrid}>
+              {filteredUsers.map((user: any) => {
                 const isSelected = selectedUserIds.includes(user.userId);
                 return (
-                  <UserItem
+                  <div
                     key={user.userId}
-                    $selected={isSelected}
+                    className={`${styles.userItem} ${
+                      isSelected ? styles.selected : ''
+                    }`}
                     onClick={() => toggleUser(user.userId)}
                   >
-                    <div className="check-icon">
+                    <div className={styles.checkIcon}>
                       {isSelected && <CheckOutlined />}
                     </div>
-                    <div className="user-header">
-                      <div className="user-avatar">
+                    <div className={styles.userHeader}>
+                      <div className={styles.userAvatar}>
                         {user.avatar ? (
                           <img src={user.avatar} alt="avatar" />
                         ) : (
                           user.username?.charAt(0).toUpperCase()
                         )}
                       </div>
-                      <div className="user-info">
-                        <div className="username">{user.username}</div>
-                        <div className="nickname">{user.nickname || '-'}</div>
+                      <div className={styles.userInfo}>
+                        <div className={styles.userName}>{user.username}</div>
+                        <div className="userAccount">
+                          {user.nickname || '-'}
+                        </div>
                       </div>
                     </div>
-                    <div className="user-email">{user.email || '-'}</div>
-                  </UserItem>
+                    <div className={styles.userMeta}>
+                      <div className={styles.metaItem}>
+                        <span>{user.email || '-'}</span>
+                      </div>
+                    </div>
+                  </div>
                 );
-              })
-            ) : (
-              <EmptyState>
-                <UserOutlined className="icon" />
-                <div>
-                  {searchText ? '未找到匹配的用户' : '暂无可分配的用户'}
-                </div>
-              </EmptyState>
-            )}
-          </UserGrid>
-        </MainContent>
-      </PageWrapper>
+              })}
+            </div>
+          ) : (
+            <div className={styles.emptyState}>
+              <UserOutlined className="icon" />
+              <div>{searchText ? '未找到匹配的用户' : '暂无可分配的用户'}</div>
+            </div>
+          )}
+        </div>
+      </div>
     </PageContainer>
   );
 }

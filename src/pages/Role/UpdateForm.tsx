@@ -1,19 +1,14 @@
+import { FormGrid } from '@/components';
+import { useFeedback } from '@/hooks';
 import { createRole, updateRole } from '@/services/role';
 import { createFormLayout, logger } from '@/utils';
-import {
-  Form,
-  FormInstance,
-  Input,
-  InputNumber,
-  Modal,
-  Radio,
-  message,
-} from 'antd';
+import { Form, FormInstance, Input, InputNumber, Modal, Radio } from 'antd';
 import React, { useImperativeHandle, useState } from 'react';
 
 interface UpdateFormProps {
   onCancel?: () => void;
   onOk?: () => void;
+  dict: Record<string, { label: string; value: string }[]>;
 }
 
 export interface UpdateFormRef {
@@ -25,7 +20,8 @@ export interface UpdateFormRef {
 const UpdateFormFunction: React.ForwardRefRenderFunction<
   UpdateFormRef,
   UpdateFormProps
-> = ({ onOk, onCancel }, ref) => {
+> = ({ onOk, onCancel, dict }, ref) => {
+  const { message } = useFeedback();
   const [title, setTitle] = useState('未设置弹出层标题');
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -50,10 +46,8 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       setVisible(false);
       onOk?.();
       reset();
-    } catch (errorInfo: unknown) {
-      console.log(errorInfo);
-      const msg =
-        errorInfo instanceof Error ? errorInfo.message : String(errorInfo);
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
       logger.error(`更新角色失败：${msg}`);
     } finally {
       setConfirmLoading(false);
@@ -92,7 +86,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
     <Modal
       destroyOnHidden
       forceRender
-      width={600}
+      width={620}
       title={title}
       open={visible}
       onOk={handleOk}
@@ -107,52 +101,57 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
         layout="horizontal"
         name="form_in_modal"
         initialValues={{
-          status: 1,
+          status: 'enabled',
           sort: 0,
         }}
-        style={{ marginTop: 16 }}
       >
         <Form.Item name="roleId" label="角色Id" hidden>
           <Input />
         </Form.Item>
-        <Form.Item
-          name="name"
-          label="角色名称"
-          rules={[{ required: true, message: '角色名称不能为空' }]}
-        >
-          <Input placeholder="请输入角色名称" />
-        </Form.Item>
-        <Form.Item
-          name="roleKey"
-          label="角色标识"
-          rules={[{ required: true, message: '角色标识不能为空' }]}
-        >
-          <Input placeholder="请输入角色标识" maxLength={50} />
-        </Form.Item>
-        <Form.Item
-          name="sort"
-          label="排序"
-          rules={[{ required: true, message: '排序不能为空' }]}
-        >
-          <InputNumber placeholder="请输入排序" style={{ width: 180 }} />
-        </Form.Item>
-        <Form.Item name="status" label="状态">
-          <Radio.Group
-            options={[
-              { value: 0, label: '停用' },
-              { value: 1, label: '启用' },
-              { value: 2, label: '审核中' },
-            ]}
-          />
-        </Form.Item>
-        <Form.Item name="remark" label="备注">
-          <Input.TextArea
-            placeholder="请输入备注信息"
-            rows={3}
-            showCount
-            maxLength={200}
-          />
-        </Form.Item>
+        <FormGrid columns={1}>
+          <FormGrid.Item>
+            <Form.Item
+              name="name"
+              label="角色名称"
+              rules={[{ required: true, message: '角色名称不能为空' }]}
+            >
+              <Input placeholder="请输入角色名称" />
+            </Form.Item>
+          </FormGrid.Item>
+          <FormGrid.Item>
+            <Form.Item
+              name="roleKey"
+              label="角色标识"
+              rules={[{ required: true, message: '角色标识不能为空' }]}
+            >
+              <Input placeholder="请输入角色标识" maxLength={50} />
+            </Form.Item>
+          </FormGrid.Item>
+          <FormGrid.Item>
+            <Form.Item
+              name="sort"
+              label="排序"
+              rules={[{ required: true, message: '排序不能为空' }]}
+            >
+              <InputNumber placeholder="请输入排序" />
+            </Form.Item>
+          </FormGrid.Item>
+          <FormGrid.Item>
+            <Form.Item name="status" label="状态">
+              <Radio.Group options={dict.role_status} />
+            </Form.Item>
+          </FormGrid.Item>
+          <FormGrid.Item span={24}>
+            <Form.Item name="remark" label="备注">
+              <Input.TextArea
+                placeholder="请输入备注信息"
+                rows={3}
+                showCount
+                maxLength={200}
+              />
+            </Form.Item>
+          </FormGrid.Item>
+        </FormGrid>
       </Form>
     </Modal>
   );

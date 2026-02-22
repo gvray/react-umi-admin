@@ -105,19 +105,26 @@ export default function AuthRolePage() {
     return !originalIds.every((id) => selectedRoleIds.includes(id));
   };
 
-  let body: React.ReactNode;
-
   if (loading) {
-    body = <PageLoading />;
-  } else if (!userId || !selectedUser) {
-    body = (
-      <PagePlaceholder icon={<UserOutlined />}>
-        <div>{!userId ? '请提供用户ID来分配角色' : '未找到用户信息'}</div>
-      </PagePlaceholder>
+    return (
+      <PageContainer className={styles.pageContainer}>
+        <PageLoading />
+      </PageContainer>
     );
-  } else {
-    const user = selectedUser;
-    body = (
+  }
+
+  if (!userId || !selectedUser) {
+    return (
+      <PageContainer className={styles.pageContainer}>
+        <PagePlaceholder icon={<UserOutlined />}>
+          <div>{!userId ? '请提供用户ID来分配角色' : '未找到用户信息'}</div>
+        </PagePlaceholder>
+      </PageContainer>
+    );
+  }
+
+  return (
+    <PageContainer className={styles.pageContainer}>
       <div className={styles.pageWrapper}>
         {/* 左侧边栏 - 用户信息 */}
         <div className={styles.sidebar}>
@@ -130,16 +137,18 @@ export default function AuthRolePage() {
           <Card className={styles.userCard}>
             <div className={styles.userHeader}>
               <div className={styles.avatar}>
-                {user.avatar ? (
-                  <img src={user.avatar} alt="avatar" />
+                {selectedUser.avatar ? (
+                  <img src={selectedUser.avatar} alt="avatar" />
                 ) : (
-                  user.nickname?.charAt(0).toUpperCase() ||
-                  user.username?.charAt(0).toUpperCase()
+                  selectedUser.nickname?.charAt(0).toUpperCase() ||
+                  selectedUser.username?.charAt(0).toUpperCase()
                 )}
               </div>
               <div className={styles.userInfo}>
-                <div className="name">{user.nickname || user.username}</div>
-                <div className="username">@{user.username}</div>
+                <div className="name">
+                  {selectedUser.nickname || selectedUser.username}
+                </div>
+                <div className="username">@{selectedUser.username}</div>
               </div>
             </div>
 
@@ -147,11 +156,14 @@ export default function AuthRolePage() {
 
             <div className={styles.infoItem}>
               <span className="label">邮箱</span>
-              <span className="value">{user.email || '-'}</span>
+              <span className="value">{selectedUser.email || '-'}</span>
             </div>
             <div className={styles.infoItem}>
               <span className="label">状态</span>
-              <StatusTag value={user.status} options={dict['user_status']} />
+              <StatusTag
+                value={selectedUser.status}
+                options={dict['user_status']}
+              />
             </div>
           </Card>
 
@@ -169,9 +181,9 @@ export default function AuthRolePage() {
           </Card>
 
           <Card size="small" title="当前已分配">
-            {user.roles && user.roles.length > 0 ? (
+            {selectedUser.roles && selectedUser.roles.length > 0 ? (
               <Space wrap size={[4, 8]}>
-                {user.roles.map((role) => (
+                {selectedUser.roles.map((role) => (
                   <Tag key={role.roleId} color="blue">
                     {role.name}
                   </Tag>
@@ -194,11 +206,11 @@ export default function AuthRolePage() {
               <div className="title-content">
                 <div className="title">选择角色</div>
                 <div className="subtitle">
-                  已选 {selectedRoleIds.length} / {roles.length} 个
+                  当前用户拥有 {selectedUser?.roles?.length || 0} 个角色
                 </div>
               </div>
             </div>
-            <Space>
+            <Space wrap>
               <Button onClick={handleSelectAll}>全选</Button>
               <Button onClick={handleClearAll}>清空</Button>
               <Button icon={<UndoOutlined />} onClick={handleReset}>
@@ -250,8 +262,6 @@ export default function AuthRolePage() {
           </div>
         </div>
       </div>
-    );
-  }
-
-  return <PageContainer>{body}</PageContainer>;
+    </PageContainer>
+  );
 }

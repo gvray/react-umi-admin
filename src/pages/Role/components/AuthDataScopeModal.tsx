@@ -1,3 +1,5 @@
+import { AuthButton } from '@/components';
+import { useFeedback } from '@/hooks';
 import { queryDepartmentTree } from '@/services/department';
 import {
   assignRoleDataScopes,
@@ -16,38 +18,41 @@ import {
   Tag,
   Tree,
   Typography,
-  message,
+  theme,
 } from 'antd';
 import { useEffect, useState } from 'react';
 import { styled } from 'umi';
 
 const { Text } = Typography;
 
-// Styled Components
-const PermissionTypeOption = styled.div`
+// Styled Components with theme support
+const PermissionTypeOption = styled.div<{ selected?: boolean }>`
   display: flex;
   align-items: center;
   padding: 12px 16px;
-  border: 1px solid #e8e8e8;
+  border: 1px solid ${({ theme }) => theme.colorBorder};
   border-radius: 6px;
   margin-bottom: 12px;
   cursor: pointer;
   transition: all 0.3s;
+  background: ${({ theme }) => theme.colorBgContainer};
 
   &:hover {
-    border-color: #1890ff;
-    background-color: #f6f8fa;
+    border-color: ${({ theme }) => theme.colorPrimary};
+    background-color: ${({ theme }) => theme.colorBgTextHover};
   }
 
-  &.selected {
-    border-color: #1890ff;
-    background-color: #e6f7ff;
-  }
+  ${({ selected, theme }) =>
+    selected &&
+    `
+    border-color: ${theme.colorPrimary};
+    background-color: ${theme.colorPrimaryBg};
+  `}
 
   .option-icon {
     margin-right: 12px;
     font-size: 16px;
-    color: #1890ff;
+    color: ${({ theme }) => theme.colorPrimary};
   }
 
   .option-content {
@@ -57,11 +62,12 @@ const PermissionTypeOption = styled.div`
       font-weight: 500;
       font-size: 14px;
       margin-bottom: 4px;
+      color: ${({ theme }) => theme.colorText};
     }
 
     .option-description {
       font-size: 12px;
-      color: #666;
+      color: ${({ theme }) => theme.colorTextSecondary};
       line-height: 1.4;
     }
   }
@@ -74,10 +80,10 @@ const PermissionTypeOption = styled.div`
 const DepartmentTreeContainer = styled.div`
   max-height: 300px;
   overflow-y: auto;
-  border: 1px solid #f0f0f0;
+  border: 1px solid ${({ theme }) => theme.colorBorder};
   border-radius: 6px;
   padding: 12px;
-  background: #fafafa;
+  background: ${({ theme }) => theme.colorBgLayout};
 `;
 
 export enum DataScope {
@@ -148,6 +154,8 @@ export default function AuthDataScopeModal({
   onCancel,
   onSuccess,
 }: AuthDataScopeModalProps) {
+  const { message } = useFeedback();
+  const { token } = theme.useToken();
   const [currentRole, setCurrentRole] = useState<RoleState | null>(null);
   const [departments, setDepartments] = useState<API.DepartmentResponseDto[]>(
     [],
@@ -284,14 +292,15 @@ export default function AuthDataScopeModal({
         <Button key="cancel" onClick={onCancel}>
           取消
         </Button>,
-        <Button
+        <AuthButton
           key="submit"
           type="primary"
           loading={submitting}
           onClick={handleSubmit}
+          requirePermissions={['system:role:manage']}
         >
           保存分配
-        </Button>,
+        </AuthButton>,
       ]}
       destroyOnHidden
     >
@@ -324,7 +333,8 @@ export default function AuthDataScopeModal({
                     return (
                       <Col span={24} key={type.value}>
                         <PermissionTypeOption
-                          className={dataScope === type.value ? 'selected' : ''}
+                          theme={token}
+                          selected={dataScope === type.value}
                           onClick={() => handlePermissionTypeChange(type.value)}
                         >
                           <div
@@ -366,7 +376,7 @@ export default function AuthDataScopeModal({
                                     </Tag>
                                   )}
                                 </div>
-                                <DepartmentTreeContainer>
+                                <DepartmentTreeContainer theme={token}>
                                   <Tree
                                     checkable
                                     checkedKeys={selectedDeptIds}

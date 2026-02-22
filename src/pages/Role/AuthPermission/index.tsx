@@ -1,4 +1,13 @@
-import { PageContainer, StatusTag } from '@/components';
+import {
+  AuthButton,
+  PageContainer,
+  PageLoading,
+  PagePlaceholder,
+  StatusTag,
+} from '@/components';
+import { useFeedback } from '@/hooks';
+import useDict from '@/hooks/useDict';
+import type { DictOption } from '@/types/dict';
 import {
   ApiOutlined,
   ArrowLeftOutlined,
@@ -19,442 +28,22 @@ import {
   Checkbox,
   Input,
   Space,
-  Spin,
   Tabs,
   Tag,
   Tooltip,
   Tree,
   Typography,
-  message,
 } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
-import { styled, useNavigate, useParams } from 'umi';
+import { useNavigate, useParams } from 'umi';
+import styles from './index.less';
 import { useAuthPermission } from './model';
 
 const { Text } = Typography;
 
-// ==================== Styled Components ====================
-
-const PageWrapper = styled.div`
-  display: flex;
-  gap: 16px;
-  height: calc(100vh - 120px);
-  min-height: 500px;
-`;
-
-const BackBar = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #f0f0f0;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    border-color: #722ed1;
-    color: #722ed1;
-  }
-
-  .back-icon {
-    font-size: 14px;
-  }
-
-  .back-text {
-    font-size: 14px;
-    font-weight: 500;
-  }
-`;
-
-const Sidebar = styled.div`
-  width: 280px;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  overflow-y: auto;
-`;
-
-const RoleCard = styled(Card)`
-  .ant-card-body {
-    padding: 20px;
-  }
-`;
-
-const RoleHeader = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-`;
-
-const RoleAvatar = styled.div`
-  width: 48px;
-  height: 48px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #722ed1 0%, #1890ff 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 20px;
-  font-weight: 600;
-  flex-shrink: 0;
-`;
-
-const RoleInfo = styled.div`
-  flex: 1;
-  min-width: 0;
-
-  .name {
-    font-size: 16px;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin-bottom: 2px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .role-key {
-    font-size: 12px;
-    color: #722ed1;
-    background: #f9f0ff;
-    padding: 2px 8px;
-    border-radius: 4px;
-    display: inline-block;
-    font-family: 'SF Mono', Monaco, monospace;
-  }
-`;
-
-const InfoItem = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  font-size: 13px;
-
-  .label {
-    color: #666;
-  }
-
-  .value {
-    color: #1a1a1a;
-    font-weight: 500;
-  }
-`;
-
-const StatsGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-`;
-
-const StatItem = styled.div<{ $color?: string }>`
-  background: ${(props) => {
-    switch (props.$color) {
-      case 'purple':
-        return '#f9f0ff';
-      case 'blue':
-        return '#e6f7ff';
-      case 'green':
-        return '#f6ffed';
-      case 'orange':
-        return '#fff7e6';
-      default:
-        return '#fafafa';
-    }
-  }};
-  border: 1px solid
-    ${(props) => {
-      switch (props.$color) {
-        case 'purple':
-          return '#d3adf7';
-        case 'blue':
-          return '#91d5ff';
-        case 'green':
-          return '#b7eb8f';
-        case 'orange':
-          return '#ffd591';
-        default:
-          return '#f0f0f0';
-      }
-    }};
-  border-radius: 8px;
-  padding: 10px 8px;
-  text-align: center;
-
-  .number {
-    font-size: 20px;
-    font-weight: 600;
-    color: ${(props) => {
-      switch (props.$color) {
-        case 'purple':
-          return '#722ed1';
-        case 'blue':
-          return '#1890ff';
-        case 'green':
-          return '#52c41a';
-        case 'orange':
-          return '#fa8c16';
-        default:
-          return '#1a1a1a';
-      }
-    }};
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
-  .label {
-    font-size: 11px;
-    color: #666;
-  }
-`;
-
-const MainContent = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-`;
-
-const ActionBar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  padding: 12px 16px;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #f0f0f0;
-`;
-
-const ActionLeft = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  .title-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #722ed1 0%, #1890ff 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 16px;
-  }
-
-  .title-content {
-    .title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #1a1a1a;
-      line-height: 1.2;
-    }
-
-    .subtitle {
-      font-size: 12px;
-      color: #999;
-      margin-top: 2px;
-    }
-  }
-`;
-
-const ContentBody = styled.div`
-  flex: 1;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #f0f0f0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  min-height: 0;
-
-  .ant-tabs {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-  }
-
-  .ant-tabs-content-holder {
-    flex: 1;
-    overflow: hidden;
-    min-height: 0;
-  }
-
-  .ant-tabs-content {
-    height: 100%;
-  }
-
-  .ant-tabs-tabpane {
-    height: 100%;
-  }
-
-  .ant-tabs-tabpane-active {
-    display: flex !important;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  .ant-tabs-nav {
-    margin: 0;
-    padding: 0 16px;
-    flex-shrink: 0;
-  }
-`;
-
-const TabToolbar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-  border-bottom: 1px solid #f5f5f5;
-  background: #fafafa;
-  flex-shrink: 0;
-`;
-
-const TreeWrapper = styled.div`
-  flex: 1;
-  min-height: 0;
-  padding: 8px 16px;
-  overflow-y: auto;
-
-  .ant-tree-show-line .ant-tree-switcher {
-    background: transparent;
-  }
-
-  .ant-tree .ant-tree-treenode {
-    align-items: center;
-    padding: 2px 0;
-  }
-
-  .ant-tree .ant-tree-node-content-wrapper {
-    display: flex;
-    align-items: center;
-  }
-`;
-
-// API 权限列表容器
-const ApiListWrapper = styled.div`
-  flex: 1;
-  min-height: 0;
-  padding: 8px 16px;
-  overflow-y: auto;
-`;
-
-const ApiGroup = styled.div`
-  margin-bottom: 16px;
-
-  .group-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    background: #fafafa;
-    border-radius: 6px;
-    margin-bottom: 6px;
-    cursor: pointer;
-    user-select: none;
-
-    &:hover {
-      background: #f0f0f0;
-    }
-
-    .group-name {
-      font-weight: 600;
-      font-size: 13px;
-      color: #1a1a1a;
-    }
-
-    .group-count {
-      font-size: 12px;
-      color: #999;
-    }
-  }
-`;
-
-const ApiItem = styled.div<{ $checked?: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 12px 6px 28px;
-  border-radius: 4px;
-  transition: all 0.15s;
-  cursor: pointer;
-
-  &:hover {
-    background: #f9f0ff;
-  }
-
-  .api-main {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
-
-    .api-name {
-      font-size: 13px;
-      font-weight: 500;
-      color: #1a1a1a;
-      white-space: nowrap;
-    }
-
-    .api-code {
-      font-size: 11px;
-      color: #999;
-      font-family: 'SF Mono', Monaco, monospace;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-  }
-
-  .api-action {
-    flex-shrink: 0;
-  }
-`;
-
-const TreeNodeLabel = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  padding: 2px 0;
-
-  .node-name {
-    font-weight: 500;
-    color: #1a1a1a;
-  }
-
-  .node-code {
-    font-size: 11px;
-    color: #999;
-    font-family: 'SF Mono', Monaco, monospace;
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-`;
-
-const EmptyState = styled.div`
-  text-align: center;
-  color: #999;
-  padding: 60px 20px;
-
-  .icon {
-    font-size: 48px;
-    color: #d9d9d9;
-    margin-bottom: 16px;
-  }
-`;
-
-// ==================== Helpers ====================
+type RoleDict = {
+  role_status: DictOption[];
+};
 
 const ACTION_MAP: Record<string, { label: string; color: string }> = {
   view: { label: '查看', color: 'green' },
@@ -483,9 +72,6 @@ const getActionTag = (action: string) => {
     </Tag>
   );
 };
-
-// ==================== Types ====================
-
 interface TreeNode {
   key: string;
   title: React.ReactNode;
@@ -493,11 +79,11 @@ interface TreeNode {
   isLeaf?: boolean;
 }
 
-// ==================== Component ====================
-
 export default function AuthPermissionPage() {
-  const { roleId } = useParams();
+  const { roleId = '' } = useParams<{ roleId: string }>();
   const navigate = useNavigate();
+  const dict = useDict<RoleDict>(['role_status']);
+  const { message } = useFeedback();
   const [selectedPermissionIds, setSelectedPermissionIds] = useState<string[]>(
     [],
   );
@@ -586,26 +172,19 @@ export default function AuthPermissionPage() {
     });
 
     const buildNode = (item: any): TreeNode => {
-      const hasDesc = !!item.description;
-
       return {
         key: item.permissionId,
         title: (
-          <TreeNodeLabel>
-            {TYPE_ICON[item.type] || TYPE_ICON.BUTTON}
-            <span className="node-name">{item.name}</span>
+          <span className={styles.treeNodeLabel}>
+            <span className={styles.nodeIcon}>
+              {TYPE_ICON[item.type] || TYPE_ICON.BUTTON}
+            </span>
+            <span className={styles.nodeName}>{item.name}</span>
             {getActionTag(item.action)}
-            <Tooltip title={item.code} placement="top">
-              <span className="node-code">{item.code}</span>
-            </Tooltip>
-            {hasDesc && (
-              <Tooltip title={item.description} placement="topLeft">
-                <InfoCircleOutlined
-                  style={{ color: '#bbb', fontSize: 12, cursor: 'help' }}
-                />
-              </Tooltip>
+            {item.permission && (
+              <span className={styles.nodePermission}>{item.permission}</span>
             )}
-          </TreeNodeLabel>
+          </span>
         ),
         children:
           item._children && item._children.length > 0
@@ -769,85 +348,61 @@ export default function AuthPermissionPage() {
   ).length;
 
   // ---- 渲染 ----
-  if (!roleId) {
-    return (
-      <PageContainer>
-        <EmptyState>
-          <KeyOutlined className="icon" />
-          <div>请提供角色ID来分配权限</div>
-        </EmptyState>
-      </PageContainer>
-    );
-  }
-
-  if (loading) {
-    return (
-      <PageContainer>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: 'calc(100vh - 120px)',
-          }}
-        >
-          <Spin size="large" />
-        </div>
-      </PageContainer>
-    );
-  }
-
-  if (!selectedRole) {
-    return (
-      <PageContainer>
-        <EmptyState>
-          <KeyOutlined className="icon" />
-          <div>未找到角色信息</div>
-        </EmptyState>
-      </PageContainer>
-    );
-  }
-
   // 功能权限 tree 的 checkedKeys 只取功能类
   const funcCheckedKeys = checkedKeys.filter((k) =>
     funcPermissions.some((p: any) => p.permissionId === k),
   );
 
-  return (
-    <PageContainer>
-      <PageWrapper>
-        {/* 左侧边栏 */}
-        <Sidebar>
-          <BackBar onClick={handleBackToRoles}>
-            <ArrowLeftOutlined className="back-icon" />
-            <span className="back-text">返回角色列表</span>
-          </BackBar>
+  if (loading) {
+    return (
+      <PageContainer className={styles.pageContainer}>
+        <PageLoading />
+      </PageContainer>
+    );
+  }
 
-          <RoleCard>
-            <RoleHeader>
-              <RoleAvatar>
+  if (!roleId || !selectedRole) {
+    return (
+      <PageContainer className={styles.pageContainer}>
+        <PagePlaceholder icon={<KeyOutlined />}>
+          {!roleId ? '请提供角色ID来分配权限' : '未找到角色信息'}
+        </PagePlaceholder>
+      </PageContainer>
+    );
+  }
+
+  return (
+    <PageContainer className={styles.pageContainer}>
+      <div className={styles.pageWrapper}>
+        {/* 左侧边栏 */}
+        <div className={styles.sidebar}>
+          <div className={styles.backBar} onClick={handleBackToRoles}>
+            <ArrowLeftOutlined className={styles.backIcon} />
+            <span className={styles.backText}>返回角色列表</span>
+          </div>
+
+          <Card className={styles.roleCard}>
+            <div className={styles.roleHeader}>
+              <div className={styles.roleAvatar}>
                 <KeyOutlined />
-              </RoleAvatar>
-              <RoleInfo>
-                <div className="name">{selectedRole.roleName}</div>
-                <span className="role-key">{selectedRole.roleKey}</span>
-              </RoleInfo>
-            </RoleHeader>
+              </div>
+              <div className={styles.roleInfo}>
+                <div className="name">{selectedRole.name}</div>
+                <span className={styles.roleKey}>{selectedRole.roleKey}</span>
+              </div>
+            </div>
 
             <div style={{ borderTop: '1px solid #f0f0f0', margin: '16px 0' }} />
 
-            <InfoItem>
+            <div className={styles.infoItem}>
               <span className="label">状态</span>
               <StatusTag
                 value={selectedRole.status}
-                options={[
-                  { label: '禁用', value: 0 },
-                  { label: '启用', value: 1 },
-                ]}
+                options={dict.role_status}
               />
-            </InfoItem>
+            </div>
             {selectedRole.remark && (
-              <InfoItem>
+              <div className={styles.infoItem}>
                 <span className="label">描述</span>
                 <Tooltip title={selectedRole.remark}>
                   <span
@@ -862,40 +417,40 @@ export default function AuthPermissionPage() {
                     {selectedRole.remark}
                   </span>
                 </Tooltip>
-              </InfoItem>
+              </div>
             )}
-          </RoleCard>
+          </Card>
 
           <Card size="small" title="权限概览">
-            <StatsGrid>
-              <StatItem $color="purple">
+            <div className={styles.statsGrid}>
+              <div className={`${styles.statItem} ${styles.purple}`}>
                 <div className="number">{selectedPermissionIds.length}</div>
                 <div className="label">已选择</div>
-              </StatItem>
-              <StatItem>
+              </div>
+              <div className={styles.statItem}>
                 <div className="number">{permissions.length}</div>
                 <div className="label">总权限</div>
-              </StatItem>
-            </StatsGrid>
+              </div>
+            </div>
             <div style={{ borderTop: '1px solid #f0f0f0', margin: '10px 0' }} />
-            <StatsGrid>
-              <StatItem $color="orange">
+            <div className={styles.statsGrid}>
+              <div className={`${styles.statItem} ${styles.orange}`}>
                 <div className="number">{typeCounts.DIRECTORY}</div>
                 <div className="label">目录</div>
-              </StatItem>
-              <StatItem $color="blue">
+              </div>
+              <div className={`${styles.statItem} ${styles.blue}`}>
                 <div className="number">{typeCounts.MENU}</div>
                 <div className="label">菜单</div>
-              </StatItem>
-              <StatItem $color="green">
+              </div>
+              <div className={`${styles.statItem} ${styles.green}`}>
                 <div className="number">{typeCounts.BUTTON}</div>
                 <div className="label">按钮</div>
-              </StatItem>
-              <StatItem $color="purple">
+              </div>
+              <div className={`${styles.statItem} ${styles.purple}`}>
                 <div className="number">{typeCounts.API}</div>
                 <div className="label">接口</div>
-              </StatItem>
-            </StatsGrid>
+              </div>
+            </div>
           </Card>
 
           <Card size="small" title="当前已分配">
@@ -922,28 +477,23 @@ export default function AuthPermissionPage() {
               </Text>
             )}
           </Card>
-        </Sidebar>
+        </div>
 
         {/* 右侧主内容区 */}
-        <MainContent>
-          <ActionBar>
-            <ActionLeft>
-              <div className="title-icon">
+        <div className={styles.mainContent}>
+          <div className={styles.actionBar}>
+            <div className={styles.actionLeft}>
+              <div className={styles.titleIcon}>
                 <KeyOutlined />
               </div>
-              <div className="title-content">
+              <div className={styles.titleContent}>
                 <div className="title">权限配置</div>
                 <div className="subtitle">
-                  已选 {selectedPermissionIds.length} / {permissions.length}
-                  {hasChanges() && (
-                    <span style={{ color: '#ff4d4f', marginLeft: 8 }}>
-                      (有未保存变更)
-                    </span>
-                  )}
+                  当前角色拥有 {selectedRole?.permissions?.length || 0} 项权限
                 </div>
               </div>
-            </ActionLeft>
-            <Space>
+            </div>
+            <Space wrap>
               <Input
                 placeholder="搜索权限"
                 prefix={<SearchOutlined />}
@@ -957,22 +507,43 @@ export default function AuthPermissionPage() {
               <Button icon={<UndoOutlined />} onClick={handleReset}>
                 重置
               </Button>
-              <Button
+              <AuthButton
                 type="primary"
                 icon={<SaveOutlined />}
                 onClick={handleSubmit}
                 loading={submitting}
                 disabled={!hasChanges()}
+                requirePermissions={['role:permission:update']}
               >
                 保存
-              </Button>
+              </AuthButton>
             </Space>
-          </ActionBar>
+          </div>
 
-          <ContentBody>
+          <div className={styles.contentBody}>
             <Tabs
               activeKey={activeTab}
               onChange={setActiveTab}
+              tabBarExtraContent={
+                <Space size={16}>
+                  <Text type="secondary" style={{ fontSize: 12 }}>
+                    <CheckCircleOutlined style={{ marginRight: 4 }} />
+                    {activeTab === 'func'
+                      ? `${selectedFuncCount} / ${funcPermissions.length}`
+                      : `${selectedApiCount} / ${apiPermissions.length}`}{' '}
+                    项已选
+                  </Text>
+                  {searchText && (
+                    <Text type="secondary" style={{ fontSize: 12 }}>
+                      匹配{' '}
+                      {activeTab === 'func'
+                        ? filteredFunc.length
+                        : filteredApi.length}{' '}
+                      项
+                    </Text>
+                  )}
+                </Space>
+              }
               items={[
                 {
                   key: 'func',
@@ -988,19 +559,8 @@ export default function AuthPermissionPage() {
                     </span>
                   ),
                   children: (
-                    <>
-                      <TabToolbar>
-                        <Text type="secondary" style={{ fontSize: 12 }}>
-                          <CheckCircleOutlined style={{ marginRight: 4 }} />
-                          {selectedFuncCount} / {funcPermissions.length} 项已选
-                        </Text>
-                        {searchText && (
-                          <Text type="secondary" style={{ fontSize: 12 }}>
-                            匹配 {filteredFunc.length} 项
-                          </Text>
-                        )}
-                      </TabToolbar>
-                      <TreeWrapper>
+                    <div className={styles.tabContent}>
+                      <div className={styles.treeWrapper}>
                         {funcTreeData.length > 0 ? (
                           <Tree
                             checkable
@@ -1014,13 +574,13 @@ export default function AuthPermissionPage() {
                             blockNode
                           />
                         ) : (
-                          <EmptyState>
+                          <div className={styles.emptyState}>
                             <FolderOutlined className="icon" />
                             <div>暂无功能权限数据</div>
-                          </EmptyState>
+                          </div>
                         )}
-                      </TreeWrapper>
-                    </>
+                      </div>
+                    </div>
                   ),
                 },
                 {
@@ -1037,19 +597,8 @@ export default function AuthPermissionPage() {
                     </span>
                   ),
                   children: (
-                    <>
-                      <TabToolbar>
-                        <Text type="secondary" style={{ fontSize: 12 }}>
-                          <CheckCircleOutlined style={{ marginRight: 4 }} />
-                          {selectedApiCount} / {apiPermissions.length} 项已选
-                        </Text>
-                        {searchText && (
-                          <Text type="secondary" style={{ fontSize: 12 }}>
-                            匹配 {filteredApi.length} 项
-                          </Text>
-                        )}
-                      </TabToolbar>
-                      <ApiListWrapper>
+                    <div className={styles.tabContent}>
+                      <div className={styles.apiListWrapper}>
                         {apiGroups.length > 0 ? (
                           apiGroups.map((group) => {
                             const groupCheckedCount = group.items.filter(
@@ -1062,9 +611,9 @@ export default function AuthPermissionPage() {
                               groupCheckedCount > 0 && !allChecked;
 
                             return (
-                              <ApiGroup key={group.key}>
+                              <div className={styles.apiGroup} key={group.key}>
                                 <div
-                                  className="group-header"
+                                  className={styles.groupHeader}
                                   onClick={() =>
                                     toggleApiGroup(group.items, !allChecked)
                                   }
@@ -1084,7 +633,7 @@ export default function AuthPermissionPage() {
                                   <span className="group-name">
                                     {group.name}
                                   </span>
-                                  <span className="group-count">
+                                  <span className={styles.groupCount}>
                                     {groupCheckedCount}/{group.items.length}
                                   </span>
                                 </div>
@@ -1094,9 +643,11 @@ export default function AuthPermissionPage() {
                                       p.permissionId,
                                     );
                                   return (
-                                    <ApiItem
+                                    <div
                                       key={p.permissionId}
-                                      $checked={isChecked}
+                                      className={`${styles.apiItem} ${
+                                        isChecked ? styles.checked : ''
+                                      }`}
                                       onClick={() =>
                                         toggleApiPermission(p.permissionId)
                                       }
@@ -1124,27 +675,27 @@ export default function AuthPermissionPage() {
                                           </Tooltip>
                                         )}
                                       </div>
-                                    </ApiItem>
+                                    </div>
                                   );
                                 })}
-                              </ApiGroup>
+                              </div>
                             );
                           })
                         ) : (
-                          <EmptyState>
+                          <div className={styles.emptyState}>
                             <ApiOutlined className="icon" />
                             <div>暂无接口权限数据</div>
-                          </EmptyState>
+                          </div>
                         )}
-                      </ApiListWrapper>
-                    </>
+                      </div>
+                    </div>
                   ),
                 },
               ]}
             />
-          </ContentBody>
-        </MainContent>
-      </PageWrapper>
+          </div>
+        </div>
+      </div>
     </PageContainer>
   );
 }

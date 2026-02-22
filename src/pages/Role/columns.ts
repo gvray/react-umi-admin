@@ -1,4 +1,6 @@
-export const getRoleColumns = (): any[] => {
+import type { TableProColumnsType } from '@/components/TablePro';
+
+export const getRoleColumns = (): TableProColumnsType<API.RoleResponseDto> => {
   return [
     {
       title: '角色编号',
@@ -32,12 +34,6 @@ export const getRoleColumns = (): any[] => {
       key: 'status',
       advancedSearch: {
         type: 'SELECT',
-        value: [
-          { label: '停用', value: 0 },
-          { label: '正常', value: 1 },
-          { label: '审核中', value: 2 },
-          { label: '封禁', value: 3 },
-        ],
       },
       width: 120,
     },
