@@ -1,0 +1,68 @@
+// 全局主题 CSS 变量参考
+// 这些 CSS 变量由 ThemeTokenInjector 在 Layout 中动态注入
+// 支持主题切换和昼夜模式
+//
+// ⚠️ 重要：直接在样式中使用 var(--ant-xxx)，不要通过 LESS 变量包装
+// 因为 LESS 编译 + PostCSS 优化可能会将 CSS 变量求值为静态值
+//
+// ============ 使用示例 ============
+// .myClass {
+//   color: var(--ant-primary-color);           // ✅ 正确
+//   background: var(--ant-bg-container);       // ✅ 正确
+//   border: 1px solid var(--ant-border-color); // ✅ 正确
+// }
+//
+// ============ 可用的 CSS 变量列表 ============
+//
+// 主色系：
+// --ant-primary-color
+// --ant-primary-color-hover
+// --ant-primary-color-active
+// --ant-primary-color-outline
+//
+// 功能色：
+// --ant-success-color
+// --ant-warning-color
+// --ant-error-color
+// --ant-info-color
+//
+// 文本色：
+// --ant-text-color
+// --ant-text-color-secondary
+// --ant-text-color-disabled
+// --ant-heading-color
+//
+// 背景色：
+// --ant-bg-color
+// --ant-bg-container
+// --ant-bg-elevated
+// --ant-bg-layout
+// --ant-bg-spotlight
+//
+// 边框色：
+// --ant-border-color
+// --ant-border-color-split
+//
+// 填充色：
+// --ant-fill-color
+// --ant-fill-color-secondary
+// --ant-fill-color-tertiary
+// --ant-fill-color-quaternary
+//
+// 尺寸：
+// --ant-border-radius
+// --ant-border-radius-lg
+// --ant-border-radius-sm
+//
+// 阴影：
+// --ant-box-shadow
+// --ant-box-shadow-secondary
+//
+// 主色衍生（用于背景/边框）：
+// --ant-primary-1  (最浅)
+// --ant-primary-2
+// --ant-primary-3
+// --ant-primary-4
+//
+// 其他：
+// --ant-purple-6  (用于渐变)

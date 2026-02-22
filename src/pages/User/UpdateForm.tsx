@@ -1,14 +1,13 @@
+import { FormGrid } from '@/components';
 import { useFeedback } from '@/hooks';
 import { createUser, updateUser } from '@/services/user';
-import { logger } from '@/utils';
+import { createFormLayout, logger } from '@/utils';
 import {
-  Col,
   Form,
   FormInstance,
   Input,
   Modal,
   Radio,
-  Row,
   Select,
   TreeSelect,
 } from 'antd';
@@ -27,23 +26,6 @@ export interface UpdateFormRef {
   hide: () => void;
   form: FormInstance;
 }
-
-const formItemLayout = {
-  labelCol: {
-    span: 6,
-  },
-  wrapperCol: {
-    span: 18,
-  },
-};
-const formItemFullLayout = {
-  labelCol: {
-    span: 3,
-  },
-  wrapperCol: {
-    span: 21,
-  },
-};
 
 const UpdateFormFunction: ForwardRefRenderFunction<
   UpdateFormRef,
@@ -129,7 +111,7 @@ const UpdateFormFunction: ForwardRefRenderFunction<
       cancelText="取消"
     >
       <Form
-        {...formItemLayout}
+        {...createFormLayout()}
         form={form}
         layout="horizontal"
         name="form_in_modal"
@@ -143,8 +125,8 @@ const UpdateFormFunction: ForwardRefRenderFunction<
         <Form.Item name="userId" label="用户Id" hidden>
           <Input />
         </Form.Item>
-        <Row gutter={24}>
-          <Col span={12}>
+        <FormGrid>
+          <FormGrid.Item>
             <Form.Item
               name="nickname"
               label="用户名称"
@@ -152,8 +134,8 @@ const UpdateFormFunction: ForwardRefRenderFunction<
             >
               <Input placeholder="请输入用户名称" />
             </Form.Item>
-          </Col>
-          <Col span={12}>
+          </FormGrid.Item>
+          <FormGrid.Item>
             <Form.Item
               name="phone"
               label="手机号码"
@@ -172,13 +154,13 @@ const UpdateFormFunction: ForwardRefRenderFunction<
             >
               <Input placeholder="请输入手机号码" maxLength={11} />
             </Form.Item>
-          </Col>
-          <Col span={12}>
+          </FormGrid.Item>
+          <FormGrid.Item>
             <Form.Item name="email" label="邮箱" rules={[{ type: 'email' }]}>
               <Input placeholder="请输入邮箱" maxLength={50} />
             </Form.Item>
-          </Col>
-          <Col span={isEdit ? 0 : 12}>
+          </FormGrid.Item>
+          <FormGrid.Item span={isEdit ? 0 : 12}>
             <Form.Item
               hidden={isEdit}
               name="username"
@@ -194,8 +176,8 @@ const UpdateFormFunction: ForwardRefRenderFunction<
             >
               <Input placeholder="请输登陆账号" maxLength={30} />
             </Form.Item>
-          </Col>
-          {/* <Col span={12}>
+          </FormGrid.Item>
+          {/* <Col >
             <Form.Item name="roleIds" label="角色">
               <Select
                 options={roleList}
@@ -205,12 +187,12 @@ const UpdateFormFunction: ForwardRefRenderFunction<
               />
             </Form.Item>
           </Col> */}
-          <Col span={12}>
+          <FormGrid.Item>
             <Form.Item name="gender" label="性别">
               <Select options={dict['user_gender']} />
             </Form.Item>
-          </Col>
-          <Col span={12}>
+          </FormGrid.Item>
+          <FormGrid.Item>
             <Form.Item name="departmentId" label="部门">
               <TreeSelect
                 treeData={departmentList}
@@ -222,8 +204,8 @@ const UpdateFormFunction: ForwardRefRenderFunction<
                 allowClear
               />
             </Form.Item>
-          </Col>
-          <Col span={12}>
+          </FormGrid.Item>
+          <FormGrid.Item>
             <Form.Item name="positionIds" label="岗位">
               <Select
                 options={positionList}
@@ -232,9 +214,9 @@ const UpdateFormFunction: ForwardRefRenderFunction<
                 allowClear
               />
             </Form.Item>
-          </Col>
+          </FormGrid.Item>
           {!isEdit && (
-            <Col span={12}>
+            <FormGrid.Item>
               <Form.Item
                 name="password"
                 label="用户密码"
@@ -249,9 +231,9 @@ const UpdateFormFunction: ForwardRefRenderFunction<
               >
                 <Input.Password placeholder="请输用户密码" maxLength={20} />
               </Form.Item>
-            </Col>
+            </FormGrid.Item>
           )}
-          <Col span={12}>
+          <FormGrid.Item>
             <Form.Item name="status" label="用户状态">
               <Radio.Group
                 options={dict['user_status']?.filter(
@@ -259,13 +241,13 @@ const UpdateFormFunction: ForwardRefRenderFunction<
                 )}
               ></Radio.Group>
             </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item name="remark" label="备注" {...formItemFullLayout}>
+          </FormGrid.Item>
+          <FormGrid.Item span={24}>
+            <Form.Item name="remark" label="备注" {...createFormLayout(3)}>
               <Input.TextArea placeholder="请输入内容"></Input.TextArea>
             </Form.Item>
-          </Col>
-        </Row>
+          </FormGrid.Item>
+        </FormGrid>
       </Form>
     </Modal>
   );

@@ -1,0 +1,181 @@
+// 全局 LESS Mixins
+// 提供常用的样式混合，支持主题和响应式
+
+// ============ 布局 Mixins ============
+
+// 弹性居中布局
+.flex-center() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// 弹性垂直居中
+.flex-align-center() {
+  display: flex;
+  align-items: center;
+}
+
+// 弹性水平居中
+.flex-justify-center() {
+  display: flex;
+  justify-content: center;
+}
+
+// 弹性列布局
+.flex-column() {
+  display: flex;
+  flex-direction: column;
+}
+
+// ============ 文本 Mixins ============
+
+// 单行文本溢出省略
+.text-ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 多行文本溢出省略
+.text-ellipsis-multi(@lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: @lines;
+  line-clamp: @lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// ============ 动画 Mixins ============
+
+// 过渡动画
+.transition(@property: all, @duration: 0.2s, @timing: ease) {
+  transition: @property @duration @timing;
+}
+
+// 悬停上浮效果
+.hover-lift(@distance: -2px) {
+  .transition(transform);
+  &:hover {
+    transform: translateY(@distance);
+  }
+}
+
+// 悬停放大效果
+.hover-scale(@scale: 1.05) {
+  .transition(transform);
+  &:hover {
+    transform: scale(@scale);
+  }
+}
+
+// ============ 阴影 Mixins ============
+
+// 卡片阴影
+.card-shadow() {
+  box-shadow: var(--ant-box-shadow);
+}
+
+// 卡片悬停阴影
+.card-shadow-hover() {
+  box-shadow: var(--ant-box-shadow-secondary);
+}
+
+// 自定义阴影
+.box-shadow(@x: 0, @y: 2px, @blur: 8px, @spread: 0, @color: rgba(0, 0, 0, 0.1)) {
+  box-shadow: @x @y @blur @spread @color;
+}
+
+// ============ 渐变 Mixins ============
+
+// 主色渐变背景
+.gradient-primary() {
+  background: linear-gradient(
+    135deg,
+    var(--ant-primary-color) 0%,
+    var(--ant-purple-6, #722ed1) 100%
+  );
+}
+
+// 自定义渐变
+.gradient(@start-color, @end-color, @angle: 135deg) {
+  background: linear-gradient(@angle, @start-color 0%, @end-color 100%);
+}
+
+// ============ 响应式 Mixins ============
+
+// 移动端
+.mobile(@rules) {
+  @media (max-width: 768px) {
+    @rules();
+  }
+}
+
+// 平板
+.tablet(@rules) {
+  @media (min-width: 769px) and (max-width: 1024px) {
+    @rules();
+  }
+}
+
+// 桌面端
+.desktop(@rules) {
+  @media (min-width: 1025px) {
+    @rules();
+  }
+}
+
+// ============ 其他常用 Mixins ============
+
+// 清除浮动
+.clearfix() {
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+// 隐藏滚动条
+.hide-scrollbar() {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// 自定义滚动条
+.custom-scrollbar(@width: 6px, @track-color: transparent, @thumb-color: var(--ant-fill-color-secondary)) {
+  &::-webkit-scrollbar {
+    width: @width;
+    height: @width;
+  }
+  &::-webkit-scrollbar-track {
+    background: @track-color;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: @thumb-color;
+    border-radius: @width / 2;
+    &:hover {
+      background: var(--ant-fill-color);
+    }
+  }
+}
+
+// 绝对定位居中
+.absolute-center() {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// 全屏覆盖
+.full-cover() {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}

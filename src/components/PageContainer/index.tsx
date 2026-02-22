@@ -17,7 +17,8 @@ const PageContainerWrapper = styled.div<PageContainerWrapperProps>`
   margin: ${({ $hasBreadcrumb }) =>
     $hasBreadcrumb ? '0 16px 24px' : '24px 16px'};
   padding: 24px;
-  min-height: 280px;
+  min-height: ${({ $hasBreadcrumb }) =>
+    $hasBreadcrumb ? 'calc(100% - 24px)' : 'calc(100% - 48px)'};
   transition: transform 0.1s ease-in-out, opacity 0.3s ease-in-out; /* 添加过渡效果 */
   background: ${({ $colorBgContainer }) => $colorBgContainer};
   border-radius: ${({ $borderRadiusLG }) => $borderRadiusLG}px;

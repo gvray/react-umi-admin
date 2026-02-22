@@ -6,9 +6,12 @@ import AuthButton from './AuthButton';
 import Charts from './Charts';
 import DateTimeFormat from './DateTimeFormat';
 import ErrorBoundary from './ErrorBoundary';
+import FormGrid from './FormGrid';
 import IconSelector from './IconSelector';
 import NavigationProgress from './NavigationProgress';
 import PageContainer from './PageContainer';
+import PageLoading from './PageLoading';
+import PagePlaceholder from './PagePlaceholder';
 import PermissionTree from './PermissionTree';
 import StatusTag from './StatusTag';
 import TablePro from './TablePro';
@@ -22,9 +25,12 @@ export {
   Charts,
   DateTimeFormat,
   ErrorBoundary,
+  FormGrid,
   IconSelector,
   NavigationProgress,
   PageContainer,
+  PageLoading,
+  PagePlaceholder,
   PermissionTree,
   StatusTag,
   TablePro,

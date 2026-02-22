@@ -22,6 +22,7 @@ import storetify from 'storetify';
 import { Outlet, SelectLang, history, styled } from 'umi';
 import SideMenu from './components/SideMenu';
 import ThemeSetting from './components/ThemeSetting';
+import ThemeTokenInjector from './components/ThemeTokenInjector';
 
 const { Header, Content } = Layout;
 
@@ -109,91 +110,100 @@ export default function BaseLayout() {
           theme={{
             algorithm: themeAlgorithm,
             token: { colorPrimary },
+            components: {
+              Menu: {
+                darkItemSelectedBg: colorPrimary,
+              },
+            },
           }}
         >
           <App>
-            <Layout
-              className={[
-                accessibility.colorWeak ? 'color-weak' : '',
-                accessibility.grayMode ? 'gray-mode' : '',
-              ]
-                .filter(Boolean)
-                .join(' ')}
-            >
-              <SideMenu
-                collapsed={sider.collapsed}
-                theme={effectiveSiderTheme}
-                width={sider.width}
-                collapsedWidth={sider.collapsedWidth}
-                showLogo={sider.showLogo}
-              />
-              <Layout>
-                <Header
-                  style={{
-                    padding: 0,
-                    background: themeColor.bgColor,
-                    position: header.fixed ? 'sticky' : 'relative',
-                    top: 0,
-                    zIndex: 100,
-                  }}
-                >
-                  <HeaderBox>
-                    <HeaderRight>
-                      <Space size={2} wrap>
-                        <ThemeSetting />
-                        <SelectLang />
-                        <Dropdown
-                          menu={{ items, onClick: handleDropdownMenuClick }}
-                        >
-                          <HeaderAction>
-                            <Avatar
-                              src={
-                                <img
-                                  src={
-                                    profile?.avatar ||
-                                    'https://api.dicebear.com/9.x/bottts/svg?seed=GavinRay'
-                                  }
-                                  alt="avatar"
-                                />
-                              }
-                            />
-                            <span style={{ marginLeft: 8 }}>
-                              {profile?.nickname || profile?.username}
-                            </span>
-                          </HeaderAction>
-                        </Dropdown>
-                      </Space>
-                    </HeaderRight>
-                  </HeaderBox>
-                </Header>
-                <Content
-                  style={{
-                    height: header.fixed ? 'calc(100vh - 64px)' : 'auto',
-                    minHeight: header.fixed ? undefined : 'calc(100vh - 64px)',
-                    overflow: 'auto',
-                  }}
-                >
-                  <AppBreadcrumb />
-                  <AppWatermark>
-                    <ErrorBoundary>
-                      <Outlet />
-                    </ErrorBoundary>
-                  </AppWatermark>
-                  {content.showFooter && (
-                    <div
-                      style={{
-                        textAlign: 'center',
-                        padding: '16px 0',
-                        color: 'rgba(0, 0, 0, 0.45)',
-                        fontSize: 14,
-                      }}
-                    >
-                      {content.footerText}
-                    </div>
-                  )}
-                </Content>
+            <ThemeTokenInjector>
+              <Layout
+                className={[
+                  accessibility.colorWeak ? 'color-weak' : '',
+                  accessibility.grayMode ? 'gray-mode' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+              >
+                <SideMenu
+                  collapsed={sider.collapsed}
+                  theme={effectiveSiderTheme}
+                  width={sider.width}
+                  collapsedWidth={sider.collapsedWidth}
+                  showLogo={sider.showLogo}
+                />
+                <Layout>
+                  <Header
+                    style={{
+                      padding: 0,
+                      background: themeColor.bgColor,
+                      position: header.fixed ? 'sticky' : 'relative',
+                      top: 0,
+                      zIndex: 100,
+                    }}
+                  >
+                    <HeaderBox>
+                      <HeaderRight>
+                        <Space size={2} wrap>
+                          <ThemeSetting />
+                          <SelectLang />
+                          <Dropdown
+                            menu={{ items, onClick: handleDropdownMenuClick }}
+                          >
+                            <HeaderAction>
+                              <Avatar
+                                src={
+                                  <img
+                                    src={
+                                      profile?.avatar ||
+                                      'https://api.dicebear.com/9.x/bottts/svg?seed=GavinRay'
+                                    }
+                                    alt="avatar"
+                                  />
+                                }
+                              />
+                              <span style={{ marginLeft: 8 }}>
+                                {profile?.nickname || profile?.username}
+                              </span>
+                            </HeaderAction>
+                          </Dropdown>
+                        </Space>
+                      </HeaderRight>
+                    </HeaderBox>
+                  </Header>
+                  <Content
+                    style={{
+                      height: header.fixed ? 'calc(100vh - 64px)' : 'auto',
+                      minHeight: header.fixed
+                        ? undefined
+                        : 'calc(100vh - 64px)',
+                      overflow: 'auto',
+                    }}
+                  >
+                    <AppBreadcrumb />
+                    <AppWatermark>
+                      <ErrorBoundary>
+                        <Outlet />
+                      </ErrorBoundary>
+                    </AppWatermark>
+                    {content.showFooter && (
+                      <div
+                        style={{
+                          textAlign: 'center',
+                          padding: '16px 0',
+                          color: 'rgba(0, 0, 0, 0.45)',
+                          fontSize: 14,
+                        }}
+                      >
+                        {content.footerText}
+                      </div>
+                    )}
+                  </Content>
+                </Layout>
               </Layout>
-            </Layout>
+            </ThemeTokenInjector>
           </App>
         </ConfigProvider>
       </HelmetProvider>
