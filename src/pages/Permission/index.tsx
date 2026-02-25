@@ -1,11 +1,23 @@
-import { AntIcon, DateTimeFormat, PageContainer, TablePro } from '@/components';
+import {
+  AntIcon,
+  AuthButton,
+  DateTimeFormat,
+  DictionaryLabel,
+  PageContainer,
+  TablePro,
+} from '@/components';
 import { TableProRef } from '@/components/TablePro';
+import { useFeedback } from '@/hooks';
+import useDict from '@/hooks/useDict';
+import type { DictOption } from '@/types/dict';
+import { callRef, logger } from '@/utils';
 import {
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
-import { Button, Modal, Space, message } from 'antd';
+import { Modal, Space } from 'antd';
 import { useRef } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 import { getPermissionColumns } from './columns';
@@ -19,17 +31,32 @@ export interface PermissionMeta {
   children?: PermissionMeta[];
   [key: string]: any;
 }
+
+type PermissionDict = {
+  permission_action: DictOption[];
+  permission_type: DictOption[];
+};
+
 const ResourcePage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
+  const dict = useDict<PermissionDict>([
+    'permission_action',
+    'permission_type',
+  ]);
+  const { message } = useFeedback();
   const { fetchPermissionTree, fetchPermissionDetail, removePermission } =
     usePermissionModel();
 
-  const handleAdd = async () => {
-    updateFormRef.current?.show('添加权限');
+  const tableReload = () => {
+    callRef(tableProRef, (t) => t.reload());
   };
 
-  const handleDelete = async (record: PermissionMeta) => {
+  const handleAdd = () => {
+    callRef(updateFormRef, (t) => t.show('添加权限'));
+  };
+
+  const handleDelete = async (record: API.PermissionResponseDto) => {
     Modal.confirm({
       title: `系统提示`,
       icon: <ExclamationCircleOutlined />,
@@ -39,32 +66,35 @@ const ResourcePage = () => {
       onOk() {
         return removePermission(record.permissionId)
           .then(() => {
-            tableProRef.current?.reload();
+            tableReload();
             message.success(`删除成功`);
           })
-          .catch(() => {});
+          .catch((error) => {
+            logger.error(error as string);
+          });
       },
     });
   };
 
-  const handleUpdate = async (record: PermissionMeta) => {
+  const handleUpdate = async (record: API.PermissionResponseDto) => {
     const permissionId = record.permissionId;
     try {
-      const msg: any = await fetchPermissionDetail(permissionId);
-      updateFormRef.current?.show('修改权限', {
-        ...msg,
-      });
-    } catch (error) {}
+      const data: any = await fetchPermissionDetail(permissionId);
+      callRef(updateFormRef, (t) => t.show('修改权限', data));
+    } catch (error) {
+      logger.error(error as string);
+    }
   };
   const handleOk = () => {
-    tableProRef.current?.reload();
+    tableReload();
   };
   let columns = getPermissionColumns().map((column: any) => {
     if (column.dataIndex === 'icon') {
       return {
         ...column,
-        render: (_: any, record: any) => {
-          const icon = record?.menuMeta?.icon;
+        render: (_: any, record: API.PermissionResponseDto) => {
+          // TODO: icon类型需要确认
+          const icon: any = record?.menuMeta?.icon;
           if (icon) return <AntIcon icon={icon} />;
           if (record?.type === 'API') return <AntIcon icon="ApiOutlined" />;
           if (record?.type === 'BUTTON')
@@ -76,24 +106,17 @@ const ResourcePage = () => {
     if (column.dataIndex === 'action') {
       return {
         ...column,
-        render: (action: string) => {
-          switch (action) {
-            case 'view':
-              return '查看';
-            case 'create':
-              return '新增';
-            case 'update':
-              return '修改';
-            case 'delete':
-              return '删除';
-            case 'export':
-              return '导出';
-            case 'import':
-              return '导入';
-            default:
-              return '未知';
-          }
-        },
+        render: (action: string) => (
+          <DictionaryLabel value={action} options={dict['permission_action']} />
+        ),
+      };
+    }
+    if (column.dataIndex === 'type') {
+      return {
+        ...column,
+        render: (type: string) => (
+          <DictionaryLabel value={type} options={dict['permission_type']} />
+        ),
       };
     }
     if (column.dataIndex === 'code') {
@@ -115,24 +138,26 @@ const ResourcePage = () => {
     {
       title: '操作',
       key: 'action',
-      render: (record: PermissionMeta) => {
+      render: (record: API.PermissionResponseDto) => {
         return (
           <Space size={0}>
-            <Button
+            <AuthButton
               type="link"
               icon={<EditOutlined />}
               onClick={() => handleUpdate(record)}
+              requirePermissions={['permission:update']}
             >
               修改
-            </Button>
-            <Button
+            </AuthButton>
+            <AuthButton
               danger
               type="link"
               icon={<DeleteOutlined />}
               onClick={() => handleDelete(record)}
+              requirePermissions={['permission:delete']}
             >
               删除
-            </Button>
+            </AuthButton>
           </Space>
         );
       },
@@ -152,13 +177,18 @@ const ResourcePage = () => {
           defaultExpandAllRows: true,
         }}
         toolbarRender={() => (
-          <Button type="primary" onClick={handleAdd}>
+          <AuthButton
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleAdd}
+            requirePermissions={['permission:create']}
+          >
             新增权限
-          </Button>
+          </AuthButton>
         )}
       />
       {/* 权限新增修改弹出层 */}
-      <UpdateForm ref={updateFormRef} onOk={handleOk} />
+      <UpdateForm ref={updateFormRef} onOk={handleOk} dict={dict} />
     </PageContainer>
   );
 };

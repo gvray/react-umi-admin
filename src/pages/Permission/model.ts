@@ -1,13 +1,13 @@
 import {
   deletePermission,
   getPermissionById,
+  queryPermissionParentList,
   queryPermissionTree,
 } from '@/services/permission';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export const usePermissionModel = () => {
-  const paramsRef = useRef<Record<string, unknown>>({});
   const fetchPermissionTree = useCallback(
     async (params?: API.PermissionsGetTreeParams) => {
       return queryPermissionTree(params);
@@ -23,7 +23,6 @@ export const usePermissionModel = () => {
   }, []);
 
   return {
-    paramsRef,
     fetchPermissionTree,
     fetchPermissionDetail,
     removePermission,
@@ -34,7 +33,7 @@ export const useUpdataFormModel = (open: boolean) => {
   const [data, setData] = useState<API.PermissionResponseDto[]>([]);
   const fetchPermissionTree = async () => {
     try {
-      const res = await queryPermissionTree();
+      const res = await queryPermissionParentList();
       if (res.data) {
         setData(res.data);
       }

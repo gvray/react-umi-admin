@@ -24,18 +24,37 @@ const FormGrid: React.FC<FormGridProps> & {
 } = ({ gutter = 24, columns = 2, children }) => {
   const defaultMd = Math.floor(24 / columns);
 
+  // 递归提取所有 FormGridItem，处理嵌套的 Fragment
+  const extractGridItems = (children: ReactNode): React.ReactElement[] => {
+    const items: React.ReactElement[] = [];
+
+    React.Children.forEach(children, (child) => {
+      if (!React.isValidElement(child)) return;
+
+      // 如果是 FormGridItem，直接添加
+      if (child.type === FormGridItem) {
+        items.push(child);
+      }
+      // 如果是 Fragment，递归处理其子元素
+      else if (child.type === React.Fragment) {
+        items.push(...extractGridItems(child.props.children));
+      }
+    });
+
+    return items;
+  };
+
+  const gridItems = extractGridItems(children);
+
   return (
     <Row gutter={gutter}>
-      {React.Children.map(children, (child) => {
-        if (!React.isValidElement(child)) return child;
-        if (child.type !== FormGridItem) return child;
-
+      {gridItems.map((child, index) => {
         const props = child.props as FormGridItemProps;
         const xs = props.xs ?? 24;
         const md = props.md ?? props.span ?? defaultMd;
 
         return (
-          <Col xs={xs} md={md}>
+          <Col key={index} xs={xs} md={md}>
             {props.children}
           </Col>
         );

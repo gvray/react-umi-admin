@@ -5,6 +5,8 @@ import AppWatermark from './AppWatermark';
 import AuthButton from './AuthButton';
 import Charts from './Charts';
 import DateTimeFormat from './DateTimeFormat';
+import DictionaryLabel from './DictionaryLabel';
+import DictionarySelect from './DictionarySelect';
 import ErrorBoundary from './ErrorBoundary';
 import FormGrid from './FormGrid';
 import IconSelector from './IconSelector';
@@ -24,6 +26,8 @@ export {
   AuthButton,
   Charts,
   DateTimeFormat,
+  DictionaryLabel,
+  DictionarySelect,
   ErrorBoundary,
   FormGrid,
   IconSelector,

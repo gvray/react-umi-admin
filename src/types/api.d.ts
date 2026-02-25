@@ -1,6 +1,6 @@
 /**
  * 此文件由 scripts/gen-api-types.ts 自动生成
- * 生成时间: 2026-02-12T01:13:58.156Z
+ * 生成时间: 2026-02-22T14:39:44.290Z
  * 数据来源: http://localhost:8001/api-json
  * 请勿手动修改此文件
  */
@@ -87,14 +87,14 @@ declare namespace API {
     avatar?: string;
     /**
      * 性别
-     * @example 1
+     * @example male
      */
-    gender?: 0 | 1 | 2 | 3;
+    gender?: 'unknown' | 'male' | 'female' | 'other';
     /**
      * 用户状态
-     * @example 1
+     * @example enabled
      */
-    status?: 0 | 1 | 2 | 3;
+    status?: 'disabled' | 'enabled' | 'pending' | 'banned';
     /**
      * 部门ID（UUID）
      * @example 550e8400-e29b-41d4-a716-446655440001
@@ -209,16 +209,16 @@ declare namespace API {
     avatar?: string;
     /**
      * 性别
-     * @example 1
+     * @example male
      */
-    gender?: 0 | 1 | 2 | 3;
+    gender?: 'unknown' | 'male' | 'female' | 'other';
     /** 备注信息 */
     remark?: string;
     /**
      * 用户状态
-     * @example 1
+     * @example enabled
      */
-    status: 0 | 1 | 2 | 3;
+    status: 'disabled' | 'enabled' | 'pending' | 'banned';
     /** 创建时间 */
     createdAt: string;
     /** 更新时间 */
@@ -260,14 +260,14 @@ declare namespace API {
     avatar?: string;
     /**
      * 性别
-     * @example 1
+     * @example male
      */
-    gender?: 0 | 1 | 2 | 3;
+    gender?: 'unknown' | 'male' | 'female' | 'other';
     /**
      * 用户状态
-     * @example 1
+     * @example enabled
      */
-    status?: 0 | 1 | 2 | 3;
+    status?: 'disabled' | 'enabled' | 'pending' | 'banned';
     /**
      * 部门ID（UUID）
      * @example 550e8400-e29b-41d4-a716-446655440001
@@ -342,10 +342,10 @@ declare namespace API {
      */
     sort?: number;
     /**
-     * 状态：0-禁用，1-启用
-     * @example 1
+     * 状态：disabled-禁用, enabled-启用
+     * @example enabled
      */
-    status?: number;
+    status?: string;
     /** 权限ID列表 */
     permissionIds?: string[];
   }
@@ -365,10 +365,10 @@ declare namespace API {
      */
     sort?: number;
     /**
-     * 状态：0-禁用，1-启用
-     * @example 1
+     * 状态：disabled-禁用, enabled-启用
+     * @example enabled
      */
-    status?: number;
+    status?: string;
     /** 权限ID列表 */
     permissionIds?: string[];
   }
@@ -465,6 +465,64 @@ declare namespace API {
     menuMeta?: CreateMenuMetaDto;
   }
 
+  interface PermissionResponseDto {
+    /**
+     * 权限唯一标识符（UUID）
+     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
+     */
+    permissionId: string;
+    /** 权限名称 */
+    name: string;
+    /** 权限代码 */
+    code: string;
+    /** 操作类型 */
+    action: string;
+    /** 权限类型 */
+    type: string;
+    /** 权限来源 */
+    origin: 'USER' | 'SYSTEM';
+    /** 父权限ID（仅非菜单） */
+    parentPermissionId?: string;
+    /** 权限描述 */
+    description?: string;
+    /** 菜单元数据（仅 DIRECTORY 和 MENU 类型有） */
+    menuMeta?: MenuMetaDto;
+    /** 创建时间 */
+    createdAt: string;
+    /** 更新时间 */
+    updatedAt: string;
+  }
+
+  interface PermissionTreeNodeDto {
+    /**
+     * 权限唯一标识符（UUID）
+     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
+     */
+    permissionId: string;
+    /** 权限名称 */
+    name: string;
+    /** 权限代码 */
+    code: string;
+    /** 操作类型 */
+    action: string;
+    /** 权限类型 */
+    type: string;
+    /** 权限来源 */
+    origin: 'USER' | 'SYSTEM';
+    /** 父权限ID（仅非菜单） */
+    parentPermissionId?: string;
+    /** 权限描述 */
+    description?: string;
+    /** 菜单元数据（仅 DIRECTORY 和 MENU 类型有） */
+    menuMeta?: MenuMetaDto;
+    /** 创建时间 */
+    createdAt: string;
+    /** 更新时间 */
+    updatedAt: string;
+    /** 子权限列表 */
+    children?: PermissionTreeNodeDto[];
+  }
+
   interface UpdatePermissionDto {
     /** 权限名称 */
     name?: string;
@@ -509,8 +567,11 @@ declare namespace API {
     email?: string;
     /** 父部门ID（UUID） */
     parentId?: string;
-    /** 状态 */
-    status?: number;
+    /**
+     * 状态：disabled-禁用, enabled-启用
+     * @example enabled
+     */
+    status?: string;
     /** 排序 */
     sort?: number;
   }
@@ -530,8 +591,11 @@ declare namespace API {
     email?: string;
     /** 父部门ID（UUID） */
     parentId?: string;
-    /** 状态 */
-    status?: number;
+    /**
+     * 状态：disabled-禁用, enabled-启用
+     * @example enabled
+     */
+    status?: string;
     /** 排序 */
     sort?: number;
   }
@@ -550,8 +614,11 @@ declare namespace API {
     description?: string;
     /** 备注信息 */
     remark?: string;
-    /** 状态 */
-    status?: number;
+    /**
+     * 状态：disabled-禁用, enabled-启用
+     * @example enabled
+     */
+    status?: string;
     /** 排序 */
     sort?: number;
   }
@@ -579,8 +646,11 @@ declare namespace API {
     description?: string;
     /** 备注信息 */
     remark?: string;
-    /** 状态 */
-    status?: number;
+    /**
+     * 状态：disabled-禁用, enabled-启用
+     * @example enabled
+     */
+    status?: string;
     /** 排序 */
     sort?: number;
   }
@@ -607,10 +677,10 @@ declare namespace API {
      */
     description?: string;
     /**
-     * 状态：0-禁用, 1-启用
-     * @example 1
+     * 状态：disabled-禁用, enabled-启用
+     * @example enabled
      */
-    status?: number;
+    status?: string;
     /**
      * 排序权重
      * @example 0
@@ -688,10 +758,10 @@ declare namespace API {
      */
     description?: string;
     /**
-     * 状态：0-禁用, 1-启用
-     * @example 1
+     * 状态：disabled-禁用, enabled-启用
+     * @example enabled
      */
-    status?: number;
+    status?: string;
     /**
      * 排序权重
      * @example 0
@@ -731,10 +801,10 @@ declare namespace API {
      */
     description?: string;
     /**
-     * 状态：0-禁用, 1-启用
-     * @example 1
+     * 状态：disabled-禁用, enabled-启用
+     * @example enabled
      */
-    status?: number;
+    status?: string;
     /**
      * 排序权重
      * @example 0
@@ -822,10 +892,10 @@ declare namespace API {
      */
     description?: string;
     /**
-     * 状态：0-禁用, 1-启用
-     * @example 1
+     * 状态：disabled-禁用, enabled-启用
+     * @example enabled
      */
-    status?: number;
+    status?: string;
     /**
      * 排序权重
      * @example 0
@@ -843,6 +913,169 @@ declare namespace API {
     ids: string[];
   }
 
+  interface RuntimeSystemDto {
+    /**
+     * 系统名称
+     * @example G-ADMIN
+     */
+    name: string;
+    /**
+     * 系统描述
+     * @example 基于 React + NestJS 的企业级 RBAC 权限管理系统
+     */
+    description: string;
+    /**
+     * 系统Logo
+     * @example /logo.svg
+     */
+    logo: string;
+    /**
+     * 系统Favicon
+     * @example /favicon.ico
+     */
+    favicon: string;
+    /**
+     * 默认头像
+     * @example https://api.dicebear.com/9.x/bottts/svg?seed=GavinRay
+     */
+    defaultAvatar: string;
+  }
+
+  interface RuntimeEnvDto {
+    /**
+     * 运行环境
+     * @example development
+     */
+    mode: string;
+    /**
+     * API 基础路径
+     * @example /api/v1
+     */
+    apiPrefix: string;
+  }
+
+  interface RuntimeUiDefaultsDto {
+    /**
+     * 默认主题
+     * @example light
+     */
+    theme: string;
+    /**
+     * 默认语言
+     * @example zh-CN
+     */
+    language: string;
+    /**
+     * 默认时区
+     * @example Asia/Shanghai
+     */
+    timezone: string;
+    /**
+     * 侧边栏默认折叠
+     * @example false
+     */
+    sidebarCollapsed: boolean;
+    /**
+     * 表格默认分页大小
+     * @example 10
+     */
+    pageSize: number;
+    /**
+     * 系统欢迎语
+     * @example 这是你的系统运行概览，祝你工作愉快
+     */
+    welcomeMessage: string;
+    /**
+     * 是否显示面包屑
+     * @example true
+     */
+    showBreadcrumb: boolean;
+  }
+
+  interface RuntimeSecurityPolicyDto {
+    /**
+     * 水印开关
+     * @example true
+     */
+    watermarkEnabled: boolean;
+    /**
+     * 密码最小长度
+     * @example 6
+     */
+    passwordMinLength: number;
+    /**
+     * 密码复杂度要求
+     * @example true
+     */
+    passwordRequireComplexity: boolean;
+    /**
+     * 登录失败锁定次数
+     * @example 5
+     */
+    loginFailureLockCount: number;
+  }
+
+  interface RuntimeFeaturesDto {
+    /**
+     * 文件上传最大大小（字节）
+     * @example 10485760
+     */
+    fileUploadMaxSize: number;
+    /**
+     * 允许上传的文件类型
+     * @example jpg,jpeg,png,gif,pdf,doc,docx,xls,xlsx
+     */
+    fileUploadAllowedTypes: string;
+    /**
+     * OSS 上传启用
+     * @example false
+     */
+    ossEnabled: boolean;
+    /**
+     * 邮件功能启用
+     * @example false
+     */
+    emailEnabled: boolean;
+    /**
+     * GitHub OAuth 登录
+     * @example false
+     */
+    oauthGithubEnabled: boolean;
+  }
+
+  interface RuntimeCapabilitiesDto {
+    /**
+     * 已注册用户总数
+     * @example 22
+     */
+    totalUsers: number;
+    /**
+     * 可用角色数
+     * @example 3
+     */
+    totalRoles: number;
+    /**
+     * 权限总数
+     * @example 56
+     */
+    totalPermissions: number;
+  }
+
+  interface RuntimeConfigResponseDto {
+    /** 系统基础信息（写死/env） */
+    system: RuntimeSystemDto;
+    /** 环境信息（写死/env） */
+    env: RuntimeEnvDto;
+    /** UI 默认偏好（管理员可改，key 与 preferences 一致，可被用户偏好覆盖） */
+    uiDefaults: RuntimeUiDefaultsDto;
+    /** 安全策略（管理员可改） */
+    securityPolicy: RuntimeSecurityPolicyDto;
+    /** 功能开关（管理员可改） */
+    features: RuntimeFeaturesDto;
+    /** 系统能力（动态计算） */
+    capabilities: RuntimeCapabilitiesDto;
+  }
+
   interface CreateConfigDto {
     /** 配置键 */
     key: string;
@@ -857,7 +1090,7 @@ declare namespace API {
     /** 配置分组 */
     group: string;
     /** 状态 */
-    status: number;
+    status: string;
     /** 排序权重 */
     sort: number;
     /** 备注信息 */
@@ -905,7 +1138,7 @@ declare namespace API {
     /** 配置分组 */
     group?: string;
     /** 状态 */
-    status?: number;
+    status?: string;
     /** 排序权重 */
     sort?: number;
     /** 备注信息 */
@@ -915,22 +1148,6 @@ declare namespace API {
   interface BatchDeleteConfigsDto {
     /** 待删除配置ID列表 */
     ids: string[];
-  }
-
-  interface PermissionResponseDto {
-    /** 权限ID */
-    id: number;
-    /**
-     * 权限唯一标识符（UUID）
-     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
-     */
-    permissionId: string;
-    /** 权限名称 */
-    name: string;
-    /** 权限代码 */
-    code: string;
-    /** 权限描述 */
-    description?: string;
   }
 
   interface CurrentUserRoleResponseDto {
@@ -999,9 +1216,9 @@ declare namespace API {
     phone?: string;
     /**
      * 用户状态
-     * @example 1
+     * @example enabled
      */
-    status: 0 | 1 | 2 | 3;
+    status: 'disabled' | 'enabled' | 'pending' | 'banned';
     /** 创建时间 */
     createdAt: string;
     /** 更新时间 */
@@ -1014,10 +1231,10 @@ declare namespace API {
     roles?: CurrentUserRoleResponseDto[];
     /** 所属部门 */
     department?: CurrentUserDepartmentResponseDto;
-    /** 所属岗位 */
-    positions?: CurrentUserPositionResponseDto[];
     /** 用户偏好设置 */
     preferences?: Record<string, unknown>;
+    /** 所属岗位 */
+    positions?: CurrentUserPositionResponseDto[];
   }
 
   interface UpdateProfileDto {
@@ -1033,8 +1250,8 @@ declare namespace API {
      * @example 13800138000
      */
     phone?: string;
-    /** 性别：0-未知, 1-男, 2-女, 3-其他 */
-    gender?: 0 | 1 | 2 | 3;
+    /** 性别：unknown-未知, male-男, female-女, other-其他 */
+    gender?: 'unknown' | 'male' | 'female' | 'other';
   }
 
   interface ChangePasswordDto {
@@ -1075,7 +1292,7 @@ declare namespace API {
     /** 手机号（模糊查询） */
     phone?: string;
     /** 用户状态 */
-    status?: 0 | 1 | 2 | 3;
+    status?: 'disabled' | 'enabled' | 'pending' | 'banned';
     /** 创建时间开始（YYYY-MM-DD） */
     createdAtStart?: string;
     /** 创建时间结束（YYYY-MM-DD） */
@@ -1091,8 +1308,8 @@ declare namespace API {
     account?: string;
     /** 登录IP地址 */
     ipAddress?: string;
-    /** 登录状态：1-成功, 0-失败 */
-    status?: number;
+    /** 登录状态：success-成功, failure-失败 */
+    status?: string;
     /** 创建时间开始（YYYY-MM-DD） */
     createdAtStart?: string;
     /** 创建时间结束（YYYY-MM-DD） */
@@ -1122,8 +1339,8 @@ declare namespace API {
     name?: string;
     /** 角色描述（支持模糊查询） */
     description?: string;
-    /** 角色状态（0: 禁用, 1: 启用） */
-    status?: number;
+    /** 状态：disabled-禁用, enabled-启用 */
+    status?: string;
     /** 角色键（支持模糊查询） */
     roleKey?: string;
     /** 创建开始日期 */
@@ -1189,8 +1406,8 @@ declare namespace API {
     pageSize?: number;
     /** 部门名称 */
     name?: string;
-    /** 状态 */
-    status?: number;
+    /** 状态：disabled-禁用, enabled-启用 */
+    status?: string;
     /** 父部门ID（UUID） */
     parentId?: string;
     /** 创建时间开始（YYYY-MM-DD） */
@@ -1206,8 +1423,8 @@ declare namespace API {
     pageSize?: number;
     /** 部门名称 */
     name?: string;
-    /** 状态 */
-    status?: number;
+    /** 状态：disabled-禁用, enabled-启用 */
+    status?: string;
     /** 父部门ID（UUID） */
     parentId?: string;
     /** 创建时间开始（YYYY-MM-DD） */
@@ -1225,8 +1442,8 @@ declare namespace API {
     name?: string;
     /** 岗位编码 */
     code?: string;
-    /** 状态 */
-    status?: number;
+    /** 状态：disabled-禁用, enabled-启用 */
+    status?: string;
     /** 创建时间开始（YYYY-MM-DD） */
     createdAtStart?: string;
     /** 创建时间结束（YYYY-MM-DD） */
@@ -1242,8 +1459,8 @@ declare namespace API {
     code?: string;
     /** 字典类型名称 */
     name?: string;
-    /** 状态：0-禁用, 1-启用 */
-    status?: number;
+    /** 状态：disabled-禁用, enabled-启用 */
+    status?: string;
     /** 创建时间开始（YYYY-MM-DD） */
     createdAtStart?: string;
     /** 创建时间结束（YYYY-MM-DD） */
@@ -1265,8 +1482,8 @@ declare namespace API {
     label?: string;
     /** 字典项值 */
     value?: string;
-    /** 状态：0-禁用, 1-启用 */
-    status?: number;
+    /** 状态：disabled-禁用, enabled-启用 */
+    status?: string;
   }
 
   interface ConfigsFindAllParams {
@@ -1282,8 +1499,8 @@ declare namespace API {
     type?: string;
     /** 配置分组 */
     group?: string;
-    /** 状态 */
-    status?: number;
+    /** 状态：disabled-禁用, enabled-启用 */
+    status?: string;
     /** 创建时间开始（YYYY-MM-DD） */
     createdAtStart?: string;
     /** 创建时间结束（YYYY-MM-DD） */
@@ -1309,8 +1526,8 @@ declare namespace API {
     module?: string;
     /** 动作 create/update/delete 等 */
     action?: string;
-    /** 状态 1成功/0失败 */
-    status?: number;
+    /** 操作状态：success-成功, failure-失败 */
+    status?: string;
     /** 路径 模糊匹配 */
     path?: string;
     /** 关键字：匹配 message/path/resource */

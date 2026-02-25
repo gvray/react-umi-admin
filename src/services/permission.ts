@@ -20,6 +20,15 @@ export function queryPermissionTree(params?: API.PermissionsGetTreeParams) {
     },
   );
 }
+/** 获取权限父级列表 */
+export function queryPermissionParentList() {
+  return request<API.Response<API.PermissionResponseDto[]>>(
+    '/system/permissions/parent-list',
+    {
+      method: 'GET',
+    },
+  );
+}
 
 /** 获取权限详情 */
 export function getPermissionById(permissionId: string) {
