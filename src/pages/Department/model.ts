@@ -1,4 +1,3 @@
-import { ROOT_PARENT_ID } from '@/constants';
 import {
   deleteDepartment,
   getDepartmentById,
@@ -6,6 +5,7 @@ import {
   queryDepartmentTree,
 } from '@/services/department';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { withVirtualRoot } from './util';
 
 export const useDepartmentModel = () => {
   const paramsRef = useRef<Record<string, unknown>>({});
@@ -37,14 +37,7 @@ export const useUpdataFormModel = (open: boolean) => {
     try {
       const res = await queryDepartmentList();
       if (res.data?.items?.length) {
-        setData([
-          {
-            departmentId: ROOT_PARENT_ID,
-            name: '顶级部门',
-            description: '顶级部门',
-          } as API.DepartmentResponseDto,
-          ...res.data.items,
-        ]);
+        setData(withVirtualRoot(res.data.items));
       }
     } catch (error) {}
   };

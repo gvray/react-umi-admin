@@ -1,23 +1,26 @@
-import { ROOT_PARENT_ID } from '@/constants';
+import FormGrid from '@/components/FormGrid';
+import { useFeedback } from '@/hooks';
 import { createDepartment, updateDepartment } from '@/services/department';
+import type { DictOption } from '@/types/dict';
+import { createFormLayout, logger } from '@/utils';
+import { VIRTUAL_ROOT_ID } from '@/utils/tree';
 import {
-  Col,
   Form,
   FormInstance,
   Input,
   InputNumber,
   Modal,
   Radio,
-  Row,
   TreeSelect,
-  message,
 } from 'antd';
 import React, { useImperativeHandle, useState } from 'react';
 import { useUpdataFormModel } from './model';
+import { normalizeToBackend } from './util';
 
 interface UpdateFormProps {
   onCancel?: () => void;
   onOk?: () => void;
+  dict: Record<string, DictOption[]>;
 }
 
 export interface UpdateFormRef {
@@ -26,32 +29,17 @@ export interface UpdateFormRef {
   form: FormInstance;
 }
 
-// const formItemLayout = {
-//   labelCol: {
-//     span: 4,
-//   },
-//   wrapperCol: {
-//     span: 20,
-//   },
-// };
-// const formItemFullLayout = {
-//   labelCol: {
-//     span: 4,
-//   },
-//   wrapperCol: {
-//     span: 20,
-//   },
-// };
-
 const UpdateFormFunction: React.ForwardRefRenderFunction<
   UpdateFormRef,
   UpdateFormProps
-> = ({ onOk, onCancel }, ref) => {
+> = ({ onOk, onCancel, dict }, ref) => {
   const [title, setTitle] = useState('未设置弹出层标题');
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
   const { data: departmentList } = useUpdataFormModel(visible);
+  const { message } = useFeedback();
+
   const reset = () => {
     form.resetFields();
     setConfirmLoading(false);
@@ -60,25 +48,22 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
   const handleOk = async () => {
     try {
       setConfirmLoading(true);
-      const { parentId, ...values } = await form.validateFields();
-      if (form.getFieldValue('departmentId') === undefined) {
-        await createDepartment({
-          ...values,
-          parentId: parentId === '0' ? null : parentId,
-        });
+      const values = await form.validateFields();
+      const normalizedValues = normalizeToBackend(values);
+
+      if (!form.getFieldValue('departmentId')) {
+        await createDepartment(normalizedValues);
         message.success('新增成功');
       } else {
-        const { departmentId, ...rest } = values;
-        await updateDepartment(departmentId, {
-          ...rest,
-          parentId: parentId === '0' ? null : parentId,
-        });
+        const { departmentId, ...rest } = normalizedValues;
+        await updateDepartment(departmentId, rest);
         message.success('修改成功');
       }
       setVisible(false);
       onOk?.();
       reset();
     } catch (errorInfo) {
+      logger.error('Department form validation failed:', errorInfo);
       message.error('数据验证失败不能提交');
     } finally {
       setConfirmLoading(false);
@@ -91,8 +76,6 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
     reset();
   };
 
-  const handleValuesChange = () => {};
-
   useImperativeHandle(
     ref,
     () => {
@@ -102,10 +85,16 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           setVisible(true);
           reset();
           if (data) {
-            // setIsEdit(true);
-            form.setFieldsValue(data);
+            form.setFieldsValue({
+              ...data,
+              parentId: data.parentId ?? VIRTUAL_ROOT_ID,
+            });
           } else {
-            // setIsEdit(false);
+            form.setFieldsValue({
+              status: 'enabled',
+              parentId: VIRTUAL_ROOT_ID,
+              sort: 0,
+            });
           }
         },
         hide: () => {
@@ -132,32 +121,29 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       cancelText="取消"
     >
       <Form
-        // {...formItemLayout}
-        // layout="vertical"
+        {...createFormLayout()}
         form={form}
         layout="horizontal"
         name="form_in_modal"
         initialValues={{
-          status: 1,
-          parentId: ROOT_PARENT_ID,
-          type: 'DIRECTORY',
+          status: 'enabled',
+          parentId: VIRTUAL_ROOT_ID,
           sort: 0,
         }}
-        onValuesChange={handleValuesChange}
       >
         <Form.Item name="departmentId" label="部门Id" hidden>
           <Input />
         </Form.Item>
-        <Row gutter={24}>
-          <Col span={24}>
+        <FormGrid>
+          <FormGrid.Item span={24}>
             <Form.Item
               name="parentId"
               label="上级部门"
-              rules={[{ required: false, message: '上级部门不能为空' }]}
+              {...createFormLayout(3)}
+              rules={[{ required: true, message: '请选择上级部门' }]}
             >
               <TreeSelect
                 treeDefaultExpandAll
-                allowClear
                 fieldNames={{
                   value: 'departmentId',
                   label: 'name',
@@ -167,12 +153,11 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
                   pId: 'parentId',
                 }}
                 treeData={departmentList}
-                placeholder="不选表示顶级部门"
+                treeNodeFilterProp="name"
               />
             </Form.Item>
-          </Col>
-
-          <Col span={12}>
+          </FormGrid.Item>
+          <FormGrid.Item span={12}>
             <Form.Item
               name="name"
               label="部门名称"
@@ -180,27 +165,22 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
             >
               <Input />
             </Form.Item>
-          </Col>
-          <Col span={12}>
+          </FormGrid.Item>
+          <FormGrid.Item span={12}>
             <Form.Item
               name="sort"
               label="排序"
               rules={[{ required: true, message: '排序不能为空' }]}
             >
-              <InputNumber />
+              <InputNumber min={0} style={{ width: '100%' }} />
             </Form.Item>
-          </Col>
-
-          <Col span={12}>
-            <Form.Item
-              name="manager"
-              label="负责人"
-              rules={[{ required: false, message: '负责人不能为空' }]}
-            >
+          </FormGrid.Item>
+          <FormGrid.Item span={12}>
+            <Form.Item name="manager" label="负责人">
               <Input />
             </Form.Item>
-          </Col>
-          <Col span={12}>
+          </FormGrid.Item>
+          <FormGrid.Item span={12}>
             <Form.Item
               name="phone"
               label="联系电话"
@@ -219,40 +199,35 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
             >
               <Input />
             </Form.Item>
-          </Col>
-          <Col span={12}>
+          </FormGrid.Item>
+          <FormGrid.Item span={12}>
             <Form.Item
               name="email"
               label="邮箱"
-              rules={[
-                { required: false, type: 'email', message: '邮箱不能为空' },
-              ]}
+              rules={[{ type: 'email', message: '请输入正确的邮箱格式' }]}
             >
               <Input />
             </Form.Item>
-          </Col>
-          <Col span={12}>
+          </FormGrid.Item>
+          <FormGrid.Item span={12}>
             <Form.Item
               name="status"
               label="部门状态"
               rules={[{ required: true, message: '部门状态不能为空' }]}
             >
-              <Radio.Group
-                options={[
-                  { value: 0, label: '停用' },
-                  { value: 1, label: '启用' },
-                  { value: 2, label: '审核中' },
-                  // { value: 3, label: '封禁' },
-                ]}
-              ></Radio.Group>
+              <Radio.Group options={dict.department_status} />
             </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Form.Item name="description" label="描述信息">
-              <Input.TextArea placeholder="请输入内容"></Input.TextArea>
+          </FormGrid.Item>
+          <FormGrid.Item span={24}>
+            <Form.Item
+              name="description"
+              label="描述信息"
+              {...createFormLayout(3)}
+            >
+              <Input.TextArea placeholder="请输入内容" />
             </Form.Item>
-          </Col>
-        </Row>
+          </FormGrid.Item>
+        </FormGrid>
       </Form>
     </Modal>
   );

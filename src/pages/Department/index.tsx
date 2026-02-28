@@ -1,85 +1,85 @@
-import { DateTimeFormat, PageContainer, TablePro } from '@/components';
-import StatusTag from '@/components/StatusTag';
+import {
+  AuthButton,
+  DateTimeFormat,
+  PageContainer,
+  StatusTag,
+  TablePro,
+} from '@/components';
 import { TableProRef } from '@/components/TablePro';
-
+import { useFeedback } from '@/hooks';
+import useDict from '@/hooks/useDict';
+import type { DictOption } from '@/types/dict';
+import { callRef, logger } from '@/utils';
 import {
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
-import { Button, Modal, Space, message } from 'antd';
+import { Modal, Space } from 'antd';
 import { useRef } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 import { getDepartmentColumns } from './columns';
 import { useDepartmentModel } from './model';
 
-export interface DepartmentMeta {
-  departmentId: string;
-  name: string;
-  parentId: string | null;
-  code: string;
-  description: string;
-  level: number;
-  sort: number;
-  managerId: string;
-  status: string;
-  phone: string;
-  children?: DepartmentMeta[]; // 用于前端展示 tree 结构
-  // 可选字段
-  [key: string]: any; // 允许扩展
-}
+type DepartmentDict = {
+  department_status: DictOption[];
+};
 const DepartmentPage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
   const { fetchDepartmentDetail, removeDepartment, fetchDepartmentTree } =
     useDepartmentModel();
   const tableProRef = useRef<TableProRef>(null);
+  const dict = useDict<DepartmentDict>(['department_status']);
+  const { message } = useFeedback();
 
   const handleAdd = async () => {
-    updateFormRef.current?.show('添加部门');
+    callRef(updateFormRef, (t) => t.show('添加部门'));
   };
 
-  const handleDelete = async (record: DepartmentMeta) => {
+  const handleDelete = async (record: API.DepartmentResponseDto) => {
     Modal.confirm({
       title: `系统提示`,
       icon: <ExclamationCircleOutlined />,
-      content: `是否确认删除部门编号为"${record.departmentId}"的数据项？`,
+      content: `是否确认删除部门“${record.name}”？`,
       okText: '确认',
       cancelText: '取消',
-      onOk() {
-        return removeDepartment(record.departmentId)
-          .then(() => {
-            tableProRef.current?.reload();
-            message.success(`删除成功`);
-          })
-          .catch(() => {});
+      async onOk() {
+        try {
+          await removeDepartment(record.departmentId);
+          callRef(tableProRef, (t) => t.reload());
+          message.success('删除成功');
+        } catch (error) {
+          logger.error('Failed to delete department:', error);
+          message.error('删除失败');
+        }
       },
     });
   };
 
-  const handleUpdate = async (record: DepartmentMeta) => {
+  const handleUpdate = async (record: API.DepartmentResponseDto) => {
     const departmentId = record.departmentId;
     try {
       const msg: any = await fetchDepartmentDetail(departmentId);
-      updateFormRef.current?.show('修改部门', {
-        ...msg,
-      });
-    } catch (error) {}
+      callRef(updateFormRef, (t) => t.show('修改部门', msg));
+    } catch (error) {
+      logger.error('Failed to fetch department detail:', error);
+      message.error('获取部门详情失败');
+    }
   };
   const handleOk = () => {
-    tableProRef.current?.reload();
+    callRef(tableProRef, (t) => t.reload());
   };
   let columns = getDepartmentColumns().map((column: any) => {
     if (column.dataIndex === 'status') {
       return {
         ...column,
+        advancedSearch: {
+          type: 'SELECT',
+          value: dict.department_status,
+        },
         render: (status: string | number) => (
-          <StatusTag
-            value={status}
-            options={[
-              { label: '禁用', value: 0 },
-              { label: '启用', value: 1 },
-            ]}
-          />
+          <StatusTag value={status} options={dict.department_status} />
         ),
       };
     }
@@ -96,24 +96,28 @@ const DepartmentPage = () => {
     {
       title: '操作',
       key: 'action',
-      render: (record: DepartmentMeta) => {
+      fixed: 'right',
+      width: 180,
+      render: (record: API.DepartmentResponseDto) => {
         return (
           <Space size={0}>
-            <Button
+            <AuthButton
               type="link"
               icon={<EditOutlined />}
               onClick={() => handleUpdate(record)}
+              perms={['system:department:update']}
             >
               修改
-            </Button>
-            <Button
+            </AuthButton>
+            <AuthButton
               danger
               type="link"
               icon={<DeleteOutlined />}
               onClick={() => handleDelete(record)}
+              perms={['system:department:delete']}
             >
               删除
-            </Button>
+            </AuthButton>
           </Space>
         );
       },
@@ -129,13 +133,18 @@ const DepartmentPage = () => {
         request={fetchDepartmentTree}
         expandable={{ defaultExpandAllRows: true }}
         toolbarRender={() => (
-          <Button type="primary" onClick={handleAdd}>
+          <AuthButton
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleAdd}
+            perms={['system:department:create']}
+          >
             新增部门
-          </Button>
+          </AuthButton>
         )}
       />
       {/* 部门新增修改弹出层 */}
-      <UpdateForm ref={updateFormRef} onOk={handleOk} />
+      <UpdateForm ref={updateFormRef} dict={dict} onOk={handleOk} />
     </PageContainer>
   );
 };
