@@ -1,72 +1,79 @@
-import { DateTimeFormat, PageContainer, TablePro } from '@/components';
-import StatusTag from '@/components/StatusTag';
+import {
+  AuthButton,
+  DateTimeFormat,
+  PageContainer,
+  StatusTag,
+  TablePro,
+} from '@/components';
 import { TableProRef } from '@/components/TablePro';
+import { useFeedback } from '@/hooks';
+import useDict from '@/hooks/useDict';
+import type { DictOption } from '@/types/dict';
+import { callRef, logger } from '@/utils';
 import {
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
+  PlusOutlined,
 } from '@ant-design/icons';
-import { Button, Modal, Space, Typography, message } from 'antd';
+import { Modal, Space, Typography } from 'antd';
 import { useRef } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 import { getPositionColumns } from './columns';
 import { usePosition } from './model';
 
 const { Paragraph } = Typography;
-interface DataType {
-  createBy: string;
-  createdAt: string;
-  updateBy?: string;
-  updatedAt?: string;
-  remark: string;
-  positionId: number;
-  name: string;
-  code: string;
-  description: string;
-  status: string;
-}
+
+type PositionDict = {
+  position_status: DictOption[];
+};
 
 const PositionPage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
-
   const tableProRef = useRef<TableProRef>(null);
   const { fetchPositionList, fetchPositionDetail, removePosition } =
     usePosition();
 
+  const dict = useDict<PositionDict>(['position_status']);
+  const { message } = useFeedback();
+
   const tableReload = () => {
-    tableProRef.current?.reload();
+    callRef(tableProRef, (t) => t.reload());
   };
 
   const handleAdd = async () => {
-    updateFormRef.current?.show('添加岗位');
+    callRef(updateFormRef, (t) => t.show('添加岗位'));
   };
 
-  const handleDelete = async (record: DataType) => {
+  const handleDelete = async (record: API.PositionResponseDto) => {
     Modal.confirm({
       title: `系统提示`,
       icon: <ExclamationCircleOutlined />,
-      content: `是否确认删除岗位编号为"${record.positionId}"的数据项？`,
+      content: `是否确认删除岗位“${record.name}”？`,
       okText: '确认',
       cancelText: '取消',
-      onOk() {
-        return removePosition(String(record.positionId))
-          .then(() => {
-            tableReload();
-            message.success(`删除成功`);
-          })
-          .catch(() => {});
+      async onOk() {
+        try {
+          await removePosition(String(record.positionId));
+          tableReload();
+          message.success('删除成功');
+        } catch (error) {
+          logger.error('Failed to delete position:', error);
+          message.error('删除失败');
+        }
       },
     });
   };
 
-  const handleUpdate = async (record: DataType) => {
+  const handleUpdate = async (record: API.PositionResponseDto) => {
     const positionId = record.positionId;
     try {
       const msg = await fetchPositionDetail(String(positionId));
-      updateFormRef.current?.show('修改岗位', {
-        ...msg,
-      });
-    } catch (error) {}
+      callRef(updateFormRef, (t) => t.show('修改岗位', { ...msg }));
+    } catch (error) {
+      logger.error('Failed to fetch position detail:', error);
+      message.error('获取岗位详情失败');
+    }
   };
 
   const handleOk = () => {
@@ -87,14 +94,12 @@ const PositionPage = () => {
     if (column.dataIndex === 'status') {
       return {
         ...column,
+        advancedSearch: {
+          type: 'SELECT',
+          value: dict.position_status,
+        },
         render: (status: string | number) => (
-          <StatusTag
-            value={status}
-            options={[
-              { label: '禁用', value: 0 },
-              { label: '启用', value: 1 },
-            ]}
-          />
+          <StatusTag value={status} options={dict.position_status} />
         ),
       };
     }
@@ -111,24 +116,26 @@ const PositionPage = () => {
     {
       title: '操作',
       key: 'action',
-      render: (record: any) => {
+      render: (record: API.PositionResponseDto) => {
         return (
           <Space size={0}>
-            <Button
+            <AuthButton
               type="link"
               icon={<EditOutlined />}
               onClick={() => handleUpdate(record)}
+              perms={['system:position:update']}
             >
               修改
-            </Button>
-            <Button
+            </AuthButton>
+            <AuthButton
               danger
               type="link"
               icon={<DeleteOutlined />}
               onClick={() => handleDelete(record)}
+              perms={['system:position:delete']}
             >
               删除
-            </Button>
+            </AuthButton>
           </Space>
         );
       },
@@ -141,9 +148,14 @@ const PositionPage = () => {
         rowKey={'positionId'}
         toolbarRender={() => (
           <>
-            <Button type="primary" onClick={handleAdd}>
+            <AuthButton
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={handleAdd}
+              perms={['system:position:create']}
+            >
               新增岗位
-            </Button>
+            </AuthButton>
           </>
         )}
         ref={tableProRef}
@@ -151,7 +163,7 @@ const PositionPage = () => {
         request={fetchPositionList}
       />
       {/* 岗位新增修改弹出层 */}
-      <UpdateForm ref={updateFormRef} onOk={handleOk} />
+      <UpdateForm ref={updateFormRef} dict={dict} onOk={handleOk} />
     </PageContainer>
   );
 };

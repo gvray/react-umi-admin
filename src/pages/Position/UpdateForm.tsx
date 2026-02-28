@@ -1,20 +1,15 @@
+import FormGrid from '@/components/FormGrid';
+import { useFeedback } from '@/hooks';
 import { createPosition, updatePosition } from '@/services/position';
-import {
-  Col,
-  Form,
-  FormInstance,
-  Input,
-  InputNumber,
-  Modal,
-  Radio,
-  Row,
-  message,
-} from 'antd';
+import type { DictOption } from '@/types/dict';
+import { createFormLayout, logger } from '@/utils';
+import { Form, FormInstance, Input, InputNumber, Modal, Radio } from 'antd';
 import React, { useImperativeHandle, useState } from 'react';
 
 interface UpdateFormProps {
   onCancel?: () => void;
   onOk?: () => void;
+  dict: Record<string, DictOption[]>;
 }
 
 export interface UpdateFormRef {
@@ -23,31 +18,15 @@ export interface UpdateFormRef {
   form: FormInstance;
 }
 
-// const formItemLayout = {
-//   labelCol: {
-//     span: 6,
-//   },
-//   wrapperCol: {
-//     span: 18,
-//   },
-// };
-const formItemFullLayout = {
-  labelCol: {
-    span: 3,
-  },
-  wrapperCol: {
-    span: 21,
-  },
-};
-
 const UpdateFormFunction: React.ForwardRefRenderFunction<
   UpdateFormRef,
   UpdateFormProps
-> = ({ onOk, onCancel }, ref) => {
+> = ({ onOk, onCancel, dict }, ref) => {
   const [title, setTitle] = useState('未设置弹出层标题');
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();
+  const { message } = useFeedback();
 
   // 重置弹出层表单
   const reset = () => {
@@ -59,18 +38,24 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
     try {
       setConfirmLoading(true);
       const values = await form.validateFields();
-      if (form.getFieldValue('positionId') === undefined) {
-        await createPosition(values);
+      const positionId = form.getFieldValue('positionId');
+      if (
+        positionId === undefined ||
+        positionId === null ||
+        positionId === ''
+      ) {
+        await createPosition(values as API.CreatePositionDto);
         message.success('新增成功');
       } else {
-        const { positionId, ...rest } = values;
-        await updatePosition(positionId, rest);
+        const { positionId: id, ...rest } = values;
+        await updatePosition(String(id), rest as API.UpdatePositionDto);
         message.success('修改成功');
       }
       setVisible(false);
       onOk?.();
       reset();
     } catch (errorInfo) {
+      logger.error('Failed to submit position form:', errorInfo);
       message.error('数据验证失败不能提交');
     } finally {
       setConfirmLoading(false);
@@ -122,20 +107,20 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       cancelText="取消"
     >
       <Form
-        // {...formItemLayout}
+        {...createFormLayout(4)}
         form={form}
         layout="horizontal"
         name="form_in_modal"
         initialValues={{
-          status: 1,
+          status: 'enabled',
           sort: 0,
         }}
       >
         <Form.Item name="positionId" label="岗位Id" hidden>
           <Input />
         </Form.Item>
-        <Row gutter={24}>
-          <Col span={24}>
+        <FormGrid>
+          <FormGrid.Item span={24}>
             <Form.Item
               name="name"
               label="岗位名称"
@@ -143,8 +128,8 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
             >
               <Input placeholder="请输入岗位名称" />
             </Form.Item>
-          </Col>
-          <Col span={24}>
+          </FormGrid.Item>
+          <FormGrid.Item span={24}>
             <Form.Item
               name="code"
               label="岗位编码"
@@ -152,43 +137,33 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
             >
               <Input placeholder="请输入岗位编码" />
             </Form.Item>
-          </Col>
-          <Col span={16}>
+          </FormGrid.Item>
+          <FormGrid.Item span={12}>
             <Form.Item
+              {...createFormLayout(8)}
               name="status"
-              label="用户状态"
-              rules={[{ required: true, message: '用户状态不能为空' }]}
+              label="岗位状态"
+              rules={[{ required: true, message: '岗位状态不能为空' }]}
             >
-              <Radio.Group
-                options={[
-                  { value: 0, label: '停用' },
-                  { value: 1, label: '启用' },
-                  { value: 2, label: '审核中' },
-                  // { value: 3, label: '封禁' },
-                ]}
-              ></Radio.Group>
+              <Radio.Group options={dict.position_status} />
             </Form.Item>
-          </Col>
-          <Col span={8}>
+          </FormGrid.Item>
+          <FormGrid.Item span={12}>
             <Form.Item
+              {...createFormLayout(8)}
               name="sort"
               label="排序"
               rules={[{ required: true, message: '排序不能为空' }]}
             >
-              <InputNumber placeholder="请输入排序" />
+              <InputNumber min={0} style={{ width: '100%' }} />
             </Form.Item>
-          </Col>
-          {/* <Col span={24}>
-            <Form.Item name="description" label="描述">
-              <Input.TextArea placeholder="请输入内容"></Input.TextArea>
+          </FormGrid.Item>
+          <FormGrid.Item span={24}>
+            <Form.Item name="remark" label="备注">
+              <Input.TextArea placeholder="请输入内容" />
             </Form.Item>
-          </Col> */}
-          <Col span={24}>
-            <Form.Item name="remark" label="备注" {...formItemFullLayout}>
-              <Input.TextArea placeholder="请输入内容"></Input.TextArea>
-            </Form.Item>
-          </Col>
-        </Row>
+          </FormGrid.Item>
+        </FormGrid>
       </Form>
     </Modal>
   );
