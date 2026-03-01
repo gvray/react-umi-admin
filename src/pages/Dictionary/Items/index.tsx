@@ -1,7 +1,15 @@
-import { DateTimeFormat, PageContainer, TablePro } from '@/components';
-import StatusTag from '@/components/StatusTag';
+import {
+  AuthButton,
+  DateTimeFormat,
+  PageContainer,
+  StatusTag,
+  TablePro,
+} from '@/components';
 import { TableProRef } from '@/components/TablePro';
-
+import { useFeedback } from '@/hooks';
+import useDict from '@/hooks/useDict';
+import type { DictOption } from '@/types/dict';
+import { callRef } from '@/utils';
 import {
   ArrowLeftOutlined,
   BookOutlined,
@@ -10,35 +18,18 @@ import {
   ExclamationCircleOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
-import {
-  Button,
-  Card,
-  Col,
-  Modal,
-  Row,
-  Space,
-  Tag,
-  Typography,
-  message,
-} from 'antd';
+import { Card, Col, Modal, Row, Space, Tag, Typography } from 'antd';
 import { useEffect, useRef } from 'react';
 import { useParams } from 'umi';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
+import { getDictionaryItemColumns } from './columns';
 import { useDictionaryItems } from './model';
 
 const { Title, Text, Paragraph } = Typography;
-interface DataType {
-  itemId: string;
-  typeCode: string;
-  value: string;
-  label: string;
-  description?: string;
-  status: number;
-  sort: number;
-  remark?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+
+type DictionaryDict = {
+  dictionary_status: DictOption[];
+};
 
 const DictionaryItemsPage = () => {
   const { typeId } = useParams();
@@ -52,6 +43,9 @@ const DictionaryItemsPage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
 
+  const dict = useDict<DictionaryDict>(['dictionary_status']);
+  const { message } = useFeedback();
+
   useEffect(() => {
     if (typeId) {
       fetchDictionaryTypeDetail(typeId);
@@ -59,16 +53,18 @@ const DictionaryItemsPage = () => {
   }, [typeId, fetchDictionaryTypeDetail]);
 
   const tableReload = () => {
-    tableProRef.current?.reload();
+    callRef(tableProRef, (t) => t.reload());
   };
 
   const handleAdd = async () => {
-    updateFormRef.current?.show('添加字典项', {
-      typeCode: typeDetail?.code,
-    });
+    callRef(updateFormRef, (t) =>
+      t.show('添加字典项', {
+        typeCode: typeDetail?.code,
+      }),
+    );
   };
 
-  const handleDelete = async (record: DataType) => {
+  const handleDelete = async (record: API.DictionaryItemResponseDto) => {
     Modal.confirm({
       title: `删除确认`,
       icon: <ExclamationCircleOutlined />,
@@ -82,125 +78,113 @@ const DictionaryItemsPage = () => {
       okText: '确认删除',
       cancelText: '取消',
       okType: 'danger',
-      onOk() {
-        return removeDictionaryItem(record.itemId)
-          .then(() => {
-            tableReload();
-            message.success(`字典项"${record.label}"删除成功`);
-          })
-          .catch(() => {});
+      async onOk() {
+        try {
+          await removeDictionaryItem(record.itemId);
+          tableReload();
+          message.success(`字典项"${record.label}"删除成功`);
+        } catch (error) {
+          message.error('删除失败');
+        }
       },
     });
   };
 
-  const handleUpdate = async (record: DataType) => {
+  const handleUpdate = async (record: API.DictionaryItemResponseDto) => {
     const itemId = record.itemId;
     try {
       const msg: any = await fetchDictionaryItemDetail(itemId);
-      updateFormRef.current?.show('修改字典项', {
-        ...msg,
-        typeId,
-      });
-    } catch (error) {}
+      callRef(updateFormRef, (t) =>
+        t.show('修改字典项', {
+          ...msg,
+          typeId,
+        }),
+      );
+    } catch (error) {
+      message.error('获取字典项详情失败');
+    }
   };
 
   const handleOk = () => {
     tableReload();
   };
 
-  const columns = [
-    {
-      title: '字典项ID',
-      dataIndex: 'itemId',
-      key: 'itemId',
-      width: 120,
-      render: (itemId: string) => (
-        <Paragraph ellipsis copyable style={{ width: '100px' }}>
-          {itemId}
-        </Paragraph>
-      ),
-    },
-    {
-      title: '字典标签',
-      dataIndex: 'label',
-      key: 'label',
-      width: 120,
-      advancedSearch: { type: 'INPUT' },
-      render: (label: string) => (
-        <Text style={{ fontSize: '13px' }}>{label}</Text>
-      ),
-    },
-    {
-      title: '字典值',
-      dataIndex: 'value',
-      key: 'value',
-      width: 100,
-      advancedSearch: { type: 'INPUT' },
-      render: (value: string) => (
-        <Tag color="purple" style={{ fontFamily: 'monospace' }}>
-          {value}
-        </Tag>
-      ),
-    },
-
-    {
-      title: '排序',
-      dataIndex: 'sort',
-      key: 'sort',
-      width: 80,
-      render: (sort: number) => (
-        <Tag color={sort === 0 ? 'default' : 'green'}>{sort}</Tag>
-      ),
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      key: 'status',
-      width: 100,
-      advancedSearch: {
-        type: 'SELECT',
-        value: [
-          { label: '禁用', value: 0 },
-          { label: '启用', value: 1 },
-        ],
-      },
-      render: (status: string | number) => (
-        <StatusTag
-          value={status}
-          options={[
-            { label: '禁用', value: 0 },
-            { label: '启用', value: 1 },
-          ]}
-        />
-      ),
-    },
-    {
-      title: '创建时间',
-      key: 'createdAt',
-      dataIndex: 'createdAt',
-      width: 140,
-      render: (time: string) => <DateTimeFormat value={time} />,
-      // advancedSearch: {
-      //   type: 'DATE_RANGE',
-      // },
-    },
+  let columns = getDictionaryItemColumns().map((column: any) => {
+    if (column.dataIndex === 'itemId') {
+      return {
+        ...column,
+        render: (itemId: string) => (
+          <Paragraph ellipsis copyable style={{ width: '100px' }}>
+            {itemId}
+          </Paragraph>
+        ),
+      };
+    }
+    if (column.dataIndex === 'label') {
+      return {
+        ...column,
+        render: (label: string) => (
+          <Text style={{ fontSize: '13px' }}>{label}</Text>
+        ),
+      };
+    }
+    if (column.dataIndex === 'value') {
+      return {
+        ...column,
+        render: (value: string) => (
+          <Tag color="purple" style={{ fontFamily: 'monospace' }}>
+            {value}
+          </Tag>
+        ),
+      };
+    }
+    if (column.dataIndex === 'sort') {
+      return {
+        ...column,
+        render: (sort: number) => (
+          <Tag color={sort === 0 ? 'default' : 'green'}>{sort}</Tag>
+        ),
+      };
+    }
+    if (column.dataIndex === 'status') {
+      return {
+        ...column,
+        advancedSearch: {
+          type: 'SELECT',
+          value: dict.dictionary_status,
+        },
+        render: (status: string | number) => (
+          <StatusTag value={status} options={dict.dictionary_status} />
+        ),
+      };
+    }
+    if (column.dataIndex === 'createdAt') {
+      return {
+        ...column,
+        render: (time: string) => <DateTimeFormat value={time} />,
+      };
+    }
+    return column;
+  });
+  columns = [
+    ...columns,
     {
       title: '操作',
       key: 'action',
       width: 150,
       fixed: 'right',
-      render: (record: any) => {
+      render: (record: API.DictionaryItemResponseDto) => {
         return (
           <Space size="small">
-            <Button
+            <AuthButton
               type="link"
               size="small"
               icon={<EditOutlined />}
               onClick={() => handleUpdate(record)}
             >
               编辑
-            </Button>
-            <Button
+            </AuthButton>
+            <AuthButton
               danger
               type="link"
               size="small"
@@ -208,7 +192,7 @@ const DictionaryItemsPage = () => {
               onClick={() => handleDelete(record)}
             >
               删除
-            </Button>
+            </AuthButton>
           </Space>
         );
       },
@@ -248,14 +232,14 @@ const DictionaryItemsPage = () => {
             </div>
           </Col>
           <Col>
-            <Button
+            <AuthButton
               type="link"
               icon={<ArrowLeftOutlined />}
               onClick={() => window.history.back()}
               style={{ padding: 0, marginBottom: 8 }}
             >
               返回字典类型列表
-            </Button>
+            </AuthButton>
           </Col>
         </Row>
       </Card>
@@ -265,13 +249,13 @@ const DictionaryItemsPage = () => {
           <TablePro
             toolbarRender={() => {
               return (
-                <Button
+                <AuthButton
                   type="primary"
                   icon={<PlusOutlined />}
                   onClick={handleAdd}
                 >
                   新增字典项
-                </Button>
+                </AuthButton>
               );
             }}
             rowKey={'itemId'}
@@ -289,6 +273,7 @@ const DictionaryItemsPage = () => {
         ref={updateFormRef}
         onOk={handleOk}
         typeCode={typeDetail?.code}
+        dict={dict}
       />
     </PageContainer>
   );
