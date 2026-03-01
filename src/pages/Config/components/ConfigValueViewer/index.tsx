@@ -1,16 +1,43 @@
-import { DateTimeFormat } from '@/components';
+import { DateTimeFormat, StatusTag } from '@/components';
+import { useFeedback } from '@/hooks';
+import type { DictOption } from '@/types/dict';
 import { CopyOutlined, EyeOutlined } from '@ant-design/icons';
-import { Button, Descriptions, Modal, Tag, Typography, message } from 'antd';
+import { copyText } from '@gvray/adminkit';
+import { Button, Descriptions, Modal, Tag, Typography } from 'antd';
 import React from 'react';
-import { CONFIG_TYPE_COLORS, CONFIG_TYPE_LABELS } from '../../constants';
-
+import { styled } from 'umi';
 const { Text } = Typography;
+
+const ValueSection = styled.div`
+  margin-top: 16px;
+`;
+
+const ValueHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+`;
+
+const ValueBox = styled.div`
+  padding: 12px;
+  background-color: #f6f8fa;
+  border-radius: 6px;
+  border: 1px solid #e1e4e8;
+  font-family: monospace;
+  font-size: 13px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  max-height: 260px;
+  overflow: auto;
+  line-height: 1.6;
+`;
 
 interface ConfigValueViewerProps {
   config: API.ConfigResponseDto;
   visible: boolean;
   onClose: () => void;
-  dict: Record<string, { label: string; value: string | number }[]>;
+  dict: Record<string, DictOption[]>;
 }
 
 const ConfigValueViewer: React.FC<ConfigValueViewerProps> = ({
@@ -19,16 +46,21 @@ const ConfigValueViewer: React.FC<ConfigValueViewerProps> = ({
   onClose,
   dict,
 }) => {
+  const { message } = useFeedback();
+
   const handleCopy = () => {
-    navigator.clipboard
-      .writeText(config.value)
+    copyText(config.value)
       .then(() => message.success('已复制'))
       .catch(() => message.error('复制失败'));
   };
 
   const groupLabel =
-    dict['config_group']?.find((d) => String(d.value) === config.group)
-      ?.label || config.group;
+    dict.config_group?.find((d) => String(d.value) === config.group)?.label ||
+    config.group;
+
+  const typeLabel =
+    dict.config_type?.find((d) => String(d.value) === String(config.type))
+      ?.label || config.type;
 
   return (
     <Modal
@@ -54,18 +86,14 @@ const ConfigValueViewer: React.FC<ConfigValueViewerProps> = ({
           </Tag>
         </Descriptions.Item>
         <Descriptions.Item label="配置类型">
-          <Tag color={CONFIG_TYPE_COLORS[config.type] || 'default'}>
-            {CONFIG_TYPE_LABELS[config.type] || config.type}
-          </Tag>
+          <Tag>{typeLabel}</Tag>
         </Descriptions.Item>
         <Descriptions.Item label="配置分组">
           <Tag>{groupLabel}</Tag>
         </Descriptions.Item>
         <Descriptions.Item label="排序权重">{config.sort}</Descriptions.Item>
         <Descriptions.Item label="状态">
-          <Tag color={config.status === 1 ? 'success' : 'default'}>
-            {config.status === 1 ? '启用' : '禁用'}
-          </Tag>
+          <StatusTag value={config.status} options={dict.config_status} />
         </Descriptions.Item>
         <Descriptions.Item label="创建时间">
           <DateTimeFormat value={config.createdAt} />
@@ -82,35 +110,14 @@ const ConfigValueViewer: React.FC<ConfigValueViewerProps> = ({
         )}
       </Descriptions>
 
-      <div style={{ marginTop: 16 }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: 8,
-          }}
-        >
+      <ValueSection>
+        <ValueHeader>
           <Text strong>配置值</Text>
           <Button size="small" icon={<CopyOutlined />} onClick={handleCopy}>
             复制
           </Button>
-        </div>
-        <div
-          style={{
-            padding: 12,
-            backgroundColor: '#f6f8fa',
-            borderRadius: 6,
-            border: '1px solid #e1e4e8',
-            fontFamily: 'monospace',
-            fontSize: 13,
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'break-all',
-            maxHeight: 260,
-            overflow: 'auto',
-            lineHeight: 1.6,
-          }}
-        >
+        </ValueHeader>
+        <ValueBox>
           {config.type === 'json'
             ? (() => {
                 try {
@@ -120,8 +127,8 @@ const ConfigValueViewer: React.FC<ConfigValueViewerProps> = ({
                 }
               })()
             : config.value}
-        </div>
-      </div>
+        </ValueBox>
+      </ValueSection>
     </Modal>
   );
 };

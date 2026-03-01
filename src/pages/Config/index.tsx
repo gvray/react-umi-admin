@@ -6,20 +6,21 @@ import {
   TablePro,
 } from '@/components';
 import { TableProRef } from '@/components/TablePro';
+import { useFeedback } from '@/hooks';
 import useDict from '@/hooks/useDict';
-import { logger } from '@/utils';
+import type { DictOption } from '@/types/dict';
+import { callRef, logger } from '@/utils';
 import {
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
   EyeOutlined,
 } from '@ant-design/icons';
-import { Modal, Space, Tag, Typography, message } from 'antd';
+import { Modal, Space, Tag, Typography } from 'antd';
 import { useRef, useState } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 import { getConfigColumns } from './columns';
 import ConfigValueViewer from './components/ConfigValueViewer';
-import { CONFIG_TYPE_COLORS, CONFIG_TYPE_LABELS } from './constants';
 import { useConfigModel } from './model';
 
 const { Text } = Typography;
@@ -28,19 +29,22 @@ const ConfigPage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
   const dict = useDict<{
-    config_group: { label: string; value: string | number }[];
-  }>(['config_group']);
+    config_group: DictOption[];
+    config_status: DictOption[];
+    config_type: DictOption[];
+  }>(['config_group', 'config_status', 'config_type']);
   const { fetchConfigList, fetchConfigDetail, removeConfig } = useConfigModel();
   const [viewVisible, setViewVisible] = useState(false);
   const [currentConfig, setCurrentConfig] =
     useState<API.ConfigResponseDto | null>(null);
+  const { message } = useFeedback();
 
   const tableReload = () => {
-    tableProRef.current?.reload();
+    callRef(tableProRef, (t) => t.reload());
   };
 
   const handleAdd = () => {
-    updateFormRef.current?.show('添加配置');
+    callRef(updateFormRef, (f) => f.show('添加配置'));
   };
 
   const handleDelete = (record: API.ConfigResponseDto) => {
@@ -64,7 +68,7 @@ const ConfigPage = () => {
   const handleUpdate = async (record: API.ConfigResponseDto) => {
     try {
       const data: any = await fetchConfigDetail(record.configId);
-      updateFormRef.current?.show('修改配置', data);
+      callRef(updateFormRef, (f) => f.show('修改配置', data));
     } catch (error) {
       logger.error(error as string);
     }
@@ -124,9 +128,14 @@ const ConfigPage = () => {
     if (column.dataIndex === 'type') {
       return {
         ...column,
+        advancedSearch: {
+          type: 'SELECT',
+          value: dict.config_type,
+        },
         render: (type: string) => (
-          <Tag color={CONFIG_TYPE_COLORS[type] || 'default'}>
-            {CONFIG_TYPE_LABELS[type] || type}
+          <Tag>
+            {dict.config_type?.find((d) => d.value === String(type))?.label ||
+              type}
           </Tag>
         ),
       };
@@ -149,14 +158,12 @@ const ConfigPage = () => {
     if (column.dataIndex === 'status') {
       return {
         ...column,
+        advancedSearch: {
+          type: 'SELECT',
+          value: dict.config_status,
+        },
         render: (status: string | number) => (
-          <StatusTag
-            value={status}
-            options={[
-              { label: '禁用', value: 0 },
-              { label: '启用', value: 1 },
-            ]}
-          />
+          <StatusTag value={status} options={dict.config_status} />
         ),
       };
     }

@@ -16,7 +16,7 @@ export interface UpdateFormRef {
 }
 
 interface UpdateFormProps {
-  onOk: () => void;
+  onOk?: () => void;
   typeCode?: string;
   dict: Record<string, DictOption[]>;
 }

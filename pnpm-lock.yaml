@@ -11,6 +11,9 @@ importers:
       '@ant-design/icons':
         specifier: ^5.3.0
         version: 5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@gvray/adminkit':
+        specifier: ^1.0.5
+        version: 1.0.5
       '@gvray/domkit':
         specifier: ^1.0.3
         version: 1.0.5
@@ -1103,6 +1106,9 @@ packages:
   '@formatjs/intl-utils@2.3.0':
     resolution: {integrity: sha512-KWk80UPIzPmUg+P0rKh6TqspRw0G6eux1PuJr+zz47ftMaZ9QDwbGzHZbtzWkl5hgayM/qrKRutllRC7D/vVXQ==, tarball: https://registry.npmjs.org/@formatjs/intl-utils/-/intl-utils-2.3.0.tgz}
     deprecated: the package is rather renamed to @formatjs/ecma-abstract with some changes in functionality (primarily selectUnit is removed and we don't plan to make any further changes to this package
+
+  '@gvray/adminkit@1.0.5':
+    resolution: {integrity: sha512-ueSpUL/DDmNsrnWEvnX5pj8a9cuZ2bEv4JrMMSvhTs+yEeHf6BrLKXsuLHqXo5gDGSPstpee1aQH+zkzG35QiQ==, tarball: https://registry.npmjs.org/@gvray/adminkit/-/adminkit-1.0.5.tgz}
 
   '@gvray/domkit@1.0.5':
     resolution: {integrity: sha512-Y2y2yGqZkYsAXGFTjInhTN0EKlQ03sMONkh+Y5fsCk81BhlcQ6K42W4i6OPHDNCKlM7+h8HOLKjtk2XvRflv9g==, tarball: https://registry.npmjs.org/@gvray/domkit/-/domkit-1.0.5.tgz}
@@ -7677,6 +7683,10 @@ snapshots:
       '@formatjs/intl-utils': 2.3.0
 
   '@formatjs/intl-utils@2.3.0': {}
+
+  '@gvray/adminkit@1.0.5':
+    dependencies:
+      '@gvray/eskit': 1.2.0
 
   '@gvray/domkit@1.0.5':
     dependencies:
