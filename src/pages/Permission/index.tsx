@@ -2,8 +2,8 @@ import {
   AntIcon,
   AuthButton,
   DateTimeFormat,
-  DictionaryLabel,
   PageContainer,
+  StatusTag,
   TablePro,
 } from '@/components';
 import { TableProRef } from '@/components/TablePro';
@@ -103,29 +103,37 @@ const ResourcePage = () => {
         },
       };
     }
-    if (column.dataIndex === 'action') {
+    if ('dataIndex' in column && column.dataIndex === 'action') {
       return {
         ...column,
+        advancedSearch: {
+          type: 'SELECT',
+          value: dict.permission_action,
+        },
         render: (action: string) => (
-          <DictionaryLabel value={action} options={dict['permission_action']} />
+          <StatusTag value={action} options={dict.permission_action} />
         ),
       };
     }
-    if (column.dataIndex === 'type') {
+    if ('dataIndex' in column && column.dataIndex === 'type') {
       return {
         ...column,
+        advancedSearch: {
+          type: 'SELECT',
+          value: dict.permission_type,
+        },
         render: (type: string) => (
-          <DictionaryLabel value={type} options={dict['permission_type']} />
+          <StatusTag value={type} options={dict.permission_type} />
         ),
       };
     }
-    if (column.dataIndex === 'code') {
+    if ('dataIndex' in column && column.dataIndex === 'code') {
       return {
         ...column,
         render: (code: string) => code || '-',
       };
     }
-    if (column.dataIndex === 'createdAt') {
+    if ('dataIndex' in column && column.dataIndex === 'createdAt') {
       return {
         ...column,
         render: (time: string) => <DateTimeFormat value={time} />,

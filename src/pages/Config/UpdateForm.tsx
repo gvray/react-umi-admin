@@ -1,4 +1,6 @@
-import FormGrid from '@/components/FormGrid';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FormGrid } from '@/components';
+import { DEFAULT_MODAL_TITLE } from '@/constants';
 import { useFeedback } from '@/hooks';
 import { createConfig, updateConfig } from '@/services/config';
 import type { DictOption } from '@/types/dict';
@@ -22,7 +24,7 @@ export interface UpdateFormRef {
 
 const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
   ({ onOk, onCancel, dict }, ref) => {
-    const [title, setTitle] = useState('未设置弹窗标题');
+    const [title, setTitle] = useState(DEFAULT_MODAL_TITLE);
     const [visible, setVisible] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [form] = Form.useForm();
@@ -211,7 +213,11 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
                 label="配置类型"
                 rules={[{ required: true, message: '请选择配置类型' }]}
               >
-                <Select placeholder="请选择" options={dict.config_type} />
+                <Select
+                  placeholder="请选择"
+                  options={dict.config_type}
+                  disabled={Boolean(configId)}
+                />
               </Form.Item>
             </FormGrid.Item>
 

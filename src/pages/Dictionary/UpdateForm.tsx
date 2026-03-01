@@ -1,4 +1,5 @@
 import FormGrid from '@/components/FormGrid';
+import { DEFAULT_MODAL_TITLE } from '@/constants';
 import { useFeedback } from '@/hooks';
 import {
   createDictionaryType,
@@ -23,7 +24,7 @@ interface UpdateFormProps {
 const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
   ({ onOk, dict }, ref) => {
     const [visible, setVisible] = useState(false);
-    const [title, setTitle] = useState('未设置弹出层标题');
+    const [title, setTitle] = useState(DEFAULT_MODAL_TITLE);
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
 

@@ -4,9 +4,11 @@ import {
   getOperationLogById,
   queryOperationLogList,
 } from '@/services/operationLog';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 export const useOperationLog = () => {
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
   const fetchOperationLogList = useCallback(
     async (params?: API.OperationLogsFindManyParams) => {
       return queryOperationLogList(params);
@@ -32,5 +34,7 @@ export const useOperationLog = () => {
     fetchOperationLogDetail,
     batchRemoveOperationLogs,
     clearOperationLogs,
+    selectedRowKeys,
+    setSelectedRowKeys,
   };
 };

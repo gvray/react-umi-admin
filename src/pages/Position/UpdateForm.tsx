@@ -1,4 +1,5 @@
 import FormGrid from '@/components/FormGrid';
+import { DEFAULT_MODAL_TITLE } from '@/constants';
 import { useFeedback } from '@/hooks';
 import { createPosition, updatePosition } from '@/services/position';
 import type { DictOption } from '@/types/dict';
@@ -22,7 +23,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
   UpdateFormRef,
   UpdateFormProps
 > = ({ onOk, onCancel, dict }, ref) => {
-  const [title, setTitle] = useState('未设置弹出层标题');
+  const [title, setTitle] = useState(DEFAULT_MODAL_TITLE);
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();

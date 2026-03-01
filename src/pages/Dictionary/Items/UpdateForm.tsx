@@ -1,4 +1,6 @@
-import FormGrid from '@/components/FormGrid';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FormGrid } from '@/components';
+import { DEFAULT_MODAL_TITLE } from '@/constants';
 import { useFeedback } from '@/hooks';
 import {
   createDictionaryItem,
@@ -24,7 +26,7 @@ interface UpdateFormProps {
 const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
   ({ onOk, typeCode, dict }, ref) => {
     const [visible, setVisible] = useState(false);
-    const [title, setTitle] = useState('');
+    const [title, setTitle] = useState(DEFAULT_MODAL_TITLE);
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
 

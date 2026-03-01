@@ -5,3 +5,4 @@ export * from './theme';
 // export * from './locale';
 // ...
 export * from './data';
+export * from './modal';

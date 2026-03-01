@@ -1,4 +1,5 @@
 import { DictionarySelect, FormGrid, IconSelector } from '@/components';
+import { DEFAULT_MODAL_TITLE } from '@/constants';
 import { useFeedback } from '@/hooks';
 import { createPermission, updatePermission } from '@/services/permission';
 import type { DictOption } from '@/types/dict';
@@ -39,13 +40,13 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
   UpdateFormProps
 > = ({ onOk, onCancel, dict }, ref) => {
   const { message } = useFeedback();
-  const [title, setTitle] = useState('未设置弹出层标题');
+  const [title, setTitle] = useState(DEFAULT_MODAL_TITLE);
   const [visible, setVisible] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
   const [form] = Form.useForm();
   const { data: permissionParentList } = useUpdataFormModel(visible);
   const typeValue = Form.useWatch('type', form);
+  const permissionId = Form.useWatch('permissionId', form);
 
   // 处理父级权限列表：添加虚拟根节点 + 根据类型过滤 + 禁用节点
   const processedParentList = useMemo(() => {
@@ -68,7 +69,8 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       list = list.map((item) => ({
         ...item,
         disabled:
-          item.type === 'DIRECTORY' && item.permissionId !== VIRTUAL_ROOT_ID,
+          (item as any).type === 'DIRECTORY' &&
+          item.permissionId !== VIRTUAL_ROOT_ID,
       }));
     }
 
@@ -82,7 +84,8 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
 
     // 检查当前选中的父级是否在处理后的列表中
     const isValid = processedParentList.some(
-      (item) => item.permissionId === currentParentId && !item.disabled,
+      (item) =>
+        item.permissionId === currentParentId && !(item as any).disabled,
     );
 
     // 如果当前选中的父级不再有效，重置为虚拟根节点
@@ -95,7 +98,6 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
   const reset = () => {
     form.resetFields();
     setConfirmLoading(false);
-    setIsEdit(false);
   };
 
   const handleOk = async () => {
@@ -142,7 +144,6 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           reset();
           if (data) {
             // 编辑模式
-            setIsEdit(true);
             form.setFieldsValue({
               ...data,
               // 如果 parentPermissionId 为 null，设置为虚拟根节点
@@ -152,7 +153,6 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
             });
           } else {
             // 新增模式
-            setIsEdit(false);
             form.setFieldsValue({
               type: 'BUTTON',
               action: 'view',
@@ -236,7 +236,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
               rules={[{ required: true, message: '权限类型不能为空' }]}
             >
               <DictionarySelect
-                disabled={isEdit}
+                disabled={Boolean(permissionId)}
                 options={dict['permission_type']?.filter(
                   (item) => item.value !== 'API',
                 )}

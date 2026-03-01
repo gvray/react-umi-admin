@@ -2,11 +2,16 @@ import {
   AuthButton,
   DateTimeFormat,
   PageContainer,
+  StatusTag,
   TablePro,
 } from '@/components';
 import { TableProRef } from '@/components/TablePro';
+import { useFeedback } from '@/hooks';
+import useDict from '@/hooks/useDict';
+import type { DictOption } from '@/types/dict';
+import { callRef } from '@/utils';
 import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { message, Modal, Space, Tag, Typography } from 'antd';
+import { Modal, Space, Typography } from 'antd';
 import React, { useRef } from 'react';
 import { getLoginLogColumns } from './columns';
 import { useLoginLog } from './model';
@@ -15,14 +20,22 @@ const { Paragraph } = Typography;
 
 const LoginLog: React.FC = () => {
   const tableProRef = useRef<TableProRef>(null);
-  const { fetchLoginLogList, batchRemoveLoginLogs, clearLoginLogs } =
-    useLoginLog();
-  const [selectedRows, setSelectedRows] = React.useState<React.Key[]>([]);
+  const {
+    fetchLoginLogList,
+    batchRemoveLoginLogs,
+    clearLoginLogs,
+    selectedRows,
+    setSelectedRows,
+  } = useLoginLog();
   const [deleting, setDeleting] = React.useState(false);
   const [clearing, setClearing] = React.useState(false);
+  const dict = useDict<{
+    login_status: DictOption[];
+  }>(['login_status']);
+  const { message } = useFeedback();
 
   const tableReload = () => {
-    tableProRef.current?.reload();
+    callRef(tableProRef, (t) => t.reload());
   };
 
   const handleSelectionChange = (keys: React.Key[]) => {
@@ -46,10 +59,12 @@ const LoginLog: React.FC = () => {
     if (column.dataIndex === 'status') {
       return {
         ...column,
-        render: (_: unknown, record: API.LoginLogResponseDto) => (
-          <Tag color={record.status === 1 ? 'success' : 'error'}>
-            {record.status === 1 ? '成功' : '失败'}
-          </Tag>
+        advancedSearch: {
+          type: 'SELECT',
+          value: dict.login_status,
+        },
+        render: (status: string | number) => (
+          <StatusTag value={status} options={dict.login_status} />
         ),
       };
     }

@@ -1,4 +1,5 @@
 import { FormGrid } from '@/components';
+import { DEFAULT_MODAL_TITLE } from '@/constants';
 import { useFeedback } from '@/hooks';
 import { createUser, updateUser } from '@/services/user';
 import { createFormLayout, logger } from '@/utils';
@@ -33,7 +34,7 @@ const UpdateFormFunction: ForwardRefRenderFunction<
 > = ({ onCancel, onOk, dict }, ref) => {
   const { message } = useFeedback();
   const [visible, setVisible] = useState(false);
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(DEFAULT_MODAL_TITLE);
   const [isEdit, setIsEdit] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [form] = Form.useForm();

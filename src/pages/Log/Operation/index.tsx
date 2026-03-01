@@ -2,12 +2,18 @@ import {
   AuthButton,
   DateTimeFormat,
   PageContainer,
+  StatusTag,
   TablePro,
 } from '@/components';
 import { TableProRef } from '@/components/TablePro';
-import { Descriptions, message, Modal, Spin, Tag, Tooltip } from 'antd';
+import { useFeedback } from '@/hooks';
+import useDict from '@/hooks/useDict';
+import type { DictOption } from '@/types/dict';
+import { callRef } from '@/utils';
+import { Descriptions, Modal, Spin, Tooltip } from 'antd';
 import React from 'react';
 import { getOperationLogColumns } from './columns';
+import styles from './index.less';
 import { useOperationLog } from './model';
 
 const OperationLogPage: React.FC = () => {
@@ -17,16 +23,21 @@ const OperationLogPage: React.FC = () => {
     fetchOperationLogDetail,
     batchRemoveOperationLogs,
     clearOperationLogs,
+    selectedRowKeys,
+    setSelectedRowKeys,
   } = useOperationLog();
-  const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
   const [detailOpen, setDetailOpen] = React.useState(false);
   const [detailLoading, setDetailLoading] = React.useState(false);
   const [detail, setDetail] = React.useState<Record<string, unknown> | null>(
     null,
   );
+  const dict = useDict<{
+    operation_status: DictOption[];
+  }>(['operation_status']);
+  const { message } = useFeedback();
 
   const tableReload = () => {
-    tableProRef.current?.reload();
+    callRef(tableProRef, (t) => t.reload());
   };
 
   const handleSelectionChange = (keys: React.Key[]) => {
@@ -64,7 +75,7 @@ const OperationLogPage: React.FC = () => {
       content: (
         <div>
           确认删除以下 {selectedRowKeys.length} 条记录？
-          <div style={{ maxHeight: 200, overflow: 'auto', marginTop: 8 }}>
+          <div className={styles.styledDiv}>
             {rows.map((r) => (
               <div key={r.id}>
                 ID: {r.id}，用户：{r.username}，操作：{r.action}
@@ -103,18 +114,19 @@ const OperationLogPage: React.FC = () => {
     });
   };
   let columns = getOperationLogColumns().map((column) => {
-    if (column.dataIndex === 'status') {
+    if ('dataIndex' in column && column.dataIndex === 'status') {
       return {
         ...column,
-        render: (status: number) =>
-          status === 1 ? (
-            <Tag color="green">成功</Tag>
-          ) : (
-            <Tag color="red">失败</Tag>
-          ),
+        advancedSearch: {
+          type: 'SELECT',
+          value: dict.operation_status,
+        },
+        render: (status: string | number) => (
+          <StatusTag value={status} options={dict.operation_status} />
+        ),
       };
     }
-    if (column.dataIndex === 'path') {
+    if ('dataIndex' in column && column.dataIndex === 'path') {
       return {
         ...column,
         ellipsis: true,
@@ -125,7 +137,7 @@ const OperationLogPage: React.FC = () => {
         ),
       };
     }
-    if (column.dataIndex === 'createdAt') {
+    if ('dataIndex' in column && column.dataIndex === 'createdAt') {
       return {
         ...column,
         render: (createdAt: string) => {
@@ -165,7 +177,7 @@ const OperationLogPage: React.FC = () => {
         width={640}
       >
         {detailLoading ? (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className={styles.loadingWrapper}>
             <Spin />
           </div>
         ) : detail ? (

@@ -3,9 +3,11 @@ import {
   clearLoginLog,
   queryLoginLogList,
 } from '@/services/loginLog';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 export const useLoginLog = () => {
+  const [selectedRows, setSelectedRows] = useState<React.Key[]>([]);
+
   const fetchLoginLogList = useCallback(
     (params?: API.LoginLogsFindAllParams) => {
       return queryLoginLogList(params);
@@ -25,5 +27,7 @@ export const useLoginLog = () => {
     fetchLoginLogList,
     batchRemoveLoginLogs,
     clearLoginLogs,
+    selectedRows,
+    setSelectedRows,
   };
 };
