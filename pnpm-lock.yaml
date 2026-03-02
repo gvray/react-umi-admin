@@ -14,6 +14,9 @@ importers:
       '@gvray/adminkit':
         specifier: ^1.0.5
         version: 1.0.5
+      '@gvray/datekit':
+        specifier: ^1.0.1
+        version: 1.0.1
       '@gvray/domkit':
         specifier: ^1.0.3
         version: 1.0.5
@@ -1109,6 +1112,9 @@ packages:
 
   '@gvray/adminkit@1.0.5':
     resolution: {integrity: sha512-ueSpUL/DDmNsrnWEvnX5pj8a9cuZ2bEv4JrMMSvhTs+yEeHf6BrLKXsuLHqXo5gDGSPstpee1aQH+zkzG35QiQ==, tarball: https://registry.npmjs.org/@gvray/adminkit/-/adminkit-1.0.5.tgz}
+
+  '@gvray/datekit@1.0.1':
+    resolution: {integrity: sha512-9qiVarISy6d7xIhBMKDbcWlybtSwLtuSLPcVQjSl09HkhcNV2W20vVw+22y+LyPw7QBcFV9dmcUj43QXHY5PqQ==, tarball: https://registry.npmjs.org/@gvray/datekit/-/datekit-1.0.1.tgz}
 
   '@gvray/domkit@1.0.5':
     resolution: {integrity: sha512-Y2y2yGqZkYsAXGFTjInhTN0EKlQ03sMONkh+Y5fsCk81BhlcQ6K42W4i6OPHDNCKlM7+h8HOLKjtk2XvRflv9g==, tarball: https://registry.npmjs.org/@gvray/domkit/-/domkit-1.0.5.tgz}
@@ -7687,6 +7693,8 @@ snapshots:
   '@gvray/adminkit@1.0.5':
     dependencies:
       '@gvray/eskit': 1.2.0
+
+  '@gvray/datekit@1.0.1': {}
 
   '@gvray/domkit@1.0.5':
     dependencies:
