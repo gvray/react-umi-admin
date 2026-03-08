@@ -1,7 +1,6 @@
-﻿import { logger } from '@/utils';
+﻿import { logger, tokenManager } from '@/utils';
 import { ErrorShowType, HttpConfig, HttpRequestOptions } from '@gvray/request';
 import { message as msg, notification } from 'antd';
-import storetify from 'storetify';
 
 // 与后端约定的响应数据格式
 interface ResponseStructure {
@@ -83,7 +82,10 @@ export const httpConfig: HttpConfig = {
       const { headers = {}, url, skipAuth, ...restConfig } = config;
       logger.info(`API请求路径：${url}`);
       if (!skipAuth) {
-        headers.Authorization = `Bearer ${storetify(__APP_API_TOKEN_KEY__)}`;
+        const accessToken = tokenManager.getAccessToken();
+        if (accessToken) {
+          headers.Authorization = `Bearer ${accessToken}`;
+        }
       }
       return { url, ...restConfig, headers: { ...headers } };
     },

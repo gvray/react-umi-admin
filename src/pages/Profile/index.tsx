@@ -48,6 +48,10 @@ const FlexLayout = styled.div`
   display: flex;
   gap: 20px;
   align-items: flex-start;
+
+  @media (max-width: 1200px) {
+    flex-direction: column;
+  }
 `;
 
 const PanelCard = styled(Card)`

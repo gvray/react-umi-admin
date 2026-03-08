@@ -357,6 +357,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+  overflow: auto;
 }
 
 .strengthWeak {
@@ -464,17 +465,46 @@
 
 // ─── Responsive ─────────────────────────────────────────
 
-@media (max-width: 992px) {
-  :global(.profile-flex) {
-    flex-direction: column;
-  }
-
+@media (max-width: 1200px) {
   .leftPanel {
     width: 100%;
     position: static;
   }
 
+  .rightPanel {
+    width: 100%;
+  }
+
   .securityGrid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .rightPanel {
+    :global(.ant-tabs-nav) {
+      padding: 0 16px;
+    }
+
+    :global(.ant-tabs-content-holder) {
+      padding: 16px;
+    }
+  }
+
+  .statsRow {
+    padding: 12px 16px;
+  }
+
+  .infoSection,
+  .completenessSection {
+    padding: 16px;
+  }
+
+  .sectionDivider {
+    margin: 0 16px;
+  }
+
+  .nameRow {
+    padding: 0 16px;
   }
 }
