@@ -2,7 +2,14 @@ import { request } from '@gvray/request';
 
 /** 用户登录 */
 export function login(data: API.LoginDto) {
-  return request<API.Response<{ access_token: string }>>('/auth/login', {
+  return request<
+    API.Response<{
+      access_token: string;
+      refresh_token: string;
+      access_token_expires_in: number;
+      refresh_token_expires_in: number;
+    }>
+  >('/auth/login', {
     method: 'POST',
     data,
     skipAuth: true,

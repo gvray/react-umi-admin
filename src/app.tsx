@@ -3,9 +3,8 @@ import { queryMenus } from '@/services/auth';
 import { getRuntimeConfig } from '@/services/config';
 import { queryProfile } from '@/services/profile';
 import { useAppStore, useAuthStore } from '@/stores';
-import storetify from 'storetify';
 import { history } from 'umi';
-import { logger } from './utils';
+import { logger, tokenManager } from './utils';
 
 // const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/login';
@@ -30,7 +29,7 @@ export async function getInitialState() {
   }
 
   // 已登录时并行获取用户信息和菜单
-  if (storetify.has(__APP_API_TOKEN_KEY__)) {
+  if (tokenManager.isAuthenticated()) {
     try {
       const [profileRes, menusRes] = await Promise.all([
         queryProfile({ skipErrorHandler: true }),
@@ -43,7 +42,7 @@ export async function getInitialState() {
         history.push('/');
       }
     } catch (error) {
-      storetify.remove(__APP_API_TOKEN_KEY__);
+      tokenManager.clearTokens();
       history.push(loginPath);
     }
   }

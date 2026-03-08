@@ -3,7 +3,7 @@ import { login, queryMenus } from '@/services/auth';
 import { getRuntimeConfig } from '@/services/config';
 import { queryProfile } from '@/services/profile';
 import { useAppStore, useAuthStore } from '@/stores';
-import { decrypt, encrypt, logger } from '@/utils';
+import { decrypt, encrypt, logger, tokenManager } from '@/utils';
 import {
   AlipayCircleFilled,
   GithubFilled,
@@ -73,12 +73,17 @@ const LoginPage: React.FC = () => {
     }
     try {
       const res = await login({ ...values, rememberMe: undefined });
-      storetify(__APP_API_TOKEN_KEY__, res.data.access_token);
+      tokenManager.setTokens(
+        res.data.access_token,
+        res.data.refresh_token,
+        res.data.access_token_expires_in,
+        res.data.refresh_token_expires_in,
+      );
       await loadInitData();
       message.success(res.message);
       navigate('/');
     } catch (error) {
-      storetify(__APP_API_TOKEN_KEY__, undefined);
+      tokenManager.clearTokens();
     } finally {
       setLogging(false);
     }

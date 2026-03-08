@@ -1,9 +1,8 @@
 import { useFeedback } from '@/hooks';
 import { logout } from '@/services/auth';
 import { useAuthStore, usePreferences } from '@/stores';
-import { logger } from '@/utils';
+import { logger, tokenManager } from '@/utils';
 import { Avatar, Dropdown, Layout, MenuProps, Space } from 'antd';
-import storetify from 'storetify';
 import { SelectLang, history } from 'umi';
 import ThemeSetting from './ThemeSetting';
 
@@ -25,7 +24,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({ themeColor, headerFixed }) => {
     try {
       const res: API.Response<void> = await logout();
       message.success(res.message);
-      storetify.remove(__APP_API_TOKEN_KEY__);
+      tokenManager.clearTokens();
       clearAuth();
       history.push('/login');
     } catch (error) {

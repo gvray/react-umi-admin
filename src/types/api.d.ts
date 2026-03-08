@@ -1,6 +1,6 @@
 /**
  * 此文件由 scripts/gen-api-types.ts 自动生成
- * 生成时间: 2026-02-22T14:39:44.290Z
+ * 生成时间: 2026-03-08T14:10:08.017Z
  * 数据来源: http://localhost:8001/api-json
  * 请勿手动修改此文件
  */
@@ -22,6 +22,14 @@ declare namespace API {
     account: string;
     /** 密码 */
     password: string;
+  }
+
+  interface RefreshTokenDto {
+    /**
+     * Refresh Token
+     * @example a1b2c3d4e5f6...
+     */
+    refreshToken: string;
   }
 
   interface MenuMetaDto {
