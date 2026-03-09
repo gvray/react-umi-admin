@@ -1,4 +1,4 @@
-﻿import { logger, tokenManager } from '@/utils';
+﻿import { logger } from '@/utils';
 import { ErrorShowType, HttpConfig, HttpRequestOptions } from '@gvray/request';
 import { message as msg, notification } from 'antd';
 
@@ -79,15 +79,8 @@ export const httpConfig: HttpConfig = {
   // 请求拦截器
   requestInterceptors: [
     (config: HttpRequestOptions) => {
-      const { headers = {}, url, skipAuth, ...restConfig } = config;
-      logger.info(`API请求路径：${url}`);
-      if (!skipAuth) {
-        const accessToken = tokenManager.getAccessToken();
-        if (accessToken) {
-          headers.Authorization = `Bearer ${accessToken}`;
-        }
-      }
-      return { url, ...restConfig, headers: { ...headers } };
+      logger.info(`API请求路径：${config.url}`);
+      return config;
     },
   ],
 
