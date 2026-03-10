@@ -12,5 +12,6 @@ createClient({
     bearerAuth: {
       getToken: () => Promise.resolve(tokenManager.getAccessToken()),
     },
+    logging: true,
   },
 });

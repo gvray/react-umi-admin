@@ -14,7 +14,7 @@ import {
 import { Button, Checkbox, Form, Input, Space, message } from 'antd';
 import { useEffect, useState } from 'react';
 import storetify from 'storetify';
-import { FormattedMessage, useNavigate } from 'umi';
+import { FormattedMessage, useNavigate, useSearchParams } from 'umi';
 import LoginBg from './components/LoginBg';
 import styles from './index.less';
 
@@ -32,6 +32,7 @@ const LoginPage: React.FC = () => {
   const [isLogging, setLogging] = useState(false);
 
   const [form] = Form.useForm();
+  const [searchParams] = useSearchParams();
 
   const navigate = useNavigate();
 
@@ -81,7 +82,10 @@ const LoginPage: React.FC = () => {
       );
       await loadInitData();
       message.success(res.message);
-      navigate('/');
+
+      // 获取 redirect 参数，登录后跳转回原页面
+      const redirect = searchParams.get('redirect');
+      navigate(redirect || '/');
     } catch (error) {
       tokenManager.clearTokens();
     } finally {
