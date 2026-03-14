@@ -58,8 +58,8 @@ export const httpConfig: HttpConfig = {
               // TODO: redirect
               break;
             default:
-              msg.error(message);
-              logger.error(error);
+              // 这里接住了报错不走默认的错误处理
+              logger.warn(error);
           }
         }
       } else if (error.response) {
@@ -98,7 +98,7 @@ export const httpConfig: HttpConfig = {
         } else {
           // 其他 Axios 错误
           // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
-          msg.error(`${message}`);
+          logger.error(`${message}`);
         }
       } else if (error.request) {
         // 请求已经成功发起，但没有收到响应

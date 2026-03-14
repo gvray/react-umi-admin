@@ -35,7 +35,7 @@ const IconSelector: React.FC<IconSelectorProps> = ({ value, onChange }) => {
   };
   return (
     <Dropdown
-      dropdownRender={() => <CustomPanel onChange={handleChange} />}
+      popupRender={() => <CustomPanel onChange={handleChange} />}
       trigger={['click']}
       open={open}
       onOpenChange={setOpen}

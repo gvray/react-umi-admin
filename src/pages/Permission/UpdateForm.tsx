@@ -5,13 +5,16 @@ import { createPermission, updatePermission } from '@/services/permission';
 import type { DictOption } from '@/types/dict';
 import { createFormLayout } from '@/utils';
 import { VIRTUAL_ROOT_ID } from '@/utils/tree';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import {
   Form,
   FormInstance,
   Input,
   InputNumber,
   Modal,
+  Segmented,
   Switch,
+  Tooltip,
   TreeSelect,
 } from 'antd';
 import React, {
@@ -22,6 +25,37 @@ import React, {
 } from 'react';
 import { useUpdataFormModel } from './model';
 import { normalizeToBackend, withVirtualRoot } from './util';
+
+// 权限代码格式说明组件
+const PermissionCodeTooltip: React.FC = () => (
+  <Tooltip
+    title={
+      <div>
+        <div>
+          <strong>格式规范：</strong>
+        </div>
+        <div>
+          • 目录：<code>module</code>
+        </div>
+        <div style={{ marginLeft: 16 }}>例如：system</div>
+        <div>
+          • 菜单：<code>module:resource</code>
+        </div>
+        <div style={{ marginLeft: 16 }}>例如：system:user</div>
+        <div>
+          • 按钮：<code>module:resource:action</code>
+        </div>
+        <div style={{ marginLeft: 16 }}>例如：system:user:create</div>
+        <div>
+          • 扩展：<code>module:resource:action-xxx</code>
+        </div>
+        <div style={{ marginLeft: 16 }}>例如：system:user:assign-roles</div>
+      </div>
+    }
+  >
+    <QuestionCircleOutlined style={{ marginLeft: 4, cursor: 'help' }} />
+  </Tooltip>
+);
 
 interface UpdateFormProps {
   onCancel?: () => void;
@@ -47,6 +81,37 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
   const { data: permissionParentList } = useUpdataFormModel(visible);
   const typeValue = Form.useWatch('type', form);
   const permissionId = Form.useWatch('permissionId', form);
+  const actionValue = Form.useWatch('action', form);
+
+  // 当 action 改变时，自动更新 code 的 action 部分
+  useEffect(() => {
+    if (typeValue === 'BUTTON' && actionValue) {
+      const currentCode = form.getFieldValue('code');
+      if (currentCode) {
+        const parts = currentCode.split(':');
+        if (parts.length === 3) {
+          // 保留扩展部分（如果有）
+          const actionPart = parts[2];
+          const extensionMatch = actionPart.match(/-(.*)/); // 匹配 -xxx 部分
+          const newActionPart = extensionMatch
+            ? `${actionValue}${extensionMatch[0]}`
+            : actionValue;
+
+          const newCode = `${parts[0]}:${parts[1]}:${newActionPart}`;
+          form.setFieldValue('code', newCode);
+        }
+      }
+    }
+  }, [actionValue, typeValue, form]);
+
+  // 当权限类型改变时，重新校验权限代码字段
+  useEffect(() => {
+    if (typeValue) {
+      form.validateFields(['code']).catch(() => {
+        // 忽略校验错误，只是触发重新校验
+      });
+    }
+  }, [typeValue, form]);
 
   // 处理父级权限列表：添加虚拟根节点 + 根据类型过滤 + 禁用节点
   const processedParentList = useMemo(() => {
@@ -119,7 +184,8 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       onOk?.();
       reset();
     } catch (errorInfo) {
-      message.error('数据验证失败不能提交');
+      console.log(errorInfo, 'TODO');
+      // message.error(errorInfo?.message || '数据验证失败不能提交');
     } finally {
       setConfirmLoading(false);
     }
@@ -152,11 +218,10 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
               menuMeta: data.menuMeta ?? {},
             });
           } else {
-            // 新增模式
+            // 新增模式 - 设置默认 type 为 DIRECTORY
             form.setFieldsValue({
-              type: 'BUTTON',
-              action: 'view',
               parentPermissionId: VIRTUAL_ROOT_ID,
+              type: 'DIRECTORY',
               menuMeta: { hidden: false, sort: 0 },
             });
           }
@@ -190,8 +255,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
         layout="horizontal"
         name="form_in_modal"
         initialValues={{
-          type: 'BUTTON',
-          action: 'view',
+          type: 'DIRECTORY',
           menuMeta: { hidden: false, sort: 0 },
         }}
         onValuesChange={handleValuesChange}
@@ -223,8 +287,25 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           <FormGrid.Item span={12}>
             <Form.Item
               name="name"
-              label="权限名称"
-              rules={[{ required: true, message: '权限名称不能为空' }]}
+              label={
+                typeValue === 'DIRECTORY'
+                  ? '目录名称'
+                  : typeValue === 'MENU'
+                  ? '菜单名称'
+                  : '按钮名称'
+              }
+              rules={[
+                {
+                  required: true,
+                  message: `${
+                    typeValue === 'DIRECTORY'
+                      ? '目录名称'
+                      : typeValue === 'MENU'
+                      ? '菜单名称'
+                      : '按钮名称'
+                  }不能为空`,
+                },
+              ]}
             >
               <Input />
             </Form.Item>
@@ -235,21 +316,96 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
               label="权限类型"
               rules={[{ required: true, message: '权限类型不能为空' }]}
             >
-              <DictionarySelect
+              <Segmented
                 disabled={Boolean(permissionId)}
-                options={dict['permission_type']?.filter(
-                  (item) => item.value !== 'API',
-                )}
+                block
+                options={[
+                  { label: '目录', value: 'DIRECTORY' },
+                  { label: '菜单', value: 'MENU' },
+                  { label: '按钮', value: 'BUTTON' },
+                ]}
               />
             </Form.Item>
           </FormGrid.Item>
           <FormGrid.Item span={12}>
             <Form.Item
               name="code"
-              label="权限代码"
-              rules={[{ required: true, message: '权限代码不能为空' }]}
+              label={
+                <span>
+                  权限代码
+                  <PermissionCodeTooltip />
+                </span>
+              }
+              rules={[
+                { required: true, message: '权限代码不能为空' },
+                {
+                  validator: (_, value) => {
+                    if (!value) return Promise.resolve();
+
+                    const parts = value.split(':');
+
+                    // 目录：module（单层，不包含冒号）
+                    if (typeValue === 'DIRECTORY') {
+                      if (parts.length !== 1 || value.includes(':')) {
+                        return Promise.reject(
+                          new Error('目录格式应为：module（例如：system）'),
+                        );
+                      }
+                    }
+
+                    // 菜单：module:resource（两层）
+                    if (typeValue === 'MENU') {
+                      if (parts.length !== 2) {
+                        return Promise.reject(
+                          new Error(
+                            '菜单格式应为：module:resource（例如：system:user）',
+                          ),
+                        );
+                      }
+                    }
+
+                    // 按钮：module:resource:action 或 module:resource:action-xxx
+                    if (typeValue === 'BUTTON') {
+                      if (parts.length !== 3) {
+                        return Promise.reject(
+                          new Error('按钮格式应为：module:resource:action'),
+                        );
+                      }
+
+                      // 如果选择了 action，校验 code 的第三部分是否匹配
+                      if (actionValue) {
+                        const codeAction = parts[2].split('-')[0]; // 取 action 部分（去掉 -xxx）
+                        if (codeAction !== actionValue) {
+                          return Promise.reject(
+                            new Error(
+                              `权限代码的 action 部分应与选择的权限动作一致：${actionValue}`,
+                            ),
+                          );
+                        }
+                      }
+                    }
+
+                    // 检查每个部分是否为空
+                    if (parts.some((part: string) => !part.trim())) {
+                      return Promise.reject(
+                        new Error('权限代码各部分不能为空'),
+                      );
+                    }
+
+                    return Promise.resolve();
+                  },
+                },
+              ]}
             >
-              <Input placeholder="如 user:view" />
+              <Input
+                placeholder={
+                  typeValue === 'DIRECTORY'
+                    ? 'system'
+                    : typeValue === 'MENU'
+                    ? 'system:user'
+                    : 'system:user:create 或 system:user:export-excel'
+                }
+              />
             </Form.Item>
           </FormGrid.Item>
           {typeValue === 'BUTTON' && (
@@ -259,25 +415,49 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
                 label="权限动作"
                 rules={[{ required: true, message: '权限动作不能为空' }]}
               >
-                <DictionarySelect options={dict['permission_action']} />
+                <DictionarySelect
+                  options={dict['permission_action'].map((item) => ({
+                    label: `${item.label} (${item.value})`,
+                    value: item.value,
+                  }))}
+                />
               </Form.Item>
             </FormGrid.Item>
           )}
-          {typeValue === 'MENU' && (
+          {(typeValue === 'DIRECTORY' || typeValue === 'MENU') && (
             <>
               <FormGrid.Item span={12}>
-                <Form.Item name={['menuMeta', 'path']} label="菜单路径">
-                  <Input placeholder="/system/permission" />
+                <Form.Item
+                  name={['menuMeta', 'path']}
+                  label={typeValue === 'DIRECTORY' ? '目录路径' : '菜单路径'}
+                >
+                  <Input
+                    placeholder={
+                      typeValue === 'DIRECTORY'
+                        ? '/system'
+                        : '/system/permission'
+                    }
+                  />
                 </Form.Item>
               </FormGrid.Item>
               <FormGrid.Item span={12}>
-                <Form.Item name={['menuMeta', 'icon']} label="菜单图标">
+                <Form.Item
+                  name={['menuMeta', 'icon']}
+                  label={typeValue === 'DIRECTORY' ? '目录图标' : '菜单图标'}
+                >
                   <IconSelector />
                 </Form.Item>
               </FormGrid.Item>
               <FormGrid.Item span={12}>
-                <Form.Item name={['menuMeta', 'component']} label="菜单组件">
-                  <Input placeholder="如 Permission" />
+                <Form.Item
+                  name={['menuMeta', 'component']}
+                  label={typeValue === 'DIRECTORY' ? '目录组件' : '菜单组件'}
+                >
+                  <Input
+                    placeholder={
+                      typeValue === 'DIRECTORY' ? '如 Layout' : '如 Permission'
+                    }
+                  />
                 </Form.Item>
               </FormGrid.Item>
               <FormGrid.Item span={12}>
@@ -288,7 +468,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
               <FormGrid.Item span={12}>
                 <Form.Item
                   name={['menuMeta', 'hidden']}
-                  label="隐藏菜单"
+                  label={typeValue === 'DIRECTORY' ? '隐藏目录' : '隐藏菜单'}
                   valuePropName="checked"
                 >
                   <Switch />
