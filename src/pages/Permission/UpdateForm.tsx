@@ -299,10 +299,10 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           <FormGrid.Item span={24}>
             <Form.Item
               name="description"
-              label="描述信息"
+              label="权限描述"
               {...createFormLayout(3)}
             >
-              <Input.TextArea placeholder="请输入内容"></Input.TextArea>
+              <Input.TextArea placeholder="请输入权限描述"></Input.TextArea>
             </Form.Item>
           </FormGrid.Item>
         </FormGrid>

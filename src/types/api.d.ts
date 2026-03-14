@@ -1,6 +1,6 @@
 /**
  * 此文件由 scripts/gen-api-types.ts 自动生成
- * 生成时间: 2026-03-08T14:10:08.017Z
+ * 生成时间: 2026-03-13T16:03:06.263Z
  * 数据来源: http://localhost:8001/api-json
  * 请勿手动修改此文件
  */
@@ -85,10 +85,10 @@ declare namespace API {
      */
     phone?: string;
     /**
-     * 备注信息
-     * @example 这是一个备注
+     * 用户描述
+     * @example 这是一个用户描述
      */
-    remark?: string;
+    description?: string;
     /** 密码 */
     password: string;
     /** 头像URL */
@@ -220,8 +220,8 @@ declare namespace API {
      * @example male
      */
     gender?: 'unknown' | 'male' | 'female' | 'other';
-    /** 备注信息 */
-    remark?: string;
+    /** 用户描述 */
+    description?: string;
     /**
      * 用户状态
      * @example enabled
@@ -260,10 +260,10 @@ declare namespace API {
      */
     phone?: string;
     /**
-     * 备注信息
-     * @example 这是一个备注
+     * 用户描述
+     * @example 这是一个用户描述
      */
-    remark?: string;
+    description?: string;
     /** 头像URL */
     avatar?: string;
     /**
@@ -469,6 +469,8 @@ declare namespace API {
       | 'import';
     /** 权限描述 */
     description?: string;
+    /** 备注信息 */
+    remark?: string;
     /** 菜单元信息（仅菜单） */
     menuMeta?: CreateMenuMetaDto;
   }
@@ -493,6 +495,8 @@ declare namespace API {
     parentPermissionId?: string;
     /** 权限描述 */
     description?: string;
+    /** 备注信息 */
+    remark?: string;
     /** 菜单元数据（仅 DIRECTORY 和 MENU 类型有） */
     menuMeta?: MenuMetaDto;
     /** 创建时间 */
@@ -521,6 +525,8 @@ declare namespace API {
     parentPermissionId?: string;
     /** 权限描述 */
     description?: string;
+    /** 备注信息 */
+    remark?: string;
     /** 菜单元数据（仅 DIRECTORY 和 MENU 类型有） */
     menuMeta?: MenuMetaDto;
     /** 创建时间 */
@@ -551,6 +557,8 @@ declare namespace API {
       | 'import';
     /** 权限描述 */
     description?: string;
+    /** 备注信息 */
+    remark?: string;
     /** 菜单元信息（仅菜单） */
     menuMeta?: CreateMenuMetaDto;
   }

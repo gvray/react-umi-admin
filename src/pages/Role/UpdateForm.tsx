@@ -143,9 +143,9 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
             </Form.Item>
           </FormGrid.Item>
           <FormGrid.Item span={24}>
-            <Form.Item name="remark" label="备注">
+            <Form.Item name="description" label="角色描述">
               <Input.TextArea
-                placeholder="请输入备注信息"
+                placeholder="请输入角色描述"
                 rows={3}
                 showCount
                 maxLength={200}

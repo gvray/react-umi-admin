@@ -104,7 +104,6 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
                 <Input placeholder="请输入字典编码，例如：user_status" />
               </Form.Item>
             </FormGrid.Item>
-
             <FormGrid.Item span={24}>
               <Form.Item
                 name="name"
@@ -114,13 +113,6 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
                 <Input placeholder="请输入字典名称" />
               </Form.Item>
             </FormGrid.Item>
-
-            <FormGrid.Item span={24}>
-              <Form.Item name="description" label="描述">
-                <TextArea rows={3} placeholder="请输入描述信息" />
-              </Form.Item>
-            </FormGrid.Item>
-
             <FormGrid.Item span={12}>
               <Form.Item
                 name="status"
@@ -131,19 +123,17 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
                 <Select placeholder="请选择" options={dict.dictionary_status} />
               </Form.Item>
             </FormGrid.Item>
-
             <FormGrid.Item span={12}>
               <Form.Item name="sort" label="排序权重" {...createFormLayout(8)}>
                 <InputNumber style={{ width: '100%' }} min={0} max={9999} />
               </Form.Item>
             </FormGrid.Item>
-
-            <FormGrid.Item span={24}>
-              <Form.Item name="remark" label="备注">
-                <TextArea rows={2} placeholder="请输入备注信息" />
-              </Form.Item>
-            </FormGrid.Item>
           </FormGrid>
+          <FormGrid.Item span={24}>
+            <Form.Item name="description" label="字典描述">
+              <TextArea rows={3} placeholder="请输入字典描述" />
+            </Form.Item>
+          </FormGrid.Item>
         </Form>
       </Modal>
     );

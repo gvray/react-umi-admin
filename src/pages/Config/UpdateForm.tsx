@@ -285,31 +285,15 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
             <FormGrid.Item span={24}>
               <Form.Item
                 name="description"
-                label="描述"
+                label="配置描述"
                 rules={[{ max: 200, message: '不能超过200个字符' }]}
                 {...createFormLayout(3)}
               >
                 <TextArea
-                  placeholder="请输入描述"
+                  placeholder="请输入配置描述"
                   rows={2}
                   showCount
                   maxLength={200}
-                />
-              </Form.Item>
-            </FormGrid.Item>
-
-            <FormGrid.Item span={24}>
-              <Form.Item
-                name="remark"
-                label="备注"
-                rules={[{ max: 500, message: '不能超过500个字符' }]}
-                {...createFormLayout(3)}
-              >
-                <TextArea
-                  placeholder="请输入备注"
-                  rows={2}
-                  showCount
-                  maxLength={500}
                 />
               </Form.Item>
             </FormGrid.Item>
