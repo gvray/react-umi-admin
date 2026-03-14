@@ -56,7 +56,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet-async": "^2.0.5",
-    "storetify": "^1.0.0",
+    "storetify": "^1.3.0",
     "umi": "^4.1.1",
     "use-compare": "^1.0.0",
     "zustand": "^5.0.6"
