@@ -183,9 +183,8 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       setVisible(false);
       onOk?.();
       reset();
-    } catch (errorInfo) {
-      console.log(errorInfo, 'TODO');
-      // message.error(errorInfo?.message || '数据验证失败不能提交');
+    } catch (error: any) {
+      message.error(error?.message);
     } finally {
       setConfirmLoading(false);
     }
