@@ -44,7 +44,7 @@
     "@gvray/datekit": "^1.0.1",
     "@gvray/domkit": "^1.0.3",
     "@gvray/eskit": "^1.1.1",
-    "@gvray/logger": "^1.0.0",
+    "@gvray/logger": "^1.1.0",
     "@gvray/pathkit": "^1.0.3",
     "@gvray/request": "^1.0.0",
     "antd": "^5.14.1",

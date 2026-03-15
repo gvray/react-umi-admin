@@ -24,8 +24,8 @@ importers:
         specifier: ^1.1.1
         version: 1.2.0
       '@gvray/logger':
-        specifier: ^1.0.0
-        version: 1.0.0
+        specifier: ^1.1.0
+        version: 1.1.0
       '@gvray/pathkit':
         specifier: ^1.0.3
         version: 1.0.5
@@ -1125,8 +1125,8 @@ packages:
   '@gvray/eskit@1.2.0':
     resolution: {integrity: sha512-0bIxw2D4kzjK8yTIrJ/g/U58ZupIrVy2n1yptPPrJSCzOywOP1+tfuR0QfoKbnhfuFYQTvmlOden+J2lHW2New==, tarball: https://registry.npmjs.org/@gvray/eskit/-/eskit-1.2.0.tgz}
 
-  '@gvray/logger@1.0.0':
-    resolution: {integrity: sha512-dv2u4mhpYfD97bjsDsfLdwBd2SYDX7hwrxUravXOuwMWM7jroWsIk0pdmYfBt/CdPFSsTXP1/nxspqYo/mXf1Q==, tarball: https://registry.npmjs.org/@gvray/logger/-/logger-1.0.0.tgz}
+  '@gvray/logger@1.1.0':
+    resolution: {integrity: sha512-AU6goLvIBZbAbA26AJ+/NZcuwHctHQH+OhhmZAqqywuAEiec7HtHjql80s5GptzFTO7AZ5z/Io4Pyd8lsn1kCw==, tarball: https://registry.npmjs.org/@gvray/logger/-/logger-1.1.0.tgz}
 
   '@gvray/pathkit@1.0.5':
     resolution: {integrity: sha512-60vomvgm5XXpZoyRNxsn75EwMK0d7YcM5FaECIckR8Ap+oeAQzCsCCnA9tiC9F9hQ/Zb3sPUsV8YOvsYMJwiMw==, tarball: https://registry.npmjs.org/@gvray/pathkit/-/pathkit-1.0.5.tgz}
@@ -7720,7 +7720,7 @@ snapshots:
 
   '@gvray/eskit@1.2.0': {}
 
-  '@gvray/logger@1.0.0': {}
+  '@gvray/logger@1.1.0': {}
 
   '@gvray/pathkit@1.0.5':
     dependencies:

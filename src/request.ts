@@ -2,7 +2,8 @@ import { createClient } from '@gvray/request';
 import { httpConfig } from './httpConfig';
 import { tokenManager } from './utils';
 
-createClient({
+// 创建并初始化请求客户端
+const client = createClient({
   timeout: __APP_API_TIMEOUT__,
   baseURL: __APP_API_URL__,
   errorConfig: httpConfig.errorConfig,
@@ -15,3 +16,6 @@ createClient({
     logging: true,
   },
 });
+
+// 导出客户端实例，确保模块被正确加载
+export default client;

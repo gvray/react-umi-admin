@@ -183,8 +183,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       setVisible(false);
       onOk?.();
       reset();
-    } catch (error: any) {
-      message.error(error?.message);
+    } catch (error) {
     } finally {
       setConfirmLoading(false);
     }
