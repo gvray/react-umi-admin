@@ -14,6 +14,11 @@ let isShowingAuthModal = false;
 
 // 处理 401 未授权错误
 const handle401Unauthorized = () => {
+  // 如果已经在登录页面，不需要弹窗
+  if (history.location.pathname === '/login') {
+    return;
+  }
+
   if (isShowingAuthModal) return;
 
   isShowingAuthModal = true;

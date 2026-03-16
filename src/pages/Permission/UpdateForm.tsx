@@ -3,7 +3,7 @@ import { DEFAULT_MODAL_TITLE } from '@/constants';
 import { useFeedback } from '@/hooks';
 import { createPermission, updatePermission } from '@/services/permission';
 import type { DictOption } from '@/types/dict';
-import { createFormLayout } from '@/utils';
+import { createFormLayout, logger } from '@/utils';
 import { VIRTUAL_ROOT_ID } from '@/utils/tree';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import {
@@ -107,8 +107,9 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
   // 当权限类型改变时，重新校验权限代码字段
   useEffect(() => {
     if (typeValue) {
-      form.validateFields(['code']).catch(() => {
+      form.validateFields(['code']).catch((error) => {
         // 忽略校验错误，只是触发重新校验
+        logger.debug('Permission code validation error on type change:', error);
       });
     }
   }, [typeValue, form]);
@@ -184,6 +185,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       onOk?.();
       reset();
     } catch (error) {
+      logger.error(error);
     } finally {
       setConfirmLoading(false);
     }

@@ -60,8 +60,8 @@ const UpdateFormFunction: ForwardRefRenderFunction<
       setVisible(false);
       onOk?.();
       reset();
-    } catch (errorInfo) {
-      logger.error(`更新用户失败：${errorInfo}`);
+    } catch (error) {
+      logger.error(error);
     } finally {
       setConfirmLoading(false);
     }

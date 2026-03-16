@@ -77,7 +77,7 @@ const UserPage = () => {
       };
       callRef(updateFormRef, (t) => t.show('修改用户', data));
     } catch (error) {
-      logger.error(error as string);
+      logger.error(error);
     }
   };
 

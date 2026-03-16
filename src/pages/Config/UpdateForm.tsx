@@ -53,8 +53,8 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
         if (values.type === 'json' && typeof values.value === 'string') {
           try {
             values.value = JSON.stringify(JSON.parse(values.value));
-          } catch {
-            /* 校验已拦截 */
+          } catch (error) {
+            logger.debug('JSON validation error:', error);
           }
         }
 
@@ -72,8 +72,7 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
         onOk?.();
         reset();
       } catch (error) {
-        logger.error('提交失败:', error);
-        message.error('数据验证失败不能提交');
+        logger.error(error);
       } finally {
         setConfirmLoading(false);
       }

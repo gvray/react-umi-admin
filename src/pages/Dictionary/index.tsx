@@ -9,7 +9,7 @@ import { TableProRef } from '@/components/TablePro';
 import { useFeedback } from '@/hooks';
 import useDict from '@/hooks/useDict';
 import type { DictOption } from '@/types/dict';
-import { callRef } from '@/utils';
+import { callRef, logger } from '@/utils';
 import {
   BookOutlined,
   DeleteOutlined,
@@ -75,7 +75,7 @@ const DictionaryPage = () => {
           tableReload();
           message.success(`字典类型"${record.name}"删除成功`);
         } catch (error) {
-          message.error('删除失败');
+          logger.error(error);
         }
       },
     });
@@ -87,7 +87,7 @@ const DictionaryPage = () => {
       const msg: any = await fetchDictionaryTypeDetail(typeId);
       callRef(updateFormRef, (t) => t.show('修改字典类型', { ...msg }));
     } catch (error) {
-      message.error('获取字典类型详情失败');
+      logger.error(error);
     }
   };
 

@@ -6,7 +6,7 @@ import {
   updateDictionaryType,
 } from '@/services/dictionary';
 import type { DictOption } from '@/types/dict';
-import { createFormLayout } from '@/utils';
+import { createFormLayout, logger } from '@/utils';
 import { Form, Input, InputNumber, Modal, Select } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 
@@ -63,7 +63,7 @@ const UpdateForm = forwardRef<UpdateFormRef, UpdateFormProps>(
         setVisible(false);
         onOk();
       } catch (error) {
-        message.error('数据验证失败不能提交');
+        logger.error(error);
       } finally {
         setLoading(false);
       }

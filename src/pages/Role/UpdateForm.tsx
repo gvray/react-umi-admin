@@ -48,8 +48,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       onOk?.();
       reset();
     } catch (error) {
-      const msg = error instanceof Error ? error.message : String(error);
-      logger.error(`更新角色失败：${msg}`);
+      logger.error(error);
     } finally {
       setConfirmLoading(false);
     }

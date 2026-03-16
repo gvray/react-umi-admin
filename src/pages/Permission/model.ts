@@ -4,6 +4,7 @@ import {
   queryPermissionParentList,
   queryPermissionTree,
 } from '@/services/permission';
+import { logger } from '@/utils';
 
 import { useCallback, useEffect, useState } from 'react';
 
@@ -37,7 +38,9 @@ export const useUpdataFormModel = (open: boolean) => {
       if (res.data) {
         setData(res.data);
       }
-    } catch (error) {}
+    } catch (error) {
+      logger.error(error);
+    }
   };
   useEffect(() => {
     if (open) {

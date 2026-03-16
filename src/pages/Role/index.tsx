@@ -89,7 +89,7 @@ const RolePage = () => {
       const data = await fetchRoleDetail(roleId);
       callRef(updateFormRef, (t) => t.show('修改角色', data));
     } catch (error) {
-      logger.error(error as string);
+      logger.error(error);
     }
   };
 

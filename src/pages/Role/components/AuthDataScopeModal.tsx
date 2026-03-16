@@ -188,7 +188,7 @@ export default function AuthDataScopeModal({
 
       setDepartments(departmentsRes.data || []);
     } catch (error) {
-      message.error('获取数据失败');
+      logger.error(error);
     } finally {
       setLoading(false);
     }

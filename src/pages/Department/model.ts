@@ -4,6 +4,7 @@ import {
   queryDepartmentList,
   queryDepartmentTree,
 } from '@/services/department';
+import { logger } from '@/utils';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { withVirtualRoot } from './util';
 
@@ -39,7 +40,9 @@ export const useUpdataFormModel = (open: boolean) => {
       if (res.data?.items?.length) {
         setData(withVirtualRoot(res.data.items));
       }
-    } catch (error) {}
+    } catch (error) {
+      logger.error(error);
+    }
   };
   useEffect(() => {
     if (open) {

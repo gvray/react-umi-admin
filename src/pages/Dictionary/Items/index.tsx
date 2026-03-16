@@ -9,7 +9,7 @@ import { TableProRef } from '@/components/TablePro';
 import { useFeedback } from '@/hooks';
 import useDict from '@/hooks/useDict';
 import type { DictOption } from '@/types/dict';
-import { callRef } from '@/utils';
+import { callRef, logger } from '@/utils';
 import {
   ArrowLeftOutlined,
   BookOutlined,
@@ -84,7 +84,7 @@ const DictionaryItemsPage = () => {
           tableReload();
           message.success(`字典项"${record.label}"删除成功`);
         } catch (error) {
-          message.error('删除失败');
+          logger.error(error);
         }
       },
     });
@@ -101,7 +101,7 @@ const DictionaryItemsPage = () => {
         }),
       );
     } catch (error) {
-      message.error('获取字典项详情失败');
+      logger.error(error);
     }
   };
 

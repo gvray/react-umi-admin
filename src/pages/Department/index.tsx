@@ -50,8 +50,7 @@ const DepartmentPage = () => {
           callRef(tableProRef, (t) => t.reload());
           message.success('删除成功');
         } catch (error) {
-          logger.error('Failed to delete department:', error);
-          message.error('删除失败');
+          logger.error(error);
         }
       },
     });
@@ -63,8 +62,7 @@ const DepartmentPage = () => {
       const msg: any = await fetchDepartmentDetail(departmentId);
       callRef(updateFormRef, (t) => t.show('修改部门', msg));
     } catch (error) {
-      logger.error('Failed to fetch department detail:', error);
-      message.error('获取部门详情失败');
+      logger.error(error);
     }
   };
   const handleOk = () => {

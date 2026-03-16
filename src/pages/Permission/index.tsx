@@ -70,7 +70,7 @@ const ResourcePage = () => {
             message.success(`删除成功`);
           })
           .catch((error) => {
-            logger.error(error as string);
+            logger.error(error);
           });
       },
     });
@@ -82,7 +82,7 @@ const ResourcePage = () => {
       const data: any = await fetchPermissionDetail(permissionId);
       callRef(updateFormRef, (t) => t.show('修改权限', data));
     } catch (error) {
-      logger.error(error as string);
+      logger.error(error);
     }
   };
   const handleOk = () => {

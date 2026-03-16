@@ -63,9 +63,8 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       setVisible(false);
       onOk?.();
       reset();
-    } catch (errorInfo) {
-      logger.error('Department form validation failed:', errorInfo);
-      message.error('数据验证失败不能提交');
+    } catch (error) {
+      logger.error(error);
     } finally {
       setConfirmLoading(false);
     }

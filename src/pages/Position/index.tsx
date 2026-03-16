@@ -58,8 +58,7 @@ const PositionPage = () => {
           tableReload();
           message.success('删除成功');
         } catch (error) {
-          logger.error('Failed to delete position:', error);
-          message.error('删除失败');
+          logger.error(error);
         }
       },
     });
@@ -71,8 +70,7 @@ const PositionPage = () => {
       const msg = await fetchPositionDetail(String(positionId));
       callRef(updateFormRef, (t) => t.show('修改岗位', { ...msg }));
     } catch (error) {
-      logger.error('Failed to fetch position detail:', error);
-      message.error('获取岗位详情失败');
+      logger.error(error);
     }
   };
 

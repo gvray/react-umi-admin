@@ -60,7 +60,9 @@ const ConfigPage = () => {
             tableReload();
             message.success('删除成功');
           })
-          .catch(() => {});
+          .catch((error) => {
+            logger.error(error);
+          });
       },
     });
   };
@@ -70,7 +72,7 @@ const ConfigPage = () => {
       const data: any = await fetchConfigDetail(record.configId);
       callRef(updateFormRef, (f) => f.show('修改配置', data));
     } catch (error) {
-      logger.error(error as string);
+      logger.error(error);
     }
   };
 
@@ -79,8 +81,8 @@ const ConfigPage = () => {
     try {
       const data = await fetchConfigDetail(record.configId);
       setCurrentConfig(data);
-    } catch {
-      setViewVisible(false);
+    } catch (error) {
+      logger.error(error);
     }
   };
 

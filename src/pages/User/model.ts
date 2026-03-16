@@ -2,6 +2,7 @@ import { queryDepartmentList } from '@/services/department';
 import { queryPositionList } from '@/services/position';
 import { queryRoleList } from '@/services/role';
 import { deleteUser, getUserById, queryUserList } from '@/services/user';
+import { logger } from '@/utils';
 import { useCallback, useEffect, useState } from 'react';
 
 const useUpdateForm = (open: boolean) => {
@@ -20,7 +21,7 @@ const useUpdateForm = (open: boolean) => {
         setDepartmentList(res.data.items);
       }
     } catch (error) {
-      console.log(error);
+      logger.error(error);
     }
   };
 
@@ -30,7 +31,9 @@ const useUpdateForm = (open: boolean) => {
       if (res.data?.items) {
         setRoleList(res.data.items);
       }
-    } catch (error) {}
+    } catch (error) {
+      logger.error(error);
+    }
   };
 
   const fetchPositionList = async () => {
@@ -39,7 +42,9 @@ const useUpdateForm = (open: boolean) => {
       if (res.data?.items) {
         setPositionList(res.data.items);
       }
-    } catch (error) {}
+    } catch (error) {
+      logger.error(error);
+    }
   };
 
   useEffect(() => {

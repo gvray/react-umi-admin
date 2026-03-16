@@ -55,9 +55,8 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
       setVisible(false);
       onOk?.();
       reset();
-    } catch (errorInfo) {
-      logger.error('Failed to submit position form:', errorInfo);
-      message.error('数据验证失败不能提交');
+    } catch (error) {
+      logger.error(error);
     } finally {
       setConfirmLoading(false);
     }
