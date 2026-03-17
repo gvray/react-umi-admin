@@ -1,6 +1,7 @@
 import { DateTimeFormat, StatusTag } from '@/components';
 import { useFeedback } from '@/hooks';
 import type { DictOption } from '@/types/dict';
+import { logger } from '@/utils';
 import { CopyOutlined, EyeOutlined } from '@ant-design/icons';
 import { copyText } from '@gvray/adminkit';
 import { Button, Descriptions, Modal, Tag, Typography } from 'antd';
@@ -51,7 +52,9 @@ const ConfigValueViewer: React.FC<ConfigValueViewerProps> = ({
   const handleCopy = () => {
     copyText(config.value)
       .then(() => message.success('已复制'))
-      .catch(() => message.error('复制失败'));
+      .catch((error) => {
+        logger.error(error);
+      });
   };
 
   const groupLabel =

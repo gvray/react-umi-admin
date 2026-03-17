@@ -41,8 +41,8 @@ export const useTablePro = (
       if (data.total !== undefined) {
         setTotal(data.total ?? data.length);
       }
-    } catch (error: any) {
-      logger.error(error.info);
+    } catch (error) {
+      logger.error(error);
       setListData([]);
     } finally {
       setLoading(false);

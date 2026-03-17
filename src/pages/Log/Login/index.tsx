@@ -9,7 +9,7 @@ import { TableProRef } from '@/components/TablePro';
 import { useFeedback } from '@/hooks';
 import useDict from '@/hooks/useDict';
 import type { DictOption } from '@/types/dict';
-import { callRef } from '@/utils';
+import { callRef, logger } from '@/utils';
 import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { Modal, Space, Typography } from 'antd';
 import React, { useRef } from 'react';
@@ -94,8 +94,8 @@ const LoginLog: React.FC = () => {
             message.success('删除成功');
             tableReload();
           })
-          .catch(() => {
-            message.error('删除失败');
+          .catch((error) => {
+            logger.error(error);
           })
           .finally(() => setDeleting(false));
       },
@@ -116,8 +116,8 @@ const LoginLog: React.FC = () => {
             message.success('清理成功');
             tableReload();
           })
-          .catch(() => {
-            message.error('清理失败');
+          .catch((error) => {
+            logger.error(error);
           })
           .finally(() => setClearing(false));
       },

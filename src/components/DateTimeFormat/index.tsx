@@ -1,3 +1,4 @@
+import { logger } from '@/utils';
 import dayjs from 'dayjs';
 import React from 'react';
 import { styled } from 'umi';
@@ -46,6 +47,7 @@ const DateTimeFormat: React.FC<DateTimeFormatProps> = ({
       </Span>
     );
   } catch (error) {
+    logger.debug('Date format error:', error);
     return (
       <Span className={className} style={style}>
         {fallback}

@@ -237,9 +237,8 @@ export default function AuthDataScopeModal({
       message.success('数据权限分配成功');
       onSuccess?.();
       onCancel?.();
-    } catch (error: unknown) {
-      const msg = error instanceof Error ? error.message : String(error);
-      logger.error(`数据权限分配失败：${msg}`);
+    } catch (error) {
+      logger.error(error);
     } finally {
       setSubmitting(false);
     }
