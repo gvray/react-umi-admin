@@ -59,27 +59,27 @@ RUN apk add --no-cache curl tzdata
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# 创建非 root 用户
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001
+# 创建非 root 用户（用于运行 nginx）
+RUN addgroup -g 1001 -S webapp && \
+    adduser -S webapp -u 1001
 
 # 复制 nginx 配置
-COPY --chown=nextjs:nodejs docker/nginx.conf /etc/nginx/nginx.conf
-COPY --chown=nextjs:nodejs docker/default.conf /etc/nginx/conf.d/default.conf
+COPY --chown=webapp:webapp docker/nginx.conf /etc/nginx/nginx.conf
+COPY --chown=webapp:webapp docker/default.conf /etc/nginx/conf.d/default.conf
 
 # 从 builder 阶段复制构建产物（生产环境构建输出在 dist/prod）
-COPY --from=builder --chown=nextjs:nodejs /app/dist/prod /usr/share/nginx/html
+COPY --from=builder --chown=webapp:webapp /app/dist/prod /usr/share/nginx/html
 
 # 创建日志目录
 RUN mkdir -p /var/log/nginx && \
-    chown -R nextjs:nodejs /var/log/nginx && \
-    chown -R nextjs:nodejs /var/cache/nginx && \
-    chown -R nextjs:nodejs /etc/nginx && \
+    chown -R webapp:webapp /var/log/nginx && \
+    chown -R webapp:webapp /var/cache/nginx && \
+    chown -R webapp:webapp /etc/nginx && \
     touch /var/run/nginx.pid && \
-    chown -R nextjs:nodejs /var/run/nginx.pid
+    chown -R webapp:webapp /var/run/nginx.pid
 
 # 切换到非 root 用户
-USER nextjs
+USER webapp
 
 # 暴露端口
 EXPOSE 80

@@ -29,8 +29,9 @@
 ## 📚 文档导航
 
 - 👉 [Roadmap](docs/roadmap.md) — 功能开发清单与实现状态
-- 👉 [Architecture Documentation](./docs/architecture.md) — 架构设计与实现
-- 👉 [UMI 限制分析](docs/UMI_LIMITATIONS.md) — Umi 框架局限性与最佳实践
+- 👉 [Architecture Documentation](docs/architecture.md) — 架构设计与实现
+- 👉 [Docker 部署指南](docs/docker.md) — Docker 化部署完整方案
+- 👉 [UMI 限制分析](docs/umi-limitations.md) — Umi 框架局限性与最佳实践
 - 👉 [架构特性](#-架构特性) — 系统运行时能力、平台基础设施、工程化能力
 - 👉 [核心功能模块](#-核心功能模块) — 用户、权限、配置、日志等
 - 👉 [开发指南](docs/developer-guide.md) — 环境搭建、脚手架、插件机制

@@ -14,40 +14,28 @@
 
 ## 🚀 快速开始
 
-### 方式一：使用 Makefile（推荐）
+### 方式一：使用 pnpm scripts（推荐）
 
 ```bash
-# 查看所有可用命令
-make help
-
 # 构建镜像
-make build
+pnpm docker:build
 
-# 部署应用
-make deploy
-
-# 查看状态
-make status
+# 运行容器
+pnpm docker:run
 
 # 查看日志
-make logs
+pnpm docker:logs
+
+# 停止容器
+pnpm docker:stop
+
+# 使用 docker-compose
+pnpm docker:compose:up
+pnpm docker:compose:logs
+pnpm docker:compose:down
 ```
 
-### 方式二：使用脚本
-
-```bash
-# 构建镜像
-./scripts/build.sh
-
-# 部署应用
-./scripts/deploy.sh
-
-# 查看帮助
-./scripts/build.sh --help
-./scripts/deploy.sh --help
-```
-
-### 方式三：使用 Docker Compose
+### 方式二：使用 Docker Compose
 
 ```bash
 # 启动所有服务
@@ -63,46 +51,54 @@ docker-compose logs -f
 docker-compose down
 ```
 
+### 方式三：使用脚本（DevOps/高级功能）
+
+```bash
+# 构建镜像
+./docker/scripts/build.sh
+
+# 部署应用
+./docker/scripts/deploy.sh
+
+# 查看帮助
+./docker/scripts/build.sh --help
+./docker/scripts/deploy.sh --help
+```
+
 ## 🏗️ 构建镜像
 
 ### 基础构建
 
 ```bash
 # 构建本地镜像
-make build
+pnpm docker:build
 
-# 或使用脚本
-./scripts/build.sh
+# 或使用脚本（高级功能）
+./docker/scripts/build.sh
 ```
 
 ### 指定版本构建
 
 ```bash
 # 构建指定版本
-./scripts/build.sh -v 1.0.0
+./docker/scripts/build.sh -v 1.0.0
 
 # 构建并推送到仓库
-./scripts/build.sh -v 1.0.0 -p
+./docker/scripts/build.sh -v 1.0.0 -p
 ```
 
 ### 多架构构建
 
 ```bash
-# 构建 amd64 + arm64 架构
-make build-multiarch
-
-# 或使用脚本
-./scripts/build.sh -m
+# 构建 amd64 + arm64 架构（需要使用脚本）
+./docker/scripts/build.sh -m
 ```
 
 ### 安全扫描
 
 ```bash
-# 构建并扫描安全漏洞
-make build-scan
-
-# 或使用脚本
-./scripts/build.sh -s
+# 构建并扫描安全漏洞（需要使用脚本）
+./docker/scripts/build.sh -s
 ```
 
 ## 📦 部署应用
@@ -110,21 +106,18 @@ make build-scan
 ### 单容器部署
 
 ```bash
-# 部署最新版本
-make deploy
+# 运行容器
+pnpm docker:run
 
-# 部署指定版本
-VERSION=1.0.0 make deploy
-
-# 或使用脚本
-./scripts/deploy.sh -v 1.0.0
+# 或使用脚本部署（支持更多功能）
+./docker/scripts/deploy.sh -v 1.0.0
 ```
 
 ### Docker Compose 部署
 
 ```bash
 # 启动所有服务
-make deploy-compose
+pnpm docker:compose:up
 
 # 或直接使用 docker-compose
 docker-compose up -d
@@ -133,11 +126,8 @@ docker-compose up -d
 ### 回滚操作
 
 ```bash
-# 回滚到上一个版本
-make rollback
-
-# 或使用脚本
-./scripts/deploy.sh rollback
+# 回滚到上一个版本（需要使用脚本）
+./docker/scripts/deploy.sh rollback
 ```
 
 ## 🔧 配置说明
@@ -189,29 +179,32 @@ ports:
   - "8888:80"  # 改为 8888 端口
 ```
 
-## 📊 监控和日志
+## 监控和日志
 
 ### 查看容器状态
 
 ```bash
-# 查看状态
-make status
+# 查看容器日志
+pnpm docker:logs
+
+# 或使用 docker-compose
+pnpm docker:compose:logs
 
 # 查看资源使用
-make stats
+docker stats react-umi-admin-web
 
 # 健康检查
-make health
+curl http://localhost:8080/health
 ```
 
 ### 查看日志
 
 ```bash
 # 实时查看日志
-make logs
+pnpm docker:logs
 
 # 查看最近 100 行日志
-docker-compose logs --tail=100
+docker logs --tail=100 react-umi-admin-web
 
 # 查看 Nginx 访问日志
 tail -f logs/nginx/access.log
@@ -224,9 +217,6 @@ tail -f logs/nginx/error.log
 
 ```bash
 # 进入容器 shell
-make shell
-
-# 或直接使用 docker
 docker exec -it react-umi-admin-web sh
 ```
 
@@ -247,8 +237,8 @@ USER nextjs
 定期扫描镜像安全漏洞：
 
 ```bash
-# 使用 Trivy 扫描
-make build-scan
+# 使用脚本构建并扫描
+./docker/scripts/build.sh -s
 
 # 或手动扫描
 trivy image react-umi-admin:latest
@@ -291,11 +281,11 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          ./scripts/build.sh -v ${{ github.ref_name }} -p
+          ./docker/scripts/build.sh -v ${{ github.ref_name }} -p
 
       - name: Deploy
         run: |
-          ./scripts/deploy.sh -v ${{ github.ref_name }}
+          ./docker/scripts/deploy.sh -v ${{ github.ref_name }}
 ```
 
 ### GitLab CI 示例
@@ -308,12 +298,12 @@ stages:
 build:
   stage: build
   script:
-    - ./scripts/build.sh -v $CI_COMMIT_TAG -p
+    - ./docker/scripts/build.sh -v $CI_COMMIT_TAG -p
 
 deploy:
   stage: deploy
   script:
-    - ./scripts/deploy.sh -v $CI_COMMIT_TAG
+    - ./docker/scripts/deploy.sh -v $CI_COMMIT_TAG
   only:
     - tags
 ```
@@ -348,10 +338,10 @@ curl http://localhost/health
 
 ```bash
 # 清理构建缓存
-make clean
+docker builder prune -f
 
 # 重新构建
-make build
+pnpm docker:build
 
 # 查看详细日志
 docker build --no-cache --progress=plain .
@@ -369,17 +359,17 @@ docker run -p 8888:80 react-umi-admin:latest
 
 ## 📚 常用命令速查
 
-| 命令            | 说明         |
-| --------------- | ------------ |
-| `make build`    | 构建镜像     |
-| `make deploy`   | 部署应用     |
-| `make status`   | 查看状态     |
-| `make logs`     | 查看日志     |
-| `make rollback` | 回滚版本     |
-| `make clean`    | 清理构建产物 |
-| `make health`   | 健康检查     |
-| `make shell`    | 进入容器     |
-| `make stats`    | 资源使用     |
+| 命令                                     | 说明              |
+| ---------------------------------------- | ----------------- |
+| `pnpm docker:build`                      | 构建镜像          |
+| `pnpm docker:run`                        | 运行容器          |
+| `pnpm docker:logs`                       | 查看日志          |
+| `pnpm docker:stop`                       | 停止容器          |
+| `pnpm docker:compose:up`                 | 启动所有服务      |
+| `pnpm docker:compose:down`               | 停止所有服务      |
+| `pnpm docker:compose:logs`               | 查看 compose 日志 |
+| `docker exec -it react-umi-admin-web sh` | 进入容器          |
+| `docker stats react-umi-admin-web`       | 查看资源使用      |
 
 ## 🔗 相关资源
 
@@ -410,16 +400,3 @@ docker run -p 8888:80 react-umi-admin:latest
 4. **资源限制**：
    - 生产环境建议添加资源限制（CPU、内存）
    - 在 `docker-compose.yml` 中添加 `deploy.resources` 配置
-
-## 🎉 总结
-
-通过以上配置，你已经拥有了一套完整的 Docker 化解决方案，包括：
-
-- ✅ 优化的多阶段构建
-- ✅ 生产级 Nginx 配置
-- ✅ 完善的健康检查
-- ✅ 便捷的构建和部署脚本
-- ✅ 灵活的 Docker Compose 编排
-- ✅ 安全扫描和最佳实践
-
-现在可以开始使用 `make build` 和 `make deploy` 来构建和部署你的应用了！
