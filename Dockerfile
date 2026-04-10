@@ -44,9 +44,6 @@ RUN npm install -g pnpm
 # 执行生产环境构建
 RUN pnpm run build:prod
 
-# 清理开发依赖，只保留生产依赖
-RUN pnpm install --frozen-lockfile --prod
-
 # ==========================================
 # Stage 3: 生产环境运行
 # ==========================================

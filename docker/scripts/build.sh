@@ -5,7 +5,7 @@
 # 支持多架构构建和版本管理
 # ==========================================
 
-set -e
+set -euo pipefail
 
 # 颜色输出
 RED='\033[0;31m'
@@ -16,7 +16,7 @@ NC='\033[0m' # No Color
 # 配置变量
 IMAGE_NAME="react-umi-admin"
 REGISTRY="${DOCKER_REGISTRY:-docker.io}"
-NAMESPACE="${DOCKER_NAMESPACE:-your-namespace}"
+NAMESPACE="${DOCKER_NAMESPACE:-gvray}"
 VERSION="${VERSION:-latest}"
 BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
@@ -27,15 +27,15 @@ FULL_IMAGE_NAME="${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}"
 
 # 打印信息
 print_info() {
-    echo -e "${GREEN}[INFO]${NC} $1"
+    printf "${GREEN}[INFO]${NC} %s\n" "$1"
 }
 
 print_warn() {
-    echo -e "${YELLOW}[WARN]${NC} $1"
+    printf "${YELLOW}[WARN]${NC} %s\n" "$1"
 }
 
 print_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
+    printf "${RED}[ERROR]${NC} %s\n" "$1"
 }
 
 # 检查 Docker 是否安装
@@ -45,6 +45,15 @@ check_docker() {
         exit 1
     fi
     print_info "Docker 版本: $(docker --version)"
+}
+
+# 检查是否支持 buildx
+check_buildx() {
+    if docker buildx version &> /dev/null; then
+        return 0
+    else
+        return 1
+    fi
 }
 
 # 清理旧的构建缓存
@@ -64,31 +73,48 @@ build_image() {
     print_info "Git Commit: ${GIT_COMMIT}"
     print_info "Git Branch: ${GIT_BRANCH}"
     
-    # 构建参数
-    BUILD_ARGS=(
-        --build-arg "BUILD_DATE=${BUILD_DATE}"
-        --build-arg "GIT_COMMIT=${GIT_COMMIT}"
-        --build-arg "GIT_BRANCH=${GIT_BRANCH}"
-        --build-arg "VERSION=${VERSION}"
-        --platform "${platform}"
-        --tag "${FULL_IMAGE_NAME}:${VERSION}"
-        --tag "${FULL_IMAGE_NAME}:${GIT_COMMIT}"
-    )
-    
-    # 如果是 latest 版本，添加 latest 标签
-    if [ "${VERSION}" = "latest" ]; then
-        BUILD_ARGS+=(--tag "${FULL_IMAGE_NAME}:latest")
-    fi
-    
-    # 如果需要推送，添加 push 参数
-    if [ "${push}" = "true" ]; then
-        BUILD_ARGS+=(--push)
+    # 检查是否支持 buildx
+    if check_buildx && [[ "${platform}" == *","* || "${push}" == "true" ]]; then
+        # 使用 buildx（支持多架构和直接推送）
+        print_info "使用 docker buildx build"
+        
+        BUILD_ARGS=(
+            --build-arg "BUILD_DATE=${BUILD_DATE}"
+            --build-arg "GIT_COMMIT=${GIT_COMMIT}"
+            --build-arg "GIT_BRANCH=${GIT_BRANCH}"
+            --build-arg "VERSION=${VERSION}"
+            --platform "${platform}"
+            --tag "${FULL_IMAGE_NAME}:${VERSION}"
+            --tag "${FULL_IMAGE_NAME}:${GIT_COMMIT}"
+        )
+        
+        # 如果是 latest 版本，添加 latest 标签
+        if [ "${VERSION}" = "latest" ]; then
+            BUILD_ARGS+=(--tag "${FULL_IMAGE_NAME}:latest")
+        fi
+        
+        # 如果需要推送，添加 push 参数
+        if [ "${push}" = "true" ]; then
+            BUILD_ARGS+=(--push)
+        else
+            BUILD_ARGS+=(--load)
+        fi
+        
+        docker buildx build "${BUILD_ARGS[@]}" .
     else
-        BUILD_ARGS+=(--load)
+        # 使用普通 docker build
+        print_info "使用 docker build"
+        
+        docker build \
+            --build-arg "BUILD_DATE=${BUILD_DATE}" \
+            --build-arg "GIT_COMMIT=${GIT_COMMIT}" \
+            --build-arg "GIT_BRANCH=${GIT_BRANCH}" \
+            --build-arg "VERSION=${VERSION}" \
+            --tag "${FULL_IMAGE_NAME}:${VERSION}" \
+            --tag "${FULL_IMAGE_NAME}:${GIT_COMMIT}" \
+            $([ "${VERSION}" = "latest" ] && echo "--tag ${FULL_IMAGE_NAME}:latest") \
+            .
     fi
-    
-    # 执行构建
-    docker buildx build "${BUILD_ARGS[@]}" .
     
     if [ $? -eq 0 ]; then
         print_info "镜像构建成功！"
@@ -179,7 +205,7 @@ Docker 镜像构建脚本
 
 环境变量:
     DOCKER_REGISTRY         Docker 仓库地址 (默认: docker.io)
-    DOCKER_NAMESPACE        Docker 命名空间 (默认: your-namespace)
+    DOCKER_NAMESPACE        Docker 命名空间 (默认: gvray)
     VERSION                 镜像版本号 (默认: latest)
 
 EOF

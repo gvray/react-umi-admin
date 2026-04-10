@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * Docker 镜像构建脚本（跨平台）
  * 包装 docker/scripts/build.sh，提供跨平台支持
@@ -17,7 +15,7 @@ const args = process.argv.slice(2);
 
 // 根据平台选择执行方式
 // - macOS (darwin) / Linux: 使用 sh
-// - Windows (win32): 使用 bash (需要 Git Bash 或 WSL)
+// - Windows (win32): 使用 bash (需要 WSL 或 Git Bash)
 const command = currentPlatform === 'win32' ? 'bash' : 'sh';
 const shellArgs = [scriptPath, ...args];
 

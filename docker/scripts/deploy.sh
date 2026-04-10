@@ -5,7 +5,7 @@
 # 支持多环境部署和回滚
 # ==========================================
 
-set -e
+set -euo pipefail
 
 # 颜色输出
 RED='\033[0;31m'
@@ -17,7 +17,7 @@ NC='\033[0m'
 # 配置变量
 IMAGE_NAME="react-umi-admin"
 REGISTRY="${DOCKER_REGISTRY:-docker.io}"
-NAMESPACE="${DOCKER_NAMESPACE:-your-namespace}"
+NAMESPACE="${DOCKER_NAMESPACE:-gvray}"
 VERSION="${VERSION:-latest}"
 CONTAINER_NAME="${CONTAINER_NAME:-react-umi-admin-web}"
 ENVIRONMENT="${ENVIRONMENT:-production}"
@@ -27,19 +27,19 @@ FULL_IMAGE_NAME="${REGISTRY}/${NAMESPACE}/${IMAGE_NAME}:${VERSION}"
 
 # 打印信息
 print_info() {
-    echo -e "${GREEN}[INFO]${NC} $1"
+    printf "${GREEN}[INFO]${NC} %s\n" "$1"
 }
 
 print_warn() {
-    echo -e "${YELLOW}[WARN]${NC} $1"
+    printf "${YELLOW}[WARN]${NC} %s\n" "$1"
 }
 
 print_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
+    printf "${RED}[ERROR]${NC} %s\n" "$1"
 }
 
 print_step() {
-    echo -e "${BLUE}[STEP]${NC} $1"
+    printf "${BLUE}[STEP]${NC} %s\n" "$1"
 }
 
 # 检查 Docker 是否运行
