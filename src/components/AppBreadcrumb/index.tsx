@@ -32,6 +32,9 @@ function buildBreadcrumbs(
     for (const route of list) {
       if (!route.path) continue;
 
+      // 跳过通配符路由（如 '*'）
+      if (route.path === '*' || route.path.includes('*')) continue;
+
       // 动态路由匹配
       const pattern = route.path.replace(/:[^/]+/g, '[^/]+');
       const regex = new RegExp(`^${pattern}$`);

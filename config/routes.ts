@@ -28,6 +28,11 @@ const routes = [
           permissions: [],
         },
       },
+      // 404 页面也需要登录后才能访问
+      {
+        path: '*',
+        component: '404',
+      },
     ],
   },
   {
@@ -152,7 +157,17 @@ const routes = [
       },
     ],
   },
-  { path: '*', component: '404' },
+  // 捕获所有其他路径，也需要登录
+  {
+    path: '*',
+    component: '@/wrappers/RouteGuard',
+    routes: [
+      {
+        path: '*',
+        component: '404',
+      },
+    ],
+  },
 ];
 
 export default routes;

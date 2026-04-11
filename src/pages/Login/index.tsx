@@ -85,7 +85,12 @@ const LoginPage: React.FC = () => {
 
       // 获取 redirect 参数，登录后跳转回原页面
       const redirect = searchParams.get('redirect');
-      navigate(redirect || '/');
+      // 安全验证：只允许内部路径，防止开放重定向漏洞
+      const safeRedirect =
+        redirect && redirect.startsWith('/') && !redirect.startsWith('//')
+          ? redirect
+          : '/';
+      navigate(safeRedirect);
     } catch (error) {
       tokenManager.clearTokens();
     } finally {

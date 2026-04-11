@@ -67,6 +67,10 @@ COPY --chown=webapp:webapp docker/default.conf /etc/nginx/conf.d/default.conf
 # 从 builder 阶段复制构建产物（生产环境构建输出在 dist/prod）
 COPY --from=builder --chown=webapp:webapp /app/dist/prod /usr/share/nginx/html
 
+# 复制自定义错误页面
+COPY --chown=webapp:webapp docker/error-pages/404.html /usr/share/nginx/html/404.html
+COPY --chown=webapp:webapp docker/error-pages/50x.html /usr/share/nginx/html/50x.html
+
 # 创建日志目录
 RUN mkdir -p /var/log/nginx && \
     chown -R webapp:webapp /var/log/nginx && \

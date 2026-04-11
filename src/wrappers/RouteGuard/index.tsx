@@ -1,6 +1,6 @@
 import { NavigationProgress } from '@/components';
 import { useAuth } from '@/hooks';
-import { Navigate, Outlet } from 'umi';
+import { Navigate, Outlet, useLocation } from 'umi';
 
 interface RouteGuardProps {
   children?: React.ReactNode;
@@ -14,10 +14,12 @@ const RouteGuard: React.FC<RouteGuardProps> = ({
   fallback,
 }) => {
   const { isLogin } = useAuth();
+  const location = useLocation();
 
-  // 需要登录但未登录
+  // 需要登录但未登录，保存当前路径到 redirect 参数
   if (requireAuth && !isLogin) {
-    return <Navigate to="/login" replace />;
+    const redirect = encodeURIComponent(location.pathname + location.search);
+    return <Navigate to={`/login?redirect=${redirect}`} replace />;
   }
 
   // 自定义fallback
