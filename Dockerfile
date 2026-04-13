@@ -27,6 +27,9 @@ RUN pnpm install --frozen-lockfile --prod=false
 # ==========================================
 FROM node:18-alpine AS builder
 
+# 构建参数：支持 dev/staging/prod，默认 prod
+ARG BUILD_ENV=prod
+
 WORKDIR /app
 
 # 从 deps 阶段复制 node_modules
@@ -37,17 +40,21 @@ COPY . .
 
 # 设置构建环境变量
 ENV NODE_ENV=production
+ENV BUILD_ENV=${BUILD_ENV}
 
 # 安装 pnpm
 RUN npm install -g pnpm
 
-# 执行生产环境构建
-RUN pnpm run build:prod
+# 根据 BUILD_ENV 执行对应环境的构建
+RUN pnpm run build:${BUILD_ENV}
 
 # ==========================================
 # Stage 3: 生产环境运行
 # ==========================================
 FROM nginx:1.25-alpine AS runner
+
+# 接收构建参数
+ARG BUILD_ENV=prod
 
 # 安装必要的工具
 RUN apk add --no-cache curl tzdata
@@ -64,8 +71,9 @@ RUN addgroup -g 1001 -S webapp && \
 COPY --chown=webapp:webapp docker/nginx.conf /etc/nginx/nginx.conf
 COPY --chown=webapp:webapp docker/default.conf /etc/nginx/conf.d/default.conf
 
-# 从 builder 阶段复制构建产物（生产环境构建输出在 dist/prod）
-COPY --from=builder --chown=webapp:webapp /app/dist/prod /usr/share/nginx/html
+# 从 builder 阶段复制构建产物（根据 BUILD_ENV 从对应目录复制）
+# dev → dist/dev, staging → dist/staging, prod → dist/prod
+COPY --from=builder --chown=webapp:webapp /app/dist/${BUILD_ENV} /usr/share/nginx/html
 
 # 复制自定义错误页面
 COPY --chown=webapp:webapp docker/error-pages/404.html /usr/share/nginx/html/404.html

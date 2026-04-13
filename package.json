@@ -12,7 +12,6 @@
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "pnpm build:dev && pnpm build:staging && pnpm build:prod",
     "build:dev": "tsx scripts/build.ts --mode dev",
-    "build:mode": "tsx scripts/build.ts",
     "build:prod": "tsx scripts/build.ts --mode prod",
     "build:staging": "tsx scripts/build.ts --mode staging",
     "clean": "rimraf dist node_modules",

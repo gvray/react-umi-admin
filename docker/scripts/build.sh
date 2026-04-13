@@ -100,7 +100,7 @@ build_image() {
             BUILD_ARGS+=(--load)
         fi
         
-        docker buildx build "${BUILD_ARGS[@]}" .
+        docker buildx build "${BUILD_ARGS[@]}" --build-arg "BUILD_ENV=${BUILD_ENV}" .
     else
         # 使用普通 docker build
         print_info "使用 docker build"
@@ -110,6 +110,7 @@ build_image() {
             --build-arg "GIT_COMMIT=${GIT_COMMIT}" \
             --build-arg "GIT_BRANCH=${GIT_BRANCH}" \
             --build-arg "VERSION=${VERSION}" \
+            --build-arg "BUILD_ENV=${BUILD_ENV}" \
             --tag "${FULL_IMAGE_NAME}:${VERSION}" \
             --tag "${FULL_IMAGE_NAME}:${GIT_COMMIT}" \
             $([ "${VERSION}" = "latest" ] && echo "--tag ${FULL_IMAGE_NAME}:latest") \
@@ -185,20 +186,24 @@ Docker 镜像构建脚本
 选项:
     -h, --help              显示帮助信息
     -v, --version VERSION   指定版本号 (默认: latest)
+    -e, --env ENV           指定构建环境 dev/staging/prod (默认: prod)
     -p, --push              构建后推送到仓库
     -m, --multiarch         多架构构建 (amd64 + arm64)
     -s, --scan              构建后扫描安全漏洞
     -c, --clean             清理构建缓存
 
 示例:
-    # 构建本地镜像
+    # 构建生产环境镜像（默认）
     ./scripts/build.sh
 
-    # 构建并推送到仓库
-    ./scripts/build.sh -v 1.0.0 -p
+    # 构建开发环境镜像
+    ./scripts/build.sh -e dev
 
-    # 多架构构建并推送
-    ./scripts/build.sh -v 1.0.0 -m
+    # 构建预发布环境镜像并推送
+    ./scripts/build.sh -e staging -v 1.0.0 -p
+
+    # 多架构构建生产环境并推送
+    ./scripts/build.sh -e prod -v 1.0.0 -m
 
     # 构建并扫描安全漏洞
     ./scripts/build.sh -s
@@ -207,6 +212,7 @@ Docker 镜像构建脚本
     DOCKER_REGISTRY         Docker 仓库地址 (默认: docker.io)
     DOCKER_NAMESPACE        Docker 命名空间 (默认: gvray)
     VERSION                 镜像版本号 (默认: latest)
+    BUILD_ENV               构建环境 (默认: prod)
 
 EOF
 }
@@ -217,6 +223,7 @@ main() {
     local multiarch=false
     local scan=false
     local clean=false
+    local build_env="prod"  # 默认构建生产环境
     
     # 解析参数
     while [[ $# -gt 0 ]]; do
@@ -227,6 +234,10 @@ main() {
                 ;;
             -v|--version)
                 VERSION="$2"
+                shift 2
+                ;;
+            -e|--env)
+                build_env="$2"
                 shift 2
                 ;;
             -p|--push)
@@ -261,6 +272,10 @@ main() {
     if [ "${clean}" = "true" ]; then
         clean_cache
     fi
+    
+    # 设置构建环境变量
+    export BUILD_ENV="${build_env}"
+    print_info "构建环境: ${BUILD_ENV}"
     
     # 构建镜像
     if [ "${multiarch}" = "true" ]; then
