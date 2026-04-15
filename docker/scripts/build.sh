@@ -66,63 +66,66 @@ clean_cache() {
 build_image() {
     local platform="${1:-linux/amd64}"
     local push="${2:-false}"
-    
+
     print_info "开始构建 Docker 镜像..."
     print_info "镜像名称: ${FULL_IMAGE_NAME}:${VERSION}"
     print_info "平台架构: ${platform}"
     print_info "Git Commit: ${GIT_COMMIT}"
     print_info "Git Branch: ${GIT_BRANCH}"
-    
+
     # 检查是否支持 buildx
     if check_buildx && [[ "${platform}" == *","* || "${push}" == "true" ]]; then
         # 使用 buildx（支持多架构和直接推送）
         print_info "使用 docker buildx build"
-        
+
         BUILD_ARGS=(
             --build-arg "BUILD_DATE=${BUILD_DATE}"
             --build-arg "GIT_COMMIT=${GIT_COMMIT}"
             --build-arg "GIT_BRANCH=${GIT_BRANCH}"
             --build-arg "VERSION=${VERSION}"
             --platform "${platform}"
-            --tag "${FULL_IMAGE_NAME}:${VERSION}"
             --tag "${FULL_IMAGE_NAME}:${GIT_COMMIT}"
+            --tag "${FULL_IMAGE_NAME}:latest"
         )
-        
-        # 如果是 latest 版本，添加 latest 标签
-        if [ "${VERSION}" = "latest" ]; then
-            BUILD_ARGS+=(--tag "${FULL_IMAGE_NAME}:latest")
+
+        # 指定了具体版本号时，额外添加版本标签
+        if [ "${VERSION}" != "latest" ]; then
+            BUILD_ARGS+=(--tag "${FULL_IMAGE_NAME}:${VERSION}")
         fi
-        
+
         # 如果需要推送，添加 push 参数
         if [ "${push}" = "true" ]; then
             BUILD_ARGS+=(--push)
         else
             BUILD_ARGS+=(--load)
         fi
-        
+
         docker buildx build "${BUILD_ARGS[@]}" --build-arg "BUILD_ENV=${BUILD_ENV}" .
     else
         # 使用普通 docker build
         print_info "使用 docker build"
-        
+
+        local extra_tag=""
+        [ "${VERSION}" != "latest" ] && extra_tag="--tag ${FULL_IMAGE_NAME}:${VERSION}"
+
         docker build \
             --build-arg "BUILD_DATE=${BUILD_DATE}" \
             --build-arg "GIT_COMMIT=${GIT_COMMIT}" \
             --build-arg "GIT_BRANCH=${GIT_BRANCH}" \
             --build-arg "VERSION=${VERSION}" \
             --build-arg "BUILD_ENV=${BUILD_ENV}" \
-            --tag "${FULL_IMAGE_NAME}:${VERSION}" \
             --tag "${FULL_IMAGE_NAME}:${GIT_COMMIT}" \
-            $([ "${VERSION}" = "latest" ] && echo "--tag ${FULL_IMAGE_NAME}:latest") \
+            --tag "${FULL_IMAGE_NAME}:latest" \
+            ${extra_tag} \
             .
     fi
-    
+
     if [ $? -eq 0 ]; then
         print_info "镜像构建成功！"
         print_info "镜像标签:"
-        echo "  - ${FULL_IMAGE_NAME}:${VERSION}"
         echo "  - ${FULL_IMAGE_NAME}:${GIT_COMMIT}"
-        [ "${VERSION}" = "latest" ] && echo "  - ${FULL_IMAGE_NAME}:latest"
+        echo "  - ${FULL_IMAGE_NAME}:latest"
+        [ "${VERSION}" != "latest" ] && echo "  - ${FULL_IMAGE_NAME}:${VERSION}" || true
     else
         print_error "镜像构建失败！"
         exit 1
@@ -132,35 +135,35 @@ build_image() {
 # 多架构构建
 build_multiarch() {
     print_info "开始多架构构建..."
-    
+
     # 创建并使用 buildx builder
     docker buildx create --name multiarch-builder --use 2>/dev/null || docker buildx use multiarch-builder
     docker buildx inspect --bootstrap
-    
+
     # 构建多架构镜像
     build_image "linux/amd64,linux/arm64" "true"
-    
+
     print_info "多架构镜像构建完成！"
 }
 
 # 推送镜像
 push_image() {
     print_info "推送镜像到仓库..."
-    
-    docker push "${FULL_IMAGE_NAME}:${VERSION}"
+
     docker push "${FULL_IMAGE_NAME}:${GIT_COMMIT}"
-    
-    if [ "${VERSION}" = "latest" ]; then
-        docker push "${FULL_IMAGE_NAME}:latest"
+    docker push "${FULL_IMAGE_NAME}:latest"
+
+    if [ "${VERSION}" != "latest" ]; then
+        docker push "${FULL_IMAGE_NAME}:${VERSION}"
     fi
-    
+
     print_info "镜像推送成功！"
 }
 
 # 扫描镜像安全漏洞
 scan_image() {
     print_info "扫描镜像安全漏洞..."
-    
+
     if command -v trivy &> /dev/null; then
         trivy image "${FULL_IMAGE_NAME}:${VERSION}"
     else
@@ -169,10 +172,32 @@ scan_image() {
     fi
 }
 
-# 显示镜像信息
+# 显示本次构建的镜像信息
 show_image_info() {
+    local push="${1:-false}"
     print_info "镜像信息:"
-    docker images "${FULL_IMAGE_NAME}" --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}\t{{.CreatedAt}}"
+    local tags=("${GIT_COMMIT}" "latest")
+    [ "${VERSION}" != "latest" ] && tags+=("${VERSION}") || true
+
+    if [ "${push}" = "true" ] && check_buildx; then
+        # 已通过 buildx 推送到 registry，从远端获取摘要
+        printf "%-55s %-15s %s\n" "IMAGE" "TAG" "DIGEST"
+        for tag in "${tags[@]}"; do
+            local digest
+            digest=$(docker buildx imagetools inspect "${FULL_IMAGE_NAME}:${tag}" 2>/dev/null \
+                | awk '/^Digest:/{print $2; exit}')
+            printf "%-55s %-15s %s\n" "${FULL_IMAGE_NAME}" "${tag}" "${digest:-N/A}"
+        done
+    else
+        printf "%-60s %-15s %-12s %s\n" "REPOSITORY" "TAG" "SIZE" "CREATED AT"
+        for tag in "${tags[@]}"; do
+            docker images \
+                --format "{{.Repository}}|{{.Tag}}|{{.Size}}|{{.CreatedAt}}" \
+                2>/dev/null \
+                | awk -F'|' -v img="${IMAGE_NAME}" -v t="${tag}" \
+                    '$1 ~ img && $2 == t {printf "%-60s %-15s %-12s %s\n", $1, $2, $3, $4; exit}'
+        done
+    fi
 }
 
 # 显示帮助信息
@@ -224,7 +249,7 @@ main() {
     local scan=false
     local clean=false
     local build_env="prod"  # 默认构建生产环境
-    
+
     # 解析参数
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -264,39 +289,39 @@ main() {
                 ;;
         esac
     done
-    
+
     # 检查环境
     check_docker
-    
+
     # 清理缓存
     if [ "${clean}" = "true" ]; then
         clean_cache
     fi
-    
+
     # 设置构建环境变量
     export BUILD_ENV="${build_env}"
     print_info "构建环境: ${BUILD_ENV}"
-    
+
     # 构建镜像
     if [ "${multiarch}" = "true" ]; then
         build_multiarch
     else
         build_image "linux/amd64" "${push}"
-        
-        # 推送镜像
-        if [ "${push}" = "true" ]; then
+
+        # 推送镜像（buildx --push 已直接推送，无需再次推送）
+        if [ "${push}" = "true" ] && ! check_buildx; then
             push_image
         fi
     fi
-    
+
     # 安全扫描
     if [ "${scan}" = "true" ]; then
         scan_image
     fi
-    
+
     # 显示镜像信息
-    show_image_info
-    
+    show_image_info "${push}"
+
     print_info "构建完成！"
 }
 

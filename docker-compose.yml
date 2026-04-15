@@ -3,8 +3,6 @@
 # 用于本地开发和测试环境
 # ==========================================
 
-version: '3.8'
-
 services:
   # ==========================================
   # 前端应用服务
@@ -15,7 +13,8 @@ services:
       dockerfile: Dockerfile
       args:
         NODE_ENV: production
-    image: react-umi-admin:latest
+    image: ${DOCKER_REGISTRY:-docker.io}/${DOCKER_NAMESPACE:-gvray}/react-umi-admin:${VERSION:-latest}
+    platform: ${PLATFORM:-linux/amd64}
     container_name: react-umi-admin-web
     restart: unless-stopped
     ports:
