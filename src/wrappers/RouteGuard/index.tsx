@@ -1,25 +1,51 @@
 import { NavigationProgress } from '@/components';
-import { useAuth } from '@/hooks';
-import { Navigate, Outlet, useLocation } from 'umi';
+import { useAuth, useRouteMeta } from '@/hooks';
+import { Button, Result } from 'antd';
+import { Outlet, styled } from 'umi';
+
+// 403错误容器
+const ErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 40px 20px;
+`;
 
 interface RouteGuardProps {
   children?: React.ReactNode;
-  requireAuth?: boolean;
   fallback?: React.ReactNode;
 }
 
-const RouteGuard: React.FC<RouteGuardProps> = ({
-  children,
-  requireAuth = true,
-  fallback,
-}) => {
-  const { isLogin } = useAuth();
-  const location = useLocation();
+const RouteGuard: React.FC<RouteGuardProps> = ({ children, fallback }) => {
+  const { isLogin, permissions: userPermissions } = useAuth();
+  const { permissions: routePermissions } = useRouteMeta();
 
-  // 需要登录但未登录，保存当前路径到 redirect 参数
-  if (requireAuth && !isLogin) {
-    const redirect = encodeURIComponent(location.pathname + location.search);
-    return <Navigate to={`/login?redirect=${redirect}`} replace />;
+  // 权限检查
+  if (isLogin && routePermissions && routePermissions.length > 0) {
+    const hasPermission =
+      userPermissions?.includes('*:*:*') ||
+      routePermissions.every((permission) =>
+        userPermissions?.includes(permission),
+      );
+
+    if (!hasPermission) {
+      return (
+        <ErrorContainer>
+          <Result
+            status="403"
+            title="403"
+            subTitle="抱歉，您没有权限访问此页面。"
+            extra={
+              <Button type="primary" onClick={() => window.history.back()}>
+                返回上页
+              </Button>
+            }
+          />
+        </ErrorContainer>
+      );
+    }
   }
 
   // 自定义fallback

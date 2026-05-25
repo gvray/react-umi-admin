@@ -1,4 +1,5 @@
-﻿import { logger } from '@/utils';
+import { LOGIN_PATH } from '@/constants';
+import { logger, redirectToLogin } from '@/utils';
 import {
   ErrorShowType,
   GvrayConfig,
@@ -15,7 +16,7 @@ let isShowingAuthModal = false;
 // 处理 401 未授权错误
 const handle401Unauthorized = () => {
   // 如果已经在登录页面，不需要弹窗
-  if (history.location.pathname === '/login') {
+  if (history.location.pathname === LOGIN_PATH) {
     return;
   }
 
@@ -28,11 +29,7 @@ const handle401Unauthorized = () => {
     okText: '重新登录',
     cancelText: '取消',
     onOk: () => {
-      // 保存当前位置，登录后跳回
-      const currentPath = history.location.pathname + history.location.search;
-      sessionStorage.setItem('redirectPath', currentPath);
-      // 跳转到登录页面
-      history.push('/login');
+      redirectToLogin();
       isShowingAuthModal = false;
     },
     onCancel: () => {

@@ -1,5 +1,3 @@
-import { useRouteMetaContext } from '@/contexts/routeMeta';
-import { withAuth } from '@/hocs';
 import { usePreferences } from '@/stores';
 import { theme } from 'antd';
 import { PropsWithChildren, useEffect, useState } from 'react';
@@ -68,15 +66,4 @@ const PageContainer: React.FC<PropsWithChildren<PageContainerProps>> = ({
   );
 };
 
-// 动态权限检查的PageContainer
-const PageContainerWithAuth: React.FC<PropsWithChildren<PageContainerProps>> = (
-  props,
-) => {
-  const meta = useRouteMetaContext();
-  const routePermissions = meta.permissions ?? [];
-  return withAuth(PageContainer, {
-    requirePermissions: routePermissions,
-  })(props);
-};
-
-export default PageContainerWithAuth;
+export default PageContainer;

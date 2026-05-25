@@ -1,3 +1,4 @@
+export * from './auth';
 export * from './color';
 export * from './settings';
 export * from './theme';

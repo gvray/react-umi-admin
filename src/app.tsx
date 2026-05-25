@@ -1,13 +1,13 @@
+import { LOGIN_PATH } from '@/constants';
 import { resolveServerConfig } from '@/constants/settings';
 import { queryMenus } from '@/services/auth';
 import { getRuntimeConfig } from '@/services/config';
 import { queryProfile } from '@/services/profile';
 import { useAppStore, useAuthStore } from '@/stores';
 import { history } from 'umi';
-import { logger, tokenManager } from './utils';
+import { logger, redirectToLogin, tokenManager } from './utils';
 
 // const isDev = process.env.NODE_ENV === 'development';
-const loginPath = '/login';
 
 /**
  * 应用启动时的数据获取入口，获取完后分发到各 Store。
@@ -38,12 +38,12 @@ export async function getInitialState() {
       profile = profileRes.data;
       menus = menusRes.data;
       // 在login页面刷新 这里应该跳转到首页
-      if (history.location.pathname === loginPath) {
+      if (history.location.pathname === LOGIN_PATH) {
         history.push('/');
       }
     } catch (error) {
       tokenManager.clearTokens();
-      history.push(loginPath);
+      redirectToLogin();
     }
   }
 
@@ -57,4 +57,14 @@ export async function getInitialState() {
 
   logger.info('App 初始化完成');
   return {};
+}
+
+/**
+ * 路由切换时检查登录状态
+ * 如果未登录且不在登录页，则重定向到登录页
+ */
+export function onRouteChange() {
+  if (!tokenManager.isAuthenticated()) {
+    redirectToLogin();
+  }
 }
