@@ -1,6 +1,7 @@
 import AppBreadcrumb from '@/components/AppBreadcrumb';
 import AppWatermark from '@/components/AppWatermark';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import NavigationProgress from '@/components/NavigationProgress';
 import { RouteMetaProvider } from '@/contexts/routeMeta';
 import { useAppTheme, useRouteMeta } from '@/hooks';
 import useThemeColor from '@/hooks/useThemeColor';
@@ -39,6 +40,7 @@ export default function BaseLayout() {
         <Helmet>
           <title>{documentTitle}</title>
         </Helmet>
+        <NavigationProgress />
         <ConfigProvider
           theme={{
             algorithm: themeAlgorithm,
