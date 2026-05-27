@@ -1,5 +1,5 @@
 const routes = [
-  { path: '/login', component: 'Login', layout: false },
+  { path: '/login', component: 'Login', layout: false, meta: { auth: false } },
   {
     path: '/',
     component: '@/wrappers/RouteGuard',
@@ -28,10 +28,9 @@ const routes = [
           permissions: [],
         },
       },
-      // 404 页面也需要登录后才能访问
       {
-        path: '*',
-        component: '404',
+        path: '/403',
+        component: '403',
       },
     ],
   },
@@ -157,10 +156,9 @@ const routes = [
       },
     ],
   },
-  // 捕获所有其他路径，也需要登录
   {
     path: '*',
-    component: '@/wrappers/RouteGuard',
+    layout: false,
     routes: [
       {
         path: '*',

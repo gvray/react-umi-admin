@@ -1,3 +1,1 @@
-import withAuth from './withAuth';
-
-export { withAuth };
+export { default as withErrorBoundary } from './withErrorBoundary';

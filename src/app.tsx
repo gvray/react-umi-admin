@@ -4,7 +4,7 @@ import { queryMenus } from '@/services/auth';
 import { getRuntimeConfig } from '@/services/config';
 import { queryProfile } from '@/services/profile';
 import { useAppStore, useAuthStore } from '@/stores';
-import { history } from 'umi';
+import { history, matchRoutes } from 'umi';
 import { logger, redirectToLogin, tokenManager } from './utils';
 
 // const isDev = process.env.NODE_ENV === 'development';
@@ -63,8 +63,23 @@ export async function getInitialState() {
  * 路由切换时检查登录状态
  * 如果未登录且不在登录页，则重定向到登录页
  */
-export function onRouteChange() {
-  if (!tokenManager.isAuthenticated()) {
-    redirectToLogin();
+export function onRouteChange({
+  clientRoutes,
+  location,
+}: {
+  clientRoutes: any[];
+  location: Location;
+}) {
+  const route = matchRoutes(clientRoutes, location.pathname)?.pop()
+    ?.route as any;
+
+  // 检查路由是否需要认证
+  const authRequired = route?.meta?.auth ?? true; // 默认为true，即需要认证
+
+  if (authRequired) {
+    if (!tokenManager.isAuthenticated()) {
+      redirectToLogin();
+      return;
+    }
   }
 }
