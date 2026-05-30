@@ -57,6 +57,7 @@
     "@gvray/request": "^1.0.0",
     "antd": "^5.14.1",
     "axios": "^1.11.0",
+    "classnames": "^2.5.1",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.10",
     "echarts": "^5.5.0",

@@ -104,7 +104,7 @@ const AppBreadcrumb: React.FC = () => {
     }),
   ];
 
-  return <Breadcrumb items={items} style={{ margin: '12px 16px' }} />;
+  return <Breadcrumb items={items} />;
 };
 
 export default AppBreadcrumb;

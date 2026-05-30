@@ -1,4 +1,3 @@
-import AppBreadcrumb from '@/components/AppBreadcrumb';
 import AppWatermark from '@/components/AppWatermark';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import NavigationProgress from '@/components/NavigationProgress';
@@ -8,6 +7,7 @@ import useThemeColor from '@/hooks/useThemeColor';
 import useThemeMode from '@/hooks/useThemeMode';
 import { useAppStore, usePreferences } from '@/stores';
 import { App, ConfigProvider, Layout } from 'antd';
+import classNames from 'classnames';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Outlet } from 'umi';
 import AppHeader from './components/AppHeader';
@@ -34,6 +34,11 @@ export default function BaseLayout() {
     ? `${routeTitle} - ${serverConfig.system.name}`
     : serverConfig.system.name;
 
+  const layoutClassName = classNames({
+    'color-weak': accessibility.colorWeak,
+    'gray-mode': accessibility.grayMode,
+  });
+
   return (
     <RouteMetaProvider meta={meta}>
       <HelmetProvider>
@@ -54,14 +59,7 @@ export default function BaseLayout() {
         >
           <App>
             <ThemeTokenInjector>
-              <Layout
-                className={[
-                  accessibility.colorWeak ? 'color-weak' : '',
-                  accessibility.grayMode ? 'gray-mode' : '',
-                ]
-                  .filter(Boolean)
-                  .join(' ')}
-              >
+              <Layout className={layoutClassName}>
                 <SideMenu
                   collapsed={sider.collapsed}
                   theme={effectiveSiderTheme}
@@ -76,6 +74,7 @@ export default function BaseLayout() {
                   />
                   <Content
                     style={{
+                      position: 'relative',
                       height: header.fixed ? 'calc(100vh - 64px)' : 'auto',
                       minHeight: header.fixed
                         ? undefined
@@ -83,12 +82,9 @@ export default function BaseLayout() {
                       overflow: 'auto',
                     }}
                   >
-                    <AppBreadcrumb />
-                    <AppWatermark>
-                      <ErrorBoundary>
-                        <Outlet />
-                      </ErrorBoundary>
-                    </AppWatermark>
+                    <ErrorBoundary>
+                      <Outlet />
+                    </ErrorBoundary>
                     {content.showFooter && (
                       <div
                         style={{
@@ -101,6 +97,7 @@ export default function BaseLayout() {
                         {content.footerText}
                       </div>
                     )}
+                    <AppWatermark />
                   </Content>
                 </Layout>
               </Layout>

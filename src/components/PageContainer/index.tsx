@@ -1,8 +1,9 @@
 import { usePreferences } from '@/stores';
 import { theme } from 'antd';
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { styled } from 'umi';
+import AppBreadcrumb from '../AppBreadcrumb';
 
 type PageContainerWrapperProps = {
   $isVisible?: boolean;
@@ -11,57 +12,88 @@ type PageContainerWrapperProps = {
   $hasBreadcrumb?: boolean;
 };
 
-const PageContainerWrapper = styled.div<PageContainerWrapperProps>`
-  margin: ${({ $hasBreadcrumb }) =>
-    $hasBreadcrumb ? '0 16px 24px' : '24px 16px'};
+const PageContainerWrapper = styled.div`
+  background: transparent;
+  margin: 0;
+  padding: 18px 16px;
+`;
+
+const PageHeader = styled.div`
+  margin-bottom: 12px;
+`;
+
+const PageTitle = styled.div<PageContainerWrapperProps>`
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: ${({ $hasBreadcrumb }) => ($hasBreadcrumb ? '8px' : '0')};
+`;
+
+const PageContent = styled.div<PageContainerWrapperProps>`
   padding: 24px;
-  min-height: ${({ $hasBreadcrumb }) =>
-    $hasBreadcrumb ? 'calc(100% - 24px)' : 'calc(100% - 48px)'};
-  transition: transform 0.1s ease-in-out, opacity 0.3s ease-in-out; /* 添加过渡效果 */
   background: ${({ $colorBgContainer }) => $colorBgContainer};
   border-radius: ${({ $borderRadiusLG }) => $borderRadiusLG}px;
+
+  transition: transform 0.15s ease, opacity 0.2s ease;
+
   transform: ${({ $isVisible }) =>
-    $isVisible ? 'translateX(0)' : 'translateX(5%)'}; // 控制从右侧入场
-  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)}; // 控制透明度
+    $isVisible ? 'translateX(0)' : 'translateX(20px)'};
+
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
 `;
+
 interface PageContainerProps {
   children?: React.ReactNode;
   style?: React.CSSProperties;
   className?: string;
-  /** 覆盖 Layout 默认的 document title */
   title?: string;
 }
 
 const PageContainer: React.FC<PropsWithChildren<PageContainerProps>> = ({
   children,
   title,
-  ...rest
 }) => {
-  // 使用状态来控制进场和出场动画
   const [isVisible, setIsVisible] = useState(false);
+
   const { showBreadcrumb } = usePreferences();
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  const hasHeader = useMemo(
+    () => Boolean(title || showBreadcrumb),
+    [title, showBreadcrumb],
+  );
+
   useEffect(() => {
-    setIsVisible(true); // 组件挂载时设置为可见，触发进场动画
+    setIsVisible(true);
   }, []);
 
   return (
-    <PageContainerWrapper
-      $isVisible={isVisible}
-      $colorBgContainer={colorBgContainer}
-      $borderRadiusLG={borderRadiusLG}
-      $hasBreadcrumb={showBreadcrumb}
-      {...rest}
-    >
+    <PageContainerWrapper>
       {title && (
         <Helmet>
           <title>{title}</title>
         </Helmet>
       )}
-      {children}
+
+      {hasHeader && (
+        <PageHeader>
+          {showBreadcrumb && <AppBreadcrumb />}
+
+          {title && (
+            <PageTitle $hasBreadcrumb={showBreadcrumb}>{title}</PageTitle>
+          )}
+        </PageHeader>
+      )}
+
+      <PageContent
+        $isVisible={isVisible}
+        $colorBgContainer={colorBgContainer}
+        $borderRadiusLG={borderRadiusLG}
+      >
+        {children}
+      </PageContent>
     </PageContainerWrapper>
   );
 };
