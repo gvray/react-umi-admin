@@ -10,11 +10,11 @@ import { App, ConfigProvider, Layout } from 'antd';
 import classNames from 'classnames';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Outlet } from 'umi';
+import AppContent from './components/AppContent';
+import AppFooter from './components/AppFooter';
 import AppHeader from './components/AppHeader';
 import SideMenu from './components/SideMenu';
 import ThemeTokenInjector from './components/ThemeTokenInjector';
-
-const { Content } = Layout;
 
 export default function BaseLayout() {
   const serverConfig = useAppStore((s) => s.serverConfig);
@@ -72,33 +72,16 @@ export default function BaseLayout() {
                     themeColor={themeColor}
                     headerFixed={header.fixed}
                   />
-                  <Content
-                    style={{
-                      position: 'relative',
-                      height: header.fixed ? 'calc(100vh - 64px)' : 'auto',
-                      minHeight: header.fixed
-                        ? undefined
-                        : 'calc(100vh - 64px)',
-                      overflow: 'auto',
-                    }}
-                  >
+                  <AppContent $fixed={header.fixed}>
                     <ErrorBoundary>
                       <Outlet />
                     </ErrorBoundary>
-                    {content.showFooter && (
-                      <div
-                        style={{
-                          textAlign: 'center',
-                          padding: '16px 0',
-                          color: 'rgba(0, 0, 0, 0.45)',
-                          fontSize: 14,
-                        }}
-                      >
-                        {content.footerText}
-                      </div>
-                    )}
+                    <AppFooter
+                      visible={content.showFooter}
+                      text={content.footerText}
+                    />
                     <AppWatermark />
-                  </Content>
+                  </AppContent>
                 </Layout>
               </Layout>
             </ThemeTokenInjector>

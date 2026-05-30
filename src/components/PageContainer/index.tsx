@@ -16,6 +16,9 @@ const PageContainerWrapper = styled.div`
   background: transparent;
   margin: 0;
   padding: 18px 16px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const PageHeader = styled.div`
@@ -29,6 +32,7 @@ const PageTitle = styled.div<PageContainerWrapperProps>`
 `;
 
 const PageContent = styled.div<PageContainerWrapperProps>`
+  flex: 1;
   padding: 24px;
   background: ${({ $colorBgContainer }) => $colorBgContainer};
   border-radius: ${({ $borderRadiusLG }) => $borderRadiusLG}px;
