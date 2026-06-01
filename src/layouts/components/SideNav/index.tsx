@@ -40,7 +40,7 @@ const SiderWrapper = styled.div`
   }
 `;
 
-interface SideMenuProps {
+interface SideNavProps {
   collapsed: boolean;
   theme?: SiderTheme;
   width?: number;
@@ -48,7 +48,7 @@ interface SideMenuProps {
   showLogo?: boolean;
 }
 
-const SideMenu: React.FC<SideMenuProps> = ({
+const SideNav: React.FC<SideNavProps> = ({
   collapsed,
   theme = 'dark',
   width = 220,
@@ -182,4 +182,4 @@ const SideMenu: React.FC<SideMenuProps> = ({
   );
 };
 
-export default SideMenu;
+export default SideNav;

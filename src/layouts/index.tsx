@@ -9,12 +9,16 @@ import { useAppStore, usePreferences } from '@/stores';
 import { App, ConfigProvider, Layout } from 'antd';
 import classNames from 'classnames';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
-import { Outlet } from 'umi';
-import AppContent from './components/AppContent';
+import { Outlet, styled } from 'umi';
 import AppFooter from './components/AppFooter';
 import AppHeader from './components/AppHeader';
-import SideMenu from './components/SideMenu';
+import AppViewport from './components/AppViewport';
+import SideNav from './components/SideNav';
 import ThemeTokenInjector from './components/ThemeTokenInjector';
+
+const AppLayout = styled(Layout)`
+  height: 100%;
+`;
 
 export default function BaseLayout() {
   const serverConfig = useAppStore((s) => s.serverConfig);
@@ -45,7 +49,6 @@ export default function BaseLayout() {
         <Helmet>
           <title>{documentTitle}</title>
         </Helmet>
-        <NavigationProgress />
         <ConfigProvider
           theme={{
             algorithm: themeAlgorithm,
@@ -59,31 +62,31 @@ export default function BaseLayout() {
         >
           <App>
             <ThemeTokenInjector>
-              <Layout className={layoutClassName}>
-                <SideMenu
+              <AppLayout className={layoutClassName}>
+                <SideNav
                   collapsed={sider.collapsed}
                   theme={effectiveSiderTheme}
                   width={sider.width}
                   collapsedWidth={sider.collapsedWidth}
                   showLogo={sider.showLogo}
                 />
-                <Layout>
+                <AppViewport>
+                  <NavigationProgress />
                   <AppHeader
                     themeColor={themeColor}
                     headerFixed={header.fixed}
                   />
-                  <AppContent $fixed={header.fixed}>
-                    <ErrorBoundary>
-                      <Outlet />
-                    </ErrorBoundary>
-                    <AppFooter
-                      visible={content.showFooter}
-                      text={content.footerText}
-                    />
-                    <AppWatermark />
-                  </AppContent>
-                </Layout>
-              </Layout>
+
+                  <ErrorBoundary>
+                    <Outlet />
+                  </ErrorBoundary>
+                  <AppFooter
+                    visible={content.showFooter}
+                    text={content.footerText}
+                  />
+                  <AppWatermark />
+                </AppViewport>
+              </AppLayout>
             </ThemeTokenInjector>
           </App>
         </ConfigProvider>

@@ -1,13 +1,17 @@
+import { Layout } from 'antd';
 import React from 'react';
 import { styled } from 'umi';
+
+const { Footer } = Layout;
 
 interface AppFooterProps {
   visible?: boolean;
   text?: string;
 }
 
-const FooterWrapper = styled.div`
-  padding: 16px 0;
+const AppFooterRoot = styled(Footer)`
+  margin-bottom: 20px;
+  padding: 0;
   color: rgba(0, 0, 0, 0.45);
   font-size: 14px;
   display: flex;
@@ -18,7 +22,7 @@ const FooterWrapper = styled.div`
 const AppFooter: React.FC<AppFooterProps> = ({ visible = false, text }) => {
   if (!visible || !text) return null;
 
-  return <FooterWrapper>{text}</FooterWrapper>;
+  return <AppFooterRoot>{text}</AppFooterRoot>;
 };
 
 export default AppFooter;

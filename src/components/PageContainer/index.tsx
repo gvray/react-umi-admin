@@ -13,12 +13,13 @@ type PageContainerWrapperProps = {
 };
 
 const PageContainerWrapper = styled.div`
+  flex: 1;
   background: transparent;
   margin: 0;
   padding: 18px 16px;
-  height: 100%;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 `;
 
 const PageHeader = styled.div`

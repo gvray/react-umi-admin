@@ -1,46 +1,27 @@
-import NProgress from 'nprogress';
-import 'nprogress/nprogress.css';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { history } from 'umi';
+import { progress } from './progress';
 
-const NavigationProgress: React.FC = () => {
+export const NProgress = progress;
+
+const NavigationProgress = () => {
   useEffect(() => {
-    NProgress.configure({
-      showSpinner: false,
-      trickleSpeed: 200,
-      minimum: 0.08,
-    });
+    let timer: any = null;
 
-    let timer: NodeJS.Timeout | null = null;
-    let minDisplayTimer: NodeJS.Timeout | null = null;
-
-    const startProgress = () => {
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(() => {
-        NProgress.start();
-        minDisplayTimer = setTimeout(() => {
-          NProgress.done();
-        }, 300);
-      }, 200);
-    };
-
-    const stopProgress = () => {
-      if (timer) clearTimeout(timer);
-      if (minDisplayTimer) clearTimeout(minDisplayTimer);
-      NProgress.done();
-    };
-
-    // Start NProgress on route change start
     const unlisten = history.listen(() => {
-      startProgress();
-    });
+      if (timer) clearTimeout(timer);
 
-    // Stop NProgress on initial load or when component unmounts
-    stopProgress();
+      NProgress.start();
+
+      timer = setTimeout(() => {
+        NProgress.finish();
+      }, 80);
+    });
 
     return () => {
+      if (timer) clearTimeout(timer);
+      NProgress.finish();
       unlisten();
-      stopProgress();
     };
   }, []);
 
