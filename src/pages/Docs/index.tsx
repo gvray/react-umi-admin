@@ -28,7 +28,7 @@ APP_MOCK_ENABLED=true
 
 .env.staging
 APP_ENV=staging
-APP_API_URL=http://localhost:8001
+APP_API_URL=http://localhost:3000
 APP_MOCK_ENABLED=false`}
         </pre>
         <div style={{ marginTop: 8 }}>

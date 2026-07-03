@@ -94,7 +94,7 @@ Node.js 20+ · pnpm · Cursor / VSCode · 现代主流浏览器
   - APP_API_URL=/api 指向 Mock 接口前缀
 - 当需要全量真实数据，请启动后端 gvray-admin，并设置：
   - APP_MOCK_ENABLED=false 关闭 Mock
-  - APP_API_URL=http://localhost:8001 指向后端服务
+  - APP_API_URL=http://localhost:3000 指向后端服务
 - 目前 Mock 仅覆盖登录与用户模块，其余模块需连接后端
 
 > 💡 Tip: 使用 Mock 数据可以在前端架构和功能开发阶段保持高效，同时未来可无缝对接真实后端服务。
@@ -129,7 +129,7 @@ APP_MOCK_ENABLED=true
 
 .env.staging
 APP_ENV=staging
-APP_API_URL=http://localhost:8001
+APP_API_URL=http://localhost:3000
 APP_API_TIMEOUT=15000
 APP_API_TOKEN_KEY=__APP_TOKEN__
 APP_MOCK_ENABLED=false

@@ -132,7 +132,7 @@ APP_MOCK_ENABLED=true
 
 .env.staging
 APP_ENV=staging
-APP_API_URL=http://localhost:8001
+APP_API_URL=http://localhost:3000
 APP_API_TIMEOUT=15000
 APP_API_TOKEN_KEY=__APP_TOKEN__
 APP_MOCK_ENABLED=false
