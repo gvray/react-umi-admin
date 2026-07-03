@@ -136,6 +136,9 @@ export function useProfilePermissionsModel() {
       .then((res) => {
         if (res?.data) setPermData(res.data);
       })
+      .catch(() => {
+        // 全局 errorHandler 已提示
+      })
       .finally(() => setLoading(false));
   }, []);
 

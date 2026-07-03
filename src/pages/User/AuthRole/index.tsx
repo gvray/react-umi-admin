@@ -36,7 +36,11 @@ export default function AuthRolePage() {
   useEffect(() => {
     if (userId) {
       setLoading(true);
-      initializeData(userId).finally(() => setLoading(false));
+      initializeData(userId)
+        .catch(() => {
+          // 全局 errorHandler 已提示
+        })
+        .finally(() => setLoading(false));
     }
   }, [initializeData, userId]);
 

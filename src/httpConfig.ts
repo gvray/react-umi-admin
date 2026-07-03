@@ -41,19 +41,20 @@ const handle401Unauthorized = () => {
 
 const handleBizErrorMessage = (details: BizErrorDetails) => {
   const { message, code, showType } = details;
+  const msgText = message ?? '请求异常';
 
   switch (showType) {
     case ErrorShowType.SILENT:
       break;
     case ErrorShowType.WARN_MESSAGE:
-      msg.warning(message);
+      msg.warning(msgText);
       break;
     case ErrorShowType.ERROR_MESSAGE:
-      msg.error(message);
+      msg.error(msgText);
       break;
     case ErrorShowType.NOTIFICATION:
       notification.warning({
-        description: message,
+        description: msgText,
         message: statusMap[code || -1] ?? `请求失败（${code}）`,
         duration: 4,
         placement: 'topRight',

@@ -7,4 +7,216 @@
 .loadingWrapper {
   display: flex;
   justify-content: center;
+  padding: 40px 0;
+}
+
+/* ── 详情弹窗 ── */
+
+.detailBody {
+  padding: 8px 0;
+}
+
+/* 顶部状态栏 */
+.statusBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.statusSuccess {
+  background: linear-gradient(135deg, #f6ffed 0%, #e6f7e6 100%);
+  border: 1px solid #b7eb8f;
+}
+
+.statusError {
+  background: linear-gradient(135deg, #fff2f0 0%, #ffe6e6 100%);
+  border: 1px solid #ffccc7;
+}
+
+.statusLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.statusIcon {
+  font-size: 22px;
+}
+
+.statusSuccess .statusIcon {
+  color: #52c41a;
+}
+
+.statusError .statusIcon {
+  color: #ff4d4f;
+}
+
+.statusText {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.statusSuccess .statusText {
+  color: #389e0d;
+}
+
+.statusError .statusText {
+  color: #cf1322;
+}
+
+.statusRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--gvray-text-color-secondary);
+}
+
+.latencyBadge {
+  background: var(--gvray-bg-elevated);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: monospace;
+  color: var(--gvray-text-color);
+}
+
+/* 区块 */
+.detailSection {
+  margin-bottom: 20px;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gvray-text-color);
+  margin-bottom: 10px;
+  padding-left: 10px;
+  border-left: 3px solid var(--gvray-color-primary);
+}
+
+/* 日志ID */
+.logIdRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logIdCode {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 13px;
+  background: var(--gvray-bg-elevated);
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--gvray-border-color);
+  color: var(--gvray-color-primary);
+  word-break: break-all;
+}
+
+/* 信息网格 */
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 24px;
+}
+
+.infoItem {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.infoLabel {
+  font-size: 13px;
+  color: var(--gvray-text-color-secondary);
+  min-width: 56px;
+  flex-shrink: 0;
+}
+
+.pathValue {
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--gvray-text-color);
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.uaValue {
+  font-size: 12px;
+  color: var(--gvray-text-color-secondary);
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 参数区域 */
+.paramRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.paramBlock {
+  background: var(--gvray-bg-elevated);
+  border: 1px solid var(--gvray-border-color);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.paramLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--gvray-text-color-secondary);
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--gvray-border-color);
+  background: var(--gvray-bg-container);
+}
+
+.paramCode {
+  margin: 0;
+  padding: 10px 12px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: var(--gvray-text-color);
+  max-height: 200px;
+  overflow: auto;
+}
+
+/* 消息框 */
+.messageBox {
+  background: var(--gvray-bg-elevated);
+  border: 1px solid var(--gvray-border-color);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 13px;
+  color: var(--gvray-text-color);
+  word-break: break-all;
+}
+
+/* 响应式 */
+@media (max-width: 576px) {
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .paramRow {
+    grid-template-columns: 1fr;
+  }
+
+  .statusBar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
 }

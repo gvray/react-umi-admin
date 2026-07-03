@@ -27,23 +27,35 @@ export const useDashboard = () => {
   const [logs, setLogs] = useState<ActivityLog[]>([]);
 
   const fetchOverview = useCallback(async () => {
-    const res = await queryDashboardOverview();
-    if (res.data) {
-      setOverview(res.data);
+    try {
+      const res = await queryDashboardOverview();
+      if (res.data) {
+        setOverview(res.data);
+      }
+    } catch {
+      // 全局 errorHandler 已提示
     }
   }, []);
 
   const fetchRoleDistribution = useCallback(async () => {
-    const res = await queryRoleDistribution();
-    if (res.data) {
-      setRoleDistribution(res.data);
+    try {
+      const res = await queryRoleDistribution();
+      if (res.data) {
+        setRoleDistribution(res.data);
+      }
+    } catch {
+      // 全局 errorHandler 已提示
     }
   }, []);
 
   const fetchLoginTrend = useCallback(async () => {
-    const res = await queryLoginTrend();
-    if (res.data) {
-      setLoginData(res.data as unknown as { date: string; value: number }[]);
+    try {
+      const res = await queryLoginTrend();
+      if (res.data) {
+        setLoginData(res.data as unknown as { date: string; value: number }[]);
+      }
+    } catch {
+      // 全局 errorHandler 已提示
     }
   }, []);
 

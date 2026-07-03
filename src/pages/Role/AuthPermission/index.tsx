@@ -123,7 +123,11 @@ export default function AuthPermissionPage() {
   useEffect(() => {
     if (roleId) {
       setLoading(true);
-      initializeData(roleId).finally(() => setLoading(false));
+      initializeData(roleId)
+        .catch(() => {
+          // 全局 errorHandler 已提示
+        })
+        .finally(() => setLoading(false));
     }
   }, [initializeData, roleId]);
 

@@ -49,7 +49,9 @@ const DictionaryItemsPage = () => {
 
   useEffect(() => {
     if (typeId) {
-      fetchDictionaryTypeDetail(typeId);
+      fetchDictionaryTypeDetail(typeId).catch(() => {
+        // 全局 errorHandler 已提示
+      });
     }
   }, [typeId, fetchDictionaryTypeDetail]);
 

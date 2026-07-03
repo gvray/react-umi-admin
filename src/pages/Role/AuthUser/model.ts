@@ -36,6 +36,8 @@ export const useAuthUser = (roleId?: string) => {
         setPage(currentPage);
         setTotal(totalCount);
         setHasMore(nextLength < totalCount);
+      } catch {
+        // 全局 errorHandler 已提示
       } finally {
         setUserLoading(false);
       }
@@ -44,9 +46,14 @@ export const useAuthUser = (roleId?: string) => {
   );
 
   const fetchRoleDetail = useCallback(async (roleId: string) => {
-    const res = await getRoleById(roleId);
-    setSelectedRole(res.data);
-    return res.data;
+    try {
+      const res = await getRoleById(roleId);
+      setSelectedRole(res.data);
+      return res.data;
+    } catch {
+      // 全局 errorHandler 已提示
+      setSelectedRole(null);
+    }
   }, []);
 
   const initializeData = useCallback(

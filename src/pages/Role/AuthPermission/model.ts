@@ -11,16 +11,25 @@ export const useAuthPermission = () => {
   );
 
   const fetchPermissionList = useCallback(async () => {
-    const res = await queryPermissionFlat();
-    if (res.data?.length) {
-      setPermissions(res.data);
+    try {
+      const res = await queryPermissionFlat();
+      if (res.data?.length) {
+        setPermissions(res.data);
+      }
+    } catch {
+      // 全局 errorHandler 已提示
     }
   }, []);
 
   const fetchRoleDetail = useCallback(async (roleId: string) => {
-    const res = await getRoleById(roleId);
-    setSelectedRole(res.data);
-    return res.data;
+    try {
+      const res = await getRoleById(roleId);
+      setSelectedRole(res.data);
+      return res.data;
+    } catch {
+      // 全局 errorHandler 已提示
+      setSelectedRole(null);
+    }
   }, []);
 
   const initializeData = useCallback(

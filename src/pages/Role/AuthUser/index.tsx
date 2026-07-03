@@ -55,7 +55,11 @@ export default function AuthUserPage() {
   useEffect(() => {
     if (roleId) {
       setLoading(true);
-      initializeData(roleId).finally(() => setLoading(false));
+      initializeData(roleId)
+        .catch(() => {
+          // 全局 errorHandler 已提示
+        })
+        .finally(() => setLoading(false));
     }
   }, [initializeData, roleId]);
 
@@ -297,7 +301,11 @@ export default function AuthUserPage() {
                   <div className={styles.loadMore}>
                     <Button
                       loading={userLoading}
-                      onClick={() => loadMoreUsers(searchText)}
+                      onClick={() =>
+                        loadMoreUsers(searchText)?.catch(() => {
+                          // 全局 errorHandler 已提示
+                        })
+                      }
                     >
                       加载更多（{users.length}/{total}）
                     </Button>

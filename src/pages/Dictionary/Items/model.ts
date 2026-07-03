@@ -11,9 +11,14 @@ export const useDictionaryItems = () => {
     useState<API.DictionaryTypeResponseDto | null>(null);
 
   const fetchDictionaryTypeDetail = useCallback(async (typeId: string) => {
-    const { data } = await getDictionaryTypeById(typeId);
-    setTypeDetail(data);
-    return data;
+    try {
+      const { data } = await getDictionaryTypeById(typeId);
+      setTypeDetail(data);
+      return data;
+    } catch {
+      // 全局 errorHandler 已提示
+      setTypeDetail(null);
+    }
   }, []);
 
   const fetchDictionaryItemList = useCallback(

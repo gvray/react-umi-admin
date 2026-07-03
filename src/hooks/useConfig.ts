@@ -8,13 +8,15 @@ export const useConfigValue = (key: string) => {
   const [value, setValue] = useState<string | undefined>();
 
   useEffect(() => {
-    queryConfigList({ key } as any).then((res: any) => {
-      const items = res?.data?.items ?? res?.data ?? [];
-      const config = Array.isArray(items)
-        ? items.find((c: any) => c.key === key)
-        : undefined;
-      setValue(config?.value);
-    });
+    queryConfigList({ key } as any)
+      .then((res: any) => {
+        const items = res?.data?.items ?? res?.data ?? [];
+        const config = Array.isArray(items)
+          ? items.find((c: any) => c.key === key)
+          : undefined;
+        setValue(config?.value);
+      })
+      .catch(() => {});
   }, [key]);
 
   return value;
@@ -25,10 +27,12 @@ export const useConfigsByGroup = (group: string) => {
   const [groupConfigs, setGroupConfigs] = useState<any[]>([]);
 
   useEffect(() => {
-    queryConfigList({ group } as any).then((res: any) => {
-      const items = res?.data?.items ?? res?.data ?? [];
-      setGroupConfigs(Array.isArray(items) ? items : []);
-    });
+    queryConfigList({ group } as any)
+      .then((res: any) => {
+        const items = res?.data?.items ?? res?.data ?? [];
+        setGroupConfigs(Array.isArray(items) ? items : []);
+      })
+      .catch(() => {});
   }, [group]);
 
   return groupConfigs;
@@ -39,10 +43,12 @@ export const useConfigsByType = (type: string) => {
   const [typeConfigs, setTypeConfigs] = useState<any[]>([]);
 
   useEffect(() => {
-    queryConfigList({ type } as any).then((res: any) => {
-      const items = res?.data?.items ?? res?.data ?? [];
-      setTypeConfigs(Array.isArray(items) ? items : []);
-    });
+    queryConfigList({ type } as any)
+      .then((res: any) => {
+        const items = res?.data?.items ?? res?.data ?? [];
+        setTypeConfigs(Array.isArray(items) ? items : []);
+      })
+      .catch(() => {});
   }, [type]);
 
   return typeConfigs;
@@ -53,10 +59,12 @@ export const useEnabledConfigs = () => {
   const [enabledConfigs, setEnabledConfigs] = useState<any[]>([]);
 
   useEffect(() => {
-    queryConfigList({ status: 1 } as any).then((res: any) => {
-      const items = res?.data?.items ?? res?.data ?? [];
-      setEnabledConfigs(Array.isArray(items) ? items : []);
-    });
+    queryConfigList({ status: 1 } as any)
+      .then((res: any) => {
+        const items = res?.data?.items ?? res?.data ?? [];
+        setEnabledConfigs(Array.isArray(items) ? items : []);
+      })
+      .catch(() => {});
   }, []);
 
   return enabledConfigs;

@@ -82,7 +82,11 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetchDashboardData().finally(() => setLoading(false));
+    fetchDashboardData()
+      .catch(() => {
+        // 全局 errorHandler 已提示
+      })
+      .finally(() => setLoading(false));
   }, [fetchDashboardData]);
 
   const getStatValue = (key: string): number => {

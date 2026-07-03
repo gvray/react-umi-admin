@@ -9,16 +9,25 @@ export const useAuthRole = (userId?: string) => {
   );
 
   const fetchRoleList = useCallback(async () => {
-    const res = await queryRoleOptions();
-    if (res.data) {
-      setRoles(res.data);
+    try {
+      const res = await queryRoleOptions();
+      if (res.data) {
+        setRoles(res.data);
+      }
+    } catch {
+      // 全局 errorHandler 已提示
     }
   }, []);
 
   const fetchUserDetail = useCallback(async (userId: string) => {
-    const res = await getUserById(userId);
-    setSelectedUser(res.data);
-    return res.data;
+    try {
+      const res = await getUserById(userId);
+      setSelectedUser(res.data);
+      return res.data;
+    } catch {
+      // 全局 errorHandler 已提示
+      setSelectedUser(null);
+    }
   }, []);
 
   const initializeData = useCallback(
