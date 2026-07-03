@@ -1,6 +1,6 @@
 /**
  * 此文件由 scripts/gen-api-types.ts 自动生成
- * 生成时间: 2026-07-01T14:38:13.494Z
+ * 生成时间: 2026-07-03T15:33:39.207Z
  * 数据来源: http://localhost:3000/api-json
  * 请勿手动修改此文件
  */
@@ -232,6 +232,8 @@ declare namespace API {
     departmentId?: string;
     /** 岗位ID列表（UUID） */
     positionIds?: string[];
+    /** 角色ID列表（UUID），仅后台创建用户时使用；自助注册使用默认角色配置 */
+    roleIds?: string[];
   }
 
   interface RoleResponseDto {
@@ -408,6 +410,8 @@ declare namespace API {
     departmentId?: string;
     /** 岗位ID列表（UUID） */
     positionIds?: string[];
+    /** 角色ID列表（UUID），仅后台创建用户时使用；自助注册使用默认角色配置 */
+    roleIds?: string[];
   }
 
   interface AssignRolesDto {

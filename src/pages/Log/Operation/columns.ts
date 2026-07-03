@@ -1,5 +1,4 @@
 import type { TableProColumnsType } from '@/components/TablePro';
-import { Tooltip } from 'antd';
 
 export const getOperationLogColumns = (): TableProColumnsType<
   Record<string, unknown>
@@ -49,11 +48,6 @@ export const getOperationLogColumns = (): TableProColumnsType<
       key: 'resource',
       ellipsis: true,
       advancedSearch: { type: 'INPUT' },
-      render: (text: string) => (
-        <Tooltip placement="topLeft" title={text}>
-          <span>{text}</span>
-        </Tooltip>
-      ),
     },
     {
       title: 'IP地址',
@@ -64,7 +58,6 @@ export const getOperationLogColumns = (): TableProColumnsType<
       title: '路径',
       dataIndex: 'path',
       key: 'path',
-      width: 120,
       ellipsis: true,
     },
     {
