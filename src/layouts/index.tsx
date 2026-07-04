@@ -62,7 +62,7 @@ export default function BaseLayout() {
           }}
         >
           <App>
-            <ThemeTokenInjector>
+            <ThemeTokenInjector siderTheme={sidebarTheme}>
               <AppLayout className={layoutClassName}>
                 <SideNav
                   collapsed={sidebarCollapsed}

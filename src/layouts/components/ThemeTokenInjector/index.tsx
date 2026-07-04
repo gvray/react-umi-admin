@@ -3,12 +3,13 @@ import React, { useLayoutEffect } from 'react';
 
 interface ThemeTokenInjectorProps {
   children: React.ReactNode;
+  siderTheme?: 'light' | 'dark';
 }
 
 /**
  * 将 antd Design Token 注入到 :root CSS 变量
  * 供 Less / styled-components 通过 var(--gvray-xxx) 消费主题色
- * 支持主题切换和昼夜模式
+ * 支持主题切换和昼夜模式，以及 Sider 独立主题
  *
  * ⚠️ 设计原则：
  * 1. Less 文件 → 用 var(--gvray-xxx)
@@ -20,6 +21,7 @@ interface ThemeTokenInjectorProps {
  */
 const ThemeTokenInjector: React.FC<ThemeTokenInjectorProps> = ({
   children,
+  siderTheme = 'light',
 }) => {
   const { token } = theme.useToken();
 
@@ -110,13 +112,35 @@ const ThemeTokenInjector: React.FC<ThemeTokenInjectorProps> = ({
     setVar('icon-color', token.colorIcon);
     setVar('icon-color-hover', token.colorIconHover);
 
+    // ── Sider 独立主题变量 ──
+    // light: 跟随全局 token；dark: antd Sider 内部硬编码色
+    const isSiderDark = siderTheme === 'dark';
+    setVar(
+      'sider-text',
+      isSiderDark ? 'rgba(255, 255, 255, 0.95)' : token.colorText,
+    );
+    setVar(
+      'sider-text-secondary',
+      isSiderDark ? 'rgba(255, 255, 255, 0.65)' : token.colorTextPlaceholder,
+    );
+    setVar('sider-bg', isSiderDark ? '#001529' : token.colorBgElevated);
+    setVar('sider-bg-hover', isSiderDark ? '#002140' : token.colorBgContainer);
+    setVar(
+      'sider-border',
+      isSiderDark ? 'rgba(255, 255, 255, 0.15)' : token.colorBorder,
+    );
+    setVar(
+      'sider-shadow',
+      isSiderDark ? 'rgba(0, 0, 0, 0.45)' : token.boxShadow,
+    );
+
     return () => {
       // 组件卸载时清理所有注入的变量
       vars.forEach((name) => {
         root.style.removeProperty(name);
       });
     };
-  }, [token]);
+  }, [token, siderTheme]);
 
   return <>{children}</>;
 };

@@ -10,9 +10,7 @@ const TriggerWrapper = styled.div`
   transform: translateX(50%);
 `;
 
-const TriggerButton = styled.button<{
-  $dark: boolean;
-}>`
+const TriggerButton = styled.button`
   position: relative;
   display: flex;
   align-items: center;
@@ -24,34 +22,33 @@ const TriggerButton = styled.button<{
   cursor: pointer;
   outline: none;
   font-size: 11px;
-  transition: color 0.2s ease, box-shadow 0.2s ease;
-  color: ${({ $dark }) =>
-    $dark
-      ? 'var(--gvray-text-color-secondary)'
-      : 'var(--gvray-text-color-placeholder)'};
-  background: ${({ $dark }) =>
-    $dark ? 'var(--gvray-bg-container)' : 'var(--gvray-bg-elevated)'};
-  border: 1px solid var(--gvray-border-color);
-  box-shadow: var(--gvray-box-shadow);
+  transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+
+  /* 颜色由 ThemeTokenInjector 注入的 --gvray-sider-xxx 变量控制 */
+  color: var(--gvray-sider-text-secondary);
+  background: var(--gvray-sider-bg);
+  border: 1px solid var(--gvray-sider-border);
+  box-shadow: 0 1px 4px var(--gvray-sider-shadow);
+
   &:hover {
-    color: var(--gvray-text-color);
-    box-shadow: var(--gvray-box-shadow-secondary);
+    color: var(--gvray-sider-text);
+    background: var(--gvray-sider-bg-hover);
+    box-shadow: 0 2px 8px var(--gvray-sider-shadow);
   }
+
   &:focus-visible {
     box-shadow: 0 0 0 2px var(--gvray-primary-color-outline),
-      var(--gvray-box-shadow-secondary);
+      0 2px 8px var(--gvray-sider-shadow);
   }
 `;
 
 export interface CollapseTriggerProps {
   collapsed: boolean;
-  dark?: boolean;
   onToggle: () => void;
 }
 
 const CollapseTrigger: React.FC<CollapseTriggerProps> = ({
   collapsed,
-  dark = false,
   onToggle,
 }) => {
   const icon = collapsed ? <RightOutlined /> : <LeftOutlined />;
@@ -60,7 +57,6 @@ const CollapseTrigger: React.FC<CollapseTriggerProps> = ({
     <TriggerWrapper>
       <TriggerButton
         type="button"
-        $dark={dark}
         onClick={onToggle}
         aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       >

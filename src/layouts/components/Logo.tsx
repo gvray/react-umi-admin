@@ -2,22 +2,17 @@ import React from 'react';
 import { styled, useNavigate } from 'umi';
 
 interface LogoProps {
-  theme?: 'light' | 'dark';
   collapsed?: boolean;
   title?: string;
 }
 
 const LogoWrapper = styled.div<{
-  $themeMode?: 'light' | 'dark';
   $collapsed?: boolean;
 }>`
   margin: ${(props) => (props.$collapsed ? '12px 8px' : '12px 10px 2px 10px')};
   border-radius: ${(props) => (props.$collapsed ? '24px' : '8px')};
-  /* 文字颜色必须跟随 sidebar theme，而非全局 CSS 变量 */
-  color: ${(props) =>
-    props.$themeMode === 'dark'
-      ? 'rgba(255,255,255,0.85)'
-      : 'var(--gvray-text-color)'};
+  /* 颜色由 ThemeTokenInjector 注入的 --gvray-sider-text 变量控制 */
+  color: var(--gvray-sider-text);
   line-height: 32px;
   text-align: center;
   overflow: hidden;
@@ -43,11 +38,10 @@ const LogoWrapper = styled.div<{
   }
 `;
 
-const Logo: React.FC<LogoProps> = ({ theme = 'light', collapsed, title }) => {
+const Logo: React.FC<LogoProps> = ({ collapsed, title }) => {
   const navigate = useNavigate();
   return (
     <LogoWrapper
-      $themeMode={theme}
       $collapsed={collapsed}
       onClick={() => {
         navigate('/');

@@ -14,6 +14,12 @@ const { Sider } = Layout;
 const SiderWrapper = styled.div`
   position: relative;
   height: 100vh;
+
+  /* 去掉 antd Menu 默认右边框 */
+  .ant-menu-light.ant-menu-root.ant-menu-inline,
+  .ant-menu-light.ant-menu-root.ant-menu-vertical {
+    border-inline-end: none;
+  }
 `;
 
 const siderStyle: React.CSSProperties = {
@@ -64,7 +70,6 @@ const SideNav: React.FC<SideNavProps> = ({
 
   const location = useLocation();
 
-  const isDark = sidebarTheme === 'dark';
   const loading = menus === undefined;
 
   const [openKeys, setOpenKeys] = useState<string[]>([]);
@@ -111,9 +116,7 @@ const SideNav: React.FC<SideNavProps> = ({
           ...siderStyle,
         }}
       >
-        {showLogo && (
-          <Logo theme={sidebarTheme} title={siteName} collapsed={collapsed} />
-        )}
+        {showLogo && <Logo title={siteName} collapsed={collapsed} />}
 
         <Skeleton loading={loading} active round style={{ padding: 15 }}>
           <Menu
@@ -131,7 +134,6 @@ const SideNav: React.FC<SideNavProps> = ({
 
       <CollapseTrigger
         collapsed={collapsed}
-        dark={isDark}
         onToggle={toggleSidebarCollapsed}
       />
     </SiderWrapper>
