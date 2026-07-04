@@ -9,17 +9,28 @@ import {
 import { PERM } from '@/constants';
 import { useFeedback } from '@/hooks';
 import useDict from '@/hooks/useDict';
+import { queryRoleOptions } from '@/services/role';
 import type { DictOption } from '@/types/dict';
 import {
   CheckOutlined,
   SaveOutlined,
   SearchOutlined,
+  SwapOutlined,
   TeamOutlined,
   UndoOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { debounce } from '@gvray/eskit';
-import { Button, Card, Input, Space, Tag, Tooltip, Typography } from 'antd';
+import {
+  Button,
+  Card,
+  Dropdown,
+  Input,
+  Space,
+  Tag,
+  Tooltip,
+  Typography,
+} from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'umi';
 import styles from './index.less';
@@ -38,6 +49,7 @@ export default function AuthUserPage() {
   const { message } = useFeedback();
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [searchText, setSearchText] = useState('');
+  const [roleOptions, setRoleOptions] = useState<API.RoleResponseDto[]>([]);
   const {
     users,
     total,
@@ -64,6 +76,16 @@ export default function AuthUserPage() {
   }, [initializeData, roleId]);
 
   useEffect(() => {
+    queryRoleOptions()
+      .then((res) => {
+        setRoleOptions(res.data || []);
+      })
+      .catch(() => {
+        // 全局 errorHandler 已提示
+      });
+  }, []);
+
+  useEffect(() => {
     if (selectedRole?.users) {
       setSelectedUserIds(selectedRole.users.map((user: any) => user.userId));
     }
@@ -85,6 +107,11 @@ export default function AuthUserPage() {
 
   const handleBackToRoles = () => {
     navigate('/system/role');
+  };
+
+  const handleSwitchRole = (targetRoleId: string) => {
+    if (targetRoleId === roleId) return;
+    navigate(`/system/role-auth/user/${targetRoleId}`);
   };
 
   const handleSubmit = async () => {
@@ -176,6 +203,25 @@ export default function AuthUserPage() {
                 <div className={styles.roleName}>{selectedRole.name}</div>
                 <span className={styles.roleKey}>{selectedRole.roleKey}</span>
               </div>
+              <Dropdown
+                menu={{
+                  items: roleOptions.map((role) => ({
+                    key: role.roleId,
+                    label: role.name,
+                    disabled: role.roleId === roleId,
+                  })),
+                  onClick: ({ key }) => handleSwitchRole(key),
+                }}
+                placement="bottomRight"
+                trigger={['click']}
+              >
+                <Button
+                  type="text"
+                  size="small"
+                  icon={<SwapOutlined />}
+                  title="切换角色"
+                />
+              </Dropdown>
             </div>
 
             <div className={styles.divider} />

@@ -47,6 +47,15 @@
     display: flex;
     align-items: center;
     gap: 12px;
+
+    :global(.ant-btn-text) {
+      color: var(--gvray-text-color-secondary);
+
+      &:hover {
+        color: var(--gvray-primary-color);
+        background: var(--gvray-primary-1);
+      }
+    }
   }
 
   .roleInfo {
