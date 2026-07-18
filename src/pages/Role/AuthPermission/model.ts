@@ -12,7 +12,7 @@ export const useAuthPermission = () => {
 
   const fetchPermissionList = useCallback(async () => {
     try {
-      const res = await queryPermissionFlat();
+      const res = await queryPermissionFlat({ mine: true });
       if (res.data?.length) {
         setPermissions(res.data);
       }

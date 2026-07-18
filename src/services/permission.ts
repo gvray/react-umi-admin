@@ -10,12 +10,15 @@ export function queryPermissionList(params?: API.PermissionsFindAllParams) {
   });
 }
 
-/** 获取权限平铺列表（全量，前端组装权限树） */
-export function queryPermissionFlat() {
+/** 获取权限平铺列表（前端组装权限树）
+ * @param params.mine true 表示只返回当前用户拥有的权限
+ */
+export function queryPermissionFlat(params?: { mine?: boolean }) {
   return request<API.Response<API.PermissionResponseDto[]>>(
     '/system/permissions/flat',
     {
       method: 'GET',
+      params,
     },
   );
 }
