@@ -97,8 +97,9 @@ const CacheMonitorPage: React.FC = () => {
   };
 
   const handleClearCacheByPattern = async () => {
-    const pattern = clearPattern.trim() || undefined;
-    if (!pattern) {
+    const trimmed = clearPattern.trim();
+    const pattern = trimmed || '*';
+    if (!trimmed) {
       Modal.confirm({
         title: '危险操作',
         content: '您即将清空所有缓存，此操作不可恢复，是否继续？',

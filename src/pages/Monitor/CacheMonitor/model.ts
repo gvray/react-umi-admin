@@ -11,7 +11,7 @@ export const useCacheMonitorModel = () => {
   const [health, setHealth] = useState<boolean | null>(null);
   const [stats, setStats] = useState<API.CacheStatsDto | null>(null);
   const [statsLoading, setStatsLoading] = useState(false);
-  const [error] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [autoRefresh, setAutoRefresh] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -19,9 +19,11 @@ export const useCacheMonitorModel = () => {
     try {
       const res = await queryCacheHealth();
       setHealth(res.data ?? false);
+      setError(null);
     } catch (err) {
       logger.error(err);
       setHealth(false);
+      setError('Redis 健康检查失败');
     }
   }, []);
 
@@ -32,8 +34,10 @@ export const useCacheMonitorModel = () => {
       if (res.data) {
         setStats(res.data);
       }
+      setError(null);
     } catch (err) {
       logger.error(err);
+      setError('缓存统计信息加载失败');
     } finally {
       setStatsLoading(false);
     }
@@ -46,7 +50,7 @@ export const useCacheMonitorModel = () => {
     [],
   );
 
-  const handleClearCache = useCallback(async (pattern?: string) => {
+  const handleClearCache = useCallback(async (pattern: string) => {
     const res = await clearCache({ pattern });
     return res.data ?? null;
   }, []);
