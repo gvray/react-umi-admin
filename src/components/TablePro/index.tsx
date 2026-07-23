@@ -51,12 +51,21 @@ const stripAdvancedSearch = <T,>(
   }) as any;
 };
 
+export interface TableProOptions {
+  /** 显示刷新按钮 */
+  reload?: boolean;
+  /** 显示搜索切换按钮 */
+  search?: boolean;
+}
+
 interface TableProProps<T> extends Omit<TableProps<T>, 'columns'> {
   columns?: TableProColumnsType<T>;
   request: (params: any, options?: { [key: string]: any }) => Promise<any>;
   toolbarRender?: () => React.ReactNode;
   onSelectionChange?: (keys: React.Key[], rows?: T[]) => void;
   tree?: boolean;
+  /** 表格右上角操作按钮，传 false 关闭 */
+  options?: false | TableProOptions;
 }
 
 export interface TableProRef {
@@ -87,8 +96,12 @@ const TableProFunction: React.ForwardRefRenderFunction<
     toolbarRender = () => null,
     onSelectionChange,
     tree = false,
+    options,
     ...rest
   } = props;
+
+  const showReload = options !== false && (options?.reload ?? true);
+  const showSearchToggle = options !== false && (options?.search ?? true);
 
   const {
     loading,
@@ -173,22 +186,28 @@ const TableProFunction: React.ForwardRefRenderFunction<
       )}
       <Flex justify="space-between" align="center" style={{ marginBottom: 12 }}>
         <Space>{toolbar}</Space>
-        <Space style={{ flex: 1, justifyContent: 'flex-end' }}>
-          <Tooltip title={showSearch ? '隐藏搜索' : '显示搜索'}>
-            <Button
-              shape="circle"
-              icon={<SearchOutlined />}
-              onClick={() => setShowSearch(!showSearch)}
-            />
-          </Tooltip>
-          <Tooltip title="刷新">
-            <Button
-              shape="circle"
-              onClick={() => reload()}
-              icon={<ReloadOutlined />}
-            />
-          </Tooltip>
-        </Space>
+        {(showSearchToggle || showReload) && (
+          <Space style={{ flex: 1, justifyContent: 'flex-end' }}>
+            {showSearchToggle && (
+              <Tooltip title={showSearch ? '隐藏搜索' : '显示搜索'}>
+                <Button
+                  shape="circle"
+                  icon={<SearchOutlined />}
+                  onClick={() => setShowSearch(!showSearch)}
+                />
+              </Tooltip>
+            )}
+            {showReload && (
+              <Tooltip title="刷新">
+                <Button
+                  shape="circle"
+                  onClick={() => reload()}
+                  icon={<ReloadOutlined />}
+                />
+              </Tooltip>
+            )}
+          </Space>
+        )}
       </Flex>
       <Table
         columns={stripAdvancedSearch(columns)}

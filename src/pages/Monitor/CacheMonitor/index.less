@@ -1,0 +1,48 @@
+.pageWrapper {
+  padding: 0 8px 24px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+
+  .actionLink {
+    color: var(--gvray-link-color);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--gvray-link-hover-color);
+    }
+  }
+}
+
+.statCard {
+  :global(.ant-card-body) {
+    padding: 16px;
+  }
+
+  :global(.ant-statistic-title) {
+    font-size: 13px;
+    color: var(--gvray-text-color-secondary);
+  }
+
+  :global(.ant-statistic-content) {
+    font-size: 24px;
+    font-weight: 600;
+  }
+}
+
+.detailCard {
+  :global(.ant-card-head) {
+    min-height: 44px;
+    padding: 0 16px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  :global(.ant-card-body) {
+    padding: 16px;
+  }
+}

@@ -181,6 +181,22 @@ const routes = [
           permissions: ['monitor:server:list'],
         },
       },
+      {
+        path: '/monitor/online-user',
+        component: 'Monitor/OnlineUser',
+        meta: {
+          title: '在线用户',
+          permissions: ['monitor:online-user:list'],
+        },
+      },
+      {
+        path: '/monitor/cache',
+        component: 'Monitor/CacheMonitor',
+        meta: {
+          title: '缓存监控',
+          permissions: ['monitor:cache:list'],
+        },
+      },
     ],
   },
   {

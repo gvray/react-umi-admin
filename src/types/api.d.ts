@@ -1,6 +1,6 @@
 /**
  * 此文件由 scripts/gen-api-types.ts 自动生成
- * 生成时间: 2026-07-03T15:33:39.207Z
+ * 生成时间: 2026-07-23T13:48:22.145Z
  * 数据来源: http://localhost:3000/api-json
  * 请勿手动修改此文件
  */
@@ -65,6 +65,8 @@ declare namespace API {
     httpMethod: string;
     /** 权限来源 */
     origin: 'USER' | 'SYSTEM';
+    /** 是否可人工修改 */
+    mutable: boolean;
     /** 权限描述 */
     description?: string;
     /** 创建时间 */
@@ -1276,6 +1278,148 @@ declare namespace API {
     process: ProcessMetricsDto;
   }
 
+  interface CacheStatsDto {
+    /**
+     * 缓存命中次数
+     * @example 1280
+     */
+    hits: number;
+    /**
+     * 缓存未命中次数
+     * @example 45
+     */
+    misses: number;
+    /**
+     * 缓存清理次数
+     * @example 12
+     */
+    evictions: number;
+    /**
+     * 命中率（0-1）
+     * @example 0.966
+     */
+    hitRate: number;
+    /**
+     * Redis 总 key 数量
+     * @example 256
+     */
+    totalKeys: number;
+    /**
+     * Redis 已用内存（字节）
+     * @example 1048576
+     */
+    usedMemory: number;
+    /**
+     * Redis 是否可用
+     * @example true
+     */
+    redisAvailable: boolean;
+  }
+
+  interface CacheKeyInfoDto {
+    /**
+     * 缓存 key
+     * @example sys:dict:items:gender
+     */
+    key: string;
+    /**
+     * Redis 数据类型
+     * @example string
+     */
+    type: string;
+    /**
+     * 剩余 TTL（秒），-1 表示永不过期，-2 表示不存在
+     * @example 1723
+     */
+    ttl: number;
+    /**
+     * value 序列化后的字节大小（仅 String 类型）
+     * @example 256
+     */
+    size?: number;
+  }
+
+  interface CacheKeyListResponseDto {
+    /** 缓存 key 列表 */
+    items: CacheKeyInfoDto[];
+    /**
+     * 总数量
+     * @example 128
+     */
+    total: number;
+    /**
+     * 当前页码
+     * @example 1
+     */
+    page: number;
+    /**
+     * 每页数量
+     * @example 20
+     */
+    pageSize: number;
+  }
+
+  interface CacheKeyValueDto {
+    /**
+     * 缓存 key
+     * @example sys:dict:items:gender
+     */
+    key: string;
+    /**
+     * 剩余 TTL（秒）
+     * @example 1723
+     */
+    ttl: number;
+    /** 缓存值（JSON 反序列化后） */
+    value: Record<string, unknown>;
+  }
+
+  interface CacheClearResultDto {
+    /**
+     * 本次清理的 key 数量
+     * @example 12
+     */
+    deleted: number;
+  }
+
+  interface OnlineUserItemDto {
+    /** 用户ID */
+    userId: string;
+    /** 用户名 */
+    username: string;
+    /** 昵称 */
+    nickname: string;
+    /** 头像地址 */
+    avatar?: string;
+    /** 用户状态 */
+    status: string;
+    /** 会话数量 */
+    sessionCount: number;
+    /** 首次登录时间 */
+    loginAt: string;
+    /** 最后活跃时间 */
+    lastActiveAt: string;
+  }
+
+  interface SessionDetailDto {
+    /** Token 哈希值 */
+    tokenHash: string;
+    /** IP 地址 */
+    ipAddress?: string;
+    /** 浏览器信息 */
+    browser?: string;
+    /** 操作系统信息 */
+    os?: string;
+    /** 设备信息 */
+    device?: string;
+    /** 登录地点 */
+    location?: string;
+    /** 会话创建时间 */
+    createdAt: string;
+    /** 最后活跃时间 */
+    lastActiveAt: string;
+  }
+
   interface ProfileResponseDto {
     /** 用户唯一标识符（UUID） */
     userId: string;
@@ -1527,6 +1671,10 @@ declare namespace API {
     createdAtEnd?: string;
   }
 
+  interface PermissionsFindAllFlatParams {
+    mine?: string;
+  }
+
   interface MenuFindAllParams {
     /** 页码 */
     page?: number;
@@ -1689,6 +1837,34 @@ declare namespace API {
 
   interface ConfigsGetConfigsByKeysParams {
     keys?: string;
+  }
+
+  interface MonitorGetCacheKeysParams {
+    /** key 匹配模式，如 sys:dict:* */
+    pattern?: string;
+    /** 页码 */
+    page?: number;
+    /** 每页数量 */
+    pageSize?: number;
+  }
+
+  interface MonitorGetCacheKeyParams {
+    /** 完整缓存 key */
+    key?: string;
+  }
+
+  interface MonitorClearCacheParams {
+    /** key 匹配模式，如 sys:dict:* */
+    pattern?: string;
+  }
+
+  interface OnlineUsersListParams {
+    /** 页码 */
+    page?: number;
+    /** 每页数量 */
+    pageSize?: number;
+    /** 用户名/昵称搜索 */
+    keyword?: string;
   }
 
   interface ProfileGetLoginLogsParams {

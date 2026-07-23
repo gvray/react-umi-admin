@@ -81,6 +81,21 @@ export const PERM = {
   LOG_LOGIN_DELETE: 'system:log-login:delete',
   LOG_LOGIN_CLEAN: 'system:log-login:clean',
   LOG_LOGIN_CLEAR: 'system:log-login:clear',
+
+  MONITOR: 'monitor',
+  MONITOR_SERVER: 'monitor:server',
+  MONITOR_SERVER_VIEW: 'monitor:server:view',
+  MONITOR_SERVER_LIST: 'monitor:server:list',
+
+  MONITOR_ONLINE_USER: 'monitor:online-user',
+  MONITOR_ONLINE_USER_VIEW: 'monitor:online-user:view',
+  MONITOR_ONLINE_USER_LIST: 'monitor:online-user:list',
+  MONITOR_ONLINE_USER_KICK: 'monitor:online-user:kick',
+
+  MONITOR_CACHE: 'monitor:cache',
+  MONITOR_CACHE_VIEW: 'monitor:cache:view',
+  MONITOR_CACHE_LIST: 'monitor:cache:list',
+  MONITOR_CACHE_CLEAR: 'monitor:cache:clear',
 } as const;
 
 export type PermKey = (typeof PERM)[keyof typeof PERM];
