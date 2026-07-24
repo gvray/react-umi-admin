@@ -1,6 +1,5 @@
 import { PageContainer } from '@/components';
 import {
-  BellOutlined,
   ClockCircleOutlined,
   HistoryOutlined,
   IdcardOutlined,
@@ -25,7 +24,6 @@ import { history, useLocation } from 'umi';
 import styles from './index.less';
 import { useProfilePageModel } from './model';
 import TabLoginLog from './TabLoginLog';
-import TabNotifications from './TabNotifications';
 import TabPermissions from './TabPermissions';
 import TabPreferences from './TabPreferences';
 import TabProfile from './TabProfile';
@@ -62,12 +60,6 @@ const TAB_META: Array<{
     icon: <HistoryOutlined />,
     label: '登录记录',
     children: <TabLoginLog />,
-  },
-  {
-    key: 'notifications',
-    icon: <BellOutlined />,
-    label: '消息通知',
-    children: <TabNotifications />,
   },
   {
     key: 'preferences',

@@ -19,6 +19,7 @@ export default {
   'permission.resource.system:position': '岗位管理',
   'permission.resource.system:dictionary': '字典管理',
   'permission.resource.system:config': '配置管理',
+  'permission.resource.system:notice': '通知公告',
   'permission.resource.system:log': '日志管理',
   'permission.resource.system:log-login': '登录日志',
   'permission.resource.system:log-operation': '操作日志',

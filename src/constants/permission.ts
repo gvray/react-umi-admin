@@ -96,6 +96,13 @@ export const PERM = {
   MONITOR_CACHE_VIEW: 'monitor:cache:view',
   MONITOR_CACHE_LIST: 'monitor:cache:list',
   MONITOR_CACHE_CLEAR: 'monitor:cache:clear',
+
+  NOTICE: 'system:notice',
+  NOTICE_VIEW: 'system:notice:view',
+  NOTICE_LIST: 'system:notice:list',
+  NOTICE_CREATE: 'system:notice:create',
+  NOTICE_UPDATE: 'system:notice:update',
+  NOTICE_DELETE: 'system:notice:delete',
 } as const;
 
 export type PermKey = (typeof PERM)[keyof typeof PERM];

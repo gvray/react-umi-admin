@@ -184,60 +184,6 @@ export function useProfilePermissionsModel() {
   };
 }
 
-export interface NotifItem {
-  id: string;
-  type: 'system' | 'approval' | 'security';
-  title: string;
-  content: string;
-  time: string;
-  read: boolean;
-}
-
-const INITIAL_NOTIFICATIONS: NotifItem[] = [
-  {
-    id: '1',
-    type: 'system',
-    title: '系统维护通知',
-    content:
-      '系统将于本周日凌晨 2:00 - 4:00 进行例行维护，期间部分服务可能不可用。',
-    time: '10 分钟前',
-    read: false,
-  },
-  {
-    id: '2',
-    type: 'security',
-    title: '异地登录提醒',
-    content:
-      '检测到您的账号在北京市有新的登录行为，如非本人操作请及时修改密码。',
-    time: '2 小时前',
-    read: false,
-  },
-  {
-    id: '3',
-    type: 'approval',
-    title: '审批通过',
-    content: '您提交的《请假申请》已通过审批，审批人：王经理。',
-    time: '昨天',
-    read: true,
-  },
-  {
-    id: '4',
-    type: 'system',
-    title: '功能更新',
-    content: '新增数据导出功能，现在支持 Excel 和 CSV 格式一键导出。',
-    time: '昨天',
-    read: true,
-  },
-  {
-    id: '5',
-    type: 'security',
-    title: '密码即将过期',
-    content: '您的登录密码将在 7 天后过期，建议尽快更换新密码。',
-    time: '3 天前',
-    read: true,
-  },
-];
-
 export function useProfileLoginLogModel() {
   const { pageSize } = useSettingStore();
   const [data, setData] = useState<API.LoginLogResponseDto[]>([]);
@@ -310,38 +256,5 @@ export function useProfileLoginLogModel() {
     handleSearch,
     handleStatusChange,
     handleReset,
-  };
-}
-
-export function useProfileNotificationsModel() {
-  const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
-
-  const markAsRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, read: true } : item)),
-    );
-  };
-
-  const markAllRead = () => {
-    setNotifications((prev) => prev.map((item) => ({ ...item, read: true })));
-  };
-
-  const unreadCount = notifications.filter((item) => !item.read).length;
-  const systemNotifs = notifications.filter((item) => item.type === 'system');
-  const approvalNotifs = notifications.filter(
-    (item) => item.type === 'approval',
-  );
-  const securityNotifs = notifications.filter(
-    (item) => item.type === 'security',
-  );
-
-  return {
-    notifications,
-    unreadCount,
-    systemNotifs,
-    approvalNotifs,
-    securityNotifs,
-    markAsRead,
-    markAllRead,
   };
 }

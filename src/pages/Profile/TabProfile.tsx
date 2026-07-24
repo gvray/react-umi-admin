@@ -10,6 +10,7 @@ import {
   Alert,
   Card,
   Descriptions,
+  Grid,
   Space,
   Tag,
   Tooltip,
@@ -25,10 +26,14 @@ interface TabProfileProps {
   profile?: API.CurrentUserResponseDto;
 }
 
+const { useBreakpoint } = Grid;
+
 const TabProfile: React.FC<TabProfileProps> = ({ profile }) => {
   const me = useAuthStore((s) => s.profile);
   const currentMe = profile ?? me;
   const [userProfile, setUserProfile] = useState<API.ProfileResponseDto>();
+  const screens = useBreakpoint();
+  const descColumn = screens.md ? 2 : 1;
 
   useEffect(() => {
     queryProfile()
@@ -67,7 +72,7 @@ const TabProfile: React.FC<TabProfileProps> = ({ profile }) => {
         }
       >
         <Descriptions
-          column={{ xs: 1, sm: 1, md: 2 }}
+          column={descColumn}
           colon={false}
           styles={{
             label: {
@@ -84,7 +89,7 @@ const TabProfile: React.FC<TabProfileProps> = ({ profile }) => {
           <Descriptions.Item label="昵称">
             {userProfile?.nickname || '-'}
           </Descriptions.Item>
-          <Descriptions.Item label="用户 ID" span={{ xs: 1, sm: 1, md: 2 }}>
+          <Descriptions.Item label="用户 ID" span={descColumn}>
             <Text copyable type="secondary">
               {currentMe?.userId || '-'}
             </Text>
@@ -123,7 +128,7 @@ const TabProfile: React.FC<TabProfileProps> = ({ profile }) => {
               {currentMe?.positions?.[0]?.name || '未设置'} <LockOutlined />
             </span>
           </Descriptions.Item>
-          <Descriptions.Item label="角色" span={{ xs: 1, sm: 1, md: 2 }}>
+          <Descriptions.Item label="角色" span={descColumn}>
             <Space size={4} wrap>
               {currentMe?.roles?.map((role: any) => (
                 <Tooltip
@@ -139,7 +144,7 @@ const TabProfile: React.FC<TabProfileProps> = ({ profile }) => {
               )}
             </Space>
           </Descriptions.Item>
-          <Descriptions.Item label="账号状态" span={{ xs: 1, sm: 1, md: 2 }}>
+          <Descriptions.Item label="账号状态" span={descColumn}>
             <Tag color={statusMeta.color}>{statusMeta.label}</Tag>
           </Descriptions.Item>
           <Descriptions.Item label="注册时间">

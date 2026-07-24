@@ -1,6 +1,6 @@
 /**
  * 此文件由 scripts/gen-api-types.ts 自动生成
- * 生成时间: 2026-07-23T13:48:22.145Z
+ * 生成时间: 2026-07-24T13:13:54.883Z
  * 数据来源: http://localhost:3000/api-json
  * 请勿手动修改此文件
  */
@@ -1420,6 +1420,58 @@ declare namespace API {
     lastActiveAt: string;
   }
 
+  interface CreateNoticeDto {
+    /** 标题 */
+    title: string;
+    /** 内容 */
+    content: string;
+    /** 类型：notice-通知, announcement-通告 */
+    type?: string;
+    /** 状态：disabled-禁用, enabled-启用 */
+    status?: string;
+    /** 排序权重 */
+    sort?: number;
+  }
+
+  interface NoticeResponseDto {
+    /** 通知ID */
+    noticeId: string;
+    /** 标题 */
+    title: string;
+    /** 内容 */
+    content: string;
+    /** 类型 */
+    type: string;
+    /** 状态 */
+    status: string;
+    /** 排序权重 */
+    sort: number;
+    /** 是否已读 */
+    isRead?: boolean;
+    /** 创建时间 */
+    createdAt: string;
+    /** 更新时间 */
+    updatedAt: string;
+  }
+
+  interface UpdateNoticeDto {
+    /** 标题 */
+    title?: string;
+    /** 内容 */
+    content?: string;
+    /** 类型：notice-通知, announcement-通告 */
+    type?: string;
+    /** 状态：disabled-禁用, enabled-启用 */
+    status?: string;
+    /** 排序权重 */
+    sort?: number;
+  }
+
+  interface BatchDeleteNoticesDto {
+    /** 待删除通知ID列表 */
+    ids: string[];
+  }
+
   interface ProfileResponseDto {
     /** 用户唯一标识符（UUID） */
     userId: string;
@@ -1840,12 +1892,12 @@ declare namespace API {
   }
 
   interface MonitorGetCacheKeysParams {
-    /** key 匹配模式，如 sys:dict:* */
-    pattern?: string;
     /** 页码 */
     page?: number;
     /** 每页数量 */
     pageSize?: number;
+    /** key 匹配模式，如 sys:dict:* */
+    pattern?: string;
   }
 
   interface MonitorGetCacheKeyParams {
@@ -1865,6 +1917,29 @@ declare namespace API {
     pageSize?: number;
     /** 用户名/昵称搜索 */
     keyword?: string;
+  }
+
+  interface NoticesFindAllParams {
+    /** 页码 */
+    page?: number;
+    /** 每页数量 */
+    pageSize?: number;
+    /** 排序字段 */
+    sortBy?: string;
+    /** 排序方向 */
+    sortOrder?: 'asc' | 'desc';
+    /** 关键词（匹配标题） */
+    keyword?: string;
+    /** 标题（模糊查询） */
+    title?: string;
+    /** 类型：notice-通知, announcement-通告 */
+    type?: string;
+    /** 状态：disabled-禁用, enabled-启用 */
+    status?: string;
+    /** 创建时间开始（YYYY-MM-DD） */
+    createdAtStart?: string;
+    /** 创建时间结束（YYYY-MM-DD） */
+    createdAtEnd?: string;
   }
 
   interface ProfileGetLoginLogsParams {

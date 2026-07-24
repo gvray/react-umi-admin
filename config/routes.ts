@@ -117,6 +117,14 @@ const routes = [
         },
       },
       {
+        path: '/system/notice',
+        component: 'Notice',
+        meta: {
+          title: '通知公告',
+          permissions: ['system:notice:list'],
+        },
+      },
+      {
         path: '/system/log',
         meta: {
           title: '日志管理',

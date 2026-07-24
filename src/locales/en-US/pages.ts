@@ -19,6 +19,7 @@ export default {
   'permission.resource.system:position': 'Position Management',
   'permission.resource.system:dictionary': 'Dictionary Management',
   'permission.resource.system:config': 'Config Management',
+  'permission.resource.system:notice': 'Notice Management',
   'permission.resource.system:log': 'Log Management',
   'permission.resource.system:log-login': 'Login Logs',
   'permission.resource.system:log-operation': 'Operation Logs',
