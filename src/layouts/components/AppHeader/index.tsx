@@ -1,7 +1,7 @@
 import { Space } from 'antd';
-import { SelectLang } from 'umi';
 
 import NoticeBell from '../NoticeBell';
+import SelectLang from '../SelectLang';
 import ThemeModeSwitch from '../ThemeModeSwitch';
 import ThemeSetting from '../ThemeSetting';
 import UserDropdown from './UserDropdown';
@@ -18,7 +18,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({ headerFixed }) => {
         <Space size={6}>
           <ThemeModeSwitch />
           <ThemeSetting />
-          <SelectLang {...({ trigger: ['click'] } as any)} />
+          <SelectLang />
           <NoticeBell />
           <UserDropdown />
         </Space>
