@@ -22,11 +22,17 @@ const client = createClient({
           return null; // 无 refresh token，无法刷新，需重新登录
         }
         const res = await refreshToken({ refreshToken: token });
-        const { access_token, refresh_token } = res.data;
-        tokenManager.setRefreshToken(refresh_token);
-        return access_token;
+        const {
+          access_token,
+          refresh_token,
+          access_token_expires_in,
+          refresh_token_expires_in,
+        } = res.data;
+        tokenManager.setRefreshToken(refresh_token, refresh_token_expires_in);
+        return { access_token, access_token_expires_in };
       },
-      setToken: (token) => tokenManager.setAccessToken(token),
+      setToken: ({ access_token, access_token_expires_in }) =>
+        tokenManager.setAccessToken(access_token, access_token_expires_in),
       exclude: ['/auth/login', '/auth/refresh'],
     },
     logging: true, // 开启请求日志，生产环境建议关闭
