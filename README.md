@@ -10,19 +10,9 @@
 
 ## 🔥 项目展示
 
-登陆路径：/login 登陆账号：admin@example/admin/13800138000 登陆密码：123456
+![Gvray Admin 预览](docs/screenshots/demo.webp)
 
-核心页面一览：
-
-![登陆](docs/screenshots/login.png) ![Dashboard](docs/screenshots/2026-02-08/dashboard.png) ![用户管理](docs/screenshots/2026-02-08/user.png) ![权限管理](docs/screenshots/2026-02-08/role-permission.png) ![个人中心](docs/screenshots/2026-02-08/profile2.png)
-
-<details>
-
-<summary>更多页面截图</summary>
-
-![个人中心 - 基本信息](docs/screenshots/2026-02-08/profile1.png) ![个人中心 - 安全设置](docs/screenshots/2026-02-08/profile3.png) ![个人中心 - 权限信息](docs/screenshots/2026-02-08/profile4.png) ![个人中心 - 登录日志](docs/screenshots/2026-02-08/profile5.png) ![部门管理](docs/screenshots/2026-02-08/dept.png) ![权限管理](docs/screenshots/2026-02-08/permission.png) ![系统配置](docs/screenshots/2026-02-08/config.png) ![角色分配用户](docs/screenshots/2026-02-08/role-user.png) ![用户分配角色](docs/screenshots/2026-02-08/user-role.png)
-
-</details>
+> 登陆路径：`/login` · 账号：`admin@example` / `admin` / `13800138000` · 密码：`123456`
 
 ## 📚 文档导航
 
@@ -30,8 +20,8 @@
 - 👉 [Architecture Documentation](docs/architecture.md) — 架构设计与实现
 - 👉 [Docker 部署指南](docs/docker.md) — Docker 化部署完整方案
 - 👉 [UMI 限制分析](docs/umi-limitations.md) — Umi 框架局限性与最佳实践
-- 👉 [架构特性](#-架构特性) — 系统运行时能力、平台基础设施、工程化能力
-- 👉 [核心功能模块](#-核心功能模块) — 用户、权限、配置、日志等
+- 👉 [架构特性](#architecture-capabilities) — 系统运行时能力、平台基础设施、工程化能力
+- 👉 [核心功能模块](#business-modules) — 用户、权限、配置、日志等
 - 👉 [开发指南](docs/developer-guide.md) — 环境搭建、脚手架、插件机制
 - 👉 [API 文档] — OpenAPI 同步接口说明
 - 👉 [贡献指南](docs/contributing.md) — 提交规范、PR 流程
@@ -80,11 +70,11 @@
 - PWA / 离线模式（规划中）
 - 性能监控与 Sentry 集成（规划中）
 
-## 🧩 核心功能模块（Business Modules
+## 🧩 核心功能模块（Business Modules）
 
 - 用户注册
 - 用户登录
-- 仪表盘（Dashboard）
+- 仪表盘
 - 个人中心
 - 用户管理
 - 角色管理
