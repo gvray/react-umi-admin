@@ -156,12 +156,11 @@ const SelectLang: React.FC<SelectLangProps> = (props) => {
         }
         style={{
           cursor: 'pointer',
-          padding: '0 12px',
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
           height: 48,
-          width: 48,
+          padding: '0 6px',
           fontSize: 18,
           verticalAlign: 'middle',
         }}

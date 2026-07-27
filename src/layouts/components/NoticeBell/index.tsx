@@ -33,7 +33,7 @@ const POLLING_INTERVAL = 60_000;
 const Trigger = styled.div`
   cursor: pointer;
   height: 48px;
-  width: 48px;
+  padding: 0 6px;
   display: flex;
   align-items: center;
   justify-content: center;

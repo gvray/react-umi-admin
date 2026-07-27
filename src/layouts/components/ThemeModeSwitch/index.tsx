@@ -16,7 +16,7 @@ const ICON_MAP: Record<ThemeMode, React.ReactNode> = {
 const Trigger = styled.div`
   cursor: pointer;
   height: 48px;
-  width: 48px;
+  padding: 0 6px;
   display: flex;
   align-items: center;
   justify-content: center;
