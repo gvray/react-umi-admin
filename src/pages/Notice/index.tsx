@@ -1,6 +1,7 @@
 import {
   AuthButton,
   DateTimeFormat,
+  Icon,
   PageContainer,
   StatusTag,
   TablePro,
@@ -9,12 +10,6 @@ import { TableProRef } from '@/components/TablePro';
 import { PERM } from '@/constants';
 import { useFeedback } from '@/hooks';
 import { callRef, logger } from '@/utils';
-import {
-  DeleteOutlined,
-  EditOutlined,
-  ExclamationCircleOutlined,
-  EyeOutlined,
-} from '@ant-design/icons';
 import { Modal, Space, Tag } from 'antd';
 import { useRef, useState } from 'react';
 import { getNoticeColumns } from './columns';
@@ -55,7 +50,7 @@ const NoticePage = () => {
   const handleDelete = (record: API.NoticeResponseDto) => {
     Modal.confirm({
       title: `系统提示`,
-      icon: <ExclamationCircleOutlined />,
+      icon: <Icon name="ExclamationCircleOutlined" />,
       content: `是否确认删除通知公告"${record.title}"？`,
       okText: '确认',
       cancelText: '取消',
@@ -176,7 +171,7 @@ const NoticePage = () => {
       <Space size={0}>
         <AuthButton
           type="link"
-          icon={<EyeOutlined />}
+          icon={<Icon name="EyeOutlined" />}
           onClick={() => handleView(record)}
           perms={[PERM.NOTICE_VIEW]}
         >
@@ -184,7 +179,7 @@ const NoticePage = () => {
         </AuthButton>
         <AuthButton
           type="link"
-          icon={<EditOutlined />}
+          icon={<Icon name="EditOutlined" />}
           onClick={() => handleUpdate(record)}
           perms={[PERM.NOTICE_UPDATE]}
         >
@@ -193,7 +188,7 @@ const NoticePage = () => {
         <AuthButton
           danger
           type="link"
-          icon={<DeleteOutlined />}
+          icon={<Icon name="DeleteOutlined" />}
           onClick={() => handleDelete(record)}
           perms={[PERM.NOTICE_DELETE]}
         >

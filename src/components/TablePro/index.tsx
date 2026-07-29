@@ -1,4 +1,4 @@
-import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { Icon } from '@/components';
 import { pruneEmptyChildren } from '@gvray/adminkit';
 import {
   Button,
@@ -192,7 +192,7 @@ const TableProFunction: React.ForwardRefRenderFunction<
               <Tooltip title={showSearch ? '隐藏搜索' : '显示搜索'}>
                 <Button
                   shape="circle"
-                  icon={<SearchOutlined />}
+                  icon={<Icon name="SearchOutlined" />}
                   onClick={() => setShowSearch(!showSearch)}
                 />
               </Tooltip>
@@ -202,7 +202,7 @@ const TableProFunction: React.ForwardRefRenderFunction<
                 <Button
                   shape="circle"
                   onClick={() => reload()}
-                  icon={<ReloadOutlined />}
+                  icon={<Icon name="ReloadOutlined" />}
                 />
               </Tooltip>
             )}

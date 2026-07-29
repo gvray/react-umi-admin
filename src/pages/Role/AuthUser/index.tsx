@@ -1,6 +1,7 @@
 import {
   AuthButton,
   BackButton,
+  Icon,
   PageContainer,
   PageLoading,
   PagePlaceholder,
@@ -11,15 +12,6 @@ import { useFeedback } from '@/hooks';
 import useDict from '@/hooks/useDict';
 import { queryRoleOptions } from '@/services/role';
 import type { DictOption } from '@/types/dict';
-import {
-  CheckOutlined,
-  SaveOutlined,
-  SearchOutlined,
-  SwapOutlined,
-  TeamOutlined,
-  UndoOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
 import { debounce } from '@gvray/eskit';
 import {
   Button,
@@ -172,7 +164,7 @@ export default function AuthUserPage() {
   if (!roleId) {
     return (
       <PageContainer className={styles.pageContainer}>
-        <PagePlaceholder icon={<TeamOutlined />}>
+        <PagePlaceholder icon={<Icon name="TeamOutlined" />}>
           请提供角色ID来分配用户
         </PagePlaceholder>
       </PageContainer>
@@ -182,7 +174,7 @@ export default function AuthUserPage() {
   if (!selectedRole) {
     return (
       <PageContainer className={styles.pageContainer}>
-        <PagePlaceholder icon={<TeamOutlined />}>
+        <PagePlaceholder icon={<Icon name="TeamOutlined" />}>
           未找到角色信息
         </PagePlaceholder>
       </PageContainer>
@@ -218,7 +210,7 @@ export default function AuthUserPage() {
                 <Button
                   type="text"
                   size="small"
-                  icon={<SwapOutlined />}
+                  icon={<Icon name="SwapOutlined" />}
                   title="切换角色"
                 />
               </Dropdown>
@@ -277,7 +269,7 @@ export default function AuthUserPage() {
           <Space className={styles.actionBar} wrap align="center">
             <Input
               placeholder="搜索用户名、昵称或邮箱"
-              prefix={<SearchOutlined />}
+              prefix={<Icon name="SearchOutlined" />}
               value={searchText}
               onChange={(e) => handleSearchChange(e.target.value)}
               allowClear
@@ -285,12 +277,12 @@ export default function AuthUserPage() {
             />
             <Button onClick={handleSelectAll}>全选</Button>
             <Button onClick={handleClearAll}>清空</Button>
-            <Button icon={<UndoOutlined />} onClick={handleReset}>
+            <Button icon={<Icon name="UndoOutlined" />} onClick={handleReset}>
               重置
             </Button>
             <AuthButton
               type="primary"
-              icon={<SaveOutlined />}
+              icon={<Icon name="SaveOutlined" />}
               onClick={handleSubmit}
               loading={submitting}
               disabled={!hasChanges()}
@@ -315,7 +307,7 @@ export default function AuthUserPage() {
                         onClick={() => toggleUser(user.userId)}
                       >
                         <div className={styles.checkIcon}>
-                          {isSelected && <CheckOutlined />}
+                          {isSelected && <Icon name="CheckOutlined" />}
                         </div>
                         <div className={styles.userHeader}>
                           <div className={styles.userAvatar}>
@@ -360,7 +352,7 @@ export default function AuthUserPage() {
               </>
             ) : (
               <div className={styles.emptyState}>
-                <UserOutlined className="icon" />
+                <Icon name="UserOutlined" className="icon" />
                 <div>
                   {searchText ? '未找到匹配的用户' : '暂无可分配的用户'}
                 </div>

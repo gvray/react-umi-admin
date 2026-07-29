@@ -1,4 +1,4 @@
-import { FormGrid, FormLoading, IconSelector } from '@/components';
+import { FormGrid, FormLoading, IconPicker } from '@/components';
 import { DEFAULT_MODAL_TITLE } from '@/constants';
 import { useFeedback } from '@/hooks';
 import {
@@ -270,7 +270,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
             </FormGrid.Item>
             <FormGrid.Item span={12}>
               <Form.Item name="icon" label="菜单图标">
-                <IconSelector />
+                <IconPicker />
               </Form.Item>
             </FormGrid.Item>
             <FormGrid.Item span={12}>

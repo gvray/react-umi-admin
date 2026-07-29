@@ -1,4 +1,4 @@
-import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { Icon } from '@/components';
 import {
   Button,
   Card,
@@ -105,12 +105,15 @@ const TabLoginLog: React.FC = () => {
         <Space className={styles.logActions}>
           <Button
             type="primary"
-            icon={<SearchOutlined />}
+            icon={<Icon name="SearchOutlined" />}
             onClick={model.handleSearch}
           >
             查询
           </Button>
-          <Button icon={<ReloadOutlined />} onClick={model.handleReset}>
+          <Button
+            icon={<Icon name="ReloadOutlined" />}
+            onClick={model.handleReset}
+          >
             重置
           </Button>
         </Space>

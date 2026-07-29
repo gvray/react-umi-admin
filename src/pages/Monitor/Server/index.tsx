@@ -1,11 +1,5 @@
-import { Charts, PageContainer } from '@/components';
+import { Charts, Icon, PageContainer } from '@/components';
 import { formatBytes, formatUptime, getUsageColor } from '@/utils';
-import {
-  DashboardOutlined,
-  FieldTimeOutlined,
-  NodeIndexOutlined,
-  ReloadOutlined,
-} from '@ant-design/icons';
 import {
   Card,
   Col,
@@ -276,21 +270,21 @@ const ServerMonitorPage: React.FC = () => {
       {
         key: 'cpu',
         title: 'CPU 使用率',
-        icon: <DashboardOutlined />,
+        icon: <Icon name="DashboardOutlined" />,
         value: data.cpu.usagePercent,
         option: createGaugeOption(data.cpu.usagePercent, 'CPU', token),
       },
       {
         key: 'memory',
         title: '内存使用率',
-        icon: <DashboardOutlined />,
+        icon: <Icon name="DashboardOutlined" />,
         value: data.memory.usagePercent,
         option: createGaugeOption(data.memory.usagePercent, '内存', token),
       },
       {
         key: 'osUptime',
         title: '系统运行时间',
-        icon: <FieldTimeOutlined />,
+        icon: <Icon name="FieldTimeOutlined" />,
         value: formatUptime(data.os.uptime),
         isText: true,
         sub: `${data.os.platform} · ${data.os.arch}`,
@@ -298,7 +292,7 @@ const ServerMonitorPage: React.FC = () => {
       {
         key: 'processUptime',
         title: 'Node 进程运行时间',
-        icon: <NodeIndexOutlined />,
+        icon: <Icon name="NodeIndexOutlined" />,
         value: formatUptime(data.process.uptime),
         isText: true,
         sub: `PID: ${data.process.pid}`,
@@ -311,7 +305,7 @@ const ServerMonitorPage: React.FC = () => {
       <PageContainer>
         <Empty description={error} image={Empty.PRESENTED_IMAGE_SIMPLE}>
           <Space>
-            <ReloadOutlined spin={loading} />
+            <Icon name="ReloadOutlined" spin={loading} />
             <a onClick={refresh}>重新加载</a>
           </Space>
         </Empty>
@@ -334,7 +328,7 @@ const ServerMonitorPage: React.FC = () => {
               </Text>
             )}
             <a className={styles.actionLink} onClick={refresh}>
-              <ReloadOutlined spin={loading} /> 刷新
+              <Icon name="ReloadOutlined" spin={loading} /> 刷新
             </a>
             <Space size={4}>
               <Text style={{ fontSize: 13 }}>自动刷新</Text>

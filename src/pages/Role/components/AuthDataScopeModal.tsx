@@ -1,4 +1,4 @@
-import { AuthButton } from '@/components';
+import { AuthButton, Icon } from '@/components';
 import { PERM } from '@/constants';
 import { useFeedback } from '@/hooks';
 import { queryDepartmentTree } from '@/services/department';
@@ -8,7 +8,6 @@ import {
   getRoleDataScopesById,
 } from '@/services/role';
 import { logger } from '@/utils';
-import { DatabaseOutlined, EyeOutlined, TeamOutlined } from '@ant-design/icons';
 import {
   Button,
   Col,
@@ -101,35 +100,35 @@ const PERMISSION_TYPES = [
     value: DataScope.ALL,
     label: '全部数据权限',
     description: '可以访问所有数据，不受任何限制',
-    icon: <DatabaseOutlined />,
+    icon: <Icon name="DatabaseOutlined" />,
     color: 'var(--gvray-success-color)',
   },
   {
     value: DataScope.DEPARTMENT,
     label: '本部门数据权限',
     description: '只能访问当前用户所在部门的数据',
-    icon: <TeamOutlined />,
+    icon: <Icon name="TeamOutlined" />,
     color: 'var(--gvray-warning-color)',
   },
   {
     value: DataScope.DEPARTMENT_AND_CHILD,
     label: '本部门及以下数据权限',
     description: '可以访问当前用户所在部门及其下级部门的数据',
-    icon: <TeamOutlined />,
+    icon: <Icon name="TeamOutlined" />,
     color: 'var(--gvray-info-color)',
   },
   {
     value: DataScope.CUSTOM,
     label: '自定义数据权限',
     description: '可以自定义访问特定部门的数据',
-    icon: <EyeOutlined />,
+    icon: <Icon name="EyeOutlined" />,
     color: 'var(--gvray-primary-color)',
   },
   {
     value: DataScope.SELF,
     label: '仅本人数据权限',
     description: '只能访问自己创建或负责的数据',
-    icon: <EyeOutlined />,
+    icon: <Icon name="EyeOutlined" />,
     color: 'var(--gvray-error-color)',
   },
 ];
@@ -273,7 +272,8 @@ export default function AuthDataScopeModal({
     <Modal
       title={
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <DatabaseOutlined
+          <Icon
+            name="DatabaseOutlined"
             style={{ marginRight: '8px', color: 'var(--gvray-primary-color)' }}
           />
           数据权限分配 - {currentRole?.name || roleName}

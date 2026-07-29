@@ -1,6 +1,7 @@
 import {
   AuthButton,
   DateTimeFormat,
+  Icon,
   PageContainer,
   TablePro,
 } from '@/components';
@@ -8,7 +9,6 @@ import { TableProRef } from '@/components/TablePro';
 import { PERM } from '@/constants';
 import { useFeedback } from '@/hooks';
 import { callRef, logger } from '@/utils';
-import { EditOutlined, SyncOutlined } from '@ant-design/icons';
 import { Space, Tag, Tooltip, Typography } from 'antd';
 import { useRef, useState } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
@@ -161,7 +161,7 @@ const PermissionPage = () => {
         <Space size={0}>
           <AuthButton
             type="link"
-            icon={<EditOutlined />}
+            icon={<Icon name="EditOutlined" />}
             onClick={() => handleUpdate(record)}
             perms={[PERM.PERMISSION_UPDATE]}
           >
@@ -193,7 +193,7 @@ const PermissionPage = () => {
         toolbarRender={() => (
           <AuthButton
             type="primary"
-            icon={<SyncOutlined spin={scanning} />}
+            icon={<Icon name="SyncOutlined" spin={scanning} />}
             onClick={handleSync}
             loading={scanning}
             perms={[PERM.PERMISSION_SCAN]}

@@ -27,6 +27,7 @@ export const UserAvatar = styled(Avatar)<{
   $backgroundColor?: string;
 }>`
   cursor: pointer;
+  margin-left: 6px;
 
   ${({ $backgroundColor }) =>
     $backgroundColor &&

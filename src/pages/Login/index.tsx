@@ -1,3 +1,4 @@
+import { Icon } from '@/components';
 import { buildPreferences } from '@/constants/runtime-settings';
 import { login, queryMe, queryMenus } from '@/services/auth';
 import { getDictionaryItemsByTypeCodes } from '@/services/dictionary';
@@ -5,13 +6,6 @@ import { getRuntimeConfig } from '@/services/system';
 import { useAuthStore, useDictStore, useSettingStore } from '@/stores';
 import { decrypt, encrypt, logger, tokenManager } from '@/utils';
 import { runtimeConfig } from '@/utils/runtime-config';
-import {
-  AlipayCircleFilled,
-  GithubFilled,
-  LockOutlined,
-  UserOutlined,
-  WechatFilled,
-} from '@ant-design/icons';
 import { Button, Checkbox, Form, Input, Space, message } from 'antd';
 import { useEffect, useState } from 'react';
 import storetify from 'storetify';
@@ -171,7 +165,9 @@ const LoginPage: React.FC = () => {
               ]}
             >
               <Input
-                prefix={<UserOutlined className="site-form-item-icon" />}
+                prefix={
+                  <Icon name="UserOutlined" className="site-form-item-icon" />
+                }
                 placeholder="手机号/用户名/邮箱"
               />
             </Form.Item>
@@ -182,7 +178,9 @@ const LoginPage: React.FC = () => {
               rules={[{ required: true, message: '请您输入密码' }]}
             >
               <Input
-                prefix={<LockOutlined className="site-form-item-icon" />}
+                prefix={
+                  <Icon name="LockOutlined" className="site-form-item-icon" />
+                }
                 type="password"
                 placeholder="密码"
               />
@@ -238,9 +236,9 @@ const LoginPage: React.FC = () => {
           </Form>
           <Space size={20} style={{ fontSize: '28px', color: '#888' }}>
             <span style={{ fontSize: '14px' }}>第三方账号登录</span>
-            <GithubFilled />
-            <AlipayCircleFilled />
-            <WechatFilled />
+            <Icon name="GithubFilled" />
+            <Icon name="AlipayCircleFilled" />
+            <Icon name="WechatFilled" />
           </Space>
         </div>
       </LoginBg>

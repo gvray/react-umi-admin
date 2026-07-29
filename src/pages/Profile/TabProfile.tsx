@@ -1,11 +1,6 @@
+import { Icon } from '@/components';
 import { queryProfile } from '@/services/profile';
 import { useAuthStore } from '@/stores';
-import {
-  CheckCircleFilled,
-  ExclamationCircleFilled,
-  IdcardOutlined,
-  LockOutlined,
-} from '@ant-design/icons';
 import {
   Alert,
   Card,
@@ -67,7 +62,7 @@ const TabProfile: React.FC<TabProfileProps> = ({ profile }) => {
         className={styles.moduleCard}
         title={
           <>
-            <IdcardOutlined /> 基本信息
+            <Icon name="IdcardOutlined" /> 基本信息
           </>
         }
       >
@@ -83,7 +78,7 @@ const TabProfile: React.FC<TabProfileProps> = ({ profile }) => {
         >
           <Descriptions.Item label="用户名">
             <span className={styles.readonlyField}>
-              {currentMe?.username || '-'} <LockOutlined />
+              {currentMe?.username || '-'} <Icon name="LockOutlined" />
             </span>
           </Descriptions.Item>
           <Descriptions.Item label="昵称">
@@ -99,9 +94,15 @@ const TabProfile: React.FC<TabProfileProps> = ({ profile }) => {
               <span>{email || '未绑定'}</span>
               <Tooltip title={emailBound ? '已绑定' : '未绑定'}>
                 {emailBound ? (
-                  <CheckCircleFilled className={styles.verifiedIcon} />
+                  <Icon
+                    name="CheckCircleFilled"
+                    className={styles.verifiedIcon}
+                  />
                 ) : (
-                  <ExclamationCircleFilled className={styles.unverifiedIcon} />
+                  <Icon
+                    name="ExclamationCircleFilled"
+                    className={styles.unverifiedIcon}
+                  />
                 )}
               </Tooltip>
             </Space>
@@ -111,21 +112,29 @@ const TabProfile: React.FC<TabProfileProps> = ({ profile }) => {
               <span>{maskedPhone || '未绑定'}</span>
               <Tooltip title={phoneBound ? '已绑定' : '未绑定'}>
                 {phoneBound ? (
-                  <CheckCircleFilled className={styles.verifiedIcon} />
+                  <Icon
+                    name="CheckCircleFilled"
+                    className={styles.verifiedIcon}
+                  />
                 ) : (
-                  <ExclamationCircleFilled className={styles.unverifiedIcon} />
+                  <Icon
+                    name="ExclamationCircleFilled"
+                    className={styles.unverifiedIcon}
+                  />
                 )}
               </Tooltip>
             </Space>
           </Descriptions.Item>
           <Descriptions.Item label="部门">
             <span className={styles.readonlyField}>
-              {currentMe?.department?.name || '未设置'} <LockOutlined />
+              {currentMe?.department?.name || '未设置'}{' '}
+              <Icon name="LockOutlined" />
             </span>
           </Descriptions.Item>
           <Descriptions.Item label="岗位">
             <span className={styles.readonlyField}>
-              {currentMe?.positions?.[0]?.name || '未设置'} <LockOutlined />
+              {currentMe?.positions?.[0]?.name || '未设置'}{' '}
+              <Icon name="LockOutlined" />
             </span>
           </Descriptions.Item>
           <Descriptions.Item label="角色" span={descColumn}>
@@ -149,7 +158,7 @@ const TabProfile: React.FC<TabProfileProps> = ({ profile }) => {
           </Descriptions.Item>
           <Descriptions.Item label="注册时间">
             <span className={styles.readonlyField}>
-              - <LockOutlined />
+              - <Icon name="LockOutlined" />
             </span>
           </Descriptions.Item>
           <Descriptions.Item label="更新时间">
@@ -157,7 +166,7 @@ const TabProfile: React.FC<TabProfileProps> = ({ profile }) => {
               {userProfile?.updatedAt
                 ? new Date(userProfile.updatedAt).toLocaleString()
                 : '-'}{' '}
-              <LockOutlined />
+              <Icon name="LockOutlined" />
             </span>
           </Descriptions.Item>
         </Descriptions>

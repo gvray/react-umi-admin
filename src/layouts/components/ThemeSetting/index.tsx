@@ -1,7 +1,7 @@
+import { Icon } from '@/components';
 import { ColorPrimary, PRIMARY_COLOR_LABELS } from '@/constants';
 import { updateProfileSettings } from '@/services/profile';
 import { useSettingStore } from '@/stores';
-import { BgColorsOutlined } from '@ant-design/icons';
 import { Popover } from 'antd';
 import React from 'react';
 import { styled } from 'umi';
@@ -9,8 +9,9 @@ import ThemeColor from './ThemeColor';
 
 const Trigger = styled.div`
   cursor: pointer;
-  height: 48px;
-  padding: 0 6px;
+  min-width: 28px;
+  height: 28px;
+  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,7 +54,7 @@ const ThemeSetting: React.FC<ThemeSettingProps> = ({ onChange }) => {
       }
     >
       <Trigger>
-        <BgColorsOutlined />
+        <Icon name="gvray-theme-primary" size={18} />
         <span>主题</span>
       </Trigger>
     </Popover>

@@ -1,12 +1,13 @@
 import { Dropdown, Input } from 'antd';
 import React, { useState } from 'react';
 import { styled } from 'umi';
-import AllIconsPreview from '../AllIconsPreview';
-import AntIcon from '../AntIcon';
+import IconPreview from '../IconPreview';
+import Icon from '../index';
+import type { IconKey } from '../map';
 
-interface IconSelectorProps {
-  value?: string;
-  onChange?: (icon: string) => void;
+interface IconPickerProps {
+  value?: IconKey;
+  onChange?: (icon: IconKey) => void;
 }
 
 const DropdownPanel = styled.div`
@@ -17,19 +18,19 @@ const DropdownPanel = styled.div`
   box-shadow: var(--gvray-box-shadow);
 `;
 
-interface CustomPanelProps {
-  onChange?: (icon: string) => void;
-}
-const CustomPanel: React.FC<CustomPanelProps> = ({ onChange }) => {
+const CustomPanel: React.FC<{ onChange?: (icon: IconKey) => void }> = ({
+  onChange,
+}) => {
   return (
     <DropdownPanel>
-      <AllIconsPreview onChange={onChange} />
+      <IconPreview onChange={onChange} />
     </DropdownPanel>
   );
 };
-const IconSelector: React.FC<IconSelectorProps> = ({ value, onChange }) => {
+
+const IconPicker: React.FC<IconPickerProps> = ({ value, onChange }) => {
   const [open, setOpen] = useState(false);
-  const handleChange = (icon: string) => {
+  const handleChange = (icon: IconKey) => {
     onChange?.(icon);
     setOpen(false);
   };
@@ -42,7 +43,7 @@ const IconSelector: React.FC<IconSelectorProps> = ({ value, onChange }) => {
     >
       <Input
         readOnly
-        prefix={value ? <AntIcon icon={value} /> : null}
+        prefix={value ? <Icon name={value} /> : null}
         placeholder="选择图标"
         value={value}
       />
@@ -50,4 +51,4 @@ const IconSelector: React.FC<IconSelectorProps> = ({ value, onChange }) => {
   );
 };
 
-export default IconSelector;
+export default IconPicker;

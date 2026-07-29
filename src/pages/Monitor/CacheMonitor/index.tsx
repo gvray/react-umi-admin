@@ -1,13 +1,8 @@
-import { AuthButton, PageContainer, TablePro } from '@/components';
+import { AuthButton, Icon, PageContainer, TablePro } from '@/components';
 import { TableProRef } from '@/components/TablePro';
 import { PERM } from '@/constants';
 import { useFeedback } from '@/hooks';
 import { callRef, formatBytes, logger } from '@/utils';
-import {
-  DeleteOutlined,
-  ReloadOutlined,
-  SearchOutlined,
-} from '@ant-design/icons';
 import {
   Card,
   Col,
@@ -161,7 +156,7 @@ const CacheMonitorPage: React.FC = () => {
           <AuthButton
             danger
             type="link"
-            icon={<DeleteOutlined />}
+            icon={<Icon name="DeleteOutlined" />}
             onClick={() => handleDeleteKey(record)}
             perms={[PERM.MONITOR_CACHE_CLEAR]}
           >
@@ -196,7 +191,7 @@ const CacheMonitorPage: React.FC = () => {
       <PageContainer>
         <Empty description={error} image={Empty.PRESENTED_IMAGE_SIMPLE}>
           <Space>
-            <ReloadOutlined spin={statsLoading} />
+            <Icon name="ReloadOutlined" spin={statsLoading} />
             <a onClick={refresh}>重新加载</a>
           </Space>
         </Empty>
@@ -219,7 +214,7 @@ const CacheMonitorPage: React.FC = () => {
               </Tag>
             )}
             <a className={styles.actionLink} onClick={refresh}>
-              <ReloadOutlined spin={statsLoading} /> 刷新
+              <Icon name="ReloadOutlined" spin={statsLoading} /> 刷新
             </a>
             <Space size={4}>
               <Text style={{ fontSize: 13 }}>自动刷新</Text>
@@ -336,12 +331,12 @@ const CacheMonitorPage: React.FC = () => {
                     onChange={(e) => setPattern(e.target.value)}
                     onPressEnter={handleSearch}
                     style={{ width: 280 }}
-                    prefix={<SearchOutlined />}
+                    prefix={<Icon name="SearchOutlined" />}
                     allowClear
                   />
                   <AuthButton
                     type="primary"
-                    icon={<SearchOutlined />}
+                    icon={<Icon name="SearchOutlined" />}
                     onClick={handleSearch}
                     perms={[PERM.MONITOR_CACHE_LIST]}
                   >
@@ -349,7 +344,7 @@ const CacheMonitorPage: React.FC = () => {
                   </AuthButton>
                   <AuthButton
                     danger
-                    icon={<DeleteOutlined />}
+                    icon={<Icon name="DeleteOutlined" />}
                     onClick={() => setClearModalOpen(true)}
                     perms={[PERM.MONITOR_CACHE_CLEAR]}
                   >

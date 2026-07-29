@@ -1,5 +1,6 @@
 import AppWatermark from '@/components/AppWatermark';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import '@/components/Icon/init';
 import NavigationProgress from '@/components/NavigationProgress';
 import { RouteMetaProvider } from '@/contexts/routeMeta';
 import { useAppTheme, useRouteMeta } from '@/hooks';

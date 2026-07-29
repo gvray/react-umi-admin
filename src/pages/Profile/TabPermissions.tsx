@@ -1,4 +1,4 @@
-import { ApiOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { Icon } from '@/components';
 import { Card, Input, Spin, Tag, Tooltip, Tree, Typography } from 'antd';
 import type { DataNode } from 'antd/es/tree';
 import { useMemo } from 'react';
@@ -50,7 +50,10 @@ function permTreeToData(nodes: PermissionTreeNode[]): DataNode[] {
           )}
           {description && (
             <Tooltip title={description} styles={{ body: { maxWidth: 320 } }}>
-              <InfoCircleOutlined className={styles.permissionDescIcon} />
+              <Icon
+                name="InfoCircleOutlined"
+                className={styles.permissionDescIcon}
+              />
             </Tooltip>
           )}
         </span>
@@ -80,7 +83,7 @@ const TabPermissions: React.FC = () => {
       size="small"
       title={
         <>
-          <ApiOutlined /> 权限列表
+          <Icon name="ApiOutlined" /> 权限列表
         </>
       }
       extra={

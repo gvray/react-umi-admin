@@ -1,4 +1,4 @@
-import { CheckOutlined } from '@ant-design/icons';
+import { Icon } from '@/components';
 import { Tooltip } from 'antd';
 import React from 'react';
 import { styled } from 'umi';
@@ -58,7 +58,7 @@ const ThemeColor: React.FC<ThemeColorProps> = ({
             onClick={() => onChange?.({ color, label })}
             aria-label={`选择主题色 ${label}`}
           >
-            {value === color && <CheckOutlined />}
+            {value === color && <Icon name="CheckOutlined" />}
           </ColorDot>
         </Tooltip>
       ))}

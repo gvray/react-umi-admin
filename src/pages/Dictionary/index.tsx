@@ -3,6 +3,7 @@ import {
   CellName,
   CopyId,
   DateTimeFormat,
+  Icon,
   PageContainer,
   StatusTag,
   TablePro,
@@ -13,13 +14,6 @@ import { useFeedback } from '@/hooks';
 import useDict from '@/hooks/useDict';
 import type { DictOption } from '@/types/dict';
 import { callRef, logger } from '@/utils';
-import {
-  DeleteOutlined,
-  EditOutlined,
-  ExclamationCircleOutlined,
-  PlusOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
 import { Modal, Space, Tag } from 'antd';
 import { useRef } from 'react';
 import { useNavigate } from 'umi';
@@ -52,7 +46,7 @@ const DictionaryPage = () => {
   const handleDelete = async (record: API.DictionaryTypeResponseDto) => {
     Modal.confirm({
       title: `删除确认`,
-      icon: <ExclamationCircleOutlined />,
+      icon: <Icon name="ExclamationCircleOutlined" />,
       content: (
         <div>
           <p>
@@ -150,7 +144,7 @@ const DictionaryPage = () => {
             <AuthButton
               type="link"
               size="small"
-              icon={<EditOutlined />}
+              icon={<Icon name="EditOutlined" />}
               onClick={() => handleUpdate(record)}
               perms={[PERM.DICTIONARY_UPDATE]}
             >
@@ -159,7 +153,7 @@ const DictionaryPage = () => {
             <AuthButton
               type="link"
               size="small"
-              icon={<SettingOutlined />}
+              icon={<Icon name="SettingOutlined" />}
               onClick={() => handleManageItems(record)}
               perms={[PERM.DICTIONARY_UPDATE]}
             >
@@ -169,7 +163,7 @@ const DictionaryPage = () => {
               danger
               type="link"
               size="small"
-              icon={<DeleteOutlined />}
+              icon={<Icon name="DeleteOutlined" />}
               onClick={() => handleDelete(record)}
               perms={[PERM.DICTIONARY_DELETE]}
             >
@@ -193,7 +187,7 @@ const DictionaryPage = () => {
           return (
             <AuthButton
               type="primary"
-              icon={<PlusOutlined />}
+              icon={<Icon name="PlusOutlined" />}
               onClick={handleAdd}
               perms={[PERM.DICTIONARY_CREATE]}
             >

@@ -1,4 +1,4 @@
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { Icon } from '@/components';
 import React, { memo } from 'react';
 import { styled } from 'umi';
 
@@ -51,7 +51,11 @@ const CollapseTrigger: React.FC<CollapseTriggerProps> = ({
   collapsed,
   onToggle,
 }) => {
-  const icon = collapsed ? <RightOutlined /> : <LeftOutlined />;
+  const icon = collapsed ? (
+    <Icon name="RightOutlined" />
+  ) : (
+    <Icon name="LeftOutlined" />
+  );
 
   return (
     <TriggerWrapper>

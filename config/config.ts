@@ -55,6 +55,8 @@ export default defineConfig({
   headScripts: [
     // 解决首次加载时白屏的问题
     { src: '/scripts/loading.js', async: true },
+    // iconfont Symbol 方案 —— 本地化的 JS 文件
+    { src: '/iconfont/iconfont.js' },
   ],
   plugins,
   /**

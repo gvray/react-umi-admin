@@ -1,3 +1,4 @@
+import { Icon } from '@/components';
 import { THEME_MODE_LABELS, ThemeMode } from '@/constants';
 import {
   deleteProfileSettings,
@@ -6,12 +7,6 @@ import {
 } from '@/services/profile';
 import { useSettingStore } from '@/stores';
 import { runtimeConfig } from '@/utils/runtime-config';
-import {
-  LayoutOutlined,
-  ReloadOutlined,
-  SettingOutlined,
-  SkinOutlined,
-} from '@ant-design/icons';
 import { debounce } from '@gvray/eskit';
 import {
   Button,
@@ -205,7 +200,7 @@ const TabPreferences: React.FC = () => {
         <Card
           title={
             <>
-              <SkinOutlined /> 外观与布局
+              <Icon name="SkinOutlined" /> 外观与布局
             </>
           }
           size="small"
@@ -286,7 +281,8 @@ const TabPreferences: React.FC = () => {
               <List.Item>
                 <List.Item.Meta
                   avatar={
-                    <LayoutOutlined
+                    <Icon
+                      name="LayoutOutlined"
                       style={{ color: 'var(--gvray-text-color-placeholder)' }}
                     />
                   }
@@ -309,7 +305,7 @@ const TabPreferences: React.FC = () => {
         <Card
           title={
             <>
-              <SettingOutlined /> 数据与功能
+              <Icon name="SettingOutlined" /> 数据与功能
             </>
           }
           size="small"
@@ -368,7 +364,8 @@ const TabPreferences: React.FC = () => {
               <List.Item>
                 <List.Item.Meta
                   avatar={
-                    <SettingOutlined
+                    <Icon
+                      name="SettingOutlined"
                       style={{ color: 'var(--gvray-text-color-placeholder)' }}
                     />
                   }
@@ -391,7 +388,7 @@ const TabPreferences: React.FC = () => {
         <Card
           title={
             <>
-              <ReloadOutlined /> 恢复默认
+              <Icon name="ReloadOutlined" /> 恢复默认
             </>
           }
           size="small"
@@ -412,7 +409,9 @@ const TabPreferences: React.FC = () => {
               okText="确认"
               cancelText="取消"
             >
-              <Button icon={<ReloadOutlined />}>恢复默认设置</Button>
+              <Button icon={<Icon name="ReloadOutlined" />}>
+                恢复默认设置
+              </Button>
             </Popconfirm>
           </div>
         </Card>

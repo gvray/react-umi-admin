@@ -1,12 +1,4 @@
-import {
-  ArrowDownOutlined,
-  ArrowUpOutlined,
-  ClockCircleOutlined,
-  SafetyCertificateOutlined,
-  TeamOutlined,
-  UserOutlined,
-  WifiOutlined,
-} from '@ant-design/icons';
+import { Icon } from '@/components';
 import { format } from '@gvray/datekit';
 import { Card, Col, Row, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -34,7 +26,7 @@ const STAT_CONFIG: StatItem[] = [
   {
     key: 'users',
     label: '用户总数',
-    icon: <UserOutlined />,
+    icon: <Icon name="UserOutlined" />,
     gradient:
       'linear-gradient(135deg, var(--gvray-primary-color) 0%, var(--gvray-info-color) 100%)',
     trendUp: true,
@@ -44,7 +36,7 @@ const STAT_CONFIG: StatItem[] = [
   {
     key: 'roles',
     label: '角色数量',
-    icon: <TeamOutlined />,
+    icon: <Icon name="TeamOutlined" />,
     gradient:
       'linear-gradient(135deg, var(--gvray-error-color) 0%, var(--gvray-warning-color) 100%)',
     trendUp: true,
@@ -54,7 +46,7 @@ const STAT_CONFIG: StatItem[] = [
   {
     key: 'permissions',
     label: '权限点数',
-    icon: <SafetyCertificateOutlined />,
+    icon: <Icon name="SafetyCertificateOutlined" />,
     gradient:
       'linear-gradient(135deg, var(--gvray-info-color) 0%, var(--gvray-primary-color-hover) 100%)',
     trendUp: true,
@@ -64,7 +56,7 @@ const STAT_CONFIG: StatItem[] = [
   {
     key: 'onlineUsers',
     label: '在线用户',
-    icon: <WifiOutlined />,
+    icon: <Icon name="WifiOutlined" />,
     gradient:
       'linear-gradient(135deg, var(--gvray-success-color) 0%, var(--gvray-primary-color) 100%)',
     trendUp: false,
@@ -107,7 +99,7 @@ const Dashboard: React.FC = () => {
           </Text>
         </div>
         <div className={styles.timeDisplay}>
-          <ClockCircleOutlined />
+          <Icon name="ClockCircleOutlined" />
           {format(new Date(), 'YYYY年MM月DD日 dddd HH:mm')}
         </div>
       </div>
@@ -125,9 +117,9 @@ const Dashboard: React.FC = () => {
               <div className={styles.statValue}>{getStatValue(stat.key)}</div>
               <div className={styles.statTrend}>
                 {stat.trendUp ? (
-                  <ArrowUpOutlined style={{ fontSize: 10 }} />
+                  <Icon name="ArrowUpOutlined" style={{ fontSize: 10 }} />
                 ) : (
-                  <ArrowDownOutlined style={{ fontSize: 10 }} />
+                  <Icon name="ArrowDownOutlined" style={{ fontSize: 10 }} />
                 )}
                 {stat.trendValue} {stat.trendLabel}
               </div>

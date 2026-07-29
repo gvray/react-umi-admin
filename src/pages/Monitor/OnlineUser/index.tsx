@@ -2,6 +2,7 @@ import {
   AuthButton,
   CopyId,
   DateTimeFormat,
+  Icon,
   PageContainer,
   TablePro,
 } from '@/components';
@@ -9,11 +10,6 @@ import { TableProRef } from '@/components/TablePro';
 import { PERM } from '@/constants';
 import { useFeedback } from '@/hooks';
 import { callRef, logger } from '@/utils';
-import {
-  DeleteOutlined,
-  ExclamationCircleOutlined,
-  EyeOutlined,
-} from '@ant-design/icons';
 import { Modal, Space, Table, Tag, Tooltip } from 'antd';
 import React, { useRef, useState } from 'react';
 import { getOnlineUserColumns } from './columns';
@@ -48,7 +44,7 @@ const OnlineUserPage: React.FC = () => {
   const handleKickUser = (record: API.OnlineUserItemDto) => {
     Modal.confirm({
       title: '系统提示',
-      icon: <ExclamationCircleOutlined />,
+      icon: <Icon name="ExclamationCircleOutlined" />,
       content: `是否确认强退用户"${
         record.nickname || record.username
       }"？该用户的所有会话将被强制下线。`,
@@ -78,7 +74,7 @@ const OnlineUserPage: React.FC = () => {
     }
     Modal.confirm({
       title: '批量强退确认',
-      icon: <ExclamationCircleOutlined />,
+      icon: <Icon name="ExclamationCircleOutlined" />,
       content: `是否确认强退选中的 ${selectedRowKeys.length} 位用户？`,
       okText: '确认',
       okButtonProps: { danger: true },
@@ -119,7 +115,7 @@ const OnlineUserPage: React.FC = () => {
   const handleKickSession = (session: API.SessionDetailDto) => {
     Modal.confirm({
       title: '系统提示',
-      icon: <ExclamationCircleOutlined />,
+      icon: <Icon name="ExclamationCircleOutlined" />,
       content: '是否确认强退该会话？',
       okText: '确认',
       okButtonProps: { danger: true },
@@ -175,7 +171,7 @@ const OnlineUserPage: React.FC = () => {
         <Space size={0}>
           <AuthButton
             type="link"
-            icon={<EyeOutlined />}
+            icon={<Icon name="EyeOutlined" />}
             onClick={() => handleViewSessions(record)}
             perms={[PERM.MONITOR_ONLINE_USER_VIEW]}
           >
@@ -184,7 +180,7 @@ const OnlineUserPage: React.FC = () => {
           <AuthButton
             danger
             type="link"
-            icon={<DeleteOutlined />}
+            icon={<Icon name="DeleteOutlined" />}
             onClick={() => handleKickUser(record)}
             perms={[PERM.MONITOR_ONLINE_USER_KICK]}
           >
@@ -249,7 +245,7 @@ const OnlineUserPage: React.FC = () => {
           danger
           type="link"
           size="small"
-          icon={<DeleteOutlined />}
+          icon={<Icon name="DeleteOutlined" />}
           onClick={() => handleKickSession(session)}
           perms={[PERM.MONITOR_ONLINE_USER_KICK]}
         >
@@ -266,7 +262,7 @@ const OnlineUserPage: React.FC = () => {
         toolbarRender={() => (
           <AuthButton
             danger
-            icon={<DeleteOutlined />}
+            icon={<Icon name="DeleteOutlined" />}
             onClick={handleBatchKick}
             disabled={selectedRowKeys.length === 0}
             perms={[PERM.MONITOR_ONLINE_USER_KICK]}

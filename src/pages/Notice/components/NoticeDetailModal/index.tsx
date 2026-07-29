@@ -1,5 +1,4 @@
-import { DateTimeFormat, StatusTag } from '@/components';
-import { EyeOutlined } from '@ant-design/icons';
+import { DateTimeFormat, Icon, StatusTag } from '@/components';
 import { Button, Descriptions, Modal, Tag, Typography } from 'antd';
 import React from 'react';
 import { styled } from 'umi';
@@ -43,7 +42,7 @@ const NoticeDetailModal: React.FC<NoticeDetailModalProps> = ({
     <Modal
       title={
         <>
-          <EyeOutlined style={{ marginRight: 8 }} />
+          <Icon name="EyeOutlined" style={{ marginRight: 8 }} />
           通知公告详情
         </>
       }

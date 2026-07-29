@@ -1,6 +1,6 @@
 import routes from '@/../config/routes';
+import { Icon } from '@/components';
 import { useSettingStore } from '@/stores';
-import { HomeOutlined } from '@ant-design/icons';
 import { Breadcrumb } from 'antd';
 import React, { useMemo } from 'react';
 import { Link, useLocation } from 'umi';
@@ -87,7 +87,7 @@ const AppBreadcrumb: React.FC = () => {
     {
       title: (
         <Link to="/">
-          <HomeOutlined />
+          <Icon name="HomeOutlined" />
         </Link>
       ),
     },

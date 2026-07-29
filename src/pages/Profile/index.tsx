@@ -1,14 +1,4 @@
-import { PageContainer } from '@/components';
-import {
-  ClockCircleOutlined,
-  HistoryOutlined,
-  IdcardOutlined,
-  LockOutlined,
-  SafetyCertificateOutlined,
-  SettingOutlined,
-  TeamOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+import { Icon, PageContainer } from '@/components';
 import {
   Avatar,
   Card,
@@ -39,31 +29,31 @@ const TAB_META: Array<{
 }> = [
   {
     key: 'profile',
-    icon: <UserOutlined />,
+    icon: <Icon name="UserOutlined" />,
     label: '基本信息',
     children: <TabProfile />,
   },
   {
     key: 'security',
-    icon: <LockOutlined />,
+    icon: <Icon name="LockOutlined" />,
     label: '安全中心',
     children: <TabSecurity />,
   },
   {
     key: 'permissions',
-    icon: <SafetyCertificateOutlined />,
+    icon: <Icon name="SafetyCertificateOutlined" />,
     label: '我的权限',
     children: <TabPermissions />,
   },
   {
     key: 'loginLog',
-    icon: <HistoryOutlined />,
+    icon: <Icon name="HistoryOutlined" />,
     label: '登录记录',
     children: <TabLoginLog />,
   },
   {
     key: 'preferences',
-    icon: <SettingOutlined />,
+    icon: <Icon name="SettingOutlined" />,
     label: '系统偏好',
     children: <TabPreferences />,
   },
@@ -114,7 +104,7 @@ export default function ProfilePage() {
               <Avatar
                 size={72}
                 src={model.avatarSrc}
-                icon={<UserOutlined />}
+                icon={<Icon name="UserOutlined" />}
                 className={styles.avatarRing}
               />
 
@@ -166,7 +156,7 @@ export default function ProfilePage() {
             <Card className={styles.summaryCard}>
               <div className={styles.summaryHeader}>
                 <div className={styles.summaryIcon}>
-                  <IdcardOutlined />
+                  <Icon name="IdcardOutlined" />
                 </div>
                 <div className={styles.summaryMeta}>
                   <Text type="secondary">资料与状态</Text>
@@ -199,7 +189,7 @@ export default function ProfilePage() {
                 <div className={styles.summaryRow}>
                   <span>更新时间</span>
                   <Text type="secondary">
-                    <ClockCircleOutlined />{' '}
+                    <Icon name="ClockCircleOutlined" />{' '}
                     {model.updatedAt
                       ? new Date(model.updatedAt).toLocaleDateString()
                       : '-'}
@@ -211,7 +201,7 @@ export default function ProfilePage() {
             <Card className={styles.summaryCard}>
               <div className={styles.summaryHeader}>
                 <div className={styles.summaryIcon}>
-                  <TeamOutlined />
+                  <Icon name="TeamOutlined" />
                 </div>
                 <div className={styles.summaryMeta}>
                   <Text type="secondary">联系与组织</Text>

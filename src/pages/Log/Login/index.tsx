@@ -2,6 +2,7 @@ import {
   AuthButton,
   CopyId,
   DateTimeFormat,
+  Icon,
   PageContainer,
   StatusTag,
   TablePro,
@@ -12,7 +13,6 @@ import { useFeedback } from '@/hooks';
 import useDict from '@/hooks/useDict';
 import type { DictOption } from '@/types/dict';
 import { callRef, logger } from '@/utils';
-import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { Modal, Space } from 'antd';
 import React, { useRef } from 'react';
 import { getLoginLogColumns } from './columns';
@@ -76,7 +76,7 @@ const LoginLog: React.FC = () => {
   const handleDelete = async () => {
     Modal.confirm({
       title: '系统提示',
-      icon: <ExclamationCircleOutlined />,
+      icon: <Icon name="ExclamationCircleOutlined" />,
       content: '是否确认删除选中的登录日志？此操作不可恢复！',
       okText: '确认',
       cancelText: '取消',
@@ -99,7 +99,7 @@ const LoginLog: React.FC = () => {
   const handleClear = async () => {
     Modal.confirm({
       title: '系统提示',
-      icon: <ExclamationCircleOutlined />,
+      icon: <Icon name="ExclamationCircleOutlined" />,
       content: '是否确认清理所有登录日志？此操作不可恢复！',
       okText: '确认',
       cancelText: '取消',
@@ -126,7 +126,7 @@ const LoginLog: React.FC = () => {
           <Space>
             <AuthButton
               danger
-              icon={<DeleteOutlined />}
+              icon={<Icon name="DeleteOutlined" />}
               onClick={handleDelete}
               loading={deleting}
               disabled={selectedRows.length === 0}
@@ -136,7 +136,7 @@ const LoginLog: React.FC = () => {
             </AuthButton>
             <AuthButton
               danger
-              icon={<DeleteOutlined />}
+              icon={<Icon name="DeleteOutlined" />}
               onClick={handleClear}
               loading={clearing}
               perms={[PERM.LOG_LOGIN_CLEAR]}

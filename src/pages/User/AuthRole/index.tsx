@@ -1,4 +1,4 @@
-import { AuthButton } from '@/components';
+import { AuthButton, Icon } from '@/components';
 import BackButton from '@/components/BackButton';
 import PageContainer from '@/components/PageContainer';
 import PageLoading from '@/components/PageLoading';
@@ -7,13 +7,6 @@ import StatusTag from '@/components/StatusTag';
 import { PERM } from '@/constants';
 import { useFeedback } from '@/hooks';
 import useDict from '@/hooks/useDict';
-import {
-  CheckOutlined,
-  SaveOutlined,
-  TeamOutlined,
-  UndoOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
 import { Button, Card, Space, Tag, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'umi';
@@ -112,7 +105,7 @@ export default function AuthRolePage() {
   if (!userId || !selectedUser) {
     return (
       <PageContainer className={styles.pageContainer}>
-        <PagePlaceholder icon={<UserOutlined />}>
+        <PagePlaceholder icon={<Icon name="UserOutlined" />}>
           <div>{!userId ? '请提供用户ID来分配角色' : '未找到用户信息'}</div>
         </PagePlaceholder>
       </PageContainer>
@@ -188,12 +181,12 @@ export default function AuthRolePage() {
           <Space className={styles.actionBar} wrap align="center">
             <Button onClick={handleSelectAll}>全选</Button>
             <Button onClick={handleClearAll}>清空</Button>
-            <Button icon={<UndoOutlined />} onClick={handleReset}>
+            <Button icon={<Icon name="UndoOutlined" />} onClick={handleReset}>
               重置
             </Button>
             <AuthButton
               type="primary"
-              icon={<SaveOutlined />}
+              icon={<Icon name="SaveOutlined" />}
               onClick={handleSubmit}
               loading={submitting}
               disabled={!hasChanges()}
@@ -217,7 +210,7 @@ export default function AuthRolePage() {
                       onClick={() => toggleRole(role.roleId)}
                     >
                       <div className={styles.checkIcon}>
-                        {isSelected && <CheckOutlined />}
+                        {isSelected && <Icon name="CheckOutlined" />}
                       </div>
                       <div className={styles.roleName}>{role.name}</div>
                       <div className={styles.roleKey}>{role.roleKey}</div>
@@ -230,7 +223,7 @@ export default function AuthRolePage() {
               </div>
             ) : (
               <div className={styles.emptyState}>
-                <TeamOutlined className="icon" />
+                <Icon name="TeamOutlined" className="icon" />
                 <div>暂无可分配的角色</div>
               </div>
             )}

@@ -1,13 +1,8 @@
+import { Icon } from '@/components';
 import { LOGIN_PATH } from '@/constants';
 import LoginBg from '@/pages/Login/components/LoginBg';
 import { register } from '@/services/auth';
 import { runtimeConfig } from '@/utils/runtime-config';
-import {
-  LockOutlined,
-  MailOutlined,
-  SmileOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
 import { Button, Form, Input, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'umi';
@@ -73,7 +68,9 @@ const RegisterPage: React.FC = () => {
               ]}
             >
               <Input
-                prefix={<UserOutlined className="site-form-item-icon" />}
+                prefix={
+                  <Icon name="UserOutlined" className="site-form-item-icon" />
+                }
                 placeholder="用户名"
               />
             </Form.Item>
@@ -88,7 +85,9 @@ const RegisterPage: React.FC = () => {
               ]}
             >
               <Input
-                prefix={<SmileOutlined className="site-form-item-icon" />}
+                prefix={
+                  <Icon name="SmileOutlined" className="site-form-item-icon" />
+                }
                 placeholder="昵称"
               />
             </Form.Item>
@@ -100,7 +99,9 @@ const RegisterPage: React.FC = () => {
               rules={[{ type: 'email', message: '请输入有效的邮箱地址' }]}
             >
               <Input
-                prefix={<MailOutlined className="site-form-item-icon" />}
+                prefix={
+                  <Icon name="MailOutlined" className="site-form-item-icon" />
+                }
                 placeholder="邮箱（可选）"
               />
             </Form.Item>
@@ -116,7 +117,9 @@ const RegisterPage: React.FC = () => {
               ]}
             >
               <Input.Password
-                prefix={<LockOutlined className="site-form-item-icon" />}
+                prefix={
+                  <Icon name="LockOutlined" className="site-form-item-icon" />
+                }
                 placeholder="密码"
               />
             </Form.Item>
@@ -139,7 +142,9 @@ const RegisterPage: React.FC = () => {
               ]}
             >
               <Input.Password
-                prefix={<LockOutlined className="site-form-item-icon" />}
+                prefix={
+                  <Icon name="LockOutlined" className="site-form-item-icon" />
+                }
                 placeholder="确认密码"
               />
             </Form.Item>

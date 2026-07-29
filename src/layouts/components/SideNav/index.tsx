@@ -1,4 +1,4 @@
-import AntIcon from '@/components/AntIcon';
+import { Icon } from '@/components';
 import type { SiderTheme } from '@/constants/runtime-settings';
 import { useAuthStore, useSettingStore } from '@/stores';
 import { runtimeConfig } from '@/utils/runtime-config';
@@ -47,7 +47,7 @@ const transformMenuItems = (
     .filter((item: any) => item.hidden !== true)
     .map((item: any) => ({
       key: item.path || item.key,
-      icon: item.icon ? <AntIcon icon={item.icon} /> : undefined,
+      icon: item.icon ? <Icon name={item.icon} /> : undefined,
       label: item.name || item.label,
       children: item.children?.length
         ? transformMenuItems(item.children)

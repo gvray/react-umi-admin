@@ -1,12 +1,4 @@
-import {
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  LoginOutlined,
-  SafetyCertificateOutlined,
-  UserAddOutlined,
-} from '@ant-design/icons';
+import { Icon } from '@/components';
 import { Spin, Tag, Timeline, Typography } from 'antd';
 import React from 'react';
 import { styled } from 'umi';
@@ -64,27 +56,53 @@ const IpText = styled(Text)`
 
 const getActionIcon = (action: string) => {
   if (action.includes('删除'))
-    return <DeleteOutlined style={{ color: 'var(--gvray-error-color)' }} />;
+    return (
+      <Icon
+        name="DeleteOutlined"
+        style={{ color: 'var(--gvray-error-color)' }}
+      />
+    );
   if (
     action.includes('修改') ||
     action.includes('编辑') ||
     action.includes('更新')
   )
-    return <EditOutlined style={{ color: 'var(--gvray-warning-color)' }} />;
+    return (
+      <Icon
+        name="EditOutlined"
+        style={{ color: 'var(--gvray-warning-color)' }}
+      />
+    );
   if (action.includes('登录'))
-    return <LoginOutlined style={{ color: 'var(--gvray-primary-color)' }} />;
+    return (
+      <Icon
+        name="LoginOutlined"
+        style={{ color: 'var(--gvray-primary-color)' }}
+      />
+    );
   if (action.includes('权限'))
     return (
-      <SafetyCertificateOutlined style={{ color: 'var(--gvray-info-color)' }} />
+      <Icon
+        name="SafetyCertificateOutlined"
+        style={{ color: 'var(--gvray-info-color)' }}
+      />
     );
   if (
     action.includes('新增') ||
     action.includes('创建') ||
     action.includes('注册')
   )
-    return <UserAddOutlined style={{ color: 'var(--gvray-success-color)' }} />;
+    return (
+      <Icon
+        name="UserAddOutlined"
+        style={{ color: 'var(--gvray-success-color)' }}
+      />
+    );
   return (
-    <EditOutlined style={{ color: 'var(--gvray-text-color-placeholder)' }} />
+    <Icon
+      name="EditOutlined"
+      style={{ color: 'var(--gvray-text-color-placeholder)' }}
+    />
   );
 };
 
@@ -147,7 +165,7 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
                 <IpText type="secondary">{log.ip}</IpText>
                 {log.status === '成功' ? (
                   <Tag
-                    icon={<CheckCircleOutlined />}
+                    icon={<Icon name="CheckCircleOutlined" />}
                     color="success"
                     style={{ margin: 0, borderRadius: 12 }}
                   >
@@ -155,7 +173,7 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
                   </Tag>
                 ) : (
                   <Tag
-                    icon={<CloseCircleOutlined />}
+                    icon={<Icon name="CloseCircleOutlined" />}
                     color="error"
                     style={{ margin: 0, borderRadius: 12 }}
                   >

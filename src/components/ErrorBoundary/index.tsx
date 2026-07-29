@@ -1,4 +1,4 @@
-import { BugOutlined, HomeOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Icon } from '@/components';
 import { Button, Result, Space, Typography } from 'antd';
 import React, { Component, ErrorInfo } from 'react';
 import { history } from 'umi';
@@ -57,19 +57,27 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
           }}
         >
           <Result
-            icon={<BugOutlined style={{ color: 'var(--gvray-error-color)' }} />}
+            icon={
+              <Icon
+                name="BugOutlined"
+                style={{ color: 'var(--gvray-error-color)' }}
+              />
+            }
             title="页面出了点问题"
             subTitle="抱歉，页面渲染时发生了未预期的错误。请尝试刷新页面或返回首页。"
             extra={
               <Space>
                 <Button
                   type="primary"
-                  icon={<ReloadOutlined />}
+                  icon={<Icon name="ReloadOutlined" />}
                   onClick={this.handleReload}
                 >
                   刷新页面
                 </Button>
-                <Button icon={<HomeOutlined />} onClick={this.handleGoHome}>
+                <Button
+                  icon={<Icon name="HomeOutlined" />}
+                  onClick={this.handleGoHome}
+                >
                   返回首页
                 </Button>
               </Space>

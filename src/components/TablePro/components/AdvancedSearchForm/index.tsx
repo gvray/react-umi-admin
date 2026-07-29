@@ -1,4 +1,4 @@
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import { Icon } from '@/components';
 import { Button, Col, DatePicker, Form, Input, Row, Select, Space } from 'antd';
 import { forwardRef, useImperativeHandle, useState } from 'react';
 
@@ -122,12 +122,12 @@ const AdvancedSearchForm = forwardRef(
               >
                 {expand ? (
                   <span>
-                    <UpOutlined />
+                    <Icon name="UpOutlined" />
                     收起
                   </span>
                 ) : (
                   <span>
-                    <DownOutlined />
+                    <Icon name="DownOutlined" />
                     展开
                   </span>
                 )}

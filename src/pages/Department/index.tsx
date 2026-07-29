@@ -1,6 +1,7 @@
 import {
   AuthButton,
   DateTimeFormat,
+  Icon,
   PageContainer,
   StatusTag,
   TablePro,
@@ -11,12 +12,6 @@ import { useFeedback } from '@/hooks';
 import useDict from '@/hooks/useDict';
 import type { DictOption } from '@/types/dict';
 import { callRef, logger } from '@/utils';
-import {
-  DeleteOutlined,
-  EditOutlined,
-  ExclamationCircleOutlined,
-  PlusOutlined,
-} from '@ant-design/icons';
 import { Modal, Space } from 'antd';
 import { useRef } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
@@ -40,7 +35,7 @@ const DepartmentPage = () => {
   const handleDelete = async (record: API.DepartmentResponseDto) => {
     Modal.confirm({
       title: `系统提示`,
-      icon: <ExclamationCircleOutlined />,
+      icon: <Icon name="ExclamationCircleOutlined" />,
       content: `是否确认删除部门“${record.name}”？`,
       okText: '确认',
       cancelText: '取消',
@@ -95,7 +90,7 @@ const DepartmentPage = () => {
           <Space size={0}>
             <AuthButton
               type="link"
-              icon={<EditOutlined />}
+              icon={<Icon name="EditOutlined" />}
               onClick={() => handleUpdate(record)}
               perms={[PERM.DEPARTMENT_UPDATE]}
             >
@@ -104,7 +99,7 @@ const DepartmentPage = () => {
             <AuthButton
               danger
               type="link"
-              icon={<DeleteOutlined />}
+              icon={<Icon name="DeleteOutlined" />}
               onClick={() => handleDelete(record)}
               perms={[PERM.DEPARTMENT_DELETE]}
             >
@@ -127,7 +122,7 @@ const DepartmentPage = () => {
         toolbarRender={() => (
           <AuthButton
             type="primary"
-            icon={<PlusOutlined />}
+            icon={<Icon name="PlusOutlined" />}
             onClick={handleAdd}
             perms={[PERM.DEPARTMENT_CREATE]}
           >

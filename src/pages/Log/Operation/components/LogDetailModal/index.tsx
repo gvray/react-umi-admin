@@ -1,5 +1,4 @@
-import { DateTimeFormat } from '@/components';
-import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons';
+import { DateTimeFormat, Icon } from '@/components';
 import {
   Alert,
   Button,
@@ -164,7 +163,11 @@ const LogDetailModal: React.FC<LogDetailModalProps> = ({
       <SummaryBar $success={isSuccess}>
         <SummaryLeft>
           <SummaryIcon $success={isSuccess}>
-            {isSuccess ? <CheckCircleFilled /> : <CloseCircleFilled />}
+            {isSuccess ? (
+              <Icon name="CheckCircleFilled" />
+            ) : (
+              <Icon name="CloseCircleFilled" />
+            )}
           </SummaryIcon>
           <SummaryText $success={isSuccess}>
             {isSuccess ? '请求成功' : '请求失败'}

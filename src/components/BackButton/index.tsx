@@ -1,4 +1,4 @@
-import { ArrowLeftOutlined } from '@ant-design/icons';
+import { Icon } from '@/components';
 import { Tooltip } from 'antd';
 import React from 'react';
 import { styled } from 'umi';
@@ -43,7 +43,7 @@ const BackButton: React.FC<BackButtonProps> = ({
   return (
     <Tooltip title={tooltipTitle}>
       <Button onClick={onClick}>
-        <ArrowLeftOutlined />
+        <Icon name="ArrowLeftOutlined" />
       </Button>
     </Tooltip>
   );

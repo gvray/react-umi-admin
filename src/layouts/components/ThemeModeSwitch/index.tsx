@@ -1,22 +1,23 @@
+import { Icon } from '@/components';
 import { THEME_MODE_LABELS } from '@/constants';
 import type { ThemeMode } from '@/constants/theme';
 import { updateProfileSettings } from '@/services/profile';
 import { useSettingStore } from '@/stores';
-import { DesktopOutlined, MoonOutlined, SunOutlined } from '@ant-design/icons';
 import { Dropdown, MenuProps } from 'antd';
 import React from 'react';
 import { styled } from 'umi';
 
 const ICON_MAP: Record<ThemeMode, React.ReactNode> = {
-  light: <SunOutlined />,
-  dark: <MoonOutlined />,
-  system: <DesktopOutlined />,
+  light: <Icon name="gvray-theme-light" size={18} />,
+  dark: <Icon name="gvray-theme-dark" size={18} />,
+  system: <Icon name="gvray-theme-primary" size={18} />,
 };
 
 const Trigger = styled.div`
   cursor: pointer;
-  height: 48px;
-  padding: 0 6px;
+  min-width: 28px;
+  height: 28px;
+  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;

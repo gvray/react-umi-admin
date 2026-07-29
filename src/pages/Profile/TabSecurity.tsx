@@ -1,13 +1,4 @@
-import {
-  CheckCircleFilled,
-  EyeInvisibleOutlined,
-  EyeTwoTone,
-  KeyOutlined,
-  LockOutlined,
-  MailOutlined,
-  MobileOutlined,
-  SafetyCertificateOutlined,
-} from '@ant-design/icons';
+import { Icon } from '@/components';
 import {
   Alert,
   Button,
@@ -35,7 +26,7 @@ const TabSecurity: React.FC = () => {
       <Card
         title={
           <>
-            <KeyOutlined /> 修改密码
+            <Icon name="KeyOutlined" /> 修改密码
           </>
         }
         className={styles.moduleCard}
@@ -60,7 +51,11 @@ const TabSecurity: React.FC = () => {
             <Input.Password
               placeholder="请输入原密码"
               iconRender={(visible) =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                visible ? (
+                  <Icon name="EyeTwoTone" />
+                ) : (
+                  <Icon name="EyeInvisibleOutlined" />
+                )
               }
             />
           </Form.Item>
@@ -75,7 +70,11 @@ const TabSecurity: React.FC = () => {
             <Input.Password
               placeholder="请输入新密码（至少8位）"
               iconRender={(visible) =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                visible ? (
+                  <Icon name="EyeTwoTone" />
+                ) : (
+                  <Icon name="EyeInvisibleOutlined" />
+                )
               }
             />
           </Form.Item>
@@ -97,7 +96,11 @@ const TabSecurity: React.FC = () => {
             <Input.Password
               placeholder="请再次输入新密码"
               iconRender={(visible) =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                visible ? (
+                  <Icon name="EyeTwoTone" />
+                ) : (
+                  <Icon name="EyeInvisibleOutlined" />
+                )
               }
             />
           </Form.Item>
@@ -117,7 +120,7 @@ const TabSecurity: React.FC = () => {
       <Card
         title={
           <>
-            <SafetyCertificateOutlined /> 安全建议
+            <Icon name="SafetyCertificateOutlined" /> 安全建议
           </>
         }
         className={styles.moduleCard}
@@ -126,7 +129,7 @@ const TabSecurity: React.FC = () => {
         <List
           dataSource={[
             {
-              icon: <MailOutlined />,
+              icon: <Icon name="MailOutlined" />,
               title: '邮箱绑定',
               desc: emailBound
                 ? String(model.profile?.profile?.email)
@@ -134,7 +137,7 @@ const TabSecurity: React.FC = () => {
               ok: emailBound,
             },
             {
-              icon: <MobileOutlined />,
+              icon: <Icon name="MobileOutlined" />,
               title: '手机号绑定',
               desc: phoneBound
                 ? String(model.profile?.profile?.phone).replace(
@@ -145,7 +148,7 @@ const TabSecurity: React.FC = () => {
               ok: phoneBound,
             },
             {
-              icon: <LockOutlined />,
+              icon: <Icon name="LockOutlined" />,
               title: '登录记录',
               desc: '建议定期查看登录记录，发现异常后及时修改密码',
               ok: true,
@@ -178,7 +181,7 @@ const TabSecurity: React.FC = () => {
           type="success"
           showIcon
           className={styles.securityAlert}
-          icon={<CheckCircleFilled />}
+          icon={<Icon name="CheckCircleFilled" />}
           message="权限、登录记录和密码修改均来自真实接口能力。"
         />
       </Card>

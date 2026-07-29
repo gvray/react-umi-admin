@@ -1,6 +1,7 @@
 import {
   AuthButton,
   BackButton,
+  Icon,
   PageContainer,
   PageLoading,
   PagePlaceholder,
@@ -11,15 +12,6 @@ import { useFeedback } from '@/hooks';
 import useDict from '@/hooks/useDict';
 import { queryRoleOptions } from '@/services/role';
 import type { DictOption } from '@/types/dict';
-import {
-  FolderOutlined,
-  InfoCircleOutlined,
-  KeyOutlined,
-  SaveOutlined,
-  SearchOutlined,
-  SwapOutlined,
-  UndoOutlined,
-} from '@ant-design/icons';
 import {
   Button,
   Card,
@@ -213,7 +205,7 @@ export default function AuthPermissionPage() {
         title: (
           <span className={styles.treeNodeLabel}>
             <span className={styles.nodeIcon}>
-              <KeyOutlined />
+              <Icon name="KeyOutlined" />
             </span>
             <span className={styles.nodeName}>{permission.name}</span>
             {getActionTag(permission.code)}
@@ -223,7 +215,8 @@ export default function AuthPermissionPage() {
             </Tooltip>
             {permission.description && (
               <Tooltip title={permission.description}>
-                <InfoCircleOutlined
+                <Icon
+                  name="InfoCircleOutlined"
                   style={{
                     color: 'var(--gvray-text-color-placeholder)',
                     fontSize: 12,
@@ -243,7 +236,7 @@ export default function AuthPermissionPage() {
       title: (
         <span className={styles.treeNodeLabel}>
           <span className={styles.nodeIcon}>
-            <FolderOutlined />
+            <Icon name="FolderOutlined" />
           </span>
           <span className={styles.nodeName}>{domain.name}</span>
         </span>
@@ -255,7 +248,7 @@ export default function AuthPermissionPage() {
         title: (
           <span className={styles.treeNodeLabel}>
             <span className={styles.nodeIcon}>
-              <FolderOutlined />
+              <Icon name="FolderOutlined" />
             </span>
             <span className={styles.nodeName}>{resource.name}</span>
           </span>
@@ -367,7 +360,7 @@ export default function AuthPermissionPage() {
   if (!roleId || !selectedRole) {
     return (
       <PageContainer className={styles.pageContainer}>
-        <PagePlaceholder icon={<KeyOutlined />}>
+        <PagePlaceholder icon={<Icon name="KeyOutlined" />}>
           {!roleId ? '请提供角色ID来分配权限' : '未找到角色信息'}
         </PagePlaceholder>
       </PageContainer>
@@ -403,7 +396,7 @@ export default function AuthPermissionPage() {
                 <Button
                   type="text"
                   size="small"
-                  icon={<SwapOutlined />}
+                  icon={<Icon name="SwapOutlined" />}
                   title="切换角色"
                 />
               </Dropdown>
@@ -489,7 +482,7 @@ export default function AuthPermissionPage() {
           <Space className={styles.actionBar} wrap align="center">
             <Input
               placeholder="搜索权限"
-              prefix={<SearchOutlined />}
+              prefix={<Icon name="SearchOutlined" />}
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               allowClear
@@ -497,12 +490,12 @@ export default function AuthPermissionPage() {
             />
             <Button onClick={handleSelectAll}>全选</Button>
             <Button onClick={handleClearAll}>清空</Button>
-            <Button icon={<UndoOutlined />} onClick={handleReset}>
+            <Button icon={<Icon name="UndoOutlined" />} onClick={handleReset}>
               重置
             </Button>
             <AuthButton
               type="primary"
-              icon={<SaveOutlined />}
+              icon={<Icon name="SaveOutlined" />}
               onClick={handleSubmit}
               loading={submitting}
               disabled={!hasChanges()}
@@ -527,7 +520,7 @@ export default function AuthPermissionPage() {
               />
             ) : (
               <div className={styles.emptyState}>
-                <FolderOutlined className="icon" />
+                <Icon name="FolderOutlined" className="icon" />
                 <div>暂无权限数据</div>
               </div>
             )}

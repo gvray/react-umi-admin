@@ -1,7 +1,7 @@
 import {
-  AntIcon,
   AuthButton,
   DateTimeFormat,
+  Icon,
   PageContainer,
   StatusTag,
   TablePro,
@@ -12,12 +12,6 @@ import { useFeedback } from '@/hooks';
 import useDict from '@/hooks/useDict';
 import type { DictOption } from '@/types/dict';
 import { callRef, logger } from '@/utils';
-import {
-  DeleteOutlined,
-  EditOutlined,
-  ExclamationCircleOutlined,
-  PlusOutlined,
-} from '@ant-design/icons';
 import { Modal, Space, Tag } from 'antd';
 import { useCallback, useRef, useState } from 'react';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
@@ -66,7 +60,7 @@ const MenuPage = () => {
   const handleDelete = (record: API.MenuTreeNodeDto) => {
     Modal.confirm({
       title: '系统提示',
-      icon: <ExclamationCircleOutlined />,
+      icon: <Icon name="ExclamationCircleOutlined" />,
       content: `是否确认删除菜单"${record.name}"？`,
       okText: '确认',
       cancelText: '取消',
@@ -100,7 +94,7 @@ const MenuPage = () => {
           if (icon) {
             const iconName =
               typeof icon === 'string' ? icon : (icon as any)?.icon;
-            return <AntIcon icon={iconName || 'FileOutlined'} />;
+            return <Icon name={iconName || 'FileOutlined'} />;
           }
           return '-';
         },
@@ -171,7 +165,7 @@ const MenuPage = () => {
           <Space size={0}>
             <AuthButton
               type="link"
-              icon={<EditOutlined />}
+              icon={<Icon name="EditOutlined" />}
               onClick={() => handleUpdate(record)}
               perms={[PERM.MENU_UPDATE]}
             >
@@ -180,7 +174,7 @@ const MenuPage = () => {
             <AuthButton
               danger
               type="link"
-              icon={<DeleteOutlined />}
+              icon={<Icon name="DeleteOutlined" />}
               onClick={() => handleDelete(record)}
               perms={[PERM.MENU_DELETE]}
             >
@@ -209,7 +203,7 @@ const MenuPage = () => {
         toolbarRender={() => (
           <AuthButton
             type="primary"
-            icon={<PlusOutlined />}
+            icon={<Icon name="PlusOutlined" />}
             onClick={handleAdd}
             perms={[PERM.MENU_CREATE]}
           >

@@ -1,5 +1,3 @@
-import AllIconsPreview from './AllIconsPreview';
-import AntIcon from './AntIcon';
 import AppBreadcrumb from './AppBreadcrumb';
 import AppWatermark from './AppWatermark';
 import AuthButton from './AuthButton';
@@ -13,7 +11,9 @@ import DictionarySelect from './DictionarySelect';
 import ErrorBoundary from './ErrorBoundary';
 import FormGrid from './FormGrid';
 import FormLoading from './FormLoading';
-import IconSelector from './IconSelector';
+import Icon from './Icon';
+import IconPicker from './Icon/IconPicker';
+import IconPreview from './Icon/IconPreview';
 import NavigationProgress from './NavigationProgress';
 import PageContainer from './PageContainer';
 import PageLoading from './PageLoading';
@@ -23,8 +23,6 @@ import StatusTag from './StatusTag';
 import TablePro from './TablePro';
 
 export {
-  AllIconsPreview,
-  AntIcon,
   AppBreadcrumb,
   AppWatermark,
   AuthButton,
@@ -38,7 +36,9 @@ export {
   ErrorBoundary,
   FormGrid,
   FormLoading,
-  IconSelector,
+  Icon,
+  IconPicker,
+  IconPreview,
   NavigationProgress,
   PageContainer,
   PageLoading,

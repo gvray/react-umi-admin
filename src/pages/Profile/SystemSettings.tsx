@@ -1,6 +1,6 @@
+import { Icon } from '@/components';
 import { THEME_MODE_LABELS, ThemeModeWithoutSystem } from '@/constants';
 import { useSettingStore } from '@/stores';
-import { BellOutlined, SettingOutlined } from '@ant-design/icons';
 import { Card, Col, List, Row, Select, Switch } from 'antd';
 import { useState } from 'react';
 import styles from './index.less';
@@ -43,7 +43,7 @@ const SystemSettings = () => {
             renderItem={(item) => (
               <List.Item>
                 <List.Item.Meta
-                  avatar={<BellOutlined />}
+                  avatar={<Icon name="BellOutlined" />}
                   title={item.title}
                   description={item.desc}
                 />
@@ -97,7 +97,7 @@ const SystemSettings = () => {
             renderItem={(item) => (
               <List.Item>
                 <List.Item.Meta
-                  avatar={<SettingOutlined />}
+                  avatar={<Icon name="SettingOutlined" />}
                   title={item.title}
                   description={item.desc}
                 />

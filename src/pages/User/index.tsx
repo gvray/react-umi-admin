@@ -2,6 +2,7 @@ import {
   AuthButton,
   CopyId,
   DateTimeFormat,
+  Icon,
   PageContainer,
   TablePro,
 } from '@/components';
@@ -12,14 +13,6 @@ import { useAuth } from '@/hooks';
 import useDict from '@/hooks/useDict';
 import type { DictOption } from '@/types/dict';
 import { callRef, logger } from '@/utils';
-import {
-  DeleteOutlined,
-  EditOutlined,
-  ExclamationCircleOutlined,
-  KeyOutlined,
-  MoreOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Button, Dropdown, Form, Input, Modal, Space, message } from 'antd';
 import { useRef, useState } from 'react';
@@ -55,7 +48,7 @@ const UserPage = () => {
   const handleDelete = async (record: API.UserResponseDto) => {
     Modal.confirm({
       title: `系统提示`,
-      icon: <ExclamationCircleOutlined />,
+      icon: <Icon name="ExclamationCircleOutlined" />,
       content: `是否确认删除用户编号为"${record.userId}"的数据项？`,
       okText: '确认',
       cancelText: '取消',
@@ -121,14 +114,14 @@ const UserPage = () => {
     const menuItems = [
       {
         key: 'authRole',
-        icon: <UserOutlined />,
+        icon: <Icon name="UserOutlined" />,
         label: '分配角色',
         onClick: () => handleAuthRole(record.userId),
         permission: PERM.USER_UPDATE_ROLES,
       },
       {
         key: 'resetPassword',
-        icon: <KeyOutlined />,
+        icon: <Icon name="KeyOutlined" />,
         label: '重置密码',
         onClick: () => handleResetPassword(record),
         permission: PERM.USER_RESET_PASSWORD,
@@ -182,7 +175,7 @@ const UserPage = () => {
           <Space size={0}>
             <AuthButton
               type="link"
-              icon={<EditOutlined />}
+              icon={<Icon name="EditOutlined" />}
               onClick={() => handleUpdate(record)}
               perms={[PERM.USER_UPDATE]}
             >
@@ -191,7 +184,7 @@ const UserPage = () => {
             <AuthButton
               danger
               type="link"
-              icon={<DeleteOutlined />}
+              icon={<Icon name="DeleteOutlined" />}
               onClick={() => handleDelete(record)}
               perms={[PERM.USER_DELETE]}
             >
@@ -203,7 +196,7 @@ const UserPage = () => {
                 placement="bottomRight"
                 trigger={['click']}
               >
-                <Button type="link" icon={<MoreOutlined />}>
+                <Button type="link" icon={<Icon name="MoreOutlined" />}>
                   更多
                 </Button>
               </Dropdown>

@@ -1,8 +1,7 @@
-import { DateTimeFormat, StatusTag } from '@/components';
+import { DateTimeFormat, Icon, StatusTag } from '@/components';
 import { useFeedback } from '@/hooks';
 import type { DictOption } from '@/types/dict';
 import { logger } from '@/utils';
-import { CopyOutlined, EyeOutlined } from '@ant-design/icons';
 import { copyText } from '@gvray/domkit';
 import { Button, Descriptions, Modal, Tag, Typography } from 'antd';
 import React from 'react';
@@ -69,7 +68,7 @@ const ConfigValueViewer: React.FC<ConfigValueViewerProps> = ({
     <Modal
       title={
         <>
-          <EyeOutlined style={{ marginRight: 8 }} />
+          <Icon name="EyeOutlined" style={{ marginRight: 8 }} />
           查看配置详情
         </>
       }
@@ -121,7 +120,11 @@ const ConfigValueViewer: React.FC<ConfigValueViewerProps> = ({
       <ValueSection>
         <ValueHeader>
           <Text strong>配置值</Text>
-          <Button size="small" icon={<CopyOutlined />} onClick={handleCopy}>
+          <Button
+            size="small"
+            icon={<Icon name="CopyOutlined" />}
+            onClick={handleCopy}
+          >
             复制
           </Button>
         </ValueHeader>

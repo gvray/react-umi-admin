@@ -15,11 +15,11 @@ const AppHeader: React.FC<AppHeaderProps> = ({ headerFixed }) => {
   return (
     <HeaderWrapper $fixed={headerFixed}>
       <HeaderActions>
-        <Space size={2}>
-          <NoticeBell />
+        <Space size={4}>
           <ThemeModeSwitch />
           <ThemeSetting />
           <SelectLang />
+          <NoticeBell />
           <UserDropdown />
         </Space>
       </HeaderActions>

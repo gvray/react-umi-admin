@@ -1,3 +1,4 @@
+import { Icon } from '@/components';
 import { PERM } from '@/constants';
 import { useFeedback } from '@/hooks';
 import useAuth from '@/hooks/useAuth';
@@ -8,14 +9,6 @@ import {
   queryNoticeList,
 } from '@/services/notice';
 import { logger } from '@/utils';
-import {
-  BellOutlined,
-  CheckCircleOutlined,
-  CheckOutlined,
-  ClockCircleOutlined,
-  CloseOutlined,
-  RightOutlined,
-} from '@ant-design/icons';
 import { sleep } from '@gvray/eskit';
 import { Badge, Button, Drawer, Empty, Popover, Spin, Tabs, Tag } from 'antd';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -32,12 +25,21 @@ const POLLING_INTERVAL = 60_000;
 
 const Trigger = styled.div`
   cursor: pointer;
-  height: 48px;
-  padding: 0 6px;
-  display: flex;
+  min-width: 28px;
+  height: 28px;
+  padding: 4px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  vertical-align: middle;
   font-size: 16px;
+
+  .ant-badge {
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+    vertical-align: middle;
+  }
 `;
 
 const Panel = styled.div`
@@ -409,7 +411,7 @@ const NoticeBell: React.FC = () => {
                 <NoticeContent>{item.content}</NoticeContent>
                 <NoticeMeta>
                   <NoticeTime>
-                    <ClockCircleOutlined style={{ fontSize: 11 }} />
+                    <Icon name="ClockCircleOutlined" style={{ fontSize: 11 }} />
                     {formatTime(item.createdAt)}
                   </NoticeTime>
                   {isUnread && (
@@ -417,7 +419,7 @@ const NoticeBell: React.FC = () => {
                       className="notice-action"
                       type="link"
                       size="small"
-                      icon={<CheckOutlined />}
+                      icon={<Icon name="CheckOutlined" />}
                       onClick={(e) => handleMarkRead(item.noticeId, e)}
                     >
                       标记已读
@@ -441,7 +443,7 @@ const NoticeBell: React.FC = () => {
             <Button
               type="text"
               size="small"
-              icon={<CheckCircleOutlined />}
+              icon={<Icon name="CheckCircleOutlined" />}
               onClick={handleMarkAllRead}
             >
               全部已读
@@ -450,7 +452,7 @@ const NoticeBell: React.FC = () => {
           {canManage && (
             <Button type="text" size="small" onClick={handleGoManage}>
               管理
-              <RightOutlined style={{ fontSize: 10 }} />
+              <Icon name="RightOutlined" style={{ fontSize: 10 }} />
             </Button>
           )}
         </PanelActions>
@@ -496,7 +498,7 @@ const NoticeBell: React.FC = () => {
             size="small"
             offset={[2, 0]}
           >
-            <BellOutlined />
+            <Icon name="gvray-notification" size={18} />
           </Badge>
         </Trigger>
       </Popover>
@@ -506,7 +508,7 @@ const NoticeBell: React.FC = () => {
         open={detailVisible}
         onClose={handleCloseDetail}
         width={520}
-        closeIcon={<CloseOutlined />}
+        closeIcon={<Icon name="CloseOutlined" />}
       >
         {detailNotice && (
           <>
@@ -518,7 +520,7 @@ const NoticeBell: React.FC = () => {
             </DetailHeader>
             <DetailMeta>
               <DetailTime>
-                <ClockCircleOutlined />
+                <Icon name="ClockCircleOutlined" />
                 {formatFullTime(detailNotice.createdAt)}
               </DetailTime>
               <Tag
