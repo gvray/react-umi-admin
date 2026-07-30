@@ -8,10 +8,12 @@ import type { IconKey } from '../map';
 interface IconPickerProps {
   value?: IconKey;
   onChange?: (icon: IconKey) => void;
+  placement?: 'bottomLeft' | 'bottomRight';
 }
 
 const DropdownPanel = styled.div`
   background-color: var(--gvray-bg-container);
+  width: 680px;
   max-height: 500px;
   padding-left: 10px;
   padding-right: 10px;
@@ -28,7 +30,11 @@ const CustomPanel: React.FC<{ onChange?: (icon: IconKey) => void }> = ({
   );
 };
 
-const IconPicker: React.FC<IconPickerProps> = ({ value, onChange }) => {
+const IconPicker: React.FC<IconPickerProps> = ({
+  value,
+  onChange,
+  placement = 'bottomLeft',
+}) => {
   const [open, setOpen] = useState(false);
   const handleChange = (icon: IconKey) => {
     onChange?.(icon);
@@ -40,6 +46,7 @@ const IconPicker: React.FC<IconPickerProps> = ({ value, onChange }) => {
       trigger={['click']}
       open={open}
       onOpenChange={setOpen}
+      placement={placement}
     >
       <Input
         readOnly

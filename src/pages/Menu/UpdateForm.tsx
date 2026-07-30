@@ -270,7 +270,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
             </FormGrid.Item>
             <FormGrid.Item span={12}>
               <Form.Item name="icon" label="菜单图标">
-                <IconPicker />
+                <IconPicker placement="bottomRight" />
               </Form.Item>
             </FormGrid.Item>
             <FormGrid.Item span={12}>

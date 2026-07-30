@@ -16,7 +16,7 @@ const Icon: React.FC<IconProps> = ({ name, size = 16, className, style }) => {
     );
   }
 
-  if (config.type === 'lucide' || config.type === 'custom') {
+  if (config.type === 'lucide' || config.type === 'svg') {
     const Component = config.component;
     return <Component size={size} className={className} style={style} />;
   }

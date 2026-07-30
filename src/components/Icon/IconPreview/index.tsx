@@ -76,6 +76,7 @@ const IconPreview: React.FC<IconPreviewProps> = ({ onChange }) => {
           placeholder="搜索图标"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          style={{ width: 160 }}
         />
       }
       defaultActiveKey="antd"
