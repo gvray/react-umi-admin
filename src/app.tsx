@@ -1,3 +1,4 @@
+import AppIntlProvider from '@/components/IntlProvider';
 import { LOGIN_PATH } from '@/constants';
 import { buildPreferences } from '@/constants/runtime-settings';
 import { queryMe, queryMenus } from '@/services/auth';
@@ -5,10 +6,18 @@ import { getDictionaryItemsByTypeCodes } from '@/services/dictionary';
 import { getRuntimeConfig } from '@/services/system';
 import { useAuthStore, useDictStore, useSettingStore } from '@/stores';
 import { runtimeConfig } from '@/utils/runtime-config';
+import React from 'react';
 import { history, matchRoutes } from 'umi';
 import { logger, redirectToLogin, tokenManager } from './utils';
 
 // const isDev = process.env.NODE_ENV === 'development';
+
+/**
+ * 全局根容器：让自建 IntlProvider 包裹整个应用（包括 layout: false 的页面如 Login）。
+ */
+export function rootContainer(container: React.ReactNode) {
+  return React.createElement(AppIntlProvider, null, container);
+}
 
 /**
  * 应用启动时的数据获取入口，获取完后分发到各 Store。
@@ -17,6 +26,11 @@ import { logger, redirectToLogin, tokenManager } from './utils';
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  */
 export async function getInitialState() {
+  // 等待 zustand persist 从 localStorage 恢复完成，避免 getInitialState 覆盖用户本地设置
+  if (!useSettingStore.persist?.hasHydrated?.()) {
+    await useSettingStore.persist?.rehydrate?.();
+  }
+
   let runtimeConfigData: Record<string, unknown> | undefined;
   let me: API.CurrentUserResponseDto | undefined;
   let menus: API.MenuResponseDto[] | undefined;
@@ -49,11 +63,12 @@ export async function getInitialState() {
     }
   }
 
-  // 初始化 preferences：runtime.ui → me.preferences
-  useSettingStore.setState({
+  // 初始化 preferences：运行时默认值 → persist 恢复值 → 服务端用户偏好（优先级最高）
+  useSettingStore.setState((state) => ({
     ...buildPreferences(runtimeConfig.get().ui),
+    ...state,
     ...(me?.preferences || {}),
-  });
+  }));
 
   // 认证数据 → AuthStore
   if (me) {

@@ -25,7 +25,8 @@ import {
 } from 'antd';
 import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { useIntl, useNavigate, useParams } from 'umi';
+import { useIntl } from 'react-intl';
+import { useNavigate, useParams } from 'umi';
 import styles from './index.less';
 import { useAuthPermission } from './model';
 

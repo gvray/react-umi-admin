@@ -1,0 +1,16 @@
+export default {
+  'theme.mode.light': '亮色',
+  'theme.mode.dark': '暗黑',
+  'theme.mode.system': '跟随系统',
+  'theme.setting.title': '主题',
+  'theme.color.dawnBlue': '拂晓蓝',
+  'theme.color.geekBlue': '极客蓝',
+  'theme.color.dustRed': '薄暮',
+  'theme.color.volcano': '火山',
+  'theme.color.sunsetOrange': '日暮',
+  'theme.color.lime': '明青',
+  'theme.color.polarGreen': '极光绿',
+  'theme.color.cyan': '海蓝',
+  'theme.color.goldenPurple': '酱紫',
+  'theme.color.magenta': '洋红',
+};

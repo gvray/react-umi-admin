@@ -77,14 +77,13 @@ export default defineConfig({
    */
   model: {},
   /**
-   * @name 国际化插件
+   * @name 国际化插件（已关闭，使用自建 react-intl Provider）
    * @doc https://umijs.org/docs/max/i18n
    */
-  locale: {
-    // 默认使用 src/locales/zh-CN.ts 作为多语言文件
-    default: 'zh-CN',
-    baseSeparator: '-',
-  },
+  // locale: {
+  //   default: 'zh-CN',
+  //   baseSeparator: '-',
+  // },
   /**
    * @name 网络请求配置
    * @description 它基于 axios 和 ahooks 的 useRequest 提供了一套统一的网络请求和错误处理方案。

@@ -1,9 +1,10 @@
 import { Icon } from '@/components';
-import { ColorPrimary, PRIMARY_COLOR_LABELS } from '@/constants';
+import { ColorPrimary, PRIMARY_COLOR_INTL_KEYS } from '@/constants';
 import { updateProfileSettings } from '@/services/profile';
 import { useSettingStore } from '@/stores';
 import { Popover } from 'antd';
 import React from 'react';
+import { useIntl } from 'react-intl';
 import { styled } from 'umi';
 import ThemeColor from './ThemeColor';
 
@@ -24,6 +25,7 @@ interface ThemeSettingProps {
 }
 
 const ThemeSetting: React.FC<ThemeSettingProps> = ({ onChange }) => {
+  const intl = useIntl();
   const { colorPrimary } = useSettingStore();
   const setColorPrimary = useSettingStore((s) => s.setColorPrimary);
 
@@ -35,9 +37,9 @@ const ThemeSetting: React.FC<ThemeSettingProps> = ({ onChange }) => {
     onChange?.(selected);
   };
 
-  const colorList = Object.entries(PRIMARY_COLOR_LABELS).map(
-    ([color, label]) => ({ color, label }),
-  );
+  const colorList = (
+    Object.entries(PRIMARY_COLOR_INTL_KEYS) as [ColorPrimary, string][]
+  ).map(([color, id]) => ({ color, label: intl.formatMessage({ id }) }));
 
   return (
     <Popover
@@ -55,7 +57,7 @@ const ThemeSetting: React.FC<ThemeSettingProps> = ({ onChange }) => {
     >
       <Trigger>
         <Icon name="gvray-theme-primary" size={18} />
-        <span>主题</span>
+        <span>{intl.formatMessage({ id: 'theme.setting.title' })}</span>
       </Trigger>
     </Popover>
   );

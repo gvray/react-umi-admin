@@ -8,8 +8,9 @@ import { decrypt, encrypt, logger, tokenManager } from '@/utils';
 import { runtimeConfig } from '@/utils/runtime-config';
 import { Button, Checkbox, Form, Input, Space, message } from 'antd';
 import { useEffect, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 import storetify from 'storetify';
-import { FormattedMessage, useNavigate, useSearchParams } from 'umi';
+import { useNavigate, useSearchParams } from 'umi';
 import LoginBg from './components/LoginBg';
 import styles from './index.less';
 

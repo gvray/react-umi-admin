@@ -1,7 +1,11 @@
+import login from './zh-CN/login';
 import menu from './zh-CN/menu';
-import pages from './zh-CN/pages';
+import permission from './zh-CN/permission';
+import theme from './zh-CN/theme';
 
 export default {
+  ...login,
   ...menu,
-  ...pages,
+  ...permission,
+  ...theme,
 };

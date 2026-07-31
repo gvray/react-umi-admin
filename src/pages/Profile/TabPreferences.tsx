@@ -1,5 +1,5 @@
 import { Icon } from '@/components';
-import { THEME_MODE_LABELS, ThemeMode } from '@/constants';
+import { ThemeMode } from '@/constants';
 import {
   deleteProfileSettings,
   queryProfileSettings,
@@ -20,6 +20,7 @@ import {
   Typography,
 } from 'antd';
 import { useCallback, useEffect, useRef } from 'react';
+import { useIntl } from 'react-intl';
 import styles from './index.less';
 
 const { Text } = Typography;
@@ -35,7 +36,14 @@ const PAGE_SIZE_OPTIONS = [
   { value: 50, label: '50 条/页' },
 ];
 
+const THEME_MODE_INTL_KEYS: Record<ThemeMode, string> = {
+  light: 'theme.mode.light',
+  dark: 'theme.mode.dark',
+  system: 'theme.mode.system',
+};
+
 const TabPreferences: React.FC = () => {
+  const intl = useIntl();
   const {
     setTheme,
     setLanguage,
@@ -216,8 +224,11 @@ const TabPreferences: React.FC = () => {
                     value={theme}
                     onChange={handleThemeMode}
                     style={{ width: 110 }}
-                    options={Object.entries(THEME_MODE_LABELS).map(
-                      ([value, label]) => ({ value, label }),
+                    options={Object.entries(THEME_MODE_INTL_KEYS).map(
+                      ([value, id]) => ({
+                        value,
+                        label: intl.formatMessage({ id }),
+                      }),
                     )}
                   />
                 ),

@@ -9,7 +9,8 @@ import { logger, tokenManager } from '@/utils';
 import { FormInstance, message } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { history, useIntl } from 'umi';
+import { useIntl } from 'react-intl';
+import { history } from 'umi';
 import {
   buildPermissionTree,
   type PermissionTreeNode,

@@ -1,7 +1,11 @@
+import login from './en-US/login';
 import menu from './en-US/menu';
-import pages from './en-US/pages';
+import permission from './en-US/permission';
+import theme from './en-US/theme';
 
 export default {
+  ...login,
   ...menu,
-  ...pages,
+  ...permission,
+  ...theme,
 };

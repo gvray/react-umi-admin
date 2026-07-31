@@ -120,7 +120,7 @@ export const DEFAULT_RUNTIME_CONFIG: AppRuntimeConfig = {
   },
   ui: {
     theme: 'light',
-    language: 'zh-CN',
+    language: __APP_DEFAULT_LANGUAGE__,
     pageSize: 10,
     showBreadcrumb: true,
     sidebarCollapsed: false,

@@ -1,8 +1,4 @@
 export default {
-  'pages.login.login': '登录',
-  'pages.login.logging': '登录中...',
-  'pages.login.rememberMe': '记住我',
-
   'permission.domain.system': '系统管理',
   'permission.domain.monitor': '监控中心',
   'permission.resource.monitor:server': '服务监控',

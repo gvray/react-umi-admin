@@ -6,7 +6,7 @@ import {
 } from '@/services/permission';
 import { logger } from '@/utils';
 import { useCallback, useState } from 'react';
-import { useIntl } from 'umi';
+import { useIntl } from 'react-intl';
 
 /** 虚拟节点类型标记 */
 type VirtualNodeType = 'DOMAIN' | 'RESOURCE' | 'ACTION';

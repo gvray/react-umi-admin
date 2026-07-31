@@ -1,11 +1,19 @@
 import { Icon } from '@/components';
-import { THEME_MODE_LABELS, ThemeModeWithoutSystem } from '@/constants';
+import { ThemeModeWithoutSystem } from '@/constants';
 import { useSettingStore } from '@/stores';
 import { Card, Col, List, Row, Select, Switch } from 'antd';
 import { useState } from 'react';
+import { useIntl } from 'react-intl';
 import styles from './index.less';
+const THEME_MODE_INTL_KEYS: Record<string, string> = {
+  light: 'theme.mode.light',
+  dark: 'theme.mode.dark',
+  system: 'theme.mode.system',
+};
+
 // 系统设置组件
 const SystemSettings = () => {
+  const intl = useIntl();
   const [notifications, setNotifications] = useState({
     email: true,
     sms: false,
@@ -72,8 +80,11 @@ const SystemSettings = () => {
                     value={theme}
                     onChange={handleThemeModeChange}
                     style={{ width: 120 }}
-                    options={Object.entries(THEME_MODE_LABELS).map(
-                      ([value, label]) => ({ value, label }),
+                    options={Object.entries(THEME_MODE_INTL_KEYS).map(
+                      ([value, id]) => ({
+                        value,
+                        label: intl.formatMessage({ id }),
+                      }),
                     )}
                   />
                 ),

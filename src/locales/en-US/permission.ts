@@ -1,8 +1,4 @@
 export default {
-  'pages.login.login': 'Login',
-  'pages.login.logging': 'Logging...',
-  'pages.login.rememberMe': 'Remember me',
-
   'permission.domain.system': 'System',
   'permission.domain.monitor': 'Monitor',
   'permission.resource.monitor:server': 'Server Monitor',

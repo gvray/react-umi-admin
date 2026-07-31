@@ -1,0 +1,16 @@
+export default {
+  'theme.mode.light': 'Light',
+  'theme.mode.dark': 'Dark',
+  'theme.mode.system': 'System',
+  'theme.setting.title': 'Theme',
+  'theme.color.dawnBlue': 'Dawn Blue',
+  'theme.color.geekBlue': 'Geek Blue',
+  'theme.color.dustRed': 'Dust Red',
+  'theme.color.volcano': 'Volcano',
+  'theme.color.sunsetOrange': 'Sunset Orange',
+  'theme.color.lime': 'Lime',
+  'theme.color.polarGreen': 'Polar Green',
+  'theme.color.cyan': 'Cyan',
+  'theme.color.goldenPurple': 'Golden Purple',
+  'theme.color.magenta': 'Magenta',
+};

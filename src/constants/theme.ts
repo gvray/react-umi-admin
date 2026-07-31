@@ -1,12 +1,6 @@
 export type ThemeMode = 'light' | 'dark' | 'system';
 export type ThemeModeWithoutSystem = Exclude<ThemeMode, 'system'>;
 
-export const THEME_MODE_LABELS: Record<ThemeMode, string> = {
-  light: '亮色',
-  dark: '暗黑',
-  system: '跟随系统',
-};
-
 export type ColorPrimary =
   | '#1677ff'
   | '#1890ff'
@@ -20,16 +14,17 @@ export type ColorPrimary =
   | '#722ed1'
   | '#eb2f96';
 
-export const PRIMARY_COLOR_LABELS: Record<ColorPrimary, string> = {
-  '#1677ff': '拂晓蓝',
-  '#1890ff': '极客蓝',
-  '#f5222d': '薄暮',
-  '#fa541c': '火山',
-  '#faad14': '日暮',
-  '#a0d911': '明青',
-  '#52c41a': '极光绿',
-  '#13c2c2': '海蓝',
-  '#2f54eb': '极客蓝',
-  '#722ed1': '酱紫',
-  '#eb2f96': '酱紫',
+/** 主题色对应的国际化 key，顺序与 ColorPrimary 一致 */
+export const PRIMARY_COLOR_INTL_KEYS: Record<ColorPrimary, string> = {
+  '#1677ff': 'theme.color.dawnBlue',
+  '#1890ff': 'theme.color.geekBlue',
+  '#f5222d': 'theme.color.dustRed',
+  '#fa541c': 'theme.color.volcano',
+  '#faad14': 'theme.color.sunsetOrange',
+  '#a0d911': 'theme.color.lime',
+  '#52c41a': 'theme.color.polarGreen',
+  '#13c2c2': 'theme.color.cyan',
+  '#2f54eb': 'theme.color.geekBlue',
+  '#722ed1': 'theme.color.goldenPurple',
+  '#eb2f96': 'theme.color.magenta',
 };

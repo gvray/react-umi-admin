@@ -1,7 +1,9 @@
 import { Icon } from '@/components';
+import { getAllLocales, setLocale } from '@/components/IntlProvider';
+import { updateProfileSettings } from '@/services/profile';
+import { useSettingStore } from '@/stores';
 import { Dropdown } from 'antd';
-import React, { useState } from 'react';
-import { getAllLocales, getLocale, setLocale } from 'umi';
+import React from 'react';
 
 interface LocalData {
   lang: string;
@@ -13,7 +15,6 @@ interface LocalData {
 interface SelectLangProps {
   postLocalesData?: (locales: LocalData[]) => LocalData[];
   onItemClick?: (params: { key: string }) => void;
-  reload?: boolean;
 }
 
 const defaultLangUConfigMap: Record<string, LocalData> = {
@@ -89,12 +90,12 @@ const defaultLangUConfigMap: Record<string, LocalData> = {
 };
 
 const SelectLang: React.FC<SelectLangProps> = (props) => {
-  const { postLocalesData, onItemClick, reload = true } = props;
-  const [selectedLang, setSelectedLang] = useState(() => getLocale());
+  const { postLocalesData, onItemClick } = props;
+  const currentLang = useSettingStore((s) => s.language);
 
   const changeLang = ({ key }: { key: string }): void => {
-    setLocale(key, reload);
-    setSelectedLang(getLocale());
+    setLocale(key);
+    updateProfileSettings({ language: key }).catch(() => {});
   };
 
   const defaultLangUConfig = getAllLocales().map(
@@ -132,13 +133,13 @@ const SelectLang: React.FC<SelectLangProps> = (props) => {
 
   return (
     <Dropdown
-      menu={{ items, selectedKeys: [selectedLang], onClick: handleClick }}
+      menu={{ items, selectedKeys: [currentLang], onClick: handleClick }}
       placement="bottomRight"
       trigger={['click']}
     >
       <span
         title={
-          allLangUIConfig.find((item) => item.lang === selectedLang)?.title ||
+          allLangUIConfig.find((item) => item.lang === currentLang)?.title ||
           'Language'
         }
         style={{

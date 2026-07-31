@@ -1,16 +1,22 @@
 import { Icon } from '@/components';
-import { THEME_MODE_LABELS } from '@/constants';
 import type { ThemeMode } from '@/constants/theme';
 import { updateProfileSettings } from '@/services/profile';
 import { useSettingStore } from '@/stores';
 import { Dropdown, MenuProps } from 'antd';
 import React from 'react';
+import { useIntl } from 'react-intl';
 import { styled } from 'umi';
 
 const ICON_MAP: Record<ThemeMode, React.ReactNode> = {
   light: <Icon name="gvray-theme-light" size={18} />,
   dark: <Icon name="gvray-theme-dark" size={18} />,
   system: <Icon name="gvray-theme-primary" size={18} />,
+};
+
+const THEME_MODE_INTL_KEYS: Record<ThemeMode, string> = {
+  light: 'theme.mode.light',
+  dark: 'theme.mode.dark',
+  system: 'theme.mode.system',
 };
 
 const Trigger = styled.div`
@@ -26,14 +32,15 @@ const Trigger = styled.div`
 `;
 
 const ThemeModeSwitch: React.FC = () => {
+  const intl = useIntl();
   const theme = useSettingStore((s) => s.theme);
   const setTheme = useSettingStore((s) => s.setTheme);
 
   const items: MenuProps['items'] = (
-    Object.entries(THEME_MODE_LABELS) as [ThemeMode, string][]
-  ).map(([key, label]) => ({
+    Object.entries(THEME_MODE_INTL_KEYS) as [ThemeMode, string][]
+  ).map(([key, id]) => ({
     key,
-    label,
+    label: intl.formatMessage({ id }),
     icon: ICON_MAP[key],
   }));
 
@@ -51,7 +58,7 @@ const ThemeModeSwitch: React.FC = () => {
     >
       <Trigger>
         {ICON_MAP[theme]}
-        <span>{THEME_MODE_LABELS[theme]}</span>
+        <span>{intl.formatMessage({ id: THEME_MODE_INTL_KEYS[theme] })}</span>
       </Trigger>
     </Dropdown>
   );

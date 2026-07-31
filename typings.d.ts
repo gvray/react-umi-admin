@@ -11,4 +11,5 @@ declare global {
   const __APP_SENTRY_DSN__: string;
   const __APP_TRACKING_ID__: string;
   const __APP_MOCK_ENABLED__: boolean;
+  const __APP_DEFAULT_LANGUAGE__: string;
 }
