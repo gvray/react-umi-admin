@@ -5,6 +5,7 @@ import { runtimeConfig } from '@/utils/runtime-config';
 import type { MenuProps } from 'antd';
 import { Layout, Menu, Skeleton } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
+import { useIntl } from 'react-intl';
 import { history, styled, useLocation } from 'umi';
 import Logo from '../Logo';
 import CollapseTrigger from './CollapseTrigger';
@@ -42,17 +43,31 @@ interface SideNavProps {
 
 const transformMenuItems = (
   menuData: any[],
+  formatMessage: (descriptor: {
+    id: string;
+    defaultMessage?: string;
+  }) => string,
 ): NonNullable<MenuProps['items']> => {
   return (menuData || [])
     .filter((item: any) => item.hidden !== true)
-    .map((item: any) => ({
-      key: item.path || item.key,
-      icon: item.icon ? <Icon name={item.icon} /> : undefined,
-      label: item.name || item.label,
-      children: item.children?.length
-        ? transformMenuItems(item.children)
-        : undefined,
-    }));
+    .map((item: any) => {
+      // 优先使用 code 做国际化，找不到时 fallback 到 name
+      const label = item.code
+        ? formatMessage({
+            id: item.code,
+            defaultMessage: item.name || item.label,
+          })
+        : item.name || item.label;
+
+      return {
+        key: item.path || item.key,
+        icon: item.icon ? <Icon name={item.icon} /> : undefined,
+        label,
+        children: item.children?.length
+          ? transformMenuItems(item.children, formatMessage)
+          : undefined,
+      };
+    });
 };
 
 const SideNav: React.FC<SideNavProps> = ({
@@ -67,6 +82,7 @@ const SideNav: React.FC<SideNavProps> = ({
   const toggleSidebarCollapsed = useSettingStore(
     (s) => s.toggleSidebarCollapsed,
   );
+  const intl = useIntl();
 
   const location = useLocation();
 
@@ -96,8 +112,8 @@ const SideNav: React.FC<SideNavProps> = ({
   };
 
   const items = useMemo(() => {
-    return transformMenuItems(menus || []);
-  }, [menus]);
+    return transformMenuItems(menus || [], intl.formatMessage);
+  }, [menus, intl.formatMessage]);
 
   if (!loading && items.length === 0) {
     return null;

@@ -87,6 +87,7 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
             ...data,
             parentMenuId: data.parentMenuId ?? VIRTUAL_ROOT_ID,
             type: data.type ?? 'CATALOG',
+            code: data.code || '',
           });
         } else {
           form.setFieldsValue({
@@ -253,6 +254,14 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
                     { label: '目录', value: 'CATALOG' },
                     { label: '菜单', value: 'MENU' },
                   ]}
+                />
+              </Form.Item>
+            </FormGrid.Item>
+            <FormGrid.Item span={12}>
+              <Form.Item name="code" label="国际化键">
+                <Input
+                  placeholder="如 menu.system.user"
+                  disabled={formLoading}
                 />
               </Form.Item>
             </FormGrid.Item>

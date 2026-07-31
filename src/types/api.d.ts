@@ -1,6 +1,6 @@
 /**
  * 此文件由 scripts/gen-api-types.ts 自动生成
- * 生成时间: 2026-07-24T13:13:54.883Z
+ * 生成时间: 2026-07-31T14:09:56.091Z
  * 数据来源: http://localhost:3000/api-json
  * 请勿手动修改此文件
  */
@@ -61,8 +61,8 @@ declare namespace API {
     name: string;
     /** 权限代码 */
     code: string;
-    /** HTTP 方法 */
-    httpMethod: string;
+    /** HTTP 方法（扫描器写入，seed 阶段可能为空） */
+    httpMethod?: string;
     /** 权限来源 */
     origin: 'USER' | 'SYSTEM';
     /** 是否可人工修改 */
@@ -125,13 +125,13 @@ declare namespace API {
     /** 昵称 */
     nickname: string;
     /** 头像 */
-    avatar?: Record<string, unknown>;
+    avatar?: string;
     /** 邮箱 */
-    email?: Record<string, unknown>;
+    email?: string;
     /** 手机号码 */
-    phone?: Record<string, unknown>;
+    phone?: string;
     /** 性别 */
-    gender?: Record<string, unknown>;
+    gender?: string;
     /**
      * 用户状态
      * @example enabled
@@ -169,17 +169,19 @@ declare namespace API {
     /** 菜单唯一标识符（UUID） */
     menuId: string;
     /** 父级菜单ID */
-    parentMenuId?: Record<string, unknown>;
+    parentMenuId?: string;
     /** 菜单名称 */
     name: string;
     /** 菜单类型 */
     type: string;
     /** 绑定权限码 */
-    permissionCode?: Record<string, unknown>;
+    permissionCode?: string;
+    /** 国际化键 */
+    code?: string;
     /** 菜单路径 */
-    path?: Record<string, unknown>;
+    path?: string;
     /** 菜单图标 */
-    icon?: Record<string, unknown>;
+    icon?: string;
     /** 是否隐藏 */
     hidden: boolean;
     /** 排序权重 */
@@ -609,6 +611,8 @@ declare namespace API {
     type: 'CATALOG' | 'MENU';
     /** 绑定权限码，如 system:user:list */
     permissionCode?: string;
+    /** 国际化键，如 system.management */
+    code?: string;
     /** 菜单路径（唯一） */
     path: string;
     /** 菜单图标 */
@@ -632,11 +636,13 @@ declare namespace API {
     /** 菜单类型 */
     type: 'CATALOG' | 'MENU';
     /** 绑定权限码 */
-    permissionCode?: Record<string, unknown>;
+    permissionCode?: string;
+    /** 国际化键 */
+    code?: string;
     /** 菜单路径 */
-    path?: Record<string, unknown>;
+    path?: string;
     /** 菜单图标 */
-    icon?: Record<string, unknown>;
+    icon?: string;
     /** 是否隐藏 */
     hidden: boolean;
     /** 排序权重 */
@@ -644,7 +650,7 @@ declare namespace API {
     /** 状态 */
     status: string;
     /** 父菜单ID */
-    parentMenuId?: Record<string, unknown>;
+    parentMenuId?: string;
     /** 创建时间 */
     createdAt: string;
     /** 更新时间 */
@@ -660,11 +666,13 @@ declare namespace API {
     /** 菜单类型 */
     type: 'CATALOG' | 'MENU';
     /** 绑定权限码 */
-    permissionCode?: Record<string, unknown>;
+    permissionCode?: string;
+    /** 国际化键 */
+    code?: string;
     /** 菜单路径 */
-    path?: Record<string, unknown>;
+    path?: string;
     /** 菜单图标 */
-    icon?: Record<string, unknown>;
+    icon?: string;
     /** 是否隐藏 */
     hidden: boolean;
     /** 排序权重 */
@@ -672,7 +680,7 @@ declare namespace API {
     /** 状态 */
     status: string;
     /** 父菜单ID */
-    parentMenuId?: Record<string, unknown>;
+    parentMenuId?: string;
     /** 创建时间 */
     createdAt: string;
     /** 更新时间 */
@@ -688,6 +696,8 @@ declare namespace API {
     type?: 'CATALOG' | 'MENU';
     /** 绑定权限码，如 system:user:list */
     permissionCode?: string;
+    /** 国际化键，如 system.management */
+    code?: string;
     /** 菜单路径（唯一） */
     path?: string;
     /** 菜单图标 */
@@ -1480,13 +1490,13 @@ declare namespace API {
     /** 昵称 */
     nickname: string;
     /** 头像 */
-    avatar?: Record<string, unknown>;
+    avatar?: string;
     /** 邮箱 */
-    email?: Record<string, unknown>;
+    email?: string;
     /** 手机号码 */
-    phone?: Record<string, unknown>;
+    phone?: string;
     /** 性别 */
-    gender?: Record<string, unknown>;
+    gender?: string;
     /** 更新时间 */
     updatedAt: string;
   }
@@ -1499,7 +1509,7 @@ declare namespace API {
     /** 角色标识 */
     roleKey: string;
     /** 角色描述 */
-    description?: Record<string, unknown>;
+    description?: string;
   }
 
   interface UserPermissionSimpleDto {
@@ -1510,7 +1520,7 @@ declare namespace API {
     /** 权限代码 */
     code: string;
     /** 权限描述 */
-    description?: Record<string, unknown>;
+    description?: string;
   }
 
   interface UserPermissionsResponseDto {
@@ -1738,6 +1748,8 @@ declare namespace API {
     sortOrder?: 'asc' | 'desc';
     /** 菜单名称 */
     name?: string;
+    /** 国际化键 */
+    code?: string;
     /** 菜单路径 */
     path?: string;
     /** 菜单类型 */
@@ -1763,6 +1775,8 @@ declare namespace API {
     sortOrder?: 'asc' | 'desc';
     /** 菜单名称 */
     name?: string;
+    /** 国际化键 */
+    code?: string;
     /** 菜单路径 */
     path?: string;
     /** 菜单类型 */

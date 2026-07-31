@@ -90,11 +90,8 @@ const MenuPage = () => {
       return {
         ...column,
         render: (_: any, record: API.MenuTreeNodeDto) => {
-          const icon = record?.icon;
-          if (icon) {
-            const iconName =
-              typeof icon === 'string' ? icon : (icon as any)?.icon;
-            return <Icon name={iconName || 'FileOutlined'} />;
+          if (record?.icon) {
+            return <Icon name={record.icon} />;
           }
           return '-';
         },
@@ -140,10 +137,7 @@ const MenuPage = () => {
     if ('dataIndex' in column && column.dataIndex === 'path') {
       return {
         ...column,
-        render: (path: any) => {
-          const pathStr = typeof path === 'string' ? path : path?.path;
-          return pathStr || '-';
-        },
+        render: (path: string) => path || '-',
       };
     }
     if ('dataIndex' in column && column.dataIndex === 'createdAt') {
