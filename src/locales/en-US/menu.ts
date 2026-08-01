@@ -13,6 +13,7 @@ export default {
   'menu.system.log': 'Logs',
   'menu.system.log.login': 'Login Logs',
   'menu.system.log.operation': 'Operation Logs',
+  'menu.docs': 'Docs',
   'menu.monitor.server': 'Server',
   'menu.monitor.onlineUser': 'Online Users',
   'menu.monitor.cache': 'Cache',

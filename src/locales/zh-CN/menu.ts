@@ -13,6 +13,7 @@ export default {
   'menu.system.log': '日志管理',
   'menu.system.log.login': '登录日志',
   'menu.system.log.operation': '操作日志',
+  'menu.docs': '开发文档',
   'menu.monitor.server': '服务监控',
   'menu.monitor.onlineUser': '在线用户',
   'menu.monitor.cache': '缓存监控',
