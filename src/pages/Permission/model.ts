@@ -6,7 +6,6 @@ import {
 } from '@/services/permission';
 import { logger } from '@/utils';
 import { useCallback, useState } from 'react';
-import { useIntl } from 'react-intl';
 
 /** 虚拟节点类型标记 */
 type VirtualNodeType = 'DOMAIN' | 'RESOURCE' | 'ACTION';
@@ -16,6 +15,8 @@ export interface PermissionTreeNode extends API.PermissionResponseDto {
   nodeType: VirtualNodeType;
   isVirtual: boolean;
   children?: PermissionTreeNode[];
+  /** 国际化 key，渲染时按需翻译 */
+  intlId?: string;
 }
 
 /**
@@ -28,7 +29,6 @@ export interface PermissionTreeNode extends API.PermissionResponseDto {
  */
 export function buildPermissionTree(
   list: API.PermissionResponseDto[],
-  getLabel?: (id: string, fallback: string) => string,
 ): PermissionTreeNode[] {
   const domainMap = new Map<string, PermissionTreeNode>();
 
@@ -43,7 +43,8 @@ export function buildPermissionTree(
     if (!domainMap.has(domain)) {
       domainMap.set(domain, {
         permissionId: `_domain_${domain}`,
-        name: getLabel?.(`permission.domain.${domain}`, domain) ?? domain,
+        name: domain,
+        intlId: `permission.domain.${domain}`,
         code: domain,
         httpMethod: '',
         origin: 'SYSTEM',
@@ -63,9 +64,8 @@ export function buildPermissionTree(
     if (!resourceNode) {
       resourceNode = {
         permissionId: `_resource_${resourceKey}`,
-        name:
-          getLabel?.(`permission.resource.${resourceKey}`, resourceKey) ??
-          resourceKey,
+        name: resourceKey,
+        intlId: `permission.resource.${resourceKey}`,
         code: resourceKey,
         httpMethod: '',
         origin: 'SYSTEM',
@@ -79,8 +79,10 @@ export function buildPermissionTree(
     }
 
     // 添加 action 叶子节点
+    const action = parts.slice(2).join(':');
     resourceNode.children!.push({
       ...item,
+      intlId: `permission.action.${action}`,
       nodeType: 'ACTION',
       isVirtual: false,
     });
@@ -99,24 +101,15 @@ export function getDefaultExpandedKeys(tree: PermissionTreeNode[]): string[] {
 export function usePermissionModel() {
   const [loading, setLoading] = useState(false);
   const [scanning, setScanning] = useState(false);
-  const intl = useIntl();
-
-  const getLabel = useCallback(
-    (id: string, fallback: string) => {
-      const msg = intl.formatMessage({ id });
-      return msg === id ? fallback : msg;
-    },
-    [intl],
-  );
 
   const fetchPermissionList = useCallback(async () => {
     const res = await queryPermissionFlat();
     if (res?.data) {
-      const tree = buildPermissionTree(res.data, getLabel);
+      const tree = buildPermissionTree(res.data);
       return { data: tree, total: res.data.length };
     }
     return { data: [] as PermissionTreeNode[], total: 0 };
-  }, [getLabel]);
+  }, []);
 
   const fetchPermissionDetail = useCallback(async (permissionId: string) => {
     const { data } = await getPermissionById(permissionId);

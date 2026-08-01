@@ -11,6 +11,7 @@ import { useFeedback } from '@/hooks';
 import { callRef, logger } from '@/utils';
 import { Space, Tag, Tooltip, Typography } from 'antd';
 import { useRef, useState } from 'react';
+import { useIntl } from 'react-intl';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
 import { getPermissionColumns } from './columns';
 import './index.less';
@@ -24,6 +25,7 @@ const PermissionPage = () => {
   const updateFormRef = useRef<UpdateFormRef>(null);
   const tableProRef = useRef<TableProRef>(null);
   const { message } = useFeedback();
+  const intl = useIntl();
   const { scanning, fetchPermissionList, syncPermissions } =
     usePermissionModel();
 
@@ -36,7 +38,9 @@ const PermissionPage = () => {
   const handleSync = async () => {
     try {
       await syncPermissions();
-      message.success('权限扫描同步成功');
+      message.success(
+        intl.formatMessage({ id: 'permission.message.scanSuccess' }),
+      );
       tableReload();
     } catch (error) {
       logger.error(error);
@@ -52,107 +56,131 @@ const PermissionPage = () => {
     tableReload();
   };
 
-  const columns = getPermissionColumns().map((column: any) => {
-    if ('dataIndex' in column && column.dataIndex === 'name') {
-      return {
-        ...column,
-        render: (_: string, record: PermissionTreeNode) => {
-          if (record.nodeType === 'DOMAIN') {
+  const columns = getPermissionColumns(intl.formatMessage).map(
+    (column: any) => {
+      if ('dataIndex' in column && column.dataIndex === 'name') {
+        return {
+          ...column,
+          render: (_: string, record: PermissionTreeNode) => {
+            const name = record.intlId
+              ? intl.formatMessage({
+                  id: record.intlId,
+                  defaultMessage: record.name,
+                })
+              : record.name;
+            if (record.nodeType === 'DOMAIN') {
+              return (
+                <Typography.Text strong className="domain-name">
+                  {name}
+                </Typography.Text>
+              );
+            }
+            if (record.nodeType === 'RESOURCE') {
+              return (
+                <Typography.Text strong type="secondary">
+                  {name}
+                </Typography.Text>
+              );
+            }
             return (
-              <Typography.Text strong className="domain-name">
-                {record.name}
-              </Typography.Text>
+              <Tooltip title={name} placement="topLeft">
+                <span>{name}</span>
+              </Tooltip>
             );
-          }
-          if (record.nodeType === 'RESOURCE') {
+          },
+        };
+      }
+      if ('dataIndex' in column && column.dataIndex === 'code') {
+        return {
+          ...column,
+          render: (code: string, record: PermissionTreeNode) => {
+            if (!code) return '-';
             return (
-              <Typography.Text strong type="secondary">
-                {record.name}
-              </Typography.Text>
+              <Tooltip title={code} placement="topLeft">
+                <Typography.Text
+                  code
+                  copyable={
+                    record.isVirtual
+                      ? false
+                      : {
+                          text: code,
+                          tooltips: [
+                            intl.formatMessage({ id: 'permission.copy.copy' }),
+                            intl.formatMessage({
+                              id: 'permission.copy.copied',
+                            }),
+                          ],
+                        }
+                  }
+                >
+                  {code}
+                </Typography.Text>
+              </Tooltip>
             );
-          }
-          return (
-            <Tooltip title={record.name} placement="topLeft">
-              <span>{record.name}</span>
-            </Tooltip>
-          );
-        },
-      };
-    }
-    if ('dataIndex' in column && column.dataIndex === 'code') {
-      return {
-        ...column,
-        render: (code: string, record: PermissionTreeNode) => {
-          if (!code) return '-';
-          return (
-            <Tooltip title={code} placement="topLeft">
-              <Typography.Text
-                code
-                copyable={
-                  record.isVirtual
-                    ? false
-                    : { text: code, tooltips: ['复制', '已复制'] }
-                }
-              >
-                {code}
-              </Typography.Text>
-            </Tooltip>
-          );
-        },
-      };
-    }
-    if ('dataIndex' in column && column.dataIndex === 'origin') {
-      return {
-        ...column,
-        render: (origin: string, record: PermissionTreeNode) => {
-          if (record.isVirtual) {
-            return <Tag color="default">分组</Tag>;
-          }
-          return (
-            <Tag color={origin === 'SYSTEM' ? 'blue' : 'green'}>
-              {origin === 'SYSTEM' ? '系统' : '用户'}
-            </Tag>
-          );
-        },
-      };
-    }
-    if ('dataIndex' in column && column.dataIndex === 'updatedAt') {
-      return {
-        ...column,
-        render: (time: string, record: PermissionTreeNode) => {
-          if (record.isVirtual || !time) return '-';
-          return <DateTimeFormat value={time} />;
-        },
-      };
-    }
-    if ('dataIndex' in column && column.dataIndex === 'description') {
-      return {
-        ...column,
-        render: (desc: string, record: PermissionTreeNode) => {
-          if (record.isVirtual) {
-            const defaultDesc =
-              record.nodeType === 'DOMAIN'
-                ? '权限域分组节点'
-                : '资源级权限分组节点';
+          },
+        };
+      }
+      if ('dataIndex' in column && column.dataIndex === 'origin') {
+        return {
+          ...column,
+          render: (origin: string, record: PermissionTreeNode) => {
+            if (record.isVirtual) {
+              return (
+                <Tag color="default">
+                  {intl.formatMessage({ id: 'permission.tag.group' })}
+                </Tag>
+              );
+            }
             return (
-              <Typography.Text type="secondary">{defaultDesc}</Typography.Text>
+              <Tag color={origin === 'SYSTEM' ? 'blue' : 'green'}>
+                {origin === 'SYSTEM'
+                  ? intl.formatMessage({ id: 'permission.origin.system' })
+                  : intl.formatMessage({ id: 'permission.origin.user' })}
+              </Tag>
             );
-          }
-          if (!desc)
-            return <Typography.Text type="secondary">-</Typography.Text>;
-          return (
-            <Tooltip title={desc} placement="topLeft">
-              <span>{desc}</span>
-            </Tooltip>
-          );
-        },
-      };
-    }
-    return column;
-  });
+          },
+        };
+      }
+      if ('dataIndex' in column && column.dataIndex === 'updatedAt') {
+        return {
+          ...column,
+          render: (time: string, record: PermissionTreeNode) => {
+            if (record.isVirtual || !time) return '-';
+            return <DateTimeFormat value={time} />;
+          },
+        };
+      }
+      if ('dataIndex' in column && column.dataIndex === 'description') {
+        return {
+          ...column,
+          render: (desc: string, record: PermissionTreeNode) => {
+            if (record.isVirtual) {
+              const defaultDesc =
+                record.nodeType === 'DOMAIN'
+                  ? intl.formatMessage({ id: 'permission.desc.domain' })
+                  : intl.formatMessage({ id: 'permission.desc.resource' });
+              return (
+                <Typography.Text type="secondary">
+                  {defaultDesc}
+                </Typography.Text>
+              );
+            }
+            if (!desc)
+              return <Typography.Text type="secondary">-</Typography.Text>;
+            return (
+              <Tooltip title={desc} placement="topLeft">
+                <span>{desc}</span>
+              </Tooltip>
+            );
+          },
+        };
+      }
+      return column;
+    },
+  );
 
   const actionColumn = {
-    title: '操作',
+    title: intl.formatMessage({ id: 'permission.column.action' }),
     key: 'action',
     width: 100,
     render: (record: PermissionTreeNode) => {
@@ -165,7 +193,7 @@ const PermissionPage = () => {
             onClick={() => handleUpdate(record)}
             perms={[PERM.PERMISSION_UPDATE]}
           >
-            编辑
+            {intl.formatMessage({ id: 'permission.action.edit' })}
           </AuthButton>
         </Space>
       );
@@ -198,7 +226,7 @@ const PermissionPage = () => {
             loading={scanning}
             perms={[PERM.PERMISSION_SCAN]}
           >
-            扫描同步
+            {intl.formatMessage({ id: 'permission.action.scan' })}
           </AuthButton>
         )}
       />
