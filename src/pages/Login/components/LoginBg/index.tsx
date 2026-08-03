@@ -7,7 +7,7 @@ interface LoginBgProps {
 
 const LoginBg: React.FC<LoginBgProps> = ({ children, title }) => {
   return (
-    <div className={styles.loginWarp}>
+    <div className={styles.loginWrap}>
       <div className={styles.loginBg} />
       <div className={styles.loginTitle}>
         <img className={styles.logoImg} src="/logo-dark.svg" />
@@ -17,7 +17,7 @@ const LoginBg: React.FC<LoginBgProps> = ({ children, title }) => {
         <h3>用真诚</h3>
         <p>让复杂的世界更美好</p>
       </div>
-      <div className={styles.loginForm}>{children}</div>
+      <div className={styles.loginCard}>{children}</div>
     </div>
   );
 };
