@@ -2,11 +2,25 @@ import { useFeedback } from '@/hooks';
 import { logout } from '@/services/auth';
 import { useAuthStore, useSettingStore } from '@/stores';
 import { logger, tokenManager } from '@/utils';
-import { Dropdown, MenuProps } from 'antd';
-import { history } from 'umi';
-import { UserAvatar } from './styles';
+import { Avatar, Dropdown, MenuProps } from 'antd';
+import { history, styled } from 'umi';
 
-const UserDropdown = () => {
+const DEFAULT_AVATAR_URL = __APP_DEFAULT_AVATAR_URL__;
+
+const UserAvatar = styled(Avatar)<{
+  $backgroundColor?: string;
+}>`
+  cursor: pointer;
+  margin-left: 6px;
+
+  ${({ $backgroundColor }) =>
+    $backgroundColor &&
+    `
+      background-color: ${$backgroundColor};
+    `}
+`;
+
+const UserMenu: React.FC = () => {
   const { profile, clearAuth } = useAuthStore();
   const { colorPrimary } = useSettingStore();
   const { message } = useFeedback();
@@ -49,7 +63,10 @@ const UserDropdown = () => {
     },
   ];
 
-  const avatarText = profile?.nickname?.[0] ?? profile?.username?.[0];
+  const userProfile = (profile as any)?.profile;
+  const avatarSrc = userProfile?.avatar || DEFAULT_AVATAR_URL || undefined;
+  const avatarText =
+    (userProfile?.nickname?.trim() || profile?.username)?.[0] ?? '?';
 
   return (
     <Dropdown
@@ -61,14 +78,15 @@ const UserDropdown = () => {
       trigger={['click']}
     >
       <UserAvatar
-        src={profile?.avatar || undefined}
+        src={avatarSrc}
         alt={profile?.username}
-        $backgroundColor={!profile?.avatar ? colorPrimary : undefined}
+        $backgroundColor={!avatarSrc ? colorPrimary : undefined}
+        onError={() => false}
       >
-        {!profile?.avatar ? avatarText : null}
+        {avatarText}
       </UserAvatar>
     </Dropdown>
   );
 };
 
-export default UserDropdown;
+export default UserMenu;

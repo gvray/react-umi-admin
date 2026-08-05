@@ -3,7 +3,7 @@ import LoginBg from '@/pages/Login/components/LoginBg';
 import { runtimeConfig } from '@/utils/runtime-config';
 import { ConfigProvider, message, Spin, theme } from 'antd';
 import { useEffect } from 'react';
-import { styled, ThemeProvider, useNavigate } from 'umi';
+import { styled, useNavigate } from 'umi';
 import RegisterCard from './components/RegisterCard';
 import type { RegisterTab } from './model';
 import { useRegisterModel } from './model';
@@ -27,13 +27,17 @@ const LoadingMask = styled.div<{ visible?: boolean }>`
   transition: opacity 0.3s;
 `;
 
+/**
+ * 注册页
+ *
+ * 全局 Provider（ConfigProvider、ThemeProvider、Intl 等）已由 rootContainer 统一注入，
+ * 此处不再需要自行包裹。
+ */
 const RegisterPage: React.FC = () => {
-  const { system, feature, ui } = runtimeConfig.get();
+  const { system, feature } = runtimeConfig.get();
   const siteName = system.name;
   const registerEnabled = feature.register;
-  const colorPrimary = ui.colorPrimary;
 
-  const { token } = theme.useToken();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -88,31 +92,25 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <ConfigProvider
-      theme={{
-        token: { colorPrimary, colorInfo: colorPrimary },
-      }}
-    >
-      <ThemeProvider theme={token}>
-        <LoginBg title={siteName}>
-          <CardContainer>
-            <RegisterCard
-              siteName={siteName}
-              activeTab={activeTab}
-              countdown={countdown}
-              isRegistering={isRegistering}
-              onTabChange={handleTabChange}
-              onAccountSubmit={handleAccountSubmit}
-              onPhoneSubmit={handlePhoneSubmit}
-              onSendCode={handleSendCode}
-              onNavigateLogin={handleNavigateLogin}
-            />
-            <LoadingMask visible={isRegistering}>
-              <Spin />
-            </LoadingMask>
-          </CardContainer>
-        </LoginBg>
-      </ThemeProvider>
+    <ConfigProvider theme={{ algorithm: theme.defaultAlgorithm }}>
+      <LoginBg title={siteName}>
+        <CardContainer>
+          <RegisterCard
+            siteName={siteName}
+            activeTab={activeTab}
+            countdown={countdown}
+            isRegistering={isRegistering}
+            onTabChange={handleTabChange}
+            onAccountSubmit={handleAccountSubmit}
+            onPhoneSubmit={handlePhoneSubmit}
+            onSendCode={handleSendCode}
+            onNavigateLogin={handleNavigateLogin}
+          />
+          <LoadingMask visible={isRegistering}>
+            <Spin />
+          </LoadingMask>
+        </CardContainer>
+      </LoginBg>
     </ConfigProvider>
   );
 };

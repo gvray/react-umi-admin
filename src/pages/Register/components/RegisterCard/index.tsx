@@ -37,7 +37,7 @@ const Panel = styled.div`
 const PanelTitle = styled.div`
   font-size: 28px;
   font-weight: 600;
-  color: ${({ theme }) => theme.colorTextHeading};
+  color: #1f1f1f;
   margin-bottom: 32px;
 `;
 
@@ -49,7 +49,7 @@ const TabBar = styled.div`
 
 const TabItem = styled.div`
   font-size: 16px;
-  color: ${({ theme }) => theme.colorTextSecondary};
+  color: #595959;
   cursor: pointer;
   padding-bottom: 8px;
   position: relative;
@@ -78,7 +78,7 @@ const TabItem = styled.div`
 
 const AgreementText = styled.div`
   font-size: 13px;
-  color: ${({ theme }) => theme.colorTextSecondary};
+  color: #595959;
   margin-bottom: 20px;
 
   a {
@@ -95,7 +95,7 @@ const AgreementText = styled.div`
 const LoginLink = styled.div`
   text-align: center;
   font-size: 14px;
-  color: ${({ theme }) => theme.colorTextSecondary};
+  color: #595959;
   margin-top: 16px;
 
   a {
@@ -318,10 +318,7 @@ const RegisterCard: React.FC<RegisterCardProps> = ({
                       disabled={countdown > 0}
                       onClick={onSendCode}
                       style={{
-                        color:
-                          countdown > 0
-                            ? token.colorTextDisabled
-                            : token.colorPrimary,
+                        color: countdown > 0 ? '#bfbfbf' : token.colorPrimary,
                         fontSize: 14,
                       }}
                     >

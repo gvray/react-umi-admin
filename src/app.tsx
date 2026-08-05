@@ -1,6 +1,6 @@
-import AppIntlProvider from '@/components/IntlProvider';
 import { LOGIN_PATH } from '@/constants';
 import { buildPreferences } from '@/constants/runtime-settings';
+import { AppProviders } from '@/providers';
 import { queryMe, queryMenus } from '@/services/auth';
 import { getDictionaryItemsByTypeCodes } from '@/services/dictionary';
 import { getRuntimeConfig } from '@/services/system';
@@ -13,10 +13,11 @@ import { logger, redirectToLogin, tokenManager } from './utils';
 // const isDev = process.env.NODE_ENV === 'development';
 
 /**
- * 全局根容器：让自建 IntlProvider 包裹整个应用（包括 layout: false 的页面如 Login）。
+ * 全局根容器：注入全局 Provider（Theme、Config、Intl、Helmet、Styled Theme 等），
+ * 覆盖所有页面，包括 layout: false 的登录/注册/404 页面。
  */
 export function rootContainer(container: React.ReactNode) {
-  return React.createElement(AppIntlProvider, null, container);
+  return <AppProviders>{container}</AppProviders>;
 }
 
 /**

@@ -1,10 +1,16 @@
-import { useAuth, useRouteMeta } from '@/hooks';
+import { useAuth } from '@/hooks';
+import { useRouteMetaContext } from '@/providers';
 import React from 'react';
 import { Navigate, Outlet } from 'umi';
 
-const RouteGuard: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+/**
+ * 路由守卫：权限校验。
+ *
+ * 使用 useRouteMetaContext() 读取当前路由 meta，避免与 Layout 重复调用 useRouteMeta()。
+ */
+const RouteGuard: React.FC = () => {
   const { isLogin, permissions: userPermissions } = useAuth();
-  const { permissions: routePermissions } = useRouteMeta();
+  const { permissions: routePermissions } = useRouteMetaContext();
 
   // 权限检查
   if (isLogin && routePermissions && routePermissions.length > 0) {
@@ -19,7 +25,7 @@ const RouteGuard: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     }
   }
 
-  return <>{children || <Outlet />}</>;
+  return <Outlet />;
 };
 
 export default RouteGuard;

@@ -1,21 +1,21 @@
 import enUSMessages from '@/locales/en-US';
 import zhCNMessages from '@/locales/zh-CN';
 import { useSettingStore } from '@/stores';
-import { ConfigProvider } from 'antd';
 import type { Locale } from 'antd/es/locale';
 import enUS from 'antd/es/locale/en_US';
 import zhCN from 'antd/es/locale/zh_CN';
 import React, { useMemo } from 'react';
 import { IntlProvider as ReactIntlProvider } from 'react-intl';
 
-const DEFAULT_LOCALE = __APP_DEFAULT_LANGUAGE__;
+export const DEFAULT_LOCALE = __APP_DEFAULT_LANGUAGE__;
 
 const MESSAGES_MAP: Record<string, Record<string, string>> = {
   'zh-CN': zhCNMessages,
   'en-US': enUSMessages,
 };
 
-const ANTD_LOCALE_MAP: Record<string, Locale> = {
+/** antd locale 映射，供外层统一配置 ConfigProvider 使用 */
+export const ANTD_LOCALE_MAP: Record<string, Locale> = {
   'zh-CN': zhCN,
   'en-US': enUS,
 };
@@ -39,13 +39,15 @@ interface AppIntlProviderProps {
   children: React.ReactNode;
 }
 
+/**
+ * 国际化 Provider —— 仅包裹 react-intl，不处理 antd locale。
+ * antd 的 locale 由外层 AppProviders 统一在 ConfigProvider 上配置。
+ */
 const AppIntlProvider: React.FC<AppIntlProviderProps> = ({ children }) => {
   const language = useSettingStore((s) => s.language);
 
-  const { messages, antdLocale } = useMemo(() => {
-    const msgs = MESSAGES_MAP[language] || MESSAGES_MAP[DEFAULT_LOCALE];
-    const antd = ANTD_LOCALE_MAP[language] || ANTD_LOCALE_MAP[DEFAULT_LOCALE];
-    return { messages: msgs, antdLocale: antd };
+  const messages = useMemo(() => {
+    return MESSAGES_MAP[language] || MESSAGES_MAP[DEFAULT_LOCALE];
   }, [language]);
 
   return (
@@ -54,7 +56,7 @@ const AppIntlProvider: React.FC<AppIntlProviderProps> = ({ children }) => {
       messages={messages}
       defaultLocale={DEFAULT_LOCALE}
     >
-      <ConfigProvider locale={antdLocale}>{children}</ConfigProvider>
+      {children}
     </ReactIntlProvider>
   );
 };

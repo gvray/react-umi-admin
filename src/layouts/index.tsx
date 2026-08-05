@@ -2,28 +2,32 @@ import AppWatermark from '@/components/AppWatermark';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import '@/components/Icon/init';
 import NavigationProgress from '@/components/NavigationProgress';
-import { RouteMetaProvider } from '@/contexts/routeMeta';
-import { useAppTheme, useRouteMeta } from '@/hooks';
+import { useRouteMeta } from '@/hooks';
+import { RouteMetaProvider } from '@/providers';
 import { useSettingStore } from '@/stores';
 import { runtimeConfig } from '@/utils/runtime-config';
-import { App, ConfigProvider, Layout } from 'antd';
+import { Layout } from 'antd';
 import classNames from 'classnames';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { Helmet } from 'react-helmet-async';
 import { Outlet, styled } from 'umi';
 import AppFooter from './components/AppFooter';
 import AppHeader from './components/AppHeader';
 import AppViewport from './components/AppViewport';
 import SideNav from './components/SideNav';
-import ThemeTokenInjector from './components/ThemeTokenInjector';
 
 const AppLayout = styled(Layout)`
   height: 100%;
 `;
 
+/**
+ * 后台布局：仅负责 UI 壳子（SideNav + Header + Content + Footer）。
+ *
+ * 全局 Provider（Theme、Config、Intl、Helmet、App 上下文等）已全部上提到
+ * src/providers/AppProviders.tsx，通过 rootContainer 注入，覆盖所有页面。
+ */
 export default function BaseLayout() {
   const { system } = runtimeConfig.get();
   const {
-    colorPrimary,
     sidebarCollapsed,
     sidebarTheme,
     showLogo,
@@ -34,7 +38,6 @@ export default function BaseLayout() {
   const grayMode = runtimeConfig.get().ui.grayMode;
   const meta = useRouteMeta();
   const routeTitle = meta.title ?? '';
-  const { themeAlgorithm } = useAppTheme();
 
   const documentTitle = routeTitle
     ? `${routeTitle} - ${system.name}`
@@ -47,49 +50,31 @@ export default function BaseLayout() {
 
   return (
     <RouteMetaProvider meta={meta}>
-      <HelmetProvider>
-        <Helmet>
-          <title>{documentTitle}</title>
-        </Helmet>
-        <ConfigProvider
-          theme={{
-            algorithm: themeAlgorithm,
-            token: { colorPrimary, colorInfo: colorPrimary },
-            components: {
-              Menu: {
-                darkItemSelectedBg: colorPrimary,
-              },
-            },
-          }}
-        >
-          <App>
-            <ThemeTokenInjector siderTheme={sidebarTheme}>
-              <AppLayout className={layoutClassName}>
-                <SideNav
-                  collapsed={sidebarCollapsed}
-                  sidebarTheme={sidebarTheme}
-                  showLogo={showLogo}
-                />
-                <AppViewport>
-                  <NavigationProgress />
-                  <AppHeader headerFixed={fixedHeader} />
+      <Helmet>
+        <title>{documentTitle}</title>
+      </Helmet>
+      <AppLayout className={layoutClassName}>
+        <SideNav
+          collapsed={sidebarCollapsed}
+          sidebarTheme={sidebarTheme}
+          showLogo={showLogo}
+        />
+        <AppViewport>
+          <NavigationProgress />
+          <AppHeader headerFixed={fixedHeader} />
 
-                  <ErrorBoundary>
-                    <Outlet />
-                  </ErrorBoundary>
-                  <AppFooter
-                    visible={showFooter}
-                    text={system.footerText}
-                    copyright={system.copyright}
-                    icp={system.icp}
-                  />
-                  <AppWatermark />
-                </AppViewport>
-              </AppLayout>
-            </ThemeTokenInjector>
-          </App>
-        </ConfigProvider>
-      </HelmetProvider>
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
+          <AppFooter
+            visible={showFooter}
+            text={system.footerText}
+            copyright={system.copyright}
+            icp={system.icp}
+          />
+          <AppWatermark />
+        </AppViewport>
+      </AppLayout>
     </RouteMetaProvider>
   );
 }

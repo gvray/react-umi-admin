@@ -49,7 +49,7 @@ const Panel = styled.div`
 const PanelTitle = styled.div`
   font-size: 28px;
   font-weight: 600;
-  color: ${({ theme }) => theme.colorTextHeading};
+  color: #1f1f1f;
   margin-bottom: 32px;
 `;
 
@@ -61,7 +61,7 @@ const TabBar = styled.div`
 
 const TabItem = styled.div`
   font-size: 16px;
-  color: ${({ theme }) => theme.colorTextSecondary};
+  color: #595959;
   cursor: pointer;
   padding-bottom: 8px;
   position: relative;
@@ -91,7 +91,7 @@ const TabItem = styled.div`
 const GuestAccountTip = styled.div`
   margin-bottom: 0;
   font-size: 13px;
-  color: ${({ theme }) => theme.colorTextDescription};
+  color: #8c8c8c;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -100,7 +100,7 @@ const GuestAccountTip = styled.div`
 
 const AgreementText = styled.div`
   font-size: 13px;
-  color: ${({ theme }) => theme.colorTextSecondary};
+  color: #595959;
   margin-bottom: 20px;
 
   a {
@@ -120,7 +120,7 @@ const ActionBar = styled.div`
   align-items: center;
   margin-bottom: 24px;
   font-size: 13px;
-  color: ${({ theme }) => theme.colorTextSecondary};
+  color: #595959;
 `;
 
 const ActionLinks = styled.div`
@@ -128,7 +128,7 @@ const ActionLinks = styled.div`
   gap: 16px;
 
   a {
-    color: ${({ theme }) => theme.colorTextSecondary};
+    color: #595959;
     cursor: pointer;
 
     &:hover {
@@ -139,7 +139,7 @@ const ActionLinks = styled.div`
 
 const ActionExtra = styled.div`
   .ant-checkbox-wrapper {
-    color: ${({ theme }) => theme.colorTextSecondary};
+    color: #595959;
     font-size: 13px;
   }
 `;
@@ -148,7 +148,7 @@ const Divider = styled.div`
   display: flex;
   align-items: center;
   margin: 24px 0 20px;
-  color: ${({ theme }) => theme.colorTextDescription};
+  color: #8c8c8c;
   font-size: 13px;
 
   &::before,
@@ -156,7 +156,7 @@ const Divider = styled.div`
     content: '';
     flex: 1;
     height: 1px;
-    background: ${({ theme }) => theme.colorSplit};
+    background: #f0f0f0;
   }
 
   &::before {
@@ -180,12 +180,12 @@ const SocialButton = styled.div`
   justify-content: center;
   gap: 8px;
   height: 44px;
-  border: 1px solid ${({ theme }) => theme.colorBorder};
+  border: 1px solid #d9d9d9;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s;
   font-size: 14px;
-  color: ${({ theme }) => theme.colorText};
+  color: #1f1f1f;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 
   &:hover {
@@ -199,12 +199,12 @@ const SocialIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid ${({ theme }) => theme.colorBorder};
+  border: 1px solid #d9d9d9;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s;
   font-size: 20px;
-  color: ${({ theme }) => theme.colorTextSecondary};
+  color: #595959;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   position: relative;
 
@@ -218,8 +218,8 @@ const SocialIcon = styled.div`
     bottom: calc(100% + 8px);
     left: 50%;
     transform: translateX(-50%) scale(0.9);
-    background: ${({ theme }) => theme.colorText};
-    color: ${({ theme }) => theme.colorBgBase};
+    background: #1f1f1f;
+    color: #ffffff;
     font-size: 12px;
     padding: 4px 8px;
     border-radius: 4px;
@@ -236,7 +236,7 @@ const SocialIcon = styled.div`
     left: 50%;
     transform: translateX(-50%) scale(0.9);
     border: 4px solid transparent;
-    border-top-color: ${({ theme }) => theme.colorText};
+    border-top-color: #1f1f1f;
     opacity: 0;
     transition: all 0.2s;
   }
@@ -251,7 +251,7 @@ const SocialIcon = styled.div`
 const RegisterLink = styled.div`
   text-align: center;
   font-size: 14px;
-  color: ${({ theme }) => theme.colorTextSecondary};
+  color: #595959;
   margin-top: 16px;
 
   a {
@@ -382,12 +382,12 @@ const LoginCard: React.FC<LoginCardProps> = ({
               <GuestAccountTip>
                 <span>
                   访客账号：
-                  <span style={{ fontWeight: 500, color: token.colorText }}>
+                  <span style={{ fontWeight: 500, color: '#1f1f1f' }}>
                     {guestAccount.username}
                   </span>
                   <span style={{ marginLeft: 16 }}>
                     密码：
-                    <span style={{ fontWeight: 500, color: token.colorText }}>
+                    <span style={{ fontWeight: 500, color: '#1f1f1f' }}>
                       {guestAccount.password}
                     </span>
                   </span>
@@ -395,15 +395,14 @@ const LoginCard: React.FC<LoginCardProps> = ({
                 <span
                   style={{
                     fontSize: 12,
-                    color: token.colorTextDescription,
+                    color: '#8c8c8c',
                     cursor: 'pointer',
                   }}
                   onMouseEnter={(e) =>
-                    ((e.target as HTMLElement).style.color = token.colorPrimary)
+                    ((e.target as HTMLElement).style.color = '#1677ff')
                   }
                   onMouseLeave={(e) =>
-                    ((e.target as HTMLElement).style.color =
-                      token.colorTextDescription)
+                    ((e.target as HTMLElement).style.color = '#8c8c8c')
                   }
                   onClick={() =>
                     accountForm.setFieldsValue({
@@ -477,10 +476,7 @@ const LoginCard: React.FC<LoginCardProps> = ({
                       disabled={countdown > 0}
                       onClick={onSendCode}
                       style={{
-                        color:
-                          countdown > 0
-                            ? token.colorTextDisabled
-                            : token.colorPrimary,
+                        color: countdown > 0 ? '#bfbfbf' : token.colorPrimary,
                         fontSize: 14,
                       }}
                     >

@@ -18,7 +18,7 @@ import {
 
 export type LoginLogDateRange = [Dayjs | null, Dayjs | null] | null;
 
-const DEFAULT_AVATAR = 'https://api.dicebear.com/9.x/bottts/svg?seed=GavinRay';
+// 默认头像从环境变量读取，空值则走组件层文字兜底
 
 const STATUS_MAP: Record<string, { label: string; color: string }> = {
   enabled: { label: '正常', color: 'green' },
@@ -81,7 +81,9 @@ export function useProfilePageModel() {
   return {
     me,
     profile: me,
-    avatarSrc: (meProfile?.avatar as string) || DEFAULT_AVATAR,
+    avatarSrc:
+      (meProfile?.avatar as string) || __APP_DEFAULT_AVATAR_URL__ || undefined,
+    avatarText: (meProfile?.nickname?.trim() || me?.username)?.[0] ?? '?',
     displayName: meProfile?.nickname || me?.username || '用户名',
     accountStatusLabel: statusMeta.label,
     accountStatusColor: statusMeta.color,

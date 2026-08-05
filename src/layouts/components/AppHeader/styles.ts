@@ -1,4 +1,4 @@
-import { Avatar, Layout } from 'antd';
+import { Layout } from 'antd';
 import { styled } from 'umi';
 
 const { Header } = Layout;
@@ -21,17 +21,4 @@ export const HeaderActions = styled.div`
   align-items: center;
   justify-content: flex-end;
   padding-inline: 24px;
-`;
-
-export const UserAvatar = styled(Avatar)<{
-  $backgroundColor?: string;
-}>`
-  cursor: pointer;
-  margin-left: 6px;
-
-  ${({ $backgroundColor }) =>
-    $backgroundColor &&
-    `
-      background-color: ${$backgroundColor};
-    `}
 `;

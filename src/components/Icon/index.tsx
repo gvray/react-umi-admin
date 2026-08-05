@@ -27,7 +27,7 @@ const Icon: React.FC<IconProps> = ({ name, size = 16, className, style }) => {
         width={size}
         height={size}
         className={className}
-        style={style}
+        style={{ fill: 'currentColor', ...style }}
         aria-hidden="true"
       >
         <use xlinkHref={`#${config.symbol}`} />

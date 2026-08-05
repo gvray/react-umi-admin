@@ -1,5 +1,5 @@
 import { Icon } from '@/components';
-import { getAllLocales, setLocale } from '@/components/IntlProvider';
+import { getAllLocales, setLocale } from '@/providers';
 import { updateProfileSettings } from '@/services/profile';
 import { useSettingStore } from '@/stores';
 import { Dropdown } from 'antd';

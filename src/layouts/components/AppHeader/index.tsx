@@ -1,10 +1,10 @@
+import UserMenu from '@/components/UserMenu';
 import { Space } from 'antd';
 
 import NoticeBell from '../NoticeBell';
 import SelectLang from '../SelectLang';
 import ThemeModeSwitch from '../ThemeModeSwitch';
 import ThemeSetting from '../ThemeSetting';
-import UserDropdown from './UserDropdown';
 import { HeaderActions, HeaderWrapper } from './styles';
 
 interface AppHeaderProps {
@@ -20,7 +20,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({ headerFixed }) => {
           <ThemeSetting />
           <SelectLang />
           <NoticeBell />
-          <UserDropdown />
+          <UserMenu />
         </Space>
       </HeaderActions>
     </HeaderWrapper>

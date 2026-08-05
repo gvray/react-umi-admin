@@ -104,9 +104,11 @@ export default function ProfilePage() {
               <Avatar
                 size={72}
                 src={model.avatarSrc}
-                icon={<Icon name="UserOutlined" />}
                 className={styles.avatarRing}
-              />
+                onError={() => false}
+              >
+                {model.avatarText}
+              </Avatar>
 
               <div className={styles.heroMain}>
                 <Space size={10} wrap className={styles.heroTitleRow}>
