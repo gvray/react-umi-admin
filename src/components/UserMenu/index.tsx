@@ -2,6 +2,7 @@ import { useFeedback } from '@/hooks';
 import { logout } from '@/services/auth';
 import { useAuthStore, useSettingStore } from '@/stores';
 import { logger, tokenManager } from '@/utils';
+import { runtimeConfig } from '@/utils/runtime-config';
 import { Avatar, Dropdown, MenuProps } from 'antd';
 import { history, styled } from 'umi';
 
@@ -64,7 +65,11 @@ const UserMenu: React.FC = () => {
   ];
 
   const userProfile = (profile as any)?.profile;
-  const avatarSrc = userProfile?.avatar || DEFAULT_AVATAR_URL || undefined;
+  const avatarSrc =
+    userProfile?.avatar ||
+    runtimeConfig.get().user.defaultAvatar ||
+    DEFAULT_AVATAR_URL ||
+    undefined;
   const avatarText =
     (userProfile?.nickname?.trim() || profile?.username)?.[0] ?? '?';
 

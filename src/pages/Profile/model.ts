@@ -6,6 +6,7 @@ import {
 } from '@/services/profile';
 import { useAuthStore, useSettingStore } from '@/stores';
 import { logger, tokenManager } from '@/utils';
+import { runtimeConfig } from '@/utils/runtime-config';
 import { FormInstance, message } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -82,7 +83,10 @@ export function useProfilePageModel() {
     me,
     profile: me,
     avatarSrc:
-      (meProfile?.avatar as string) || __APP_DEFAULT_AVATAR_URL__ || undefined,
+      (meProfile?.avatar as string) ||
+      runtimeConfig.get().user.defaultAvatar ||
+      __APP_DEFAULT_AVATAR_URL__ ||
+      undefined,
     avatarText: (meProfile?.nickname?.trim() || me?.username)?.[0] ?? '?',
     displayName: meProfile?.nickname || me?.username || '用户名',
     accountStatusLabel: statusMeta.label,
