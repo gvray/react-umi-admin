@@ -19,16 +19,16 @@
 | 异步路由数据加载 | 高 | ✅ | 页面首次加载前获取必要数据 | 路由级 loader / useEffect + Suspense |
 | 用户鉴权 | 高 | ✅ | JWT / Token 管理，登录状态检查 | 登录 / 登出 API，拦截器检查 token |
 | 权限管理 | 高 | ✅ | 菜单、按钮、API 权限控制 | RBAC / ABAC 权限体系，动态渲染菜单/按钮 |
-| 全局状态管理 | 高 | ✅ | Zustand / Redux Toolkit 模块化状态 | 封装 store，提供 hooks 使用 |
+| 全局状态管理 | 高 | ✅ | Zustand 模块化状态（含 persist / immer） | 封装 store，提供 hooks 使用 |
 | 网络请求管线 | 高 | ✅ | @gvray/request 封装，统一错误 / 重试 / 取消 | 支持拦截器和全局错误处理 |
 | 请求缓存 & 去重 | 中 | ⬜ | 同一请求防重复调用 | request 封装 cache / abortController |
 | 页面级缓存 & 数据恢复 | 中 | ⬜ | keepAlive + 数据缓存 | useCache hook + localStorage / sessionStorage |
 | 全局 Loading / Skeleton | 中 | 🟡 | 路由或组件异步加载显示 | Suspense + Skeleton / Spin |
 | 全局快捷键 | 中 | ⬜ | Ctrl+K 打开搜索，Ctrl+/ 打开快捷键面板 | hotkeys-js / react-hotkeys-hook |
 | 全局消息中心 / 通知 | 中 | ⬜ | WebSocket 或 SSE 实时推送通知 | 封装 useNotification hook |
-| 全局水印 | 中 | ⬜ | 显示用户名 / 防截图泄露 | Ant Design Watermark / Canvas 实现 |
-| 国际化（多语言） | 中 | 🟡 | 切换语言，支持 locale | react-intl / react-i18next，提供语言包 |
-| 主题管理 | 中 | 🟡 | 暗黑 / 浅色 / 自定义主题 | CSS Variables + Less / Sass 动态切换 |
+| 全局水印 | 中 | ✅ | 显示用户名 / 防截图泄露 | AppWatermark 组件实现 |
+| 国际化（多语言） | 中 | ✅ | 基于 react-intl 的多语言切换 | 自建 IntlProvider + 语言包 |
+| 主题管理 | 中 | ✅ | 暗黑 / 浅色 / 自定义主题 + 色弱 / 灰度模式 | Ant Design ConfigProvider + 自建主题系统 |
 
 ---
 
@@ -41,7 +41,7 @@
 | 微前端架构 | 中 | ⬜ | Qiankun / single-spa 集成 | 主子应用独立构建 + 子应用注册 |
 | 开发代理 | 高 | ✅ | 跨域请求 / Mock | vite / webpack devServer proxy 配置 |
 | OpenAPI 类型自动同步 | 中 | ✅ | API 类型同步到前端 | openapi-generator / swagger-to-ts |
-| 微生成器 / CLI 工具 | 中 | 🟡 | 页面 / 模块 / API 快速生成 | 自定义 generator / plop.js |
+| 微生成器 / CLI 工具 | 中 | ⬜ | 页面 / 模块 / API 快速生成 | 自定义 generator / plop.js |
 | 插件 / 扩展机制 | 中 | ⬜ | 可注入开发插件 | 插件接口 + 动态加载 |
 | 站点统计 / 行为分析 | 中 | ⬜ | PV / UV / 点击 / 表单 | 封装埋点 SDK / mixpanel / GA |
 | 日志系统 & 操作审计 | 中 | ⬜ | 请求日志 / 用户操作追踪 | request 拦截 + 日志上报 |
@@ -89,7 +89,7 @@
 | 富文本编辑器 | 中 | ⬜ | Markdown / WYSIWYG / 插件扩展 | react-quill / tiptap / react-markdown |
 | 文件上传下载 | 中 | ⬜ | 大文件分片上传 / 下载预览 / 进度条 | Ant Design Upload + axios 分片上传 |
 | 可拖拽布局 / Dashboard Widget | 中 | ⬜ | 用户自定义面板布局 | react-grid-layout / dnd-kit |
-| 数据可视化 | 中 | ⬜ | 图表 / 仪表盘 | Echarts / Recharts / D3 |
+| 数据可视化 | 中 | ✅ | 图表 / 仪表盘 | ECharts 封装组件 |
 | 动态表单 & 联动表单 | 中 | ⬜ | 表单字段依赖 / 权限控制 | Formily / Ant Design Form |
 
 ---
@@ -99,7 +99,7 @@
 | 功能 | 优先级 | 状态 | 说明 | 可落地操作 |
 | --- | --- | --- | --- | --- |
 | XSS / CSRF / SQL 注入防护 | 高 | ⬜ | 前端安全基础 | sanitize-html / axios CSRF token |
-| 数据脱敏 & 水印 | 中 | ⬜ | 防止敏感信息泄露 | Canvas / Ant Design Watermark |
+| 数据脱敏 & 水印 | 中 | ✅ | 防止敏感信息泄露 | AppWatermark 全局水印组件 |
 | CSP 安全策略 | 中 | ⬜ | Content Security Policy | meta / HTTP header 配置 |
 | GDPR / 隐私提示 | 中 | ⬜ | 隐私合规 | 弹窗提示 / Cookie 管理 |
 

@@ -1,135 +1,175 @@
-# Gvray Admin — 企业级 RBAC 权限管理系统 & 前端架构解决方案
+# Gvray Admin
 
-<!-- keywords: react, umi, ant-design, rbac, admin, dashboard, permission, access-control -->
+> 🚀 基于 **React**、**Umi**、**Ant Design**、**TypeScript** 构建的企业级后台管理系统，专注于 **现代前端架构** 与 **RBAC 权限体系** 设计，提供动态路由、多主题、国际化、运行时配置、Mock、OpenAPI 等核心能力，可直接作为企业后台项目的 Starter Template。
 
-🦄 基于 React18 + Umi4 + Ant Design5 构建的现代化后台管理系统，专注于**前端架构与技术方案的极致实现**。系统提供完整的 RBAC 权限管理、全局状态管理、动态路由、布局定制、多语言支持、网络请求封装、Mock 数据模拟等核心能力，可直接作为企业级后台系统开发的通用框架。
+<!--
+keywords:
+react,
+react18,
+umi,
+umi4,
+ant-design,
+antd5,
+typescript,
+zustand,
+axios,
+react-intl,
+rbac,
+permission,
+access-control,
+dashboard,
+admin,
+admin-template,
+starter-template,
+boilerplate,
+mock,
+openapi,
+i18n,
+theme
+-->
 
-## 🚀 项目理念
+---
 
-我是多年一线前端架构师，希望通过本项目把个人经验沉淀为企业级中后台前端标准样板。它不仅实现完整 RBAC 权限管理，也融合现代前端最佳实践，追求极致可维护性、可扩展性与复用性。这是一个可复用的前端架构，让复杂业务在稳定、高性能基础上持续演进。前后端同步开发，部分数据仍在持续更新。未来规划：全面迁移至 Vite，性能与体验全面升级。 ⭐⭐⭐⭐⭐ 觉得这个项目有价值？点个 Star，支持高可维护、高可复用的前端实践！
+## 📸 项目预览
 
-## 🔥 项目展示
+![Gvray Admin Preview](docs/screenshots/demo.webp)
 
-![Gvray Admin 预览](docs/screenshots/demo.webp)
+---
 
-> 登陆路径：`/login` · 账号：`admin@example` / `admin` / `13800138000` · 密码：`123456`
+## ✨ 核心能力
 
-## 📚 文档导航
+| 能力 | 描述 |
+| --- | --- |
+| 🔐 RBAC 权限管理 | 菜单、按钮、API 三层权限控制 |
+| 🔑 双 Token 认证 | access + refresh 双 Token 管理，带过期缓冲策略 |
+| 🧭 动态路由 | 基于权限自动生成路由与菜单 |
+| 🎨 多主题 | 支持浅色、深色等主题切换 |
+| 🌍 国际化 | 基于 React Intl 的多语言支持 |
+| 📖 全局字典系统 | `DictionaryLabel` / `DictionarySelect` / `useDict` 后端字典一键映射 |
+| 🗂️ 状态管理 | Zustand 轻量状态管理，支持持久化与 Immer |
+| 🛡️ 全局错误边界 | ErrorBoundary 捕获渲染异常，显示降级 UI |
+| 🌐 数据请求 | `@gvray/request` Axios 请求管线与统一错误处理 |
+| ⚙️ Runtime Config | 运行时配置，无需重新构建即可调整部分配置 |
+| 🎭 Mock | Mock 与真实接口无缝切换 |
+| 📄 OpenAPI | 自动同步接口定义与 TypeScript 类型 |
+| 🏗️ TablePro 增强表格 | 内置高级搜索、分页、刷新、useTablePro Hook |
+| 🐳 工程化 | TypeScript、Docker、多环境配置 |
 
-- 👉 [Roadmap](docs/roadmap.md) — 功能开发清单与实现状态
-- 👉 [Architecture Documentation](docs/architecture.md) — 架构设计与实现
-- 👉 [Docker 部署指南](docs/docker.md) — Docker 化部署完整方案
-- 👉 [UMI 限制分析](docs/umi-limitations.md) — Umi 框架局限性与最佳实践
-- 👉 [架构特性](#architecture-capabilities) — 系统运行时能力、平台基础设施、工程化能力
-- 👉 [核心功能模块](#business-modules) — 用户、权限、配置、日志等
-- 👉 [开发指南](docs/developer-guide.md) — 环境搭建、脚手架、插件机制
-- 👉 [API 文档] — OpenAPI 同步接口说明
-- 👉 [贡献指南](docs/contributing.md) — 提交规范、PR 流程
+---
 
-## ⚙️ 架构特性（Architecture Capabilities）
+## 🎯 适用场景
 
-### 🧠 应用运行时能力（Runtime Core）
+适合作为以下项目的基础框架：
 
-- 自定义 Layout 与动态菜单系统
-- 路由系统（支持 keepAlive 与数据加载）
-- 用户登录鉴权与权限运行时管理
-- 系统异常处理（页面异常 / 请求异常统一处理）
-- 全局状态管理（Zustand / Redux Toolkit）
-- 主题定制与动态主题管理
-- 国际化（多语言）支持（~src/locales）
-- 运行时 Mock 数据模拟（~mock 自动加载 / MOCK_ENABLED 控制）
-- 网络请求模块（基于 Axios 的请求管线）
-- 请求策略统一（重试 / 取消 / 错误标准化）
+- 企业后台管理系统
+- SaaS 管理平台
+- RBAC 权限系统
+- 中后台管理平台
+- Admin Starter Template
+- 前端架构实践项目
 
-### 🧱 系统基础设施（Platform Infrastructure
+---
 
-- UI 组件库集成（Ant Design 5.x）
-- 样式管理方案（模块化样式 / CSS-in-JS 支持）
-- 权限管理体系（菜单 / 按钮 / API）
-- 本地开发代理（Proxy）
-- 站点统计与基础数据采集
-- OpenAPI 类型自动同步
-- 微生成器（Umi Generator）提升开发效率
-- 开发插件扩展机制
-- 微前端架构支持（Qiankun / single-spa）
-- 缓存策略（LocalStorage / Session / IndexedDB）
+## 📖 文档导航
 
-### 🛠️ 工程化与开发体验（DX Engineering
+| 文档 | 说明 |
+| --- | --- |
+| [Roadmap](docs/roadmap.md) | 功能规划与开发进度 |
+| [Architecture Documentation](docs/architecture.md) | 系统架构设计与实现 |
+| [Developer Guide](docs/developer-guide.md) | 开发指南 |
+| [Docker 部署指南](docs/docker.md) | Docker 化部署方案 |
+| [UMI 限制分析](docs/umi-limitations.md) | Umi 最佳实践 |
+| [Theme 规范](docs/theme-guidelines.md) | 主题与样式设计规范 |
+| API 类型同步 | OpenAPI → TypeScript 自动生成 |
+| [Contributing](docs/contributing.md) | 提交规范与贡献指南 |
 
-- 多环境构建与变量配置
-- 全面支持 TypeScript
-- 编码规范与 Git 提交校验
-- 工程代码调试方案
-- 单元测试 / 集成测试支持
-- Mock 自动化加载机制
-- 灵活路由与独立布局架构
-- 自定义 Hooks 与模块化状态设计
-- 打包构建优化（代码分割 / 懒加载 / Tree Shaking）
-- MPA 模式支持
-- CI/CD 自动化构建、测试与发布
-- PWA / 离线模式（规划中）
-- 性能监控与 Sentry 集成（规划中）
+---
 
-## 🧩 核心功能模块（Business Modules）
+## 🧩 核心功能模块
 
-- 用户注册
-- 用户登录
-- 仪表盘
-- 个人中心
-- 用户管理
-- 角色管理
-- 权限管理
-- 部门管理
-- 岗位管理
-- 字典管理
-- 系统配置管理
-- 操作日志
-- 登录日志
+| 模块          | 功能                                             |
+| ------------- | ------------------------------------------------ |
+| 👤 身份与权限 | 登录认证、用户管理、角色管理、权限管理、菜单管理 |
+| 🏢 组织架构   | 部门管理、岗位管理                               |
+| ⚙️ 系统管理   | 字典管理、系统配置、通知公告                     |
+| 📊 系统监控   | 服务监控、在线用户、缓存监控                     |
+| 📝 日志审计   | 登录日志、操作日志                               |
 
-## 🚀 启动项目
+---
 
-Node.js 20+ · pnpm · Cursor / VSCode · 现代主流浏览器
+## 🚀 快速开始
 
-🧠 Tip: 建议使用 `.nvmrc` 文件统一 Node 版本，并在团队协作中启用 `corepack` 绑定 pnpm 版本。
+### 环境要求
 
-后端 API 地址：[gvray-admin](https://github.com/gvray/gvray-admin)
+- Node.js >= 20
+- pnpm >= 10
+
+### 安装依赖
 
 ```bash
-# 安装依赖
 pnpm install
-
-# 启动开发环境（默认 dev，端口 9527）
-pnpm start
-
-# 或者分别启动不同环境（建议在对应 .env 文件中配置变量）
-# 推荐：如需查看全量页面与数据，使用 staging 并先启动后端 gvray-admin
-pnpm start:dev      # 开发环境，端口 9527（默认使用 Mock）
-pnpm start:staging  # 测试环境，端口 9528（连接后端）
-
-pnpm start:prod     # 生产环境，端口 9529
-APP_API_URL=https://api.dev.example.com
-
-### 环境变量示例
-
-在项目根目录创建以下文件：
-
-.env.dev
-APP_ENV=dev
-APP_API_URL=/api
-APP_API_TIMEOUT=15000
-APP_API_TOKEN_KEY=__APP_TOKEN__
-APP_MOCK_ENABLED=true
-
-.env.staging
-APP_ENV=staging
-APP_API_URL=http://localhost:3000
-APP_API_TIMEOUT=15000
-APP_API_TOKEN_KEY=__APP_TOKEN__
-APP_MOCK_ENABLED=false
 ```
 
-## 🧩 其他技术栈生态
+### 启动项目
 
-- Vue3 版本（[gvray-vue](https://github.com/gvray/gvray-vue)，🚧 开发中）
-- React + Vite 版本（gvray-vite，🚧 开发中）
-- Next.js 版本（gvray-next，🚧 开发中）
+```bash
+# 默认开发环境（内置 Mock 数据）
+pnpm start
+
+# 开发环境（内置 Mock 数据）
+pnpm start:dev
+
+# 测试环境（连接 gvray-admin 后端）
+pnpm start:staging
+
+# 生产环境
+pnpm start:prod
+```
+
+### 测试账号
+
+| 环境 | 账号 | 密码 |
+| --- | --- | --- |
+| Mock（`pnpm start` / `pnpm start:dev`） | `admin` | `123456` |
+| Staging（`pnpm start:staging`） | 请参考后端初始化数据 | 请参考后端初始化数据 |
+
+> 💡 推荐先启动 **gvray-admin** 后端，再使用 `staging` 环境体验完整功能。
+
+更多配置请参考：
+
+- `.env.dev`
+- `.env.staging`
+- `.env.prod`
+- [Developer Guide](docs/developer-guide.md)
+
+后端仓库：
+
+👉 https://github.com/gvray/gvray-admin
+
+---
+
+## 🌱 项目生态
+
+| 仓库                                                    | 说明              |
+| ------------------------------------------------------- | ----------------- |
+| **[gvray-admin](https://github.com/gvray/gvray-admin)** | NestJS 后端       |
+| **[gvray-react](https://github.com/gvray/gvray-react)** | React（Umi）版本  |
+| **[gvray-vite](https://github.com/gvray/gvray-vite)**   | React（Vite）版本 |
+| **[gvray-vue](https://github.com/gvray/gvray-vue)**     | Vue 版本          |
+| **[gvray-next](https://github.com/gvray/gvray-next)**   | Next.js 版本      |
+
+---
+
+## 🗺️ Roadmap
+
+更多开发计划请查看：
+
+👉 [Roadmap](docs/roadmap.md)
+
+---
+
+## ❤️ 支持项目
+
+如果这个项目对你有所帮助，欢迎点一个 **⭐ Star**。
+
+你的支持，是项目持续迭代和完善的最大动力。

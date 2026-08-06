@@ -160,12 +160,21 @@ gvray-react/
 │   ├── requestErrorConfig.ts  # 请求错误处理配置
 │   ├── themeConfig.ts         # 主题配置
 │   ├── components/            # 全局公共组件
+│   │   ├── AppBreadcrumb/     # 面包屑
+│   │   ├── AppWatermark/      # 全局水印
 │   │   ├── AuthButton/        # 权限按钮
-│   │   ├── Charts/            # 图表组件
+│   │   ├── BackButton/        # 返回按钮
+│   │   ├── Charts/            # 图表组件（ECharts）
+│   │   ├── DateTimeFormat/    # 日期时间格式化
+│   │   ├── DictionaryLabel/   # 字典标签
+│   │   ├── DictionarySelect/  # 字典选择器
 │   │   ├── ErrorBoundary/     # 全局错误边界
-│   │   ├── IconSelector/      # 图标选择器
+│   │   ├── FormGrid/          # 表单网格布局
+│   │   ├── Icon/              # 图标（含 Iconfont）
 │   │   ├── NavigationProgress/# 路由进度条（NProgress）
-│   │   ├── PageContainer/     # 页面容器（含 Helmet 标题管理）
+│   │   ├── PageContainer/     # 页面容器
+│   │   ├── PageLoading/       # 页面加载
+│   │   ├── PagePlaceholder/   # 空状态占位
 │   │   ├── PermissionTree/    # 权限树
 │   │   ├── StatusTag/         # 状态标签
 │   │   ├── TablePro/          # 增强表格
@@ -176,9 +185,9 @@ gvray-react/
 │   │   ├── useAuth/           # 鉴权 Hook
 │   │   ├── useConfig.ts       # 系统配置 Hook
 │   │   ├── useDict/           # 字典 Hook
+│   │   ├── useFeedback/       # 反馈 Hook（message / modal）
 │   │   ├── useRouteMeta/      # 路由元信息 Hook
 │   │   ├── useTheme/          # 主题 Hook
-│   │   ├── useTheme/          # 主题算法 Hook
 │   │   └── useThemeMode/      # 主题模式 Hook
 │   ├── layouts/               # 布局组件
 │   │   ├── index.tsx          # 主布局（Header + Sider + Content）
@@ -189,9 +198,11 @@ gvray-react/
 │   ├── pages/                 # 页面组件
 │   ├── services/              # API 服务层
 │   ├── stores/                # Zustand 状态管理
-│   │   ├── useSettingsStore.ts
-│   │   ├── useTabsStore.ts
-│   │   └── useThemeStore.ts
+│   │   ├── useAuthStore.ts    # 认证状态
+│   │   ├── useDictStore.ts    # 字典缓存
+│   │   ├── useSettingStore.ts # 全局设置（主题、侧边栏等）
+│   │   ├── useTabsStore.ts    # 多标签页状态
+│   │   └── index.ts           # 统一导出
 │   ├── types/                 # TypeScript 类型定义
 │   ├── utils/                 # 工具函数
 │   └── wrappers/              # 路由包装器（RouteGuard）
@@ -338,7 +349,9 @@ src/locales/
 └── en-US/         # 英文子模块
 ```
 
-通过 Umi 内置 `locale` 插件实现，默认语言为 `zh-CN`。使用 `useIntl()` 或 `<FormattedMessage>` 在组件中引用翻译。
+通过自建 `IntlProvider`（基于 react-intl）实现，默认语言为 `zh-CN`。使用 `useIntl()` 或 `<FormattedMessage>` 在组件中引用翻译。
+
+> 注：Umi 内置 `locale` 插件已关闭，国际化完全由自建 Provider 接管。
 
 ---
 

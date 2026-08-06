@@ -11,14 +11,14 @@ UI Layer (React + Antd)
        ↓
 Routes & Layout (Umi 约定式 + 自定义 Layout)
        ↓
-State Management (Zustand / ReduxToolkit)
+State Management (Zustand)
        ↓
 Network Layer (axios 请求封装)
        ↓
 Business Domain Modules (RBAC / 用户体系 / 系统配置)
 ```
 
-组件库与风格统一规范则通过 `Ant Design + CSS-in-JS / CSS Modules / Tailwind` 组合方案实现。([GitHub][2])
+组件库与风格统一规范则通过 `Ant Design + CSS-in-JS / CSS Modules` 组合方案实现。([GitHub][2])
 
 ---
 
@@ -76,11 +76,11 @@ React 提供灵活的声明式组件模型；Umi 提供约定式路由、插件�
 
 ### 状态管理选型
 
-项目通过 **Issue #5** 讨论了多种状态管理方案，最终倾向使用 Zustand 作为主力状态存储，并保留 Redux Toolkit 作为大型状态逻辑的补充。([GitHub][3])
+项目通过 **Issue #5** 讨论了多种状态管理方案，最终采用 Zustand 作为轻量状态管理核心，配合 Immer 与持久化中间件满足全场景需求。([GitHub][3])
 
 ### 请求策略与缓存
 
-Issue #6 探讨了 axios、umi-request、react-query/swr 的优劣，说明当前架构选取了更直观的 axios 封装，但未来可演进为数据缓存 + 请求复用方案。([GitHub][4])
+Issue #6 探讨了 axios、umi-request 等请求方案的优劣，当前架构采用 `@gvray/request` 对 axios 进行统一封装，提供拦截器、错误处理与取消能力。([GitHub][4])
 
 ### 多环境可配置化
 
@@ -95,8 +95,8 @@ Issue #6 探讨了 axios、umi-request、react-query/swr 的优劣，说明当�
 ## 架构风险与制约因素
 
 - **Umi 框架局限**：Umi 的黑盒机制对插件扩展有一定限制，但约定式体系虽简洁却影响可控性，需要明确配置边界。([GitHub][1])
-- **状态管理复杂性**：Zustand 对新手更友好，但大型业务状态交互仍需慎重设计。
-- **请求层可升级性**：当前封装较基础，未引入数据缓存逻辑，未来考虑引入 TanStack Query 类库提升体验。
+- **状态管理复杂性**：Zustand 对新手更友好，大型业务状态交互需配合 Immer 与合理的 Store 拆分策略。
+- **请求层可升级性**：当前 `@gvray/request` 封装已覆盖拦截器、错误处理与请求取消，后续可按需引入请求缓存或重试机制。
 
 ---
 
