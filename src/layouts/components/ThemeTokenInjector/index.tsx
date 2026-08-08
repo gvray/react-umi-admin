@@ -26,119 +26,117 @@ const ThemeTokenInjector: React.FC<ThemeTokenInjectorProps> = ({
   const { token } = theme.useToken();
 
   useLayoutEffect(() => {
-    const root = document.documentElement;
-    const vars: string[] = [];
-
-    const setVar = (name: string, value: string | number) => {
-      const cssVarName = `--gvray-${name}`;
-      root.style.setProperty(cssVarName, String(value));
-      vars.push(cssVarName);
-    };
+    const lines: string[] = [];
+    const add = (name: string, value: string | number) =>
+      lines.push(`  --gvray-${name}: ${value};`);
 
     // 主色系
-    setVar('primary-color', token.colorPrimary);
-    setVar('primary-color-hover', token.colorPrimaryHover);
-    setVar('primary-color-active', token.colorPrimaryActive);
-    setVar('primary-color-outline', token.colorPrimaryBg);
+    add('primary-color', token.colorPrimary);
+    add('primary-color-hover', token.colorPrimaryHover);
+    add('primary-color-active', token.colorPrimaryActive);
+    add('primary-color-outline', token.colorPrimaryBg);
 
     // 功能色
-    setVar('success-color', token.colorSuccess);
-    setVar('success-color-bg', token.colorSuccessBg);
-    setVar('success-color-border', token.colorSuccessBorder);
-    setVar('warning-color', token.colorWarning);
-    setVar('warning-color-bg', token.colorWarningBg);
-    setVar('warning-color-border', token.colorWarningBorder);
-    setVar('error-color', token.colorError);
-    setVar('error-color-bg', token.colorErrorBg);
-    setVar('error-color-border', token.colorErrorBorder);
-    setVar('info-color', token.colorInfo);
-    setVar('info-color-bg', token.colorInfoBg);
-    setVar('info-color-border', token.colorInfoBorder);
+    add('success-color', token.colorSuccess);
+    add('success-color-bg', token.colorSuccessBg);
+    add('success-color-border', token.colorSuccessBorder);
+    add('warning-color', token.colorWarning);
+    add('warning-color-bg', token.colorWarningBg);
+    add('warning-color-border', token.colorWarningBorder);
+    add('error-color', token.colorError);
+    add('error-color-bg', token.colorErrorBg);
+    add('error-color-border', token.colorErrorBorder);
+    add('info-color', token.colorInfo);
+    add('info-color-bg', token.colorInfoBg);
+    add('info-color-border', token.colorInfoBorder);
 
     // 文本色
-    setVar('text-color', token.colorText);
-    setVar('text-color-secondary', token.colorTextSecondary);
-    setVar('text-color-disabled', token.colorTextDisabled);
-    setVar('text-color-placeholder', token.colorTextPlaceholder);
-    setVar('heading-color', token.colorTextHeading);
-    setVar('text-label', token.colorTextLabel);
-    setVar('text-description', token.colorTextDescription);
+    add('text-color', token.colorText);
+    add('text-color-secondary', token.colorTextSecondary);
+    add('text-color-disabled', token.colorTextDisabled);
+    add('text-color-placeholder', token.colorTextPlaceholder);
+    add('heading-color', token.colorTextHeading);
+    add('text-label', token.colorTextLabel);
+    add('text-description', token.colorTextDescription);
 
     // 背景色
-    setVar('bg-color', token.colorBgBase);
-    setVar('bg-container', token.colorBgContainer);
-    setVar('bg-elevated', token.colorBgElevated);
-    setVar('bg-layout', token.colorBgLayout);
-    setVar('bg-spotlight', token.colorBgSpotlight);
-    setVar('bg-mask', token.colorBgMask);
+    add('bg-color', token.colorBgBase);
+    add('bg-container', token.colorBgContainer);
+    add('bg-elevated', token.colorBgElevated);
+    add('bg-layout', token.colorBgLayout);
+    add('bg-spotlight', token.colorBgSpotlight);
+    add('bg-mask', token.colorBgMask);
 
     // 边框 / 分割线
-    setVar('border-color', token.colorBorder);
-    setVar('border-color-secondary', token.colorBorderSecondary);
-    setVar('border-color-split', token.colorSplit);
+    add('border-color', token.colorBorder);
+    add('border-color-secondary', token.colorBorderSecondary);
+    add('border-color-split', token.colorSplit);
 
     // 填充色
-    setVar('fill-color', token.colorFill);
-    setVar('fill-color-secondary', token.colorFillSecondary);
-    setVar('fill-color-tertiary', token.colorFillTertiary);
-    setVar('fill-color-quaternary', token.colorFillQuaternary);
+    add('fill-color', token.colorFill);
+    add('fill-color-secondary', token.colorFillSecondary);
+    add('fill-color-tertiary', token.colorFillTertiary);
+    add('fill-color-quaternary', token.colorFillQuaternary);
 
     // 尺寸
-    setVar('border-radius', `${token.borderRadius}px`);
-    setVar('border-radius-lg', `${token.borderRadiusLG}px`);
-    setVar('border-radius-sm', `${token.borderRadiusSM}px`);
-    setVar('border-radius-xs', `${token.borderRadiusXS}px`);
+    add('border-radius', `${token.borderRadius}px`);
+    add('border-radius-lg', `${token.borderRadiusLG}px`);
+    add('border-radius-sm', `${token.borderRadiusSM}px`);
+    add('border-radius-xs', `${token.borderRadiusXS}px`);
 
     // 阴影
-    setVar('box-shadow', token.boxShadow);
-    setVar('box-shadow-secondary', token.boxShadowSecondary);
-    setVar('box-shadow-tertiary', token.boxShadowTertiary);
+    add('box-shadow', token.boxShadow);
+    add('box-shadow-secondary', token.boxShadowSecondary);
+    add('box-shadow-tertiary', token.boxShadowTertiary);
 
     // 主色衍生（背景/边框/悬浮）
-    setVar('primary-1', token.colorPrimaryBg);
-    setVar('primary-2', token.colorPrimaryBgHover);
-    setVar('primary-3', token.colorPrimaryBorder);
-    setVar('primary-4', token.colorPrimaryBorderHover);
-    setVar('primary-5', token.colorPrimaryHover);
-    setVar('primary-6', token.colorPrimary);
-    setVar('primary-7', token.colorPrimaryActive);
+    add('primary-1', token.colorPrimaryBg);
+    add('primary-2', token.colorPrimaryBgHover);
+    add('primary-3', token.colorPrimaryBorder);
+    add('primary-4', token.colorPrimaryBorderHover);
+    add('primary-5', token.colorPrimaryHover);
+    add('primary-6', token.colorPrimary);
+    add('primary-7', token.colorPrimaryActive);
 
     // 链接色
-    setVar('link-color', token.colorLink);
-    setVar('link-hover-color', token.colorLinkHover);
-    setVar('link-active-color', token.colorLinkActive);
+    add('link-color', token.colorLink);
+    add('link-hover-color', token.colorLinkHover);
+    add('link-active-color', token.colorLinkActive);
 
     // 图标色
-    setVar('icon-color', token.colorIcon);
-    setVar('icon-color-hover', token.colorIconHover);
+    add('icon-color', token.colorIcon);
+    add('icon-color-hover', token.colorIconHover);
 
     // ── Sider 独立主题变量 ──
     // light: 跟随全局 token；dark: antd Sider 内部硬编码色
     const isSiderDark = siderTheme === 'dark';
-    setVar(
+    add(
       'sider-text',
       isSiderDark ? 'rgba(255, 255, 255, 0.95)' : token.colorText,
     );
-    setVar(
+    add(
       'sider-text-secondary',
       isSiderDark ? 'rgba(255, 255, 255, 0.65)' : token.colorTextPlaceholder,
     );
-    setVar('sider-bg', isSiderDark ? '#001529' : token.colorBgElevated);
-    setVar('sider-bg-hover', isSiderDark ? '#002140' : token.colorBgContainer);
-    setVar(
+    add('sider-bg', isSiderDark ? '#001529' : token.colorBgElevated);
+    add('sider-bg-hover', isSiderDark ? '#002140' : token.colorBgContainer);
+    add(
       'sider-border',
       isSiderDark ? 'rgba(255, 255, 255, 0.15)' : token.colorBorder,
     );
-    setVar(
-      'sider-shadow',
-      isSiderDark ? 'rgba(0, 0, 0, 0.45)' : token.boxShadow,
-    );
+    add('sider-shadow', isSiderDark ? 'rgba(0, 0, 0, 0.45)' : token.boxShadow);
+
+    const STYLE_ID = 'gvray-theme-tokens';
+    let styleEl = document.getElementById(STYLE_ID) as HTMLStyleElement | null;
+    if (!styleEl) {
+      styleEl = document.createElement('style');
+      styleEl.id = STYLE_ID;
+      document.head.appendChild(styleEl);
+    }
+    styleEl.textContent = `:root {\n${lines.join('\n')}\n}`;
 
     return () => {
-      // 组件卸载时清理所有注入的变量
-      vars.forEach((name) => {
-        root.style.removeProperty(name);
-      });
+      document.getElementById(STYLE_ID)?.remove();
     };
   }, [token, siderTheme]);
 
