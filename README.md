@@ -1,6 +1,6 @@
 # Gvray Admin
 
-> 🚀 基于 **React**、**Umi**、**Ant Design**、**TypeScript** 构建的企业级后台管理系统，专注于 **现代前端架构** 与 **RBAC 权限体系** 设计，提供动态路由、多主题、国际化、运行时配置、Mock、OpenAPI 等核心能力，可直接作为企业后台项目的 Starter Template。
+🦄 基于 **React**、**Umi**、**Ant Design**、**TypeScript** 构建的企业级后台管理系统，专注于 **现代前端架构** 与 **RBAC 权限体系** 设计，提供动态路由、多主题、国际化、运行时配置、Mock、OpenAPI 等核心能力，可直接作为企业后台项目的 Starter Template。
 
 <!--
 keywords:
@@ -28,13 +28,9 @@ i18n,
 theme
 -->
 
----
-
 ## 📸 项目预览
 
 ![Gvray Admin Preview](docs/screenshots/demo.webp)
-
----
 
 ## ✨ 核心能力
 
@@ -55,8 +51,6 @@ theme
 | 🏗️ TablePro 增强表格 | 内置高级搜索、分页、刷新、useTablePro Hook |
 | 🐳 工程化 | TypeScript、Docker、多环境配置 |
 
----
-
 ## 🎯 适用场景
 
 适合作为以下项目的基础框架：
@@ -67,8 +61,6 @@ theme
 - 中后台管理平台
 - Admin Starter Template
 - 前端架构实践项目
-
----
 
 ## 📖 文档导航
 
@@ -83,8 +75,6 @@ theme
 | API 类型同步 | OpenAPI → TypeScript 自动生成 |
 | [Contributing](docs/contributing.md) | 提交规范与贡献指南 |
 
----
-
 ## 🧩 核心功能模块
 
 | 模块          | 功能                                             |
@@ -95,14 +85,12 @@ theme
 | 📊 系统监控   | 服务监控、在线用户、缓存监控                     |
 | 📝 日志审计   | 登录日志、操作日志                               |
 
----
-
 ## 🚀 快速开始
 
 ### 环境要求
 
 - Node.js >= 20
-- pnpm >= 10
+- Corepack（Node.js 内置）
 
 ### 安装依赖
 
@@ -119,7 +107,7 @@ pnpm start
 # 开发环境（内置 Mock 数据）
 pnpm start:dev
 
-# 测试环境（连接 gvray-admin 后端）
+# 测试环境（连接 gvray-admin 后端）推荐
 pnpm start:staging
 
 # 生产环境
@@ -146,27 +134,15 @@ pnpm start:prod
 
 👉 https://github.com/gvray/gvray-admin
 
----
-
 ## 🌱 项目生态
 
-| 仓库                                                    | 说明              |
-| ------------------------------------------------------- | ----------------- |
-| **[gvray-admin](https://github.com/gvray/gvray-admin)** | NestJS 后端       |
-| **[gvray-react](https://github.com/gvray/gvray-react)** | React（Umi）版本  |
-| **[gvray-vite](https://github.com/gvray/gvray-vite)**   | React（Vite）版本 |
-| **[gvray-vue](https://github.com/gvray/gvray-vue)**     | Vue 版本          |
-| **[gvray-next](https://github.com/gvray/gvray-next)**   | Next.js 版本      |
-
----
-
-## 🗺️ Roadmap
-
-更多开发计划请查看：
-
-👉 [Roadmap](docs/roadmap.md)
-
----
+| 仓库 | 技术栈 |
+| --- | --- |
+| **[gvray-admin](https://github.com/gvray/gvray-admin)** | NestJS + Prisma |
+| **[gvray-react](https://github.com/gvray/gvray-react)** | React + Umi |
+| **[gvray-vite](https://github.com/gvray/gvray-vite)** | React + Vite |
+| **[gvray-vue](https://github.com/gvray/gvray-vue)** | Vue3 + Vite + Element Plus |
+| **[gvray-next](https://github.com/gvray/gvray-next)** | Next.js |
 
 ## ❤️ 支持项目
 
