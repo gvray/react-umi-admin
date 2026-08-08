@@ -30,7 +30,11 @@ theme
 
 ## 📸 项目预览
 
-![Gvray Admin Preview](docs/screenshots/demo.webp)
+<p align="center">
+  <img src="./docs/screenshots/2026-08-08/light/demo.webp" width="49%" alt="Light Theme" />
+  
+  <img src="./docs/screenshots/2026-08-08/dark/demo.webp" width="49%" alt="Dark Theme" />
+</p>
 
 ## ✨ 核心能力
 
