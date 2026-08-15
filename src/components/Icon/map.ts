@@ -1087,6 +1087,7 @@ export const iconMap = defineIcons({
   [sv('theme-dark')]: { type: 'sprite', symbol: sv('theme-dark') },
   [sv('theme-light')]: { type: 'sprite', symbol: sv('theme-light') },
   [sv('theme-primary')]: { type: 'sprite', symbol: sv('theme-primary') },
+  [sv('theme-system')]: { type: 'sprite', symbol: sv('theme-system') },
   [sv('language')]: { type: 'sprite', symbol: sv('language') },
 });
 

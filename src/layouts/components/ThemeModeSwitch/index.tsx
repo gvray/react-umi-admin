@@ -10,7 +10,7 @@ import { styled } from 'umi';
 const ICON_MAP: Record<ThemeMode, React.ReactNode> = {
   light: <Icon name="gvray-theme-light" size={18} />,
   dark: <Icon name="gvray-theme-dark" size={18} />,
-  system: <Icon name="gvray-theme-primary" size={18} />,
+  system: <Icon name="gvray-theme-system" size={18} />,
 };
 
 const THEME_MODE_INTL_KEYS: Record<ThemeMode, string> = {
