@@ -1,8 +1,8 @@
 import { Input, Tabs } from 'antd';
 import React, { useState } from 'react';
 import { styled } from 'umi';
+import { iconMap, type IconKey } from '../fullMap';
 import Icon from '../index';
-import { iconMap, type IconKey } from '../map';
 
 const IconGrid = styled.div`
   display: grid;
@@ -65,7 +65,9 @@ const IconPreview: React.FC<IconPreviewProps> = ({ onChange }) => {
     key: type,
     label: type.toUpperCase(),
     children: renderIcons(
-      names.filter((n) => n.toLowerCase().includes(search.toLowerCase())),
+      names.filter((n) =>
+        (n as string).toLowerCase().includes(search.toLowerCase()),
+      ),
     ),
   }));
 

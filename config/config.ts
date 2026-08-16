@@ -47,7 +47,7 @@ export default defineConfig({
    * @description 如果对国际化没有要求，打开之后能减少js的包大小
    * @doc https://umijs.org/docs/api/config#ignoremomentlocale
    */
-  // ignoreMomentLocale: true,
+  ignoreMomentLocale: true,
   /**
    * @name <head> 中额外的 script
    * @description 配置 <head> 中额外的 script

@@ -1,9 +1,9 @@
 import { Dropdown, Input } from 'antd';
 import React, { useState } from 'react';
 import { styled } from 'umi';
+import type { IconKey } from '../fullMap';
 import IconPreview from '../IconPreview';
 import Icon from '../index';
-import type { IconKey } from '../map';
 
 interface IconPickerProps {
   value?: IconKey;
