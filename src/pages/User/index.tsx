@@ -9,12 +9,12 @@ import {
 import StatusTag from '@/components/StatusTag';
 import { TableProRef } from '@/components/TablePro';
 import { PERM } from '@/constants';
-import { useAuth } from '@/hooks';
+import { useAuth, useFeedback } from '@/hooks';
 import useDict from '@/hooks/useDict';
 import type { DictOption } from '@/types/dict';
 import { callRef, logger } from '@/utils';
 import type { MenuProps } from 'antd';
-import { Button, Dropdown, Form, Input, Modal, Space, message } from 'antd';
+import { Button, Dropdown, Form, Input, Modal, Space } from 'antd';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'umi';
 import UpdateForm, { UpdateFormRef } from './UpdateForm';
@@ -33,6 +33,7 @@ const UserPage = () => {
   const dict = useDict<UserDict>(['user_status', 'user_gender']);
   const { fetchUserList, removeUser, resetPassword } = useUserModel();
   const { permissions } = useAuth();
+  const { message } = useFeedback();
   const [resetModalOpen, setResetModalOpen] = useState(false);
   const [resetUserId, setResetUserId] = useState<string | null>(null);
   const [resetForm] = Form.useForm();

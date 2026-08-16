@@ -1,4 +1,5 @@
 import { LOGIN_PATH } from '@/constants';
+import { useFeedback } from '@/hooks';
 import {
   changePassword,
   queryProfileLoginLogs,
@@ -7,7 +8,7 @@ import {
 import { useAuthStore, useSettingStore } from '@/stores';
 import { logger, tokenManager } from '@/utils';
 import { runtimeConfig } from '@/utils/runtime-config';
-import { FormInstance, message } from 'antd';
+import { FormInstance } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -103,6 +104,7 @@ export function useProfileSecurityModel(passwordForm: FormInstance) {
   const [passwordLoading, setPasswordLoading] = useState(false);
   const profile = useAuthStore((s) => s.profile);
   const clearAuth = useAuthStore((s) => s.clearAuth);
+  const { message } = useFeedback();
 
   const handleChangePassword = async (values: API.ChangePasswordDto) => {
     try {

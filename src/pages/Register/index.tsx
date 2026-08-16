@@ -1,7 +1,8 @@
 import { LOGIN_PATH } from '@/constants';
+import { useFeedback } from '@/hooks';
 import LoginBg from '@/pages/Login/components/LoginBg';
 import { runtimeConfig } from '@/utils/runtime-config';
-import { ConfigProvider, message, Spin, theme } from 'antd';
+import { ConfigProvider, Spin, theme } from 'antd';
 import { useEffect } from 'react';
 import { styled, useNavigate } from 'umi';
 import RegisterCard from './components/RegisterCard';
@@ -13,7 +14,7 @@ const CardContainer = styled.div`
   width: 100%;
 `;
 
-const LoadingMask = styled.div<{ visible?: boolean }>`
+const LoadingMask = styled.div<{ $visible?: boolean }>`
   position: absolute;
   inset: 0;
   background: rgba(255, 255, 255, 0.55);
@@ -22,8 +23,8 @@ const LoadingMask = styled.div<{ visible?: boolean }>`
   align-items: center;
   justify-content: center;
   z-index: 10;
-  opacity: ${({ visible }) => (visible ? 1 : 0)};
-  pointer-events: ${({ visible }) => (visible ? 'auto' : 'none')};
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+  pointer-events: ${({ $visible }) => ($visible ? 'auto' : 'none')};
   transition: opacity 0.3s;
 `;
 
@@ -37,6 +38,7 @@ const RegisterPage: React.FC = () => {
   const { system, feature } = runtimeConfig.get();
   const siteName = system.name;
   const registerEnabled = feature.register;
+  const { message } = useFeedback();
 
   const navigate = useNavigate();
 
@@ -106,7 +108,7 @@ const RegisterPage: React.FC = () => {
             onSendCode={handleSendCode}
             onNavigateLogin={handleNavigateLogin}
           />
-          <LoadingMask visible={isRegistering}>
+          <LoadingMask $visible={isRegistering}>
             <Spin />
           </LoadingMask>
         </CardContainer>

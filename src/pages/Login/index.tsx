@@ -1,5 +1,6 @@
+import { useFeedback } from '@/hooks';
 import { runtimeConfig } from '@/utils/runtime-config';
-import { ConfigProvider, message, Spin, theme } from 'antd';
+import { ConfigProvider, Spin, theme } from 'antd';
 import { styled, useNavigate, useSearchParams } from 'umi';
 import LoginBg from './components/LoginBg';
 import LoginCard from './components/LoginCard';
@@ -11,7 +12,7 @@ const CardContainer = styled.div`
   width: 100%;
 `;
 
-const LoadingMask = styled.div<{ visible?: boolean }>`
+const LoadingMask = styled.div<{ $visible?: boolean }>`
   position: absolute;
   inset: 0;
   background: rgba(255, 255, 255, 0.55);
@@ -20,8 +21,8 @@ const LoadingMask = styled.div<{ visible?: boolean }>`
   align-items: center;
   justify-content: center;
   z-index: 10;
-  opacity: ${({ visible }) => (visible ? 1 : 0)};
-  pointer-events: ${({ visible }) => (visible ? 'auto' : 'none')};
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+  pointer-events: ${({ $visible }) => ($visible ? 'auto' : 'none')};
   transition: opacity 0.3s;
 `;
 
@@ -36,6 +37,7 @@ const LoginPage: React.FC = () => {
   const siteName = system.name;
   const registerEnabled = feature.register;
   const guestAccount = feature.guestAccount;
+  const { message } = useFeedback();
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -104,7 +106,7 @@ const LoginPage: React.FC = () => {
             onNavigateRegister={handleNavigateRegister}
             initialAccountValues={rememberData}
           />
-          <LoadingMask visible={isLogging}>
+          <LoadingMask $visible={isLogging}>
             <Spin />
           </LoadingMask>
         </CardContainer>
