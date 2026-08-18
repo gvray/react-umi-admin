@@ -1,40 +1,37 @@
 import { LOGIN_PATH } from '@/constants';
-import { logger, redirectToLogin } from '@/utils';
+import {
+  destroyAuthModal,
+  logger,
+  redirectToLogin,
+  showAuthModal,
+  tokenManager,
+} from '@/utils';
 import {
   ErrorShowType,
   GvrayConfig,
   GvrayRequestConfig,
   GvrayResponse,
 } from '@gvray/request';
-import { Modal, message as msg, notification } from 'antd';
+import { message as msg, notification } from 'antd';
 import { history } from 'umi';
 import { statusMap } from './constants/httpStatus';
 import { BizErrorDetails, throwBizError, wrapToBizError } from './utils/errors';
 
-// 防止多次弹出 401 对话框
-let isShowingAuthModal = false;
-
 // 处理 401 未授权错误
 const handle401Unauthorized = () => {
-  // 如果已经在登录页面，不需要弹窗
+  // 如果已经在登录页面，不需要弹窗；若弹窗已存在则销毁
   if (history.location.pathname === LOGIN_PATH) {
+    destroyAuthModal();
     return;
   }
 
-  if (isShowingAuthModal) return;
-
-  isShowingAuthModal = true;
-  Modal.confirm({
-    title: '系统提示',
-    content: '登录状态已过期，您可以继续留在该页面，或者重新登录',
-    okText: '重新登录',
-    cancelText: '取消',
+  showAuthModal({
     onOk: () => {
       redirectToLogin();
-      isShowingAuthModal = false;
     },
     onCancel: () => {
-      isShowingAuthModal = false;
+      // 用户选择不跳转，但至少把过期凭证清掉，避免后续请求反复触发 401 弹窗
+      tokenManager.clearTokens();
     },
   });
 };

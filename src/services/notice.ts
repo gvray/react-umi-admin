@@ -57,9 +57,12 @@ export function batchDeleteNotices(data: API.BatchDeleteNoticesDto) {
 
 /** 获取未读通知数量 */
 export function getUnreadNoticeCount() {
-  return request<API.Response<number>>('/system/notices/unread/count', {
-    method: 'GET',
-  });
+  return request<API.Response<{ count: number }>>(
+    '/system/notices/unread/count',
+    {
+      method: 'GET',
+    },
+  );
 }
 
 /** 标记通知已读 */

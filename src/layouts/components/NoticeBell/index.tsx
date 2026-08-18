@@ -247,16 +247,11 @@ const NoticeBell: React.FC = () => {
   const fetchUnreadCount = useCallback(async () => {
     try {
       const res = await getUnreadNoticeCount();
-      const raw = res.data as unknown;
-      let count = 0;
-      if (typeof raw === 'number') {
-        count = raw;
-      } else if (raw && typeof raw === 'object' && 'count' in raw) {
-        count = Number((raw as Record<string, unknown>).count) || 0;
-      }
-      setUnreadCount(count);
+      setUnreadCount(res.data.count);
+      return true;
     } catch (error) {
       logger.error(error);
+      return false;
     }
   }, []);
 
@@ -280,13 +275,16 @@ const NoticeBell: React.FC = () => {
   const runPolling = useCallback(async () => {
     pollingRef.current = true;
     while (pollingRef.current) {
-      await fetchUnreadCount();
+      const success = await fetchUnreadCount();
+      if (!success) {
+        pollingRef.current = false;
+        break;
+      }
       await sleep(POLLING_INTERVAL);
     }
   }, [fetchUnreadCount]);
 
   useEffect(() => {
-    fetchUnreadCount();
     runPolling();
     return () => {
       pollingRef.current = false;
