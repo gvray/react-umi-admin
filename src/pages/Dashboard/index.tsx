@@ -28,7 +28,7 @@ const STAT_CONFIG: StatItem[] = [
     label: '用户总数',
     icon: <Icon name="UserOutlined" />,
     gradient:
-      'linear-gradient(135deg, var(--gvray-primary-color) 0%, var(--gvray-info-color) 100%)',
+      'linear-gradient(135deg, var(--gvray-color-primary) 0%, var(--gvray-color-info) 100%)',
     trendUp: true,
     trendValue: '+12%',
     trendLabel: '较上月',
@@ -38,7 +38,7 @@ const STAT_CONFIG: StatItem[] = [
     label: '角色数量',
     icon: <Icon name="TeamOutlined" />,
     gradient:
-      'linear-gradient(135deg, var(--gvray-error-color) 0%, var(--gvray-warning-color) 100%)',
+      'linear-gradient(135deg, var(--gvray-color-error) 0%, var(--gvray-color-warning) 100%)',
     trendUp: true,
     trendValue: '+2',
     trendLabel: '本月新增',
@@ -48,7 +48,7 @@ const STAT_CONFIG: StatItem[] = [
     label: '权限点数',
     icon: <Icon name="SafetyCertificateOutlined" />,
     gradient:
-      'linear-gradient(135deg, var(--gvray-info-color) 0%, var(--gvray-primary-color-hover) 100%)',
+      'linear-gradient(135deg, var(--gvray-color-info) 0%, var(--gvray-color-primary-hover) 100%)',
     trendUp: true,
     trendValue: '+5',
     trendLabel: '本月新增',
@@ -58,7 +58,7 @@ const STAT_CONFIG: StatItem[] = [
     label: '在线用户',
     icon: <Icon name="WifiOutlined" />,
     gradient:
-      'linear-gradient(135deg, var(--gvray-success-color) 0%, var(--gvray-primary-color) 100%)',
+      'linear-gradient(135deg, var(--gvray-color-success) 0%, var(--gvray-color-primary) 100%)',
     trendUp: false,
     trendValue: '-3',
     trendLabel: '较昨日',

@@ -178,7 +178,7 @@ const DictionaryItemsPage = () => {
           <div
             style={{
               textAlign: 'center',
-              color: 'var(--gvray-text-color-placeholder)',
+              color: 'var(--gvray-color-text-placeholder)',
               padding: '40px 0',
             }}
           >

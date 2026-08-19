@@ -71,7 +71,7 @@ const TabProfile: React.FC<TabProfileProps> = ({ profile }) => {
           colon={false}
           styles={{
             label: {
-              color: 'var(--gvray-text-color-secondary)',
+              color: 'var(--gvray-color-text-secondary)',
               width: 100,
             },
           }}

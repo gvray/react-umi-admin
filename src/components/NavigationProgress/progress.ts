@@ -4,11 +4,10 @@ class ProgressManager {
   timer: any = null;
   requests = 0;
 
-  private getPrimaryColor(): string {
-    // 优先从 CSS 变量读取，兼容动态主题切换
+  private readPrimaryColor(): string {
     if (typeof window !== 'undefined') {
       const val = getComputedStyle(document.documentElement).getPropertyValue(
-        '--ant-primary-color',
+        '--gvray-color-primary',
       );
       if (val?.trim()) return val.trim();
     }
@@ -26,7 +25,7 @@ class ProgressManager {
       left: '0',
       height: '2px',
       width: '0%',
-      background: this.getPrimaryColor(),
+      background: this.readPrimaryColor(),
       zIndex: '99999',
       opacity: '0',
       transition: 'width 0.2s ease, opacity 0.2s ease',

@@ -219,7 +219,7 @@ export default function AuthPermissionPage() {
                 <Icon
                   name="InfoCircleOutlined"
                   style={{
-                    color: 'var(--gvray-text-color-placeholder)',
+                    color: 'var(--gvray-color-text-placeholder)',
                     fontSize: 12,
                     cursor: 'help',
                   }}
@@ -437,7 +437,7 @@ export default function AuthPermissionPage() {
             </div>
             <div
               style={{
-                borderTop: '1px solid var(--gvray-border-color)',
+                borderTop: '1px solid var(--gvray-color-border)',
                 margin: '10px 0',
               }}
             />

@@ -57,7 +57,7 @@
   .userName {
     font-size: 16px;
     font-weight: 600;
-    color: var(--gvray-heading-color);
+    color: var(--gvray-color-text-heading);
     margin-bottom: 2px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -66,11 +66,11 @@
 
   .userAccount {
     font-size: 13px;
-    color: var(--gvray-text-color-secondary);
+    color: var(--gvray-color-text-secondary);
   }
 
   .divider {
-    border-top: 1px solid var(--gvray-border-color);
+    border-top: 1px solid var(--gvray-color-border);
     margin: 16px 0;
   }
 
@@ -82,7 +82,7 @@
     font-size: 13px;
 
     :global(.label) {
-      color: var(--gvray-text-color-secondary);
+      color: var(--gvray-color-text-secondary);
     }
   }
 
@@ -92,7 +92,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: var(--gvray-heading-color);
+    color: var(--gvray-color-text-heading);
     font-weight: 500;
   }
 
@@ -103,40 +103,40 @@
   }
 
   .statItem {
-    background: var(--gvray-fill-color-quaternary);
-    border: 1px solid var(--gvray-border-color);
+    background: var(--gvray-color-fill-quaternary);
+    border: 1px solid var(--gvray-color-border);
     border-radius: 8px;
     padding: 10px 8px;
     text-align: center;
 
     &.highlight {
-      background: var(--gvray-primary-1);
-      border-color: var(--gvray-primary-3);
+      background: var(--gvray-color-primary-bg);
+      border-color: var(--gvray-color-primary-border);
 
       :global(.number) {
-        color: var(--gvray-primary-color);
+        color: var(--gvray-color-primary);
       }
     }
 
     :global(.number) {
       font-size: 20px;
       font-weight: 600;
-      color: var(--gvray-heading-color);
+      color: var(--gvray-color-text-heading);
       line-height: 1;
       margin-bottom: 4px;
     }
 
     :global(.label) {
       font-size: 11px;
-      color: var(--gvray-text-color-secondary);
+      color: var(--gvray-color-text-secondary);
     }
   }
 
   .mainContent {
     flex: 1;
     min-width: 0;
-    background: var(--gvray-bg-container);
-    border: 1px solid var(--gvray-border-color);
+    background: var(--gvray-color-bg-container);
+    border: 1px solid var(--gvray-color-border);
     border-radius: 8px;
     overflow: hidden;
 
@@ -152,7 +152,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    border-bottom: 1px solid var(--gvray-border-color);
+    border-bottom: 1px solid var(--gvray-color-border);
     flex-wrap: wrap;
   }
 
@@ -171,18 +171,18 @@
     padding: 14px;
     min-height: 110px;
     border-radius: 8px;
-    background: var(--gvray-bg-container);
-    border: 1px solid var(--gvray-border-color-secondary);
+    background: var(--gvray-color-bg-container);
+    border: 1px solid var(--gvray-color-border-secondary);
     cursor: pointer;
     transition: background 0.2s;
 
     &:hover {
-      background: var(--gvray-bg-elevated);
+      background: var(--gvray-color-bg-elevated);
     }
 
     &.selected {
-      background: var(--gvray-primary-1);
-      border-color: var(--gvray-primary-3);
+      background: var(--gvray-color-primary-bg);
+      border-color: var(--gvray-color-primary-border);
 
       .checkIcon {
         opacity: 1;
@@ -197,7 +197,7 @@
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: var(--gvray-primary-color);
+    background: var(--gvray-color-primary);
     color: white;
     display: flex;
     align-items: center;
@@ -210,15 +210,15 @@
   .roleName {
     font-size: 15px;
     font-weight: 600;
-    color: var(--gvray-heading-color);
+    color: var(--gvray-color-text-heading);
     margin-bottom: 6px;
     padding-right: 24px;
   }
 
   .roleKey {
     font-size: 12px;
-    color: var(--gvray-primary-color);
-    background: var(--gvray-primary-1);
+    color: var(--gvray-color-primary);
+    background: var(--gvray-color-primary-bg);
     padding: 2px 8px;
     border-radius: 4px;
     display: inline-block;
@@ -228,7 +228,7 @@
 
   .roleDesc {
     font-size: 12px;
-    color: var(--gvray-text-color-secondary);
+    color: var(--gvray-color-text-secondary);
     line-height: 1.5;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -239,12 +239,12 @@
 
   .emptyState {
     text-align: center;
-    color: var(--gvray-text-color-secondary);
+    color: var(--gvray-color-text-secondary);
     padding: 60px 20px;
 
     .icon {
       font-size: 48px;
-      color: var(--gvray-text-color-disabled);
+      color: var(--gvray-color-text-disabled);
       margin-bottom: 16px;
     }
   }

@@ -7,9 +7,9 @@ const { Text } = Typography;
 
 const ContentBox = styled.div`
   padding: 12px;
-  background-color: var(--gvray-bg-elevated);
+  background-color: var(--gvray-color-bg-elevated);
   border-radius: 6px;
-  border: 1px solid var(--gvray-border-color);
+  border: 1px solid var(--gvray-color-border);
   white-space: pre-wrap;
   word-break: break-all;
   max-height: 320px;

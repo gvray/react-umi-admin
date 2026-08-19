@@ -24,10 +24,10 @@ const ActivityItem = styled.div`
   justify-content: space-between;
   padding: 8px 16px;
   border-radius: 8px;
-  background: var(--gvray-bg-elevated);
+  background: var(--gvray-color-bg-elevated);
   transition: background 0.2s;
   &:hover {
-    background: var(--gvray-primary-1);
+    background: var(--gvray-color-primary-bg);
   }
 `;
 
@@ -59,7 +59,7 @@ const getActionIcon = (action: string) => {
     return (
       <Icon
         name="DeleteOutlined"
-        style={{ color: 'var(--gvray-error-color)' }}
+        style={{ color: 'var(--gvray-color-error)' }}
       />
     );
   if (
@@ -70,21 +70,21 @@ const getActionIcon = (action: string) => {
     return (
       <Icon
         name="EditOutlined"
-        style={{ color: 'var(--gvray-warning-color)' }}
+        style={{ color: 'var(--gvray-color-warning)' }}
       />
     );
   if (action.includes('登录'))
     return (
       <Icon
         name="LoginOutlined"
-        style={{ color: 'var(--gvray-primary-color)' }}
+        style={{ color: 'var(--gvray-color-primary)' }}
       />
     );
   if (action.includes('权限'))
     return (
       <Icon
         name="SafetyCertificateOutlined"
-        style={{ color: 'var(--gvray-info-color)' }}
+        style={{ color: 'var(--gvray-color-info)' }}
       />
     );
   if (
@@ -95,21 +95,21 @@ const getActionIcon = (action: string) => {
     return (
       <Icon
         name="UserAddOutlined"
-        style={{ color: 'var(--gvray-success-color)' }}
+        style={{ color: 'var(--gvray-color-success)' }}
       />
     );
   return (
     <Icon
       name="EditOutlined"
-      style={{ color: 'var(--gvray-text-color-placeholder)' }}
+      style={{ color: 'var(--gvray-color-text-placeholder)' }}
     />
   );
 };
 
 const getTimelineDotColor = (status: string): string => {
   return status === '成功'
-    ? 'var(--gvray-success-color)'
-    : 'var(--gvray-error-color)';
+    ? 'var(--gvray-color-success)'
+    : 'var(--gvray-color-error)';
 };
 
 const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
@@ -130,7 +130,7 @@ const ActivityTimeline: React.FC<ActivityTimelineProps> = ({
         style={{
           textAlign: 'center',
           padding: '40px 0',
-          color: 'var(--gvray-text-color-placeholder)',
+          color: 'var(--gvray-color-text-placeholder)',
         }}
       >
         暂无操作记录

@@ -52,7 +52,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
             alignItems: 'center',
             justifyContent: 'center',
             minHeight: '100vh',
-            background: 'var(--gvray-bg-layout)',
+            background: 'var(--gvray-color-bg-layout)',
             padding: 24,
           }}
         >
@@ -60,7 +60,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
             icon={
               <Icon
                 name="BugOutlined"
-                style={{ color: 'var(--gvray-error-color)' }}
+                style={{ color: 'var(--gvray-color-error)' }}
               />
             }
             title="页面出了点问题"
@@ -89,14 +89,14 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
                   textAlign: 'left',
                   maxWidth: 600,
                   margin: '0 auto',
-                  background: 'var(--gvray-error-color-bg)',
-                  border: '1px solid var(--gvray-error-color-border)',
+                  background: 'var(--gvray-color-error-bg)',
+                  border: '1px solid var(--gvray-color-error-border)',
                   borderRadius: 8,
                   padding: 16,
                 }}
               >
                 <Paragraph>
-                  <Text strong style={{ color: 'var(--gvray-error-color)' }}>
+                  <Text strong style={{ color: 'var(--gvray-color-error)' }}>
                     {this.state.error.name}: {this.state.error.message}
                   </Text>
                 </Paragraph>
@@ -105,7 +105,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
                     <pre
                       style={{
                         fontSize: 12,
-                        color: 'var(--gvray-text-color-secondary)',
+                        color: 'var(--gvray-color-text-secondary)',
                         maxHeight: 200,
                         overflow: 'auto',
                         margin: 0,

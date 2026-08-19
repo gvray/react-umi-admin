@@ -21,9 +21,9 @@ const ValueHeader = styled.div`
 
 const ValueBox = styled.div`
   padding: 12px;
-  background-color: var(--gvray-bg-elevated);
+  background-color: var(--gvray-color-bg-elevated);
   border-radius: 6px;
-  border: 1px solid var(--gvray-border-color);
+  border: 1px solid var(--gvray-color-border);
   font-family: monospace;
   font-size: 13px;
   white-space: pre-wrap;

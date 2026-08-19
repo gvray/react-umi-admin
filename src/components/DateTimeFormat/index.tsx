@@ -13,7 +13,7 @@ interface DateTimeFormatProps {
 
 const Span = styled.span`
   font-size: 12px;
-  color: var(--gvray-text-color-secondary);
+  color: var(--gvray-color-text-secondary);
 `;
 
 /**

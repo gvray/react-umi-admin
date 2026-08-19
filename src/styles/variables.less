@@ -1,112 +1,91 @@
 // 全局主题 CSS 变量速查表
 // 由 ThemeTokenInjector 在 Layout 中动态注入，支持主题切换和昼夜模式
 //
-// ⚠️ 重要：直接在样式中使用 var(--gvray-xxx)，不要通过 LESS 变量包装
+// 命名规范：antd v5 token 名转 kebab-case，前缀替换为 --gvray-
+// 例：colorPrimary → --gvray-color-primary
+//
+// ⚠️ 重要：直接在样式中使用 var(--gvray-color-xxx)，不要通过 LESS 变量包装
 // 因为 LESS 编译 + PostCSS 优化可能会将 CSS 变量求值为静态值
 //
 // ============ 使用示例 ============
 // .myClass {
-//   color: var(--gvray-primary-color);           // ✅ 正确
-//   background: var(--gvray-bg-container);       // ✅ 正确
-//   border: 1px solid var(--gvray-border-color); // ✅ 正确
+//   color: var(--gvray-color-primary);         // ✅ 正确
+//   background: var(--gvray-color-bg-container); // ✅ 正确
+//   border: 1px solid var(--gvray-color-border); // ✅ 正确
 // }
 //
 // 完整规范见：docs/theme-guidelines.md
 // ============================================================
 
 // ============ 主色系 ============
-// --gvray-primary-color           // 主色
-// --gvray-primary-color-hover     // 主色 hover
-// --gvray-primary-color-active    // 主色 active
-// --gvray-primary-color-outline   // 主色 outline 背景
-// --gvray-color-primary           // antd 原生命名（同上）
-// --gvray-color-primary-hover     // antd 原生命名
-// --gvray-color-primary-active    // antd 原生命名
-// --gvray-color-primary-bg        // antd 原生命名
+// --gvray-color-primary              // 主色（colorPrimary）
+// --gvray-color-primary-hover        // 主色 hover（colorPrimaryHover）
+// --gvray-color-primary-active       // 主色 active（colorPrimaryActive）
+// --gvray-color-primary-bg           // 主色最浅背景（colorPrimaryBg）
+// --gvray-color-primary-bg-hover     // 主色浅背景 hover（colorPrimaryBgHover）
+// --gvray-color-primary-border       // 主色边框（colorPrimaryBorder）
+// --gvray-color-primary-border-hover // 主色边框 hover（colorPrimaryBorderHover）
 
 // ============ 功能色 ============
-// --gvray-success-color           // 成功色
-// --gvray-warning-color           // 警告色
-// --gvray-error-color             // 错误色
-// --gvray-info-color              // 信息色
-// --gvray-color-success           // antd 原生命名
-// --gvray-color-warning           // antd 原生命名
-// --gvray-color-error             // antd 原生命名
-// --gvray-color-info              // antd 原生命名
+// --gvray-color-success              // 成功色（colorSuccess）
+// --gvray-color-success-bg           // 成功背景（colorSuccessBg）
+// --gvray-color-success-border       // 成功边框（colorSuccessBorder）
+// --gvray-color-warning              // 警告色（colorWarning）
+// --gvray-color-warning-bg           // 警告背景（colorWarningBg）
+// --gvray-color-warning-border       // 警告边框（colorWarningBorder）
+// --gvray-color-error                // 错误色（colorError）
+// --gvray-color-error-bg             // 错误背景（colorErrorBg）
+// --gvray-color-error-border         // 错误边框（colorErrorBorder）
+// --gvray-color-info                 // 信息色（colorInfo）
+// --gvray-color-info-bg              // 信息背景（colorInfoBg）
+// --gvray-color-info-border          // 信息边框（colorInfoBorder）
 
 // ============ 文本色 ============
-// --gvray-text-color              // 主文本
-// --gvray-text-color-secondary    // 次要文本
-// --gvray-text-color-disabled     // 禁用文本
-// --gvray-text-color-placeholder  // 占位文本
-// --gvray-heading-color           // 标题色
-// --gvray-text-label              // 标签色
-// --gvray-text-description        // 描述色
-// --gvray-color-text              // antd 原生命名
-// --gvray-color-text-secondary    // antd 原生命名
-// --gvray-color-text-tertiary     // antd 原生命名
-// --gvray-color-text-quaternary   // antd 原生命名
-// --gvray-color-text-disabled     // antd 原生命名
-// --gvray-color-text-heading      // antd 原生命名
-// --gvray-color-text-label        // antd 原生命名
-// --gvray-color-text-description  // antd 原生命名
-// --gvray-color-text-placeholder  // antd 原生命名
+// --gvray-color-text                 // 主文本（colorText）
+// --gvray-color-text-secondary       // 次要文本（colorTextSecondary）
+// --gvray-color-text-tertiary        // 三级文本（colorTextTertiary）
+// --gvray-color-text-quaternary      // 四级文本（colorTextQuaternary）
+// --gvray-color-text-disabled        // 禁用文本（colorTextDisabled）
+// --gvray-color-text-placeholder     // 占位文本（colorTextPlaceholder）
+// --gvray-color-text-heading         // 标题色（colorTextHeading）
+// --gvray-color-text-label           // 标签色（colorTextLabel）
+// --gvray-color-text-description     // 描述色（colorTextDescription）
 
 // ============ 背景色 ============
-// --gvray-bg-color                // 页面背景
-// --gvray-bg-container            // 容器背景
-// --gvray-bg-elevated             // 浮层背景
-// --gvray-bg-layout               // 布局背景
-// --gvray-bg-spotlight            // 高亮背景
-// --gvray-bg-mask                 // 遮罩背景
-// --gvray-color-bg-container      // antd 原生命名
-// --gvray-color-bg-elevated       // antd 原生命名
-// --gvray-color-bg-layout         // antd 原生命名
-// --gvray-color-bg-mask           // antd 原生命名
-// --gvray-color-bg-spotlight      // antd 原生命名
+// --gvray-color-bg-base              // 基础背景（colorBgBase）
+// --gvray-color-bg-container         // 容器背景（colorBgContainer）
+// --gvray-color-bg-elevated          // 浮层背景（colorBgElevated）
+// --gvray-color-bg-layout            // 布局背景（colorBgLayout）
+// --gvray-color-bg-spotlight         // 高亮背景（colorBgSpotlight）
+// --gvray-color-bg-mask              // 遮罩背景（colorBgMask）
 
 // ============ 边框 / 分割线 ============
-// --gvray-border-color            // 主边框
-// --gvray-border-color-secondary  // 次边框
-// --gvray-border-color-split      // 分割线
-// --gvray-color-border            // antd 原生命名
-// --gvray-color-border-secondary  // antd 原生命名
+// --gvray-color-border               // 主边框（colorBorder）
+// --gvray-color-border-secondary     // 次边框（colorBorderSecondary）
+// --gvray-color-split                // 分割线（colorSplit）
 
 // ============ 填充色 ============
-// --gvray-fill-color              // 主填充
-// --gvray-fill-color-secondary    // 次填充
-// --gvray-fill-color-tertiary     // 三级填充
-// --gvray-fill-color-quaternary   // 四级填充
-// --gvray-color-fill              // antd 原生命名
-// --gvray-color-fill-secondary    // antd 原生命名
-// --gvray-color-fill-tertiary     // antd 原生命名
-// --gvray-color-fill-quaternary   // antd 原生命名
+// --gvray-color-fill                 // 主填充（colorFill）
+// --gvray-color-fill-secondary       // 次填充（colorFillSecondary）
+// --gvray-color-fill-tertiary        // 三级填充（colorFillTertiary）
+// --gvray-color-fill-quaternary      // 四级填充（colorFillQuaternary）
 
 // ============ 尺寸 ============
-// --gvray-border-radius           // 圆角
-// --gvray-border-radius-lg        // 大圆角
-// --gvray-border-radius-sm        // 小圆角
-// --gvray-border-radius-xs        // 极小圆角
+// --gvray-border-radius              // 圆角（borderRadius）
+// --gvray-border-radius-lg           // 大圆角（borderRadiusLG）
+// --gvray-border-radius-sm           // 小圆角（borderRadiusSM）
+// --gvray-border-radius-xs           // 极小圆角（borderRadiusXS）
 
 // ============ 阴影 ============
-// --gvray-box-shadow              // 主阴影
-// --gvray-box-shadow-secondary    // 次阴影
-// --gvray-box-shadow-tertiary     // 三级阴影
-
-// ============ 主色衍生（背景/边框/悬浮） ============
-// --gvray-primary-1               // 最浅主色背景
-// --gvray-primary-2               // 浅主色 hover 背景
-// --gvray-primary-3               // 主色边框
-// --gvray-primary-4               // 主色 hover 边框
-// --gvray-primary-5               // 主色 hover（同 --gvray-primary-color-hover）
-// --gvray-primary-6               // 主色（同 --gvray-primary-color）
-// --gvray-primary-7               // 主色 active
+// --gvray-box-shadow                 // 主阴影（boxShadow）
+// --gvray-box-shadow-secondary       // 次阴影（boxShadowSecondary）
+// --gvray-box-shadow-tertiary        // 三级阴影（boxShadowTertiary）
 
 // ============ 链接色 ============
-// --gvray-link-color              // 链接色
-// --gvray-link-hover-color        // 链接 hover
-// --gvray-link-active-color       // 链接 active
+// --gvray-color-link                 // 链接色（colorLink）
+// --gvray-color-link-hover           // 链接 hover（colorLinkHover）
+// --gvray-color-link-active          // 链接 active（colorLinkActive）
 
 // ============ 图标色 ============
-// --gvray-icon-color              // 图标默认色
-// --gvray-icon-color-hover        // 图标 hover 色
+// --gvray-color-icon                 // 图标默认色（colorIcon）
+// --gvray-color-icon-hover           // 图标 hover 色（colorIconHover）

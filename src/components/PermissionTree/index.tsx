@@ -8,7 +8,7 @@ interface PermissionTreeProps {
 }
 
 const PermissionTreeWrapper = styled.div`
-  border: 1px solid var(--gvray-border-color);
+  border: 1px solid var(--gvray-color-border);
   border-radius: 4px;
   padding: 10px;
 `;

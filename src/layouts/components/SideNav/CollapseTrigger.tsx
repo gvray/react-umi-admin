@@ -37,7 +37,7 @@ const TriggerButton = styled.button`
   }
 
   &:focus-visible {
-    box-shadow: 0 0 0 2px var(--gvray-primary-color-outline),
+    box-shadow: 0 0 0 2px var(--gvray-color-primary-bg),
       0 2px 8px var(--gvray-sider-shadow);
   }
 `;

@@ -92,8 +92,8 @@
 .gradient-primary() {
   background: linear-gradient(
     135deg,
-    var(--gvray-primary-color) 0%,
-    var(--gvray-info-color) 100%
+    var(--gvray-color-primary) 0%,
+    var(--gvray-color-info) 100%
   );
 }
 
@@ -146,7 +146,7 @@
 }
 
 // 自定义滚动条
-.custom-scrollbar(@width: 6px, @track-color: transparent, @thumb-color: var(--gvray-fill-color-secondary)) {
+.custom-scrollbar(@width: 6px, @track-color: transparent, @thumb-color: var(--gvray-color-fill-secondary)) {
   &::-webkit-scrollbar {
     width: @width;
     height: @width;
@@ -158,7 +158,7 @@
     background: @thumb-color;
     border-radius: @width / 2;
     &:hover {
-      background: var(--gvray-fill-color);
+      background: var(--gvray-color-fill);
     }
   }
 }

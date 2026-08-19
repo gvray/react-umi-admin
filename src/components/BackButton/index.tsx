@@ -20,8 +20,8 @@ const Button = styled.div`
   border-radius: 8px;
   background: linear-gradient(
     135deg,
-    var(--gvray-primary-color) 0%,
-    var(--gvray-primary-color-hover) 100%
+    var(--gvray-color-primary) 0%,
+    var(--gvray-color-primary-hover) 100%
   );
   color: #fff;
   font-size: 20px;
@@ -32,7 +32,7 @@ const Button = styled.div`
 
   &:hover {
     transform: translateX(-2px);
-    box-shadow: 0 4px 12px rgb(from var(--gvray-primary-color) r g b / 0.35);
+    box-shadow: 0 4px 12px rgb(from var(--gvray-color-primary) r g b / 0.35);
   }
 `;
 

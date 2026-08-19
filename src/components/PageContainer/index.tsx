@@ -32,7 +32,7 @@ const PageTitle = styled.div<PageContainerWrapperProps>`
 const PageContent = styled.div<{ $isVisible?: boolean }>`
   flex: 1;
   padding: 24px;
-  background: var(--gvray-bg-container);
+  background: var(--gvray-color-bg-container);
   border-radius: var(--gvray-border-radius-lg);
 
   transition: transform 0.15s ease, opacity 0.2s ease;

@@ -32,7 +32,7 @@ const ColorDot = styled.button<{ $color: string; $active: boolean }>`
   ${({ $active }) =>
     $active &&
     `
-      box-shadow: 0 0 0 2px var(--gvray-bg-container), 0 0 0 4px var(--gvray-primary-color);
+      box-shadow: 0 0 0 2px var(--gvray-color-bg-container), 0 0 0 4px var(--gvray-color-primary);
     `}
 `;
 

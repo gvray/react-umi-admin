@@ -54,7 +54,7 @@ const DictionaryPage = () => {
           </p>
           <p
             style={{
-              color: 'var(--gvray-error-color)',
+              color: 'var(--gvray-color-error)',
               fontSize: '12px',
               marginTop: '8px',
             }}

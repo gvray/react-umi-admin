@@ -171,8 +171,8 @@ export default function ProfilePage() {
                 percent={model.completenessPercent}
                 showInfo={false}
                 strokeColor={{
-                  from: 'var(--gvray-primary-color)',
-                  to: 'var(--gvray-info-color)',
+                  from: 'var(--gvray-color-primary)',
+                  to: 'var(--gvray-color-info)',
                 }}
               />
               <div className={styles.summaryRows}>

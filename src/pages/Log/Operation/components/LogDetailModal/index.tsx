@@ -70,22 +70,22 @@ const SummaryRight = styled.div`
   align-items: center;
   gap: 10px;
   font-size: 13px;
-  color: var(--gvray-text-color-secondary);
+  color: var(--gvray-color-text-secondary);
 `;
 
 const LatencyBadge = styled.span`
-  background: var(--gvray-bg-elevated);
+  background: var(--gvray-color-bg-elevated);
   padding: 2px 8px;
   border-radius: 4px;
   font-size: 12px;
   font-family: monospace;
-  color: var(--gvray-text-color);
+  color: var(--gvray-color-text);
 `;
 
 const SectionTitle = styled.div`
   font-size: 14px;
   font-weight: 600;
-  color: var(--gvray-text-color);
+  color: var(--gvray-color-text);
   margin-bottom: 10px;
   padding-left: 10px;
   border-left: 3px solid var(--gvray-color-primary);
@@ -107,7 +107,7 @@ const JsonCode = styled.pre`
   line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-all;
-  color: var(--gvray-text-color);
+  color: var(--gvray-color-text);
   max-height: 240px;
   overflow: auto;
 `;

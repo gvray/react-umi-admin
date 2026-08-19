@@ -24,7 +24,7 @@ const PagePlaceholder: React.FC<PagePlaceholderProps> = ({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        color: 'var(--gvray-text-color-placeholder)',
+        color: 'var(--gvray-color-text-placeholder)',
         padding: '24px 16px',
         textAlign: 'center',
         ...style,
@@ -34,7 +34,7 @@ const PagePlaceholder: React.FC<PagePlaceholderProps> = ({
         <div
           style={{
             fontSize: 48,
-            color: 'var(--gvray-text-color-placeholder)',
+            color: 'var(--gvray-color-text-placeholder)',
             marginBottom: 16,
           }}
         >

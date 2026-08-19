@@ -50,11 +50,11 @@
     gap: 12px;
 
     :global(.ant-btn-text) {
-      color: var(--gvray-text-color-secondary);
+      color: var(--gvray-color-text-secondary);
 
       &:hover {
-        color: var(--gvray-primary-color);
-        background: var(--gvray-primary-1);
+        color: var(--gvray-color-primary);
+        background: var(--gvray-color-primary-bg);
       }
     }
   }
@@ -66,7 +66,7 @@
     .roleName {
       font-size: 16px;
       font-weight: 600;
-      color: var(--gvray-text-color);
+      color: var(--gvray-color-text);
       margin-bottom: 2px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -75,8 +75,8 @@
 
     .roleKey {
       font-size: 12px;
-      color: var(--gvray-primary-color);
-      background: var(--gvray-primary-1);
+      color: var(--gvray-color-primary);
+      background: var(--gvray-color-primary-bg);
       padding: 2px 8px;
       border-radius: 4px;
       display: inline-block;
@@ -85,7 +85,7 @@
   }
 
   .divider {
-    border-top: 1px solid var(--gvray-border-color);
+    border-top: 1px solid var(--gvray-color-border);
     margin: 16px 0;
   }
 
@@ -97,11 +97,11 @@
     font-size: 13px;
 
     :global(.label) {
-      color: var(--gvray-text-color-secondary);
+      color: var(--gvray-color-text-secondary);
     }
 
     :global(.value) {
-      color: var(--gvray-text-color);
+      color: var(--gvray-color-text);
       font-weight: 500;
     }
   }
@@ -112,7 +112,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: var(--gvray-text-color);
+    color: var(--gvray-color-text);
     font-weight: 500;
   }
 
@@ -123,58 +123,58 @@
   }
 
   .statItem {
-    background: var(--gvray-fill-color-quaternary);
-    border: 1px solid var(--gvray-border-color);
+    background: var(--gvray-color-fill-quaternary);
+    border: 1px solid var(--gvray-color-border);
     border-radius: 8px;
     padding: 10px 8px;
     text-align: center;
 
     &.purple {
-      background: var(--gvray-primary-1);
-      border-color: var(--gvray-primary-3);
+      background: var(--gvray-color-primary-bg);
+      border-color: var(--gvray-color-primary-border);
 
       :global(.number) {
-        color: var(--gvray-primary-color);
+        color: var(--gvray-color-primary);
       }
     }
 
     &.blue {
-      background: var(--gvray-primary-1);
-      border-color: var(--gvray-primary-3);
+      background: var(--gvray-color-primary-bg);
+      border-color: var(--gvray-color-primary-border);
 
       :global(.number) {
-        color: var(--gvray-info-color);
+        color: var(--gvray-color-info);
       }
     }
 
     &.orange {
-      background: var(--gvray-warning-color-bg);
-      border-color: var(--gvray-warning-color-border);
+      background: var(--gvray-color-warning-bg);
+      border-color: var(--gvray-color-warning-border);
 
       :global(.number) {
-        color: var(--gvray-warning-color);
+        color: var(--gvray-color-warning);
       }
     }
 
     :global(.number) {
       font-size: 20px;
       font-weight: 600;
-      color: var(--gvray-text-color);
+      color: var(--gvray-color-text);
       line-height: 1;
       margin-bottom: 4px;
     }
 
     :global(.label) {
       font-size: 11px;
-      color: var(--gvray-text-color-secondary);
+      color: var(--gvray-color-text-secondary);
     }
   }
 
   .mainContent {
     flex: 1;
     min-width: 0;
-    background: var(--gvray-bg-container);
-    border: 1px solid var(--gvray-border-color);
+    background: var(--gvray-color-bg-container);
+    border: 1px solid var(--gvray-color-border);
     border-radius: 8px;
     overflow: hidden;
 
@@ -190,7 +190,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    border-bottom: 1px solid var(--gvray-border-color);
+    border-bottom: 1px solid var(--gvray-color-border);
     flex-wrap: wrap;
     flex-shrink: 0;
   }
@@ -219,27 +219,27 @@
     gap: 6px;
 
     .nodeIcon {
-      color: var(--gvray-primary-color);
+      color: var(--gvray-color-primary);
     }
 
     .nodeName {
       font-size: 13px;
-      color: var(--gvray-text-color);
+      color: var(--gvray-color-text);
     }
 
     .nodePermission {
       font-size: 11px;
       padding: 1px 6px;
       border-radius: 3px;
-      background: var(--gvray-primary-1);
-      color: var(--gvray-primary-color);
+      background: var(--gvray-color-primary-bg);
+      color: var(--gvray-color-primary);
       font-family: 'SF Mono', Monaco, monospace;
     }
   }
 
   .emptyState {
     text-align: center;
-    color: var(--gvray-text-color-placeholder);
+    color: var(--gvray-color-text-placeholder);
     padding: 60px 20px;
 
     .icon {

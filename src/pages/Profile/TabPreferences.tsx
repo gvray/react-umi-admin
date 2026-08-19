@@ -294,7 +294,7 @@ const TabPreferences: React.FC = () => {
                   avatar={
                     <Icon
                       name="LayoutOutlined"
-                      style={{ color: 'var(--gvray-text-color-placeholder)' }}
+                      style={{ color: 'var(--gvray-color-text-placeholder)' }}
                     />
                   }
                   title={<Text style={{ fontSize: 13 }}>{item.title}</Text>}
@@ -377,7 +377,7 @@ const TabPreferences: React.FC = () => {
                   avatar={
                     <Icon
                       name="SettingOutlined"
-                      style={{ color: 'var(--gvray-text-color-placeholder)' }}
+                      style={{ color: 'var(--gvray-color-text-placeholder)' }}
                     />
                   }
                   title={<Text style={{ fontSize: 13 }}>{item.title}</Text>}

@@ -107,12 +107,12 @@ const UpdateFormFunction: React.ForwardRefRenderFunction<
           <Input />
         </Form.Item>
         <Form.Item label="权限名称">
-          <span style={{ color: 'var(--gvray-text-color-secondary)' }}>
+          <span style={{ color: 'var(--gvray-color-text-secondary)' }}>
             {(record?.name as string) || '-'}
           </span>
         </Form.Item>
         <Form.Item label="权限代码">
-          <code style={{ color: 'var(--gvray-text-color-secondary)' }}>
+          <code style={{ color: 'var(--gvray-color-text-secondary)' }}>
             {(record?.code as string) || '-'}
           </code>
         </Form.Item>

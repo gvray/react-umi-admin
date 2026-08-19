@@ -101,35 +101,35 @@ const PERMISSION_TYPES = [
     label: '全部数据权限',
     description: '可以访问所有数据，不受任何限制',
     icon: <Icon name="DatabaseOutlined" />,
-    color: 'var(--gvray-success-color)',
+    color: 'var(--gvray-color-success)',
   },
   {
     value: DataScope.DEPARTMENT,
     label: '本部门数据权限',
     description: '只能访问当前用户所在部门的数据',
     icon: <Icon name="TeamOutlined" />,
-    color: 'var(--gvray-warning-color)',
+    color: 'var(--gvray-color-warning)',
   },
   {
     value: DataScope.DEPARTMENT_AND_CHILD,
     label: '本部门及以下数据权限',
     description: '可以访问当前用户所在部门及其下级部门的数据',
     icon: <Icon name="TeamOutlined" />,
-    color: 'var(--gvray-info-color)',
+    color: 'var(--gvray-color-info)',
   },
   {
     value: DataScope.CUSTOM,
     label: '自定义数据权限',
     description: '可以自定义访问特定部门的数据',
     icon: <Icon name="EyeOutlined" />,
-    color: 'var(--gvray-primary-color)',
+    color: 'var(--gvray-color-primary)',
   },
   {
     value: DataScope.SELF,
     label: '仅本人数据权限',
     description: '只能访问自己创建或负责的数据',
     icon: <Icon name="EyeOutlined" />,
-    color: 'var(--gvray-error-color)',
+    color: 'var(--gvray-color-error)',
   },
 ];
 
@@ -274,7 +274,7 @@ export default function AuthDataScopeModal({
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <Icon
             name="DatabaseOutlined"
-            style={{ marginRight: '8px', color: 'var(--gvray-primary-color)' }}
+            style={{ marginRight: '8px', color: 'var(--gvray-color-primary)' }}
           />
           数据权限分配 - {currentRole?.name || roleName}
           {currentRole?.roleKey && (

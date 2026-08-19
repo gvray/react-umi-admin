@@ -49,11 +49,11 @@
     gap: 12px;
 
     :global(.ant-btn-text) {
-      color: var(--gvray-text-color-secondary);
+      color: var(--gvray-color-text-secondary);
 
       &:hover {
-        color: var(--gvray-primary-color);
-        background: var(--gvray-primary-1);
+        color: var(--gvray-color-primary);
+        background: var(--gvray-color-primary-bg);
       }
     }
   }
@@ -66,7 +66,7 @@
   .roleName {
     font-size: 16px;
     font-weight: 600;
-    color: var(--gvray-text-color);
+    color: var(--gvray-color-text);
     margin-bottom: 2px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -75,8 +75,8 @@
 
   .roleKey {
     font-size: 12px;
-    color: var(--gvray-primary-color);
-    background: var(--gvray-primary-1);
+    color: var(--gvray-color-primary);
+    background: var(--gvray-color-primary-bg);
     padding: 2px 8px;
     border-radius: 4px;
     display: inline-block;
@@ -84,7 +84,7 @@
   }
 
   .divider {
-    border-top: 1px solid var(--gvray-border-color);
+    border-top: 1px solid var(--gvray-color-border);
     margin: 16px 0;
   }
 
@@ -96,7 +96,7 @@
     font-size: 13px;
 
     :global(.label) {
-      color: var(--gvray-text-color-secondary);
+      color: var(--gvray-color-text-secondary);
     }
   }
 
@@ -106,7 +106,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: var(--gvray-text-color);
+    color: var(--gvray-color-text);
     font-weight: 500;
   }
 
@@ -117,40 +117,40 @@
   }
 
   .statItem {
-    background: var(--gvray-fill-color-quaternary);
-    border: 1px solid var(--gvray-border-color);
+    background: var(--gvray-color-fill-quaternary);
+    border: 1px solid var(--gvray-color-border);
     border-radius: 8px;
     padding: 10px 8px;
     text-align: center;
 
     &.highlight {
-      background: var(--gvray-primary-1);
-      border-color: var(--gvray-primary-3);
+      background: var(--gvray-color-primary-bg);
+      border-color: var(--gvray-color-primary-border);
 
       :global(.number) {
-        color: var(--gvray-primary-color);
+        color: var(--gvray-color-primary);
       }
     }
 
     :global(.number) {
       font-size: 20px;
       font-weight: 600;
-      color: var(--gvray-text-color);
+      color: var(--gvray-color-text);
       line-height: 1;
       margin-bottom: 4px;
     }
 
     :global(.label) {
       font-size: 11px;
-      color: var(--gvray-text-color-secondary);
+      color: var(--gvray-color-text-secondary);
     }
   }
 
   .mainContent {
     flex: 1;
     min-width: 0;
-    background: var(--gvray-bg-container);
-    border: 1px solid var(--gvray-border-color);
+    background: var(--gvray-color-bg-container);
+    border: 1px solid var(--gvray-color-border);
     border-radius: 8px;
     overflow: hidden;
 
@@ -166,7 +166,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
-    border-bottom: 1px solid var(--gvray-border-color);
+    border-bottom: 1px solid var(--gvray-color-border);
     flex-wrap: wrap;
   }
 
@@ -189,13 +189,13 @@
       height: 32px;
       border: none;
       border-radius: 16px;
-      color: var(--gvray-text-color-secondary);
-      background: var(--gvray-fill-color-quaternary);
+      color: var(--gvray-color-text-secondary);
+      background: var(--gvray-color-fill-quaternary);
       box-shadow: none;
 
       &:hover {
-        color: var(--gvray-primary-color);
-        background: var(--gvray-primary-1);
+        color: var(--gvray-color-primary);
+        background: var(--gvray-color-primary-bg);
       }
     }
   }
@@ -205,20 +205,20 @@
     height: 96px;
     padding: 12px;
     border-radius: 8px;
-    background: var(--gvray-bg-container);
-    border: 1px solid var(--gvray-border-color-secondary);
+    background: var(--gvray-color-bg-container);
+    border: 1px solid var(--gvray-color-border-secondary);
     cursor: pointer;
     transition: background 0.2s;
     display: flex;
     flex-direction: column;
 
     &:hover {
-      background: var(--gvray-bg-elevated);
+      background: var(--gvray-color-bg-elevated);
     }
 
     &.selected {
-      background: var(--gvray-primary-1);
-      border-color: var(--gvray-primary-3);
+      background: var(--gvray-color-primary-bg);
+      border-color: var(--gvray-color-primary-border);
 
       .checkIcon {
         opacity: 1;
@@ -233,7 +233,7 @@
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: var(--gvray-primary-color);
+    background: var(--gvray-color-primary);
     color: white;
     display: flex;
     align-items: center;
@@ -256,8 +256,8 @@
     border-radius: 8px;
     background: linear-gradient(
       135deg,
-      var(--gvray-primary-color) 0%,
-      var(--gvray-primary-color-hover) 100%
+      var(--gvray-color-primary) 0%,
+      var(--gvray-color-primary-hover) 100%
     );
     display: flex;
     align-items: center;
@@ -283,7 +283,7 @@
   .userName {
     font-size: 14px;
     font-weight: 600;
-    color: var(--gvray-text-color);
+    color: var(--gvray-color-text);
     margin-bottom: 2px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -293,7 +293,7 @@
   .userAccount,
   .metaItem {
     font-size: 12px;
-    color: var(--gvray-text-color-secondary);
+    color: var(--gvray-color-text-secondary);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -307,7 +307,7 @@
 
   .emptyState {
     text-align: center;
-    color: var(--gvray-text-color-placeholder);
+    color: var(--gvray-color-text-placeholder);
     padding: 60px 20px;
 
     .icon {

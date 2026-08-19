@@ -53,14 +53,14 @@ const PanelHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  border-bottom: 1px solid var(--gvray-border-color-split);
+  border-bottom: 1px solid var(--gvray-color-split);
   flex-shrink: 0;
 `;
 
 const PanelTitle = styled.span`
   font-weight: 600;
   font-size: 15px;
-  color: var(--gvray-text-color);
+  color: var(--gvray-color-text);
 `;
 
 const PanelActions = styled.div`
@@ -89,16 +89,16 @@ const NoticeItem = styled.div<{ $unread: boolean }>`
   padding: 14px 16px;
   cursor: pointer;
   transition: background 0.2s ease;
-  border-bottom: 1px solid var(--gvray-border-color-split);
+  border-bottom: 1px solid var(--gvray-color-split);
   background: ${({ $unread }) =>
-    $unread ? 'var(--gvray-bg-color)' : 'transparent'};
+    $unread ? 'var(--gvray-color-bg-base)' : 'transparent'};
 
   &:last-child {
     border-bottom: none;
   }
 
   &:hover {
-    background: var(--gvray-bg-elevated);
+    background: var(--gvray-color-bg-elevated);
 
     .notice-action {
       opacity: 1;
@@ -131,7 +131,7 @@ const NoticeRow = styled.div`
 const NoticeTitle = styled.span<{ $unread: boolean }>`
   font-size: 14px;
   font-weight: ${({ $unread }) => ($unread ? 600 : 400)};
-  color: var(--gvray-text-color);
+  color: var(--gvray-color-text);
   line-height: 1.4;
   flex: 1;
   word-break: break-all;
@@ -140,7 +140,7 @@ const NoticeTitle = styled.span<{ $unread: boolean }>`
 const NoticeContent = styled.div`
   margin-top: 4px;
   font-size: 12px;
-  color: var(--gvray-text-color-secondary);
+  color: var(--gvray-color-text-secondary);
   line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -160,7 +160,7 @@ const NoticeMeta = styled.div`
 
 const NoticeTime = styled.span`
   font-size: 12px;
-  color: var(--gvray-text-color-secondary);
+  color: var(--gvray-color-text-secondary);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -191,7 +191,7 @@ const DetailTitle = styled.h3`
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-  color: var(--gvray-text-color);
+  color: var(--gvray-color-text);
   line-height: 1.4;
   flex: 1;
   word-break: break-all;
@@ -207,7 +207,7 @@ const DetailMeta = styled.div`
 
 const DetailTime = styled.span`
   font-size: 13px;
-  color: var(--gvray-text-color-secondary);
+  color: var(--gvray-color-text-secondary);
   display: flex;
   align-items: center;
   gap: 4px;
@@ -216,13 +216,13 @@ const DetailTime = styled.span`
 const DetailContent = styled.div`
   font-size: 14px;
   line-height: 1.8;
-  color: var(--gvray-text-color);
+  color: var(--gvray-color-text);
   white-space: pre-wrap;
   word-break: break-all;
   padding: 16px;
-  background: var(--gvray-bg-color);
+  background: var(--gvray-color-bg-base);
   border-radius: 8px;
-  border: 1px solid var(--gvray-border-color-split);
+  border: 1px solid var(--gvray-color-split);
 `;
 
 /* ── component ── */
