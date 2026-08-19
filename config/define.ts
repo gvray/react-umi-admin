@@ -11,6 +11,10 @@ export default {
   __APP_SENTRY_DSN__: process.env.APP_SENTRY_DSN,
   __APP_TRACKING_ID__: process.env.APP_TRACKING_ID,
   __APP_MOCK_ENABLED__: Boolean(process.env.APP_MOCK_ENABLED),
+  __APP_LOGGING_ENABLED__:
+    process.env.APP_LOGGING_ENABLED !== undefined
+      ? process.env.APP_LOGGING_ENABLED === 'true'
+      : process.env.APP_ENV !== 'prod',
   __APP_DEFAULT_LANGUAGE__: process.env.APP_DEFAULT_LANGUAGE || 'zh-CN',
   __APP_DEFAULT_AVATAR_URL__: process.env.APP_DEFAULT_AVATAR_URL || '',
   ...env,

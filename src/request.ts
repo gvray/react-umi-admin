@@ -35,7 +35,7 @@ const client = createClient({
         tokenManager.setAccessToken(access_token, access_token_expires_in),
       exclude: ['/auth/login', '/auth/refresh'],
     },
-    logging: true, // 开启请求日志，生产环境建议关闭
+    logging: __APP_LOGGING_ENABLED__, // 请求日志开关，生产环境默认关闭
   },
 });
 

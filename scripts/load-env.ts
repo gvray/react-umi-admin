@@ -19,6 +19,7 @@ export const loadEnvFromEnv = (env: string) => {
       __APP_SENTRY_DSN__: process.env.APP_SENTRY_DSN,
       __APP_TRACKING_ID__: process.env.APP_TRACKING_ID,
       __APP_MOCK_ENABLED__: process.env.APP_MOCK_ENABLED,
+      __APP_LOGGING_ENABLED__: process.env.APP_LOGGING_ENABLED,
     });
 
     const example = dotenv.parse(fs.readFileSync('.env.example'));

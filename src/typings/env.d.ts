@@ -10,5 +10,6 @@ declare const __APP_CDN_URL__: string;
 declare const __APP_SENTRY_DSN__: string;
 declare const __APP_TRACKING_ID__: string;
 declare const __APP_MOCK_ENABLED__: boolean;
+declare const __APP_LOGGING_ENABLED__: boolean;
 declare const __APP_DEFAULT_LANGUAGE__: string;
 declare const __APP_DEFAULT_AVATAR_URL__: string;
