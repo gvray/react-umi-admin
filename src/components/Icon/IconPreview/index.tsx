@@ -1,8 +1,8 @@
 import { Input, Tabs } from 'antd';
 import React, { useState } from 'react';
 import { styled } from 'umi';
-import { iconMap, type IconKey } from '../fullMap';
 import Icon from '../index';
+import { iconMap, type IconKey } from '../map';
 
 const IconGrid = styled.div`
   display: grid;
@@ -20,13 +20,13 @@ const IconItem = styled.div`
   justify-content: center;
   aspect-ratio: 1 / 1;
   font-size: 16px;
-  color: var(--gvray-text-color-secondary);
-  background-color: var(--gvray-fill-color);
+  color: var(--gvray-color-text-secondary);
+  background-color: var(--gvray-color-fill);
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s ease;
   &:hover {
-    background-color: var(--gvray-fill-color-secondary);
+    background-color: var(--gvray-color-fill-secondary);
   }
 `;
 

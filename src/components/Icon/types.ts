@@ -1,4 +1,4 @@
-import type { IconKey } from './fullMap';
+import type { IconKey } from './map';
 
 export type { IconKey };
 

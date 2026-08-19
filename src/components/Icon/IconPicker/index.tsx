@@ -1,9 +1,9 @@
 import { Dropdown, Input } from 'antd';
 import React, { useState } from 'react';
 import { styled } from 'umi';
-import type { IconKey } from '../fullMap';
 import IconPreview from '../IconPreview';
 import Icon from '../index';
+import type { IconKey } from '../map';
 
 interface IconPickerProps {
   value?: IconKey;
@@ -12,7 +12,7 @@ interface IconPickerProps {
 }
 
 const DropdownPanel = styled.div`
-  background-color: var(--gvray-bg-container);
+  background-color: var(--gvray-color-bg-container);
   width: 680px;
   max-height: 500px;
   padding-left: 10px;

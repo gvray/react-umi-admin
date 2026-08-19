@@ -1,3 +1,5 @@
+import React from 'react';
+
 const RoleIcon: React.FC<{ size?: number; color?: string }> = ({
   size = 24,
   color = '#fcce00',

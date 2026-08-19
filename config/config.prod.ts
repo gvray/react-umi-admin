@@ -22,6 +22,19 @@ export default defineConfig({
       .maxEntrypointSize(1000000)
       .maxAssetSize(1000000);
 
+    // 图标资源打成独立 chunk，避免污染主包
+    config.optimization.splitChunks({
+      chunks: 'all',
+      cacheGroups: {
+        icons: {
+          name: 'chunk-icons',
+          test: /[\\/]node_modules[\\/](@ant-design[\\/]icons|lucide-react)[\\/]/,
+          priority: 20,
+          reuseExistingChunk: true,
+        },
+      },
+    });
+
     // 添加gzip压缩插件
     const CompressionPlugin = require('compression-webpack-plugin');
     config.plugin('compression-webpack-plugin').use(CompressionPlugin, [

@@ -1,3 +1,5 @@
+import React from 'react';
+
 const UserIcon: React.FC<{ size?: number; color?: string }> = ({
   size = 24,
   color = '#0C66FF',

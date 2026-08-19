@@ -1,3 +1,5 @@
+import React from 'react';
+
 const OnlineIcon: React.FC<{ size?: number; color?: string }> = ({
   size = 24,
   color = '#D1F1D9',
