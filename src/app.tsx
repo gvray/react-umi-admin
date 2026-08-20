@@ -9,6 +9,7 @@ import { runtimeConfig } from '@/utils/runtime-config';
 import React from 'react';
 import { history, matchRoutes } from 'umi';
 import { logger, redirectToLogin, tokenManager } from './utils';
+import { wrapToBizError } from './utils/errors';
 
 // const isDev = process.env.NODE_ENV === 'development';
 
@@ -59,8 +60,15 @@ export async function getInitialState() {
         history.push('/');
       }
     } catch (error) {
-      tokenManager.clearTokens();
-      redirectToLogin();
+      const bizError = wrapToBizError(error);
+      // 只有真正的未授权/凭证过期才清凭证并跳转登录；
+      // 网络抖动或服务端异常保留原凭证，避免误踢用户
+      if (bizError.details?.status === 401) {
+        tokenManager.clearTokens();
+        redirectToLogin();
+      } else {
+        logger.error('获取初始化用户信息失败', error);
+      }
     }
   }
 

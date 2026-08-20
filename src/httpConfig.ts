@@ -25,13 +25,18 @@ const handle401Unauthorized = () => {
     return;
   }
 
+  // 未登录状态下直接跳转登录页，不需要弹"登录已过期"窗
+  if (!tokenManager.isAuthenticated()) {
+    redirectToLogin();
+    return;
+  }
+
   showAuthModal({
     onOk: () => {
       redirectToLogin();
     },
     onCancel: () => {
-      // 用户选择不跳转，但至少把过期凭证清掉，避免后续请求反复触发 401 弹窗
-      tokenManager.clearTokens();
+      // 用户选择暂不登录，保留凭证；
     },
   });
 };
