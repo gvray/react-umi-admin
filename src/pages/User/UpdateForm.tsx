@@ -3,7 +3,6 @@ import { DEFAULT_MODAL_TITLE } from '@/constants';
 import { useFeedback } from '@/hooks';
 import { queryDepartmentOptions } from '@/services/department';
 import { queryPositionOptions } from '@/services/position';
-import { queryRoleOptions } from '@/services/role';
 import { createUser, getUserById, updateUser } from '@/services/user';
 import type { DictOption } from '@/types/dict';
 import { logger } from '@/utils';
@@ -48,7 +47,6 @@ const UpdateFormFunction: ForwardRefRenderFunction<
   const [positionList, setPositionList] = useState<API.PositionResponseDto[]>(
     [],
   );
-  const [roleList, setRoleList] = useState<API.RoleResponseDto[]>([]);
   const [form] = Form.useForm();
 
   // 弹窗打开时拉 options + detail
@@ -58,10 +56,9 @@ const UpdateFormFunction: ForwardRefRenderFunction<
     const load = async () => {
       setFormLoading(true);
       try {
-        const [deptRes, posRes, roleRes] = await Promise.all([
+        const [deptRes, posRes] = await Promise.all([
           queryDepartmentOptions(),
           queryPositionOptions(),
-          queryRoleOptions(),
         ]);
 
         if (deptRes.data) {
@@ -70,9 +67,6 @@ const UpdateFormFunction: ForwardRefRenderFunction<
         if (posRes.data) {
           setPositionList(posRes.data);
         }
-        if (roleRes.data) {
-          setRoleList(roleRes.data);
-        }
 
         if (editingId) {
           const { data } = await getUserById(editingId);
@@ -80,7 +74,6 @@ const UpdateFormFunction: ForwardRefRenderFunction<
             form.setFieldsValue({
               ...data,
               positionIds: data.positions?.map((item: any) => item.positionId),
-              roleIds: data.roles?.map((item: any) => item.roleId),
               departmentId: data.department?.departmentId,
             });
           }
@@ -90,7 +83,6 @@ const UpdateFormFunction: ForwardRefRenderFunction<
             status: 'enabled',
             password: '123456',
             postIds: [],
-            roleIds: [],
           });
         }
       } catch (error) {
@@ -110,7 +102,6 @@ const UpdateFormFunction: ForwardRefRenderFunction<
     setEditingId(undefined);
     setDepartmentList([]);
     setPositionList([]);
-    setRoleList([]);
   };
 
   const isEdit = Boolean(editingId);
@@ -183,7 +174,6 @@ const UpdateFormFunction: ForwardRefRenderFunction<
             status: 'enabled',
             password: '123456',
             postIds: [],
-            roleIds: [],
           }}
         >
           <Form.Item name="userId" label="用户Id" hidden>
@@ -276,17 +266,6 @@ const UpdateFormFunction: ForwardRefRenderFunction<
                 <Select
                   options={positionList}
                   fieldNames={{ value: 'positionId', label: 'name' }}
-                  mode="multiple"
-                  allowClear
-                  disabled={formLoading}
-                />
-              </Form.Item>
-            </FormGrid.Item>
-            <FormGrid.Item>
-              <Form.Item name="roleIds" label="角色">
-                <Select
-                  options={roleList}
-                  fieldNames={{ value: 'roleId', label: 'name' }}
                   mode="multiple"
                   allowClear
                   disabled={formLoading}

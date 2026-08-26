@@ -1,6 +1,6 @@
 /**
  * 此文件由 scripts/gen-api-types.ts 自动生成
- * 生成时间: 2026-07-31T14:09:56.091Z
+ * 生成时间: 2026-08-26T13:59:14.364Z
  * 数据来源: http://localhost:3000/api-json
  * 请勿手动修改此文件
  */
@@ -50,7 +50,7 @@ declare namespace API {
     refreshToken: string;
   }
 
-  interface PermissionResponseDto {
+  interface CurrentUserPermissionResponseDto {
     id: number;
     /**
      * 权限唯一标识符（UUID）
@@ -61,18 +61,8 @@ declare namespace API {
     name: string;
     /** 权限代码 */
     code: string;
-    /** HTTP 方法（扫描器写入，seed 阶段可能为空） */
-    httpMethod?: string;
-    /** 权限来源 */
-    origin: 'USER' | 'SYSTEM';
-    /** 是否可人工修改 */
-    mutable: boolean;
     /** 权限描述 */
     description?: string;
-    /** 创建时间 */
-    createdAt: string;
-    /** 更新时间 */
-    updatedAt: string;
   }
 
   interface CurrentUserRoleResponseDto {
@@ -90,7 +80,7 @@ declare namespace API {
     /** 角色描述 */
     description?: string;
     /** 角色权限列表 */
-    permissions?: PermissionResponseDto[];
+    permissions?: CurrentUserPermissionResponseDto[];
   }
 
   interface CurrentUserDepartmentResponseDto {
@@ -236,8 +226,37 @@ declare namespace API {
     departmentId?: string;
     /** 岗位ID列表（UUID） */
     positionIds?: string[];
-    /** 角色ID列表（UUID），仅后台创建用户时使用；自助注册使用默认角色配置 */
-    roleIds?: string[];
+  }
+
+  interface RolePermissionResponseDto {
+    id: number;
+    /**
+     * 权限唯一标识符（UUID）
+     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
+     */
+    permissionId: string;
+    /** 权限名称 */
+    name: string;
+    /** 权限代码 */
+    code: string;
+    /** 操作类型 */
+    action: string;
+  }
+
+  interface RoleUserResponseDto {
+    /**
+     * 用户唯一标识符（UUID）
+     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
+     */
+    userId: string;
+    /** 用户名 */
+    username: string;
+    /** 用户昵称 */
+    nickname: string;
+    /** 用户邮箱 */
+    email: string;
+    /** 用户状态：0-禁用，1-启用 */
+    status: number;
   }
 
   interface RoleResponseDto {
@@ -299,6 +318,21 @@ declare namespace API {
     /** 更新时间 */
     updatedAt: string;
     children: DepartmentResponseDto[][];
+  }
+
+  interface PositionUserResponseDto {
+    id: number;
+    /**
+     * 用户唯一标识符（UUID）
+     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
+     */
+    userId: string;
+    /** 用户名 */
+    username: string;
+    /** 昵称 */
+    nickname: string;
+    /** 邮箱 */
+    email?: string;
   }
 
   interface PositionResponseDto {
@@ -414,8 +448,6 @@ declare namespace API {
     departmentId?: string;
     /** 岗位ID列表（UUID） */
     positionIds?: string[];
-    /** 角色ID列表（UUID），仅后台创建用户时使用；自助注册使用默认角色配置 */
-    roleIds?: string[];
   }
 
   interface AssignRolesDto {
@@ -496,37 +528,6 @@ declare namespace API {
     permissionIds?: string[];
   }
 
-  interface RolePermissionResponseDto {
-    id: number;
-    /**
-     * 权限唯一标识符（UUID）
-     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
-     */
-    permissionId: string;
-    /** 权限名称 */
-    name: string;
-    /** 权限代码 */
-    code: string;
-    /** 操作类型 */
-    action: string;
-  }
-
-  interface RoleUserResponseDto {
-    /**
-     * 用户唯一标识符（UUID）
-     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
-     */
-    userId: string;
-    /** 用户名 */
-    username: string;
-    /** 用户昵称 */
-    nickname: string;
-    /** 用户邮箱 */
-    email: string;
-    /** 用户状态：0-禁用，1-启用 */
-    status: number;
-  }
-
   interface UpdateRoleDto {
     /** 角色名称 */
     name?: string;
@@ -589,6 +590,31 @@ declare namespace API {
   interface BatchDeleteRolesDto {
     /** 待删除角色ID列表 */
     ids: string[];
+  }
+
+  interface PermissionResponseDto {
+    id: number;
+    /**
+     * 权限唯一标识符（UUID）
+     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
+     */
+    permissionId: string;
+    /** 权限名称 */
+    name: string;
+    /** 权限代码 */
+    code: string;
+    /** HTTP 方法（扫描器写入，seed 阶段可能为空） */
+    httpMethod?: string;
+    /** 权限来源 */
+    origin: 'USER' | 'SYSTEM';
+    /** 是否可人工修改 */
+    mutable: boolean;
+    /** 权限描述 */
+    description?: string;
+    /** 创建时间 */
+    createdAt: string;
+    /** 更新时间 */
+    updatedAt: string;
   }
 
   interface UpdatePermissionDto {
@@ -781,21 +807,6 @@ declare namespace API {
     status?: string;
     /** 排序 */
     sort?: number;
-  }
-
-  interface PositionUserResponseDto {
-    id: number;
-    /**
-     * 用户唯一标识符（UUID）
-     * @example a3d7d76e-5a4e-4f0a-93c3-d0b2b27d471e
-     */
-    userId: string;
-    /** 用户名 */
-    username: string;
-    /** 昵称 */
-    nickname: string;
-    /** 邮箱 */
-    email?: string;
   }
 
   interface UpdatePositionDto {
