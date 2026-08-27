@@ -14,7 +14,7 @@ FROM node:18-alpine AS deps
 WORKDIR /app
 
 # 安装 pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@9.15.9
 
 # 复制依赖文件
 COPY package.json pnpm-lock.yaml* ./
@@ -43,7 +43,7 @@ ENV NODE_ENV=production
 ENV BUILD_ENV=${BUILD_ENV}
 
 # 安装 pnpm
-RUN npm install -g pnpm
+RUN npm install -g pnpm@9.15.9
 
 # 根据 BUILD_ENV 执行对应环境的构建
 RUN pnpm run build:${BUILD_ENV}
