@@ -36,7 +36,7 @@ const routes = [
       },
       {
         path: '/403',
-        component: '403',
+        component: 'Error/403',
       },
     ],
   },
@@ -46,7 +46,7 @@ const routes = [
     routes: [
       {
         path: '/system/user',
-        component: 'User',
+        component: 'System/User',
         meta: {
           title: '用户管理',
           permissions: ['system:user:list'],
@@ -54,7 +54,7 @@ const routes = [
       },
       {
         path: '/system/role',
-        component: 'Role',
+        component: 'System/Role',
         meta: {
           title: '角色管理',
           permissions: ['system:role:list'],
@@ -62,7 +62,7 @@ const routes = [
       },
       {
         path: '/system/permission',
-        component: 'Permission',
+        component: 'System/Permission',
         meta: {
           title: '权限管理',
           permissions: ['system:permission:list'],
@@ -70,7 +70,7 @@ const routes = [
       },
       {
         path: '/system/menu',
-        component: 'Menu',
+        component: 'System/Menu',
         meta: {
           title: '菜单管理',
           permissions: ['system:menu:list'],
@@ -78,7 +78,7 @@ const routes = [
       },
       {
         path: '/system/department',
-        component: 'Department',
+        component: 'System/Department',
         meta: {
           title: '部门管理',
           permissions: ['system:department:list'],
@@ -86,7 +86,7 @@ const routes = [
       },
       {
         path: '/system/position',
-        component: 'Position',
+        component: 'System/Position',
         meta: {
           title: '职位管理',
           permissions: ['system:position:list'],
@@ -94,7 +94,7 @@ const routes = [
       },
       {
         path: '/system/dictionary',
-        component: 'Dictionary',
+        component: 'System/Dictionary',
         meta: {
           title: '字典管理',
           permissions: ['system:dictionary:list'],
@@ -102,7 +102,7 @@ const routes = [
       },
       {
         path: '/system/dictionary/items/:typeId',
-        component: 'Dictionary/Items',
+        component: 'System/Dictionary/Items',
         meta: {
           title: '字典项管理',
           permissions: ['system:dictionary:list'],
@@ -110,7 +110,7 @@ const routes = [
       },
       {
         path: '/system/config',
-        component: 'Config',
+        component: 'System/Config',
         meta: {
           title: '系统配置',
           permissions: ['system:config:list'],
@@ -118,7 +118,7 @@ const routes = [
       },
       {
         path: '/system/notice',
-        component: 'Notice',
+        component: 'System/Notice',
         meta: {
           title: '通知公告',
           permissions: ['system:notice:list'],
@@ -132,7 +132,7 @@ const routes = [
         routes: [
           {
             path: '/system/log/login',
-            component: 'Log/Login',
+            component: 'System/Log/Login',
             meta: {
               title: '登录日志',
               permissions: ['system:log-login:list'],
@@ -140,7 +140,7 @@ const routes = [
           },
           {
             path: '/system/log/operation',
-            component: 'Log/Operation',
+            component: 'System/Log/Operation',
             meta: {
               title: '操作日志',
               permissions: ['system:log-operation:list'],
@@ -151,7 +151,7 @@ const routes = [
       // 用户分配角色
       {
         path: '/system/user-auth/role/:userId',
-        component: 'User/AuthRole',
+        component: 'System/User/AuthRole',
         meta: {
           title: '用户分配角色',
           permissions: ['system:user:update-roles'],
@@ -160,7 +160,7 @@ const routes = [
       // 角色分配权限
       {
         path: '/system/role-auth/permission/:roleId',
-        component: 'Role/AuthPermission',
+        component: 'System/Role/AuthPermission',
         meta: {
           title: '角色分配权限',
           permissions: ['system:role:update-permissions'],
@@ -169,7 +169,7 @@ const routes = [
       // 角色分配用户
       {
         path: '/system/role-auth/user/:roleId',
-        component: 'Role/AuthUser',
+        component: 'System/Role/AuthUser',
         meta: {
           title: '角色分配用户',
           permissions: ['system:role:update-users'],
@@ -213,7 +213,7 @@ const routes = [
     routes: [
       {
         path: '*',
-        component: '404',
+        component: 'Error/404',
       },
     ],
   },

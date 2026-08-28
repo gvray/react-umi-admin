@@ -1,8 +1,8 @@
 import { Icon } from '@/components';
+import type { PermissionTreeNode } from '@/pages/System/Permission/model';
 import { Card, Input, Spin, Tag, Tooltip, Tree, Typography } from 'antd';
 import type { DataNode } from 'antd/es/tree';
 import { useMemo } from 'react';
-import type { PermissionTreeNode } from '../Permission/model';
 import styles from './index.less';
 import { useProfilePermissionsModel } from './model';
 

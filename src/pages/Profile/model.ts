@@ -1,6 +1,10 @@
 import { LOGIN_PATH } from '@/constants';
 import { useFeedback } from '@/hooks';
 import {
+  buildPermissionTree,
+  type PermissionTreeNode,
+} from '@/pages/System/Permission/model';
+import {
   changePassword,
   queryProfileLoginLogs,
   queryProfilePermissions,
@@ -13,10 +17,6 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { history } from 'umi';
-import {
-  buildPermissionTree,
-  type PermissionTreeNode,
-} from '../Permission/model';
 
 export type LoginLogDateRange = [Dayjs | null, Dayjs | null] | null;
 
