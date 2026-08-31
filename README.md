@@ -1,5 +1,7 @@
 # Gvray Admin
 
+[English](README.en.md) | 简体中文
+
 🦄 基于 **React**、**Umi**、**Ant Design**、**TypeScript** 构建的企业级后台管理系统，专注于 **现代前端架构** 与 **RBAC 权限体系** 设计，提供动态路由、多主题、国际化、运行时配置、Mock、OpenAPI 等核心能力，可直接作为企业后台项目的 Starter Template。
 
 <!--
