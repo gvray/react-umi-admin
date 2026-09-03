@@ -58,7 +58,7 @@
     "@gvray/logger": "^1.1.0",
     "@gvray/mathkit": "1.2.0",
     "@gvray/pathkit": "^1.2.0",
-    "@gvray/request": "^1.1.2",
+    "@gvray/request": "^1.2.0",
     "@gvray/requestkit": "^1.2.0",
     "@gvray/validationkit": "1.1.0",
     "antd": "^5.14.1",
