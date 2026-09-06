@@ -8,7 +8,12 @@ import { useAuthStore, useDictStore, useSettingStore } from '@/stores';
 import { runtimeConfig } from '@/utils/runtime-config';
 import React from 'react';
 import { history, matchRoutes } from 'umi';
-import { logger, redirectToLogin, tokenManager } from './utils';
+import {
+  handleAuthExpired,
+  logger,
+  redirectToLogin,
+  tokenManager,
+} from './utils';
 import { wrapToBizError } from './utils/errors';
 
 // const isDev = process.env.NODE_ENV === 'development';
@@ -65,7 +70,7 @@ export async function getInitialState() {
       // 网络抖动或服务端异常保留原凭证，避免误踢用户
       if (bizError.details?.status === 401) {
         tokenManager.clearTokens();
-        redirectToLogin();
+        handleAuthExpired();
       } else {
         logger.error('获取初始化用户信息失败', error);
       }

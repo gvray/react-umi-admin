@@ -69,5 +69,6 @@ export function refreshToken(data: API.RefreshTokenDto) {
     method: 'POST',
     data,
     skipAuth: true,
+    skipErrorHandler: true, // 续期失败交给调用方处理，避免 401 触发全局弹窗与跳转竞态
   });
 }

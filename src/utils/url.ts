@@ -9,7 +9,8 @@ import { destroyAuthModal } from './authModal';
 import { tokenManager } from './token';
 
 /**
- * 跳转到登录页并携带重定向参数
+ * 跳转到登录页（纯跳转动作）：清凭证 + 销毁弹窗 + 跳转。
+ * 不判断是否已过期，调用方自行确定"确实该去 login"。
  */
 export function redirectToLogin() {
   // 清除本地凭证，避免旧 token 被带到登录后的请求中

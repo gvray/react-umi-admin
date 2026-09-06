@@ -285,7 +285,7 @@ const OnlineUserPage: React.FC = () => {
         }}
         footer={null}
         width={900}
-        destroyOnClose
+        destroyOnHidden
       >
         <Table
           dataSource={sessionList}

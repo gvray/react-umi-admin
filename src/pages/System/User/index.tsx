@@ -235,7 +235,7 @@ const UserPage = () => {
         open={resetModalOpen}
         onOk={handleResetOk}
         onCancel={handleResetCancel}
-        destroyOnClose
+        destroyOnHidden
       >
         <Form form={resetForm} layout="vertical" preserve={false}>
           <Form.Item
